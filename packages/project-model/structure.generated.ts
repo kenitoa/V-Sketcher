@@ -3,7 +3,7 @@ import ucs2lengthModule from "ajv/dist/runtime/ucs2length.js";
 const ucs2length = ucs2lengthModule.default ?? ucs2lengthModule;
 "use strict";
 export const projectStructure = validate20;
-const schema31 = {"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"https://2dsketcher.local/schema/project-1.1","type":"object","additionalProperties":false,"properties":{"projectId":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},"schemaVersion":{"type":"object","additionalProperties":false,"properties":{"major":{"const":1},"minor":{"enum":[0,1]}},"required":["major","minor"]},"displayName":{"type":"string","minLength":1,"maxLength":120},"sourceType":{"enum":["parts","single-image","split-image"]},"createdAt":{"type":"string","minLength":1,"maxLength":24,"pattern":"^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"},"modifiedAt":{"type":"string","minLength":1,"maxLength":24,"pattern":"^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"},"revision":{"type":"integer","minimum":0,"maximum":9007199254740991},"savedRevision":{"anyOf":[{"type":"integer","minimum":0,"maximum":9007199254740991},{"type":"null"}]},"canvas":{"type":"object","additionalProperties":false,"properties":{"width":{"type":"integer","minimum":1,"maximum":4096},"height":{"type":"integer","minimum":1,"maximum":4096}},"required":["width","height"]},"inputAssetIds":{"type":"array","items":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},"maxItems":1024,"uniqueItems":true},"assets":{"type":"array","items":{"type":"object","additionalProperties":false,"properties":{"id":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},"kind":{"enum":["original-image","part-texture","supplement-image","edited-image"]},"origin":{"enum":["imported","bundled","auto-preparation","auto-completion","manual-edit","generated"]},"parentAssetIds":{"type":"array","items":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},"maxItems":1024,"uniqueItems":true},"storage":{"type":"object","additionalProperties":false,"properties":{"path":{"type":"string","minLength":1,"maxLength":240,"pattern":"^resources/"}},"required":["path"]},"fingerprint":{"type":"object","additionalProperties":false,"properties":{"sha256":{"type":"string","pattern":"^[a-f0-9]{64}$"},"bytes":{"type":"integer","minimum":1,"maximum":536870912}},"required":["sha256","bytes"]},"version":{"type":"integer","minimum":1,"maximum":9007199254740991},"mediaType":{"enum":["image/png","image/jpeg"]},"dimensions":{"type":"object","additionalProperties":false,"properties":{"width":{"type":"integer","minimum":1,"maximum":4096},"height":{"type":"integer","minimum":1,"maximum":4096}},"required":["width","height"]},"sourceRegion":{"type":"object","additionalProperties":false,"properties":{"x":{"type":"number"},"y":{"type":"number"},"width":{"type":"number","exclusiveMinimum":0},"height":{"type":"number","exclusiveMinimum":0}},"required":["x","y","width","height"]},"sourceToEdited":{"type":"array","items":{"type":"number"},"minItems":6,"maxItems":6},"colorSpace":{"enum":["srgb","unknown"]},"alphaMode":{"enum":["straight","premultiplied","opaque"]},"producer":{"type":"object","additionalProperties":false,"properties":{"name":{"type":"string","minLength":1,"maxLength":120},"version":{"type":"string","minLength":1,"maxLength":32,"pattern":"^\\d+\\.\\d+\\.\\d+$"}},"required":["name","version"]},"attribution":{"type":"object","additionalProperties":false,"properties":{"creator":{"type":"string","minLength":1,"maxLength":512},"source":{"type":"string","minLength":1,"maxLength":512},"usage":{"type":"string","minLength":1,"maxLength":1024},"status":{"enum":["verified","unverified"]}},"required":["creator","source","usage","status"]}},"required":["id","kind","origin","parentAssetIds","storage","fingerprint","version","mediaType","dimensions","sourceRegion","sourceToEdited","colorSpace","alphaMode","producer","attribution"]},"maxItems":1024},"parts":{"type":"array","items":{"type":"object","additionalProperties":false,"properties":{"id":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},"displayName":{"type":"string","minLength":1,"maxLength":120},"role":{"enum":["base","body","head","hair-front","hair-back","eye","mouth","accessory","custom"]},"side":{"enum":["character-left","character-right","center","none"]},"parentId":{"anyOf":[{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},{"type":"null"}]},"groupId":{"anyOf":[{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},{"type":"null"}]},"textures":{"type":"array","items":{"type":"object","additionalProperties":false,"properties":{"state":{"type":"string","minLength":1,"maxLength":32,"pattern":"^[a-z][a-z0-9_-]*$"},"assetId":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},"assetVersion":{"type":"integer","minimum":1,"maximum":9007199254740991},"assetToLocal":{"type":"array","items":{"type":"number"},"minItems":6,"maxItems":6}},"required":["state","assetId","assetVersion","assetToLocal"]},"maxItems":32},"localTransform":{"type":"array","items":{"type":"number"},"minItems":6,"maxItems":6},"drawOrder":{"type":"integer","minimum":-100000,"maximum":100000},"visible":{"type":"boolean"},"opacity":{"type":"number","minimum":0,"maximum":1},"correctionOrigin":{"enum":["automatic","user-confirmed","manual"]},"limitations":{"type":"array","items":{"type":"string","minLength":1,"maxLength":512},"maxItems":64}},"required":["id","displayName","role","side","parentId","groupId","textures","localTransform","drawOrder","visible","opacity","correctionOrigin","limitations"]},"maxItems":64},"groups":{"type":"array","items":{"type":"object","additionalProperties":false,"properties":{"id":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},"displayName":{"type":"string","minLength":1,"maxLength":120},"parentGroupId":{"anyOf":[{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},{"type":"null"}]},"visible":{"type":"boolean"}},"required":["id","displayName","parentGroupId","visible"]},"maxItems":128},"parameters":{"type":"array","items":{"type":"object","additionalProperties":false,"properties":{"id":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},"displayName":{"type":"string","minLength":1,"maxLength":120},"semantic":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[a-z][a-z0-9_-]*$"},"unit":{"enum":["ratio","degrees","custom"]},"min":{"type":"number"},"neutral":{"type":"number"},"max":{"type":"number"},"previewKey":{"anyOf":[{"enum":["eye_left","eye_right","mouth","head_yaw","head_roll"]},{"type":"null"}]}},"required":["id","displayName","semantic","unit","min","neutral","max","previewKey"]},"maxItems":128},"partBindings":{"type":"array","items":{"oneOf":[{"type":"object","additionalProperties":false,"properties":{"id":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},"parameterId":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},"partId":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},"kind":{"const":"state-blend"},"mapping":{"type":"object","additionalProperties":false,"properties":{"minimumState":{"type":"string","minLength":1,"maxLength":32},"maximumState":{"type":"string","minLength":1,"maxLength":32}},"required":["minimumState","maximumState"]}},"required":["id","parameterId","partId","kind","mapping"]},{"type":"object","additionalProperties":false,"properties":{"id":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},"parameterId":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},"partId":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},"kind":{"const":"transform"},"mapping":{"type":"object","additionalProperties":false,"properties":{"component":{"enum":["rotate-degrees","translate-x","translate-y","scale-x","scale-y"]},"outputRange":{"type":"array","items":{"type":"number"},"minItems":2,"maxItems":2}},"required":["component","outputRange"]}},"required":["id","parameterId","partId","kind","mapping"]}]},"maxItems":256},"inputBindings":{"type":"array","items":{"type":"object","additionalProperties":false,"properties":{"id":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},"source":{"enum":["face","microphone","manual"]},"channel":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[a-z][a-z0-9_-]*$"},"parameterId":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},"inputRange":{"type":"array","items":{"type":"number"},"minItems":2,"maxItems":2},"invert":{"type":"boolean"},"gain":{"type":"number","minimum":0,"maximum":10},"offset":{"type":"number"},"smoothingMs":{"type":"integer","minimum":0,"maximum":10000},"fallback":{"type":"object","additionalProperties":false,"properties":{"mode":{"enum":["neutral","hold","constant"]},"value":{"type":"number"},"returnMs":{"type":"integer","minimum":0,"maximum":10000}},"required":["mode","value","returnMs"]}},"required":["id","source","channel","parameterId","inputRange","invert","gain","offset","smoothingMs","fallback"]},"maxItems":128},"expressions":{"type":"array","items":{"type":"object","additionalProperties":false,"properties":{"id":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},"displayName":{"type":"string","minLength":1,"maxLength":120},"values":{"type":"array","items":{"type":"object","additionalProperties":false,"properties":{"parameterId":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},"value":{"type":"number"},"locked":{"type":"boolean"}},"required":["parameterId","value","locked"]},"maxItems":128},"transitionMs":{"type":"integer","minimum":0,"maximum":10000},"release":{"enum":["live-input","neutral"]}},"required":["id","displayName","values","transitionMs","release"]},"maxItems":64},"runtimeProfile":{"type":"object","additionalProperties":false,"properties":{"id":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},"revision":{"type":"integer","minimum":0,"maximum":9007199254740991},"mode":{"enum":["idle","camera","microphone","camera-microphone"]},"mirror":{"type":"boolean"},"fallbackExpressionId":{"anyOf":[{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},{"type":"null"}]}},"required":["id","revision","mode","mirror","fallbackExpressionId"]},"broadcastProfiles":{"type":"array","items":{"type":"object","additionalProperties":false,"properties":{"id":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},"revision":{"type":"integer","minimum":0,"maximum":9007199254740991},"displayName":{"type":"string","minLength":1,"maxLength":120},"width":{"type":"integer","minimum":1,"maximum":8192},"height":{"type":"integer","minimum":1,"maximum":8192},"fps":{"type":"integer","minimum":1,"maximum":120},"transparent":{"type":"boolean"},"region":{"type":"object","additionalProperties":false,"properties":{"x":{"type":"number"},"y":{"type":"number"},"width":{"type":"number","exclusiveMinimum":0},"height":{"type":"number","exclusiveMinimum":0}},"required":["x","y","width","height"]},"fit":{"enum":["contain","cover"]}},"required":["id","revision","displayName","width","height","fps","transparent","region","fit"]},"maxItems":16},"exportProfiles":{"type":"array","items":{"type":"object","additionalProperties":false,"properties":{"id":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},"revision":{"type":"integer","minimum":0,"maximum":9007199254740991},"displayName":{"type":"string","minLength":1,"maxLength":120},"target":{"enum":["inochi2d"]},"targetVersion":{"type":"string","minLength":1,"maxLength":32,"pattern":"^\\d+\\.\\d+\\.\\d+$"},"format":{"enum":["inp"]},"converterVersion":{"type":"string","minLength":1,"maxLength":32,"pattern":"^\\d+\\.\\d+\\.\\d+$"},"parameterMap":{"type":"array","items":{"type":"object","additionalProperties":false,"properties":{"parameterId":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},"targetName":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[a-zA-Z][a-zA-Z0-9_]*$"}},"required":["parameterId","targetName"]},"maxItems":128}},"required":["id","revision","displayName","target","targetVersion","format","converterVersion","parameterMap"]},"maxItems":16},"provenance":{"type":"object","additionalProperties":false,"properties":{"preparation":{"type":"string","minLength":1,"maxLength":512},"limitations":{"type":"array","items":{"type":"string","minLength":1,"maxLength":512},"maxItems":128}},"required":["preparation","limitations"]},"derivedProjects":{"type":"array","items":{"type":"object","additionalProperties":false,"properties":{"projectId":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},"relation":{"enum":["3d","generated-variant"]}},"required":["projectId","relation"]},"maxItems":32},"motion":{"type":"object","additionalProperties":false,"properties":{"version":{"const":1},"faceWidth":{"type":"number","exclusiveMinimum":0},"maxRollDegrees":{"type":"number","minimum":0,"maximum":6},"secondary":{"const":"disabled"},"settings":{"type":"object","additionalProperties":false,"properties":{"strength":{"type":"number","minimum":0,"maximum":1},"smoothingMs":{"type":"integer","minimum":0,"maximum":1000},"pose":{"type":"array","items":{"type":"object","additionalProperties":false,"properties":{"parameterId":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},"value":{"type":"number"}},"required":["parameterId","value"]},"maxItems":128}},"required":["strength","smoothingMs","pose"]},"meshes":{"type":"array","items":{"type":"object","additionalProperties":false,"properties":{"partId":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},"pivot":{"type":"array","items":{"type":"number"},"minItems":2,"maxItems":2},"yawParameterId":{"anyOf":[{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},{"type":"null"}]},"rollParameterId":{"anyOf":[{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},{"type":"null"}]},"curve":{"enum":["linear","smoothstep"]},"vertices":{"type":"array","items":{"type":"object","additionalProperties":false,"properties":{"position":{"type":"array","items":{"type":"number"},"minItems":2,"maxItems":2},"weight":{"type":"number","minimum":0,"maximum":1},"minimum":{"type":"array","items":{"type":"number"},"minItems":2,"maxItems":2},"maximum":{"type":"array","items":{"type":"number"},"minItems":2,"maxItems":2}},"required":["position","weight","minimum","maximum"]},"maxItems":1024,"minItems":3},"triangles":{"type":"array","items":{"type":"integer","minimum":0,"maximum":1023},"maxItems":6144,"minItems":3}},"required":["partId","pivot","yawParameterId","rollParameterId","curve","vertices","triangles"]},"maxItems":64}},"required":["version","faceWidth","maxRollDegrees","secondary","settings","meshes"]}},"required":["projectId","schemaVersion","displayName","sourceType","createdAt","modifiedAt","revision","savedRevision","canvas","inputAssetIds","assets","parts","groups","parameters","partBindings","inputBindings","expressions","runtimeProfile","broadcastProfiles","exportProfiles","provenance","derivedProjects"]};
+const schema31 = {"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"https://2dsketcher.local/schema/project-1.2","type":"object","additionalProperties":false,"properties":{"projectId":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},"schemaVersion":{"type":"object","additionalProperties":false,"properties":{"major":{"const":1},"minor":{"enum":[0,1,2]}},"required":["major","minor"]},"displayName":{"type":"string","minLength":1,"maxLength":120},"sourceType":{"enum":["parts","single-image","split-image"]},"createdAt":{"type":"string","minLength":1,"maxLength":24,"pattern":"^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"},"modifiedAt":{"type":"string","minLength":1,"maxLength":24,"pattern":"^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"},"revision":{"type":"integer","minimum":0,"maximum":9007199254740991},"savedRevision":{"anyOf":[{"type":"integer","minimum":0,"maximum":9007199254740991},{"type":"null"}]},"canvas":{"type":"object","additionalProperties":false,"properties":{"width":{"type":"integer","minimum":1,"maximum":4096},"height":{"type":"integer","minimum":1,"maximum":4096}},"required":["width","height"]},"inputAssetIds":{"type":"array","items":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},"maxItems":1024,"uniqueItems":true},"assets":{"type":"array","items":{"type":"object","additionalProperties":false,"properties":{"id":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},"kind":{"enum":["original-image","part-texture","supplement-image","edited-image"]},"origin":{"enum":["imported","bundled","auto-preparation","auto-completion","manual-edit","generated"]},"parentAssetIds":{"type":"array","items":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},"maxItems":1024,"uniqueItems":true},"storage":{"type":"object","additionalProperties":false,"properties":{"path":{"type":"string","minLength":1,"maxLength":240,"pattern":"^resources/"}},"required":["path"]},"fingerprint":{"type":"object","additionalProperties":false,"properties":{"sha256":{"type":"string","pattern":"^[a-f0-9]{64}$"},"bytes":{"type":"integer","minimum":1,"maximum":536870912}},"required":["sha256","bytes"]},"version":{"type":"integer","minimum":1,"maximum":9007199254740991},"mediaType":{"enum":["image/png","image/jpeg"]},"dimensions":{"type":"object","additionalProperties":false,"properties":{"width":{"type":"integer","minimum":1,"maximum":4096},"height":{"type":"integer","minimum":1,"maximum":4096}},"required":["width","height"]},"sourceRegion":{"type":"object","additionalProperties":false,"properties":{"x":{"type":"number"},"y":{"type":"number"},"width":{"type":"number","exclusiveMinimum":0},"height":{"type":"number","exclusiveMinimum":0}},"required":["x","y","width","height"]},"sourceToEdited":{"type":"array","items":{"type":"number"},"minItems":6,"maxItems":6},"colorSpace":{"enum":["srgb","unknown"]},"alphaMode":{"enum":["straight","premultiplied","opaque"]},"producer":{"type":"object","additionalProperties":false,"properties":{"name":{"type":"string","minLength":1,"maxLength":120},"version":{"type":"string","minLength":1,"maxLength":32,"pattern":"^\\d+\\.\\d+\\.\\d+$"}},"required":["name","version"]},"attribution":{"type":"object","additionalProperties":false,"properties":{"creator":{"type":"string","minLength":1,"maxLength":512},"source":{"type":"string","minLength":1,"maxLength":512},"usage":{"type":"string","minLength":1,"maxLength":1024},"status":{"enum":["verified","unverified"]}},"required":["creator","source","usage","status"]}},"required":["id","kind","origin","parentAssetIds","storage","fingerprint","version","mediaType","dimensions","sourceRegion","sourceToEdited","colorSpace","alphaMode","producer","attribution"]},"maxItems":1024},"parts":{"type":"array","items":{"type":"object","additionalProperties":false,"properties":{"id":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},"displayName":{"type":"string","minLength":1,"maxLength":120},"role":{"enum":["base","body","head","hair-front","hair-back","eye","mouth","accessory","custom"]},"side":{"enum":["character-left","character-right","center","none"]},"parentId":{"anyOf":[{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},{"type":"null"}]},"groupId":{"anyOf":[{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},{"type":"null"}]},"textures":{"type":"array","items":{"type":"object","additionalProperties":false,"properties":{"state":{"type":"string","minLength":1,"maxLength":32,"pattern":"^[a-z][a-z0-9_-]*$"},"assetId":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},"assetVersion":{"type":"integer","minimum":1,"maximum":9007199254740991},"assetToLocal":{"type":"array","items":{"type":"number"},"minItems":6,"maxItems":6}},"required":["state","assetId","assetVersion","assetToLocal"]},"maxItems":32},"localTransform":{"type":"array","items":{"type":"number"},"minItems":6,"maxItems":6},"drawOrder":{"type":"integer","minimum":-100000,"maximum":100000},"visible":{"type":"boolean"},"opacity":{"type":"number","minimum":0,"maximum":1},"correctionOrigin":{"enum":["automatic","user-confirmed","manual"]},"limitations":{"type":"array","items":{"type":"string","minLength":1,"maxLength":512},"maxItems":64}},"required":["id","displayName","role","side","parentId","groupId","textures","localTransform","drawOrder","visible","opacity","correctionOrigin","limitations"]},"maxItems":64},"groups":{"type":"array","items":{"type":"object","additionalProperties":false,"properties":{"id":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},"displayName":{"type":"string","minLength":1,"maxLength":120},"parentGroupId":{"anyOf":[{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},{"type":"null"}]},"visible":{"type":"boolean"}},"required":["id","displayName","parentGroupId","visible"]},"maxItems":128},"parameters":{"type":"array","items":{"type":"object","additionalProperties":false,"properties":{"id":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},"displayName":{"type":"string","minLength":1,"maxLength":120},"semantic":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[a-z][a-z0-9_-]*$"},"unit":{"enum":["ratio","degrees","custom"]},"min":{"type":"number"},"neutral":{"type":"number"},"max":{"type":"number"},"previewKey":{"anyOf":[{"enum":["eye_left","eye_right","mouth","head_yaw","head_roll"]},{"type":"null"}]}},"required":["id","displayName","semantic","unit","min","neutral","max","previewKey"]},"maxItems":128},"partBindings":{"type":"array","items":{"oneOf":[{"type":"object","additionalProperties":false,"properties":{"id":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},"parameterId":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},"partId":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},"kind":{"const":"state-blend"},"mapping":{"type":"object","additionalProperties":false,"properties":{"minimumState":{"type":"string","minLength":1,"maxLength":32},"maximumState":{"type":"string","minLength":1,"maxLength":32}},"required":["minimumState","maximumState"]}},"required":["id","parameterId","partId","kind","mapping"]},{"type":"object","additionalProperties":false,"properties":{"id":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},"parameterId":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},"partId":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},"kind":{"const":"transform"},"mapping":{"type":"object","additionalProperties":false,"properties":{"component":{"enum":["rotate-degrees","translate-x","translate-y","scale-x","scale-y"]},"outputRange":{"type":"array","items":{"type":"number"},"minItems":2,"maxItems":2}},"required":["component","outputRange"]}},"required":["id","parameterId","partId","kind","mapping"]}]},"maxItems":256},"inputBindings":{"type":"array","items":{"type":"object","additionalProperties":false,"properties":{"id":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},"source":{"enum":["face","microphone","manual"]},"channel":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[a-z][a-z0-9_-]*$"},"parameterId":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},"inputRange":{"type":"array","items":{"type":"number"},"minItems":2,"maxItems":2},"invert":{"type":"boolean"},"gain":{"type":"number","minimum":0,"maximum":10},"offset":{"type":"number"},"smoothingMs":{"type":"integer","minimum":0,"maximum":10000},"fallback":{"type":"object","additionalProperties":false,"properties":{"mode":{"enum":["neutral","hold","constant"]},"value":{"type":"number"},"returnMs":{"type":"integer","minimum":0,"maximum":10000}},"required":["mode","value","returnMs"]}},"required":["id","source","channel","parameterId","inputRange","invert","gain","offset","smoothingMs","fallback"]},"maxItems":128},"expressions":{"type":"array","items":{"type":"object","additionalProperties":false,"properties":{"id":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},"displayName":{"type":"string","minLength":1,"maxLength":120},"values":{"type":"array","items":{"type":"object","additionalProperties":false,"properties":{"parameterId":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},"value":{"type":"number"},"locked":{"type":"boolean"}},"required":["parameterId","value","locked"]},"maxItems":128},"transitionMs":{"type":"integer","minimum":0,"maximum":10000},"release":{"enum":["live-input","neutral"]}},"required":["id","displayName","values","transitionMs","release"]},"maxItems":64},"runtimeProfile":{"type":"object","additionalProperties":false,"properties":{"id":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},"revision":{"type":"integer","minimum":0,"maximum":9007199254740991},"mode":{"enum":["idle","camera","microphone","camera-microphone"]},"mirror":{"type":"boolean"},"fallbackExpressionId":{"anyOf":[{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},{"type":"null"}]}},"required":["id","revision","mode","mirror","fallbackExpressionId"]},"broadcastProfiles":{"type":"array","items":{"type":"object","additionalProperties":false,"properties":{"id":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},"revision":{"type":"integer","minimum":0,"maximum":9007199254740991},"displayName":{"type":"string","minLength":1,"maxLength":120},"width":{"type":"integer","minimum":1,"maximum":8192},"height":{"type":"integer","minimum":1,"maximum":8192},"fps":{"type":"integer","minimum":1,"maximum":120},"transparent":{"type":"boolean"},"region":{"type":"object","additionalProperties":false,"properties":{"x":{"type":"number"},"y":{"type":"number"},"width":{"type":"number","exclusiveMinimum":0},"height":{"type":"number","exclusiveMinimum":0}},"required":["x","y","width","height"]},"fit":{"enum":["contain","cover"]}},"required":["id","revision","displayName","width","height","fps","transparent","region","fit"]},"maxItems":16},"exportProfiles":{"type":"array","items":{"type":"object","additionalProperties":false,"properties":{"id":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},"revision":{"type":"integer","minimum":0,"maximum":9007199254740991},"displayName":{"type":"string","minLength":1,"maxLength":120},"target":{"enum":["inochi2d"]},"targetVersion":{"type":"string","minLength":1,"maxLength":32,"pattern":"^\\d+\\.\\d+\\.\\d+$"},"format":{"enum":["inp"]},"converterVersion":{"type":"string","minLength":1,"maxLength":32,"pattern":"^\\d+\\.\\d+\\.\\d+$"},"parameterMap":{"type":"array","items":{"type":"object","additionalProperties":false,"properties":{"parameterId":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},"targetName":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[a-zA-Z][a-zA-Z0-9_]*$"}},"required":["parameterId","targetName"]},"maxItems":128}},"required":["id","revision","displayName","target","targetVersion","format","converterVersion","parameterMap"]},"maxItems":16},"provenance":{"type":"object","additionalProperties":false,"properties":{"preparation":{"type":"string","minLength":1,"maxLength":512},"limitations":{"type":"array","items":{"type":"string","minLength":1,"maxLength":512},"maxItems":128}},"required":["preparation","limitations"]},"derivedProjects":{"type":"array","items":{"type":"object","additionalProperties":false,"properties":{"projectId":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},"relation":{"enum":["3d","generated-variant"]}},"required":["projectId","relation"]},"maxItems":32},"motion":{"type":"object","additionalProperties":false,"properties":{"version":{"const":1},"faceWidth":{"type":"number","exclusiveMinimum":0},"maxRollDegrees":{"type":"number","minimum":0,"maximum":6},"secondary":{"const":"disabled"},"settings":{"type":"object","additionalProperties":false,"properties":{"strength":{"type":"number","minimum":0,"maximum":1},"smoothingMs":{"type":"integer","minimum":0,"maximum":1000},"pose":{"type":"array","items":{"type":"object","additionalProperties":false,"properties":{"parameterId":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},"value":{"type":"number"}},"required":["parameterId","value"]},"maxItems":128}},"required":["strength","smoothingMs","pose"]},"meshes":{"type":"array","items":{"type":"object","additionalProperties":false,"properties":{"partId":{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},"pivot":{"type":"array","items":{"type":"number"},"minItems":2,"maxItems":2},"yawParameterId":{"anyOf":[{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},{"type":"null"}]},"rollParameterId":{"anyOf":[{"type":"string","minLength":1,"maxLength":64,"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"},{"type":"null"}]},"curve":{"enum":["linear","smoothstep"]},"vertices":{"type":"array","items":{"type":"object","additionalProperties":false,"properties":{"position":{"type":"array","items":{"type":"number"},"minItems":2,"maxItems":2},"weight":{"type":"number","minimum":0,"maximum":1},"minimum":{"type":"array","items":{"type":"number"},"minItems":2,"maxItems":2},"maximum":{"type":"array","items":{"type":"number"},"minItems":2,"maxItems":2}},"required":["position","weight","minimum","maximum"]},"maxItems":1024,"minItems":3},"triangles":{"type":"array","items":{"type":"integer","minimum":0,"maximum":1023},"maxItems":6144,"minItems":3}},"required":["partId","pivot","yawParameterId","rollParameterId","curve","vertices","triangles"]},"maxItems":64}},"required":["version","faceWidth","maxRollDegrees","secondary","settings","meshes"]},"inputPreparation":{"type":"object","additionalProperties":false,"properties":{"version":{"const":1},"originalAssetId":{"type":"string","pattern":"^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$"},"normalizedAssetId":{"type":"string","pattern":"^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$"},"selectedAssetId":{"type":"string","pattern":"^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$"},"analysisAssetId":{"type":"string","pattern":"^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$"},"probe":{"type":"object","additionalProperties":false,"properties":{"detectorAvailable":{"type":"boolean"},"originalSize":{"type":"object","additionalProperties":false,"properties":{"width":{"type":"integer","minimum":1,"maximum":4096},"height":{"type":"integer","minimum":1,"maximum":4096}},"required":["width","height"]},"size":{"type":"object","additionalProperties":false,"properties":{"width":{"type":"integer","minimum":1,"maximum":4096},"height":{"type":"integer","minimum":1,"maximum":4096}},"required":["width","height"]},"orientation":{"type":"integer","minimum":1,"maximum":8},"iccConverted":{"type":"boolean"},"sourceToNormalized":{"type":"array","items":{"type":"number"},"minItems":6,"maxItems":6},"reduced":{"type":"boolean"},"estimatedWorkingBytes":{"type":"integer","minimum":0,"maximum":402653184},"format":{"enum":["png","jpeg"]},"hasAlpha":{"type":"boolean"},"faceCount":{"type":"integer","minimum":0,"maximum":8},"candidates":{"type":"array","items":{"type":"object","additionalProperties":false,"properties":{"rect":{"type":"object","additionalProperties":false,"properties":{"x":{"type":"integer","minimum":0,"maximum":4096},"y":{"type":"integer","minimum":0,"maximum":4096},"width":{"type":"integer","minimum":1,"maximum":4096},"height":{"type":"integer","minimum":1,"maximum":4096}},"required":["x","y","width","height"]},"method":{"enum":["alpha","face","manual-required"]}},"required":["rect","method"]},"maxItems":8}},"required":["detectorAvailable","originalSize","size","orientation","iccConverted","sourceToNormalized","reduced","estimatedWorkingBytes","format","hasAlpha","faceCount","candidates"]},"selection":{"type":"object","additionalProperties":false,"properties":{"rect":{"type":"object","additionalProperties":false,"properties":{"x":{"type":"integer","minimum":0,"maximum":4096},"y":{"type":"integer","minimum":0,"maximum":4096},"width":{"type":"integer","minimum":1,"maximum":4096},"height":{"type":"integer","minimum":1,"maximum":4096}},"required":["x","y","width","height"]},"backgroundTolerance":{"anyOf":[{"type":"null"},{"type":"integer","minimum":0,"maximum":80}]},"masks":{"type":"array","items":{"type":"object","additionalProperties":false,"properties":{"mode":{"enum":["erase","restore"]},"rect":{"type":"object","additionalProperties":false,"properties":{"x":{"type":"integer","minimum":0,"maximum":4096},"y":{"type":"integer","minimum":0,"maximum":4096},"width":{"type":"integer","minimum":1,"maximum":4096},"height":{"type":"integer","minimum":1,"maximum":4096}},"required":["x","y","width","height"]}},"required":["mode","rect"]},"maxItems":64},"occluded":{"type":"boolean"}},"required":["rect","backgroundTolerance","masks","occluded"]},"analysis":{"type":"object","additionalProperties":false,"properties":{"faces":{"type":"array","items":{"type":"object","additionalProperties":false,"properties":{"x":{"type":"number","minimum":0,"maximum":1024},"y":{"type":"number","minimum":0,"maximum":1024},"width":{"type":"number","exclusiveMinimum":0,"maximum":1024},"height":{"type":"number","exclusiveMinimum":0,"maximum":1024}},"required":["x","y","width","height"]},"maxItems":8},"warnings":{"type":"array","items":{"enum":["DETECTOR_UNAVAILABLE","FACE_UNCONFIRMED","SMALL_FACE","EDGE_CROPPED_POSSIBLE","OCCLUDED_USER_REPORTED"]},"maxItems":8},"crop":{"type":"object","additionalProperties":false,"properties":{"x":{"type":"integer","minimum":0,"maximum":4096},"y":{"type":"integer","minimum":0,"maximum":4096},"width":{"type":"integer","minimum":1,"maximum":4096},"height":{"type":"integer","minimum":1,"maximum":4096}},"required":["x","y","width","height"]},"analysisSize":{"type":"object","additionalProperties":false,"properties":{"width":{"type":"integer","minimum":1,"maximum":4096},"height":{"type":"integer","minimum":1,"maximum":4096}},"required":["width","height"]}},"required":["faces","warnings","crop","analysisSize"]}},"required":["version","originalAssetId","normalizedAssetId","selectedAssetId","analysisAssetId","probe","selection","analysis"]}},"required":["projectId","schemaVersion","displayName","sourceType","createdAt","modifiedAt","revision","savedRevision","canvas","inputAssetIds","assets","parts","groups","parameters","partBindings","inputBindings","expressions","runtimeProfile","broadcastProfiles","exportProfiles","provenance","derivedProjects"]};
 const func1 = Object.prototype.hasOwnProperty;
 const func2 = ucs2length;
 const pattern4 = new RegExp("^[A-Za-z0-9][A-Za-z0-9_-]*$", "u");
@@ -13,9 +13,10 @@ const pattern11 = new RegExp("^[a-f0-9]{64}$", "u");
 const pattern12 = new RegExp("^\\d+\\.\\d+\\.\\d+$", "u");
 const pattern16 = new RegExp("^[a-z][a-z0-9_-]*$", "u");
 const pattern40 = new RegExp("^[a-zA-Z][a-zA-Z0-9_]*$", "u");
+const pattern46 = new RegExp("^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$", "u");
 
 function validate20(data, {instancePath="", parentData, parentDataProperty, rootData=data, dynamicAnchors={}}={}){
-/*# sourceURL="https://2dsketcher.local/schema/project-1.1" */;
+/*# sourceURL="https://2dsketcher.local/schema/project-1.2" */;
 let vErrors = null;
 let errors = 0;
 const evaluated0 = validate20.evaluated;
@@ -352,7 +353,7 @@ errors++;
 }
 if(data1.minor !== undefined){
 let data3 = data1.minor;
-if(!((data3 === 0) || (data3 === 1))){
+if(!(((data3 === 0) || (data3 === 1)) || (data3 === 2))){
 const err31 = {instancePath:instancePath+"/schemaVersion/minor",schemaPath:"#/properties/schemaVersion/properties/minor/enum",keyword:"enum",params:{allowedValues: schema31.properties.schemaVersion.properties.minor.enum},message:"must be equal to one of the allowed values"};
 if(vErrors === null){
 vErrors = [err31];
@@ -8116,14 +8117,2438 @@ vErrors.push(err686);
 errors++;
 }
 }
-}
-else {
-const err687 = {instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"},message:"must be object"};
+if(data.inputPreparation !== undefined){
+let data205 = data.inputPreparation;
+if(data205 && typeof data205 == "object" && !Array.isArray(data205)){
+if(data205.version === undefined){
+const err687 = {instancePath:instancePath+"/inputPreparation",schemaPath:"#/properties/inputPreparation/required",keyword:"required",params:{missingProperty: "version"},message:"must have required property '"+"version"+"'"};
 if(vErrors === null){
 vErrors = [err687];
 }
 else {
 vErrors.push(err687);
+}
+errors++;
+}
+if(data205.originalAssetId === undefined){
+const err688 = {instancePath:instancePath+"/inputPreparation",schemaPath:"#/properties/inputPreparation/required",keyword:"required",params:{missingProperty: "originalAssetId"},message:"must have required property '"+"originalAssetId"+"'"};
+if(vErrors === null){
+vErrors = [err688];
+}
+else {
+vErrors.push(err688);
+}
+errors++;
+}
+if(data205.normalizedAssetId === undefined){
+const err689 = {instancePath:instancePath+"/inputPreparation",schemaPath:"#/properties/inputPreparation/required",keyword:"required",params:{missingProperty: "normalizedAssetId"},message:"must have required property '"+"normalizedAssetId"+"'"};
+if(vErrors === null){
+vErrors = [err689];
+}
+else {
+vErrors.push(err689);
+}
+errors++;
+}
+if(data205.selectedAssetId === undefined){
+const err690 = {instancePath:instancePath+"/inputPreparation",schemaPath:"#/properties/inputPreparation/required",keyword:"required",params:{missingProperty: "selectedAssetId"},message:"must have required property '"+"selectedAssetId"+"'"};
+if(vErrors === null){
+vErrors = [err690];
+}
+else {
+vErrors.push(err690);
+}
+errors++;
+}
+if(data205.analysisAssetId === undefined){
+const err691 = {instancePath:instancePath+"/inputPreparation",schemaPath:"#/properties/inputPreparation/required",keyword:"required",params:{missingProperty: "analysisAssetId"},message:"must have required property '"+"analysisAssetId"+"'"};
+if(vErrors === null){
+vErrors = [err691];
+}
+else {
+vErrors.push(err691);
+}
+errors++;
+}
+if(data205.probe === undefined){
+const err692 = {instancePath:instancePath+"/inputPreparation",schemaPath:"#/properties/inputPreparation/required",keyword:"required",params:{missingProperty: "probe"},message:"must have required property '"+"probe"+"'"};
+if(vErrors === null){
+vErrors = [err692];
+}
+else {
+vErrors.push(err692);
+}
+errors++;
+}
+if(data205.selection === undefined){
+const err693 = {instancePath:instancePath+"/inputPreparation",schemaPath:"#/properties/inputPreparation/required",keyword:"required",params:{missingProperty: "selection"},message:"must have required property '"+"selection"+"'"};
+if(vErrors === null){
+vErrors = [err693];
+}
+else {
+vErrors.push(err693);
+}
+errors++;
+}
+if(data205.analysis === undefined){
+const err694 = {instancePath:instancePath+"/inputPreparation",schemaPath:"#/properties/inputPreparation/required",keyword:"required",params:{missingProperty: "analysis"},message:"must have required property '"+"analysis"+"'"};
+if(vErrors === null){
+vErrors = [err694];
+}
+else {
+vErrors.push(err694);
+}
+errors++;
+}
+for(const key34 in data205){
+if(!((((((((key34 === "version") || (key34 === "originalAssetId")) || (key34 === "normalizedAssetId")) || (key34 === "selectedAssetId")) || (key34 === "analysisAssetId")) || (key34 === "probe")) || (key34 === "selection")) || (key34 === "analysis"))){
+const err695 = {instancePath:instancePath+"/inputPreparation",schemaPath:"#/properties/inputPreparation/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key34},message:"must NOT have additional properties"};
+if(vErrors === null){
+vErrors = [err695];
+}
+else {
+vErrors.push(err695);
+}
+errors++;
+}
+}
+if(data205.version !== undefined){
+if(1 !== data205.version){
+const err696 = {instancePath:instancePath+"/inputPreparation/version",schemaPath:"#/properties/inputPreparation/properties/version/const",keyword:"const",params:{allowedValue: 1},message:"must be equal to constant"};
+if(vErrors === null){
+vErrors = [err696];
+}
+else {
+vErrors.push(err696);
+}
+errors++;
+}
+}
+if(data205.originalAssetId !== undefined){
+let data207 = data205.originalAssetId;
+if(typeof data207 === "string"){
+if(!pattern46.test(data207)){
+const err697 = {instancePath:instancePath+"/inputPreparation/originalAssetId",schemaPath:"#/properties/inputPreparation/properties/originalAssetId/pattern",keyword:"pattern",params:{pattern: "^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$"},message:"must match pattern \""+"^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$"+"\""};
+if(vErrors === null){
+vErrors = [err697];
+}
+else {
+vErrors.push(err697);
+}
+errors++;
+}
+}
+else {
+const err698 = {instancePath:instancePath+"/inputPreparation/originalAssetId",schemaPath:"#/properties/inputPreparation/properties/originalAssetId/type",keyword:"type",params:{type: "string"},message:"must be string"};
+if(vErrors === null){
+vErrors = [err698];
+}
+else {
+vErrors.push(err698);
+}
+errors++;
+}
+}
+if(data205.normalizedAssetId !== undefined){
+let data208 = data205.normalizedAssetId;
+if(typeof data208 === "string"){
+if(!pattern46.test(data208)){
+const err699 = {instancePath:instancePath+"/inputPreparation/normalizedAssetId",schemaPath:"#/properties/inputPreparation/properties/normalizedAssetId/pattern",keyword:"pattern",params:{pattern: "^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$"},message:"must match pattern \""+"^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$"+"\""};
+if(vErrors === null){
+vErrors = [err699];
+}
+else {
+vErrors.push(err699);
+}
+errors++;
+}
+}
+else {
+const err700 = {instancePath:instancePath+"/inputPreparation/normalizedAssetId",schemaPath:"#/properties/inputPreparation/properties/normalizedAssetId/type",keyword:"type",params:{type: "string"},message:"must be string"};
+if(vErrors === null){
+vErrors = [err700];
+}
+else {
+vErrors.push(err700);
+}
+errors++;
+}
+}
+if(data205.selectedAssetId !== undefined){
+let data209 = data205.selectedAssetId;
+if(typeof data209 === "string"){
+if(!pattern46.test(data209)){
+const err701 = {instancePath:instancePath+"/inputPreparation/selectedAssetId",schemaPath:"#/properties/inputPreparation/properties/selectedAssetId/pattern",keyword:"pattern",params:{pattern: "^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$"},message:"must match pattern \""+"^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$"+"\""};
+if(vErrors === null){
+vErrors = [err701];
+}
+else {
+vErrors.push(err701);
+}
+errors++;
+}
+}
+else {
+const err702 = {instancePath:instancePath+"/inputPreparation/selectedAssetId",schemaPath:"#/properties/inputPreparation/properties/selectedAssetId/type",keyword:"type",params:{type: "string"},message:"must be string"};
+if(vErrors === null){
+vErrors = [err702];
+}
+else {
+vErrors.push(err702);
+}
+errors++;
+}
+}
+if(data205.analysisAssetId !== undefined){
+let data210 = data205.analysisAssetId;
+if(typeof data210 === "string"){
+if(!pattern46.test(data210)){
+const err703 = {instancePath:instancePath+"/inputPreparation/analysisAssetId",schemaPath:"#/properties/inputPreparation/properties/analysisAssetId/pattern",keyword:"pattern",params:{pattern: "^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$"},message:"must match pattern \""+"^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$"+"\""};
+if(vErrors === null){
+vErrors = [err703];
+}
+else {
+vErrors.push(err703);
+}
+errors++;
+}
+}
+else {
+const err704 = {instancePath:instancePath+"/inputPreparation/analysisAssetId",schemaPath:"#/properties/inputPreparation/properties/analysisAssetId/type",keyword:"type",params:{type: "string"},message:"must be string"};
+if(vErrors === null){
+vErrors = [err704];
+}
+else {
+vErrors.push(err704);
+}
+errors++;
+}
+}
+if(data205.probe !== undefined){
+let data211 = data205.probe;
+if(data211 && typeof data211 == "object" && !Array.isArray(data211)){
+if(data211.detectorAvailable === undefined){
+const err705 = {instancePath:instancePath+"/inputPreparation/probe",schemaPath:"#/properties/inputPreparation/properties/probe/required",keyword:"required",params:{missingProperty: "detectorAvailable"},message:"must have required property '"+"detectorAvailable"+"'"};
+if(vErrors === null){
+vErrors = [err705];
+}
+else {
+vErrors.push(err705);
+}
+errors++;
+}
+if(data211.originalSize === undefined){
+const err706 = {instancePath:instancePath+"/inputPreparation/probe",schemaPath:"#/properties/inputPreparation/properties/probe/required",keyword:"required",params:{missingProperty: "originalSize"},message:"must have required property '"+"originalSize"+"'"};
+if(vErrors === null){
+vErrors = [err706];
+}
+else {
+vErrors.push(err706);
+}
+errors++;
+}
+if(data211.size === undefined){
+const err707 = {instancePath:instancePath+"/inputPreparation/probe",schemaPath:"#/properties/inputPreparation/properties/probe/required",keyword:"required",params:{missingProperty: "size"},message:"must have required property '"+"size"+"'"};
+if(vErrors === null){
+vErrors = [err707];
+}
+else {
+vErrors.push(err707);
+}
+errors++;
+}
+if(data211.orientation === undefined){
+const err708 = {instancePath:instancePath+"/inputPreparation/probe",schemaPath:"#/properties/inputPreparation/properties/probe/required",keyword:"required",params:{missingProperty: "orientation"},message:"must have required property '"+"orientation"+"'"};
+if(vErrors === null){
+vErrors = [err708];
+}
+else {
+vErrors.push(err708);
+}
+errors++;
+}
+if(data211.iccConverted === undefined){
+const err709 = {instancePath:instancePath+"/inputPreparation/probe",schemaPath:"#/properties/inputPreparation/properties/probe/required",keyword:"required",params:{missingProperty: "iccConverted"},message:"must have required property '"+"iccConverted"+"'"};
+if(vErrors === null){
+vErrors = [err709];
+}
+else {
+vErrors.push(err709);
+}
+errors++;
+}
+if(data211.sourceToNormalized === undefined){
+const err710 = {instancePath:instancePath+"/inputPreparation/probe",schemaPath:"#/properties/inputPreparation/properties/probe/required",keyword:"required",params:{missingProperty: "sourceToNormalized"},message:"must have required property '"+"sourceToNormalized"+"'"};
+if(vErrors === null){
+vErrors = [err710];
+}
+else {
+vErrors.push(err710);
+}
+errors++;
+}
+if(data211.reduced === undefined){
+const err711 = {instancePath:instancePath+"/inputPreparation/probe",schemaPath:"#/properties/inputPreparation/properties/probe/required",keyword:"required",params:{missingProperty: "reduced"},message:"must have required property '"+"reduced"+"'"};
+if(vErrors === null){
+vErrors = [err711];
+}
+else {
+vErrors.push(err711);
+}
+errors++;
+}
+if(data211.estimatedWorkingBytes === undefined){
+const err712 = {instancePath:instancePath+"/inputPreparation/probe",schemaPath:"#/properties/inputPreparation/properties/probe/required",keyword:"required",params:{missingProperty: "estimatedWorkingBytes"},message:"must have required property '"+"estimatedWorkingBytes"+"'"};
+if(vErrors === null){
+vErrors = [err712];
+}
+else {
+vErrors.push(err712);
+}
+errors++;
+}
+if(data211.format === undefined){
+const err713 = {instancePath:instancePath+"/inputPreparation/probe",schemaPath:"#/properties/inputPreparation/properties/probe/required",keyword:"required",params:{missingProperty: "format"},message:"must have required property '"+"format"+"'"};
+if(vErrors === null){
+vErrors = [err713];
+}
+else {
+vErrors.push(err713);
+}
+errors++;
+}
+if(data211.hasAlpha === undefined){
+const err714 = {instancePath:instancePath+"/inputPreparation/probe",schemaPath:"#/properties/inputPreparation/properties/probe/required",keyword:"required",params:{missingProperty: "hasAlpha"},message:"must have required property '"+"hasAlpha"+"'"};
+if(vErrors === null){
+vErrors = [err714];
+}
+else {
+vErrors.push(err714);
+}
+errors++;
+}
+if(data211.faceCount === undefined){
+const err715 = {instancePath:instancePath+"/inputPreparation/probe",schemaPath:"#/properties/inputPreparation/properties/probe/required",keyword:"required",params:{missingProperty: "faceCount"},message:"must have required property '"+"faceCount"+"'"};
+if(vErrors === null){
+vErrors = [err715];
+}
+else {
+vErrors.push(err715);
+}
+errors++;
+}
+if(data211.candidates === undefined){
+const err716 = {instancePath:instancePath+"/inputPreparation/probe",schemaPath:"#/properties/inputPreparation/properties/probe/required",keyword:"required",params:{missingProperty: "candidates"},message:"must have required property '"+"candidates"+"'"};
+if(vErrors === null){
+vErrors = [err716];
+}
+else {
+vErrors.push(err716);
+}
+errors++;
+}
+for(const key35 in data211){
+if(!(func1.call(schema31.properties.inputPreparation.properties.probe.properties, key35))){
+const err717 = {instancePath:instancePath+"/inputPreparation/probe",schemaPath:"#/properties/inputPreparation/properties/probe/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key35},message:"must NOT have additional properties"};
+if(vErrors === null){
+vErrors = [err717];
+}
+else {
+vErrors.push(err717);
+}
+errors++;
+}
+}
+if(data211.detectorAvailable !== undefined){
+if(typeof data211.detectorAvailable !== "boolean"){
+const err718 = {instancePath:instancePath+"/inputPreparation/probe/detectorAvailable",schemaPath:"#/properties/inputPreparation/properties/probe/properties/detectorAvailable/type",keyword:"type",params:{type: "boolean"},message:"must be boolean"};
+if(vErrors === null){
+vErrors = [err718];
+}
+else {
+vErrors.push(err718);
+}
+errors++;
+}
+}
+if(data211.originalSize !== undefined){
+let data213 = data211.originalSize;
+if(data213 && typeof data213 == "object" && !Array.isArray(data213)){
+if(data213.width === undefined){
+const err719 = {instancePath:instancePath+"/inputPreparation/probe/originalSize",schemaPath:"#/properties/inputPreparation/properties/probe/properties/originalSize/required",keyword:"required",params:{missingProperty: "width"},message:"must have required property '"+"width"+"'"};
+if(vErrors === null){
+vErrors = [err719];
+}
+else {
+vErrors.push(err719);
+}
+errors++;
+}
+if(data213.height === undefined){
+const err720 = {instancePath:instancePath+"/inputPreparation/probe/originalSize",schemaPath:"#/properties/inputPreparation/properties/probe/properties/originalSize/required",keyword:"required",params:{missingProperty: "height"},message:"must have required property '"+"height"+"'"};
+if(vErrors === null){
+vErrors = [err720];
+}
+else {
+vErrors.push(err720);
+}
+errors++;
+}
+for(const key36 in data213){
+if(!((key36 === "width") || (key36 === "height"))){
+const err721 = {instancePath:instancePath+"/inputPreparation/probe/originalSize",schemaPath:"#/properties/inputPreparation/properties/probe/properties/originalSize/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key36},message:"must NOT have additional properties"};
+if(vErrors === null){
+vErrors = [err721];
+}
+else {
+vErrors.push(err721);
+}
+errors++;
+}
+}
+if(data213.width !== undefined){
+let data214 = data213.width;
+if(!(((typeof data214 == "number") && (!(data214 % 1) && !isNaN(data214))) && (isFinite(data214)))){
+const err722 = {instancePath:instancePath+"/inputPreparation/probe/originalSize/width",schemaPath:"#/properties/inputPreparation/properties/probe/properties/originalSize/properties/width/type",keyword:"type",params:{type: "integer"},message:"must be integer"};
+if(vErrors === null){
+vErrors = [err722];
+}
+else {
+vErrors.push(err722);
+}
+errors++;
+}
+if((typeof data214 == "number") && (isFinite(data214))){
+if(data214 > 4096 || isNaN(data214)){
+const err723 = {instancePath:instancePath+"/inputPreparation/probe/originalSize/width",schemaPath:"#/properties/inputPreparation/properties/probe/properties/originalSize/properties/width/maximum",keyword:"maximum",params:{comparison: "<=", limit: 4096},message:"must be <= 4096"};
+if(vErrors === null){
+vErrors = [err723];
+}
+else {
+vErrors.push(err723);
+}
+errors++;
+}
+if(data214 < 1 || isNaN(data214)){
+const err724 = {instancePath:instancePath+"/inputPreparation/probe/originalSize/width",schemaPath:"#/properties/inputPreparation/properties/probe/properties/originalSize/properties/width/minimum",keyword:"minimum",params:{comparison: ">=", limit: 1},message:"must be >= 1"};
+if(vErrors === null){
+vErrors = [err724];
+}
+else {
+vErrors.push(err724);
+}
+errors++;
+}
+}
+}
+if(data213.height !== undefined){
+let data215 = data213.height;
+if(!(((typeof data215 == "number") && (!(data215 % 1) && !isNaN(data215))) && (isFinite(data215)))){
+const err725 = {instancePath:instancePath+"/inputPreparation/probe/originalSize/height",schemaPath:"#/properties/inputPreparation/properties/probe/properties/originalSize/properties/height/type",keyword:"type",params:{type: "integer"},message:"must be integer"};
+if(vErrors === null){
+vErrors = [err725];
+}
+else {
+vErrors.push(err725);
+}
+errors++;
+}
+if((typeof data215 == "number") && (isFinite(data215))){
+if(data215 > 4096 || isNaN(data215)){
+const err726 = {instancePath:instancePath+"/inputPreparation/probe/originalSize/height",schemaPath:"#/properties/inputPreparation/properties/probe/properties/originalSize/properties/height/maximum",keyword:"maximum",params:{comparison: "<=", limit: 4096},message:"must be <= 4096"};
+if(vErrors === null){
+vErrors = [err726];
+}
+else {
+vErrors.push(err726);
+}
+errors++;
+}
+if(data215 < 1 || isNaN(data215)){
+const err727 = {instancePath:instancePath+"/inputPreparation/probe/originalSize/height",schemaPath:"#/properties/inputPreparation/properties/probe/properties/originalSize/properties/height/minimum",keyword:"minimum",params:{comparison: ">=", limit: 1},message:"must be >= 1"};
+if(vErrors === null){
+vErrors = [err727];
+}
+else {
+vErrors.push(err727);
+}
+errors++;
+}
+}
+}
+}
+else {
+const err728 = {instancePath:instancePath+"/inputPreparation/probe/originalSize",schemaPath:"#/properties/inputPreparation/properties/probe/properties/originalSize/type",keyword:"type",params:{type: "object"},message:"must be object"};
+if(vErrors === null){
+vErrors = [err728];
+}
+else {
+vErrors.push(err728);
+}
+errors++;
+}
+}
+if(data211.size !== undefined){
+let data216 = data211.size;
+if(data216 && typeof data216 == "object" && !Array.isArray(data216)){
+if(data216.width === undefined){
+const err729 = {instancePath:instancePath+"/inputPreparation/probe/size",schemaPath:"#/properties/inputPreparation/properties/probe/properties/size/required",keyword:"required",params:{missingProperty: "width"},message:"must have required property '"+"width"+"'"};
+if(vErrors === null){
+vErrors = [err729];
+}
+else {
+vErrors.push(err729);
+}
+errors++;
+}
+if(data216.height === undefined){
+const err730 = {instancePath:instancePath+"/inputPreparation/probe/size",schemaPath:"#/properties/inputPreparation/properties/probe/properties/size/required",keyword:"required",params:{missingProperty: "height"},message:"must have required property '"+"height"+"'"};
+if(vErrors === null){
+vErrors = [err730];
+}
+else {
+vErrors.push(err730);
+}
+errors++;
+}
+for(const key37 in data216){
+if(!((key37 === "width") || (key37 === "height"))){
+const err731 = {instancePath:instancePath+"/inputPreparation/probe/size",schemaPath:"#/properties/inputPreparation/properties/probe/properties/size/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key37},message:"must NOT have additional properties"};
+if(vErrors === null){
+vErrors = [err731];
+}
+else {
+vErrors.push(err731);
+}
+errors++;
+}
+}
+if(data216.width !== undefined){
+let data217 = data216.width;
+if(!(((typeof data217 == "number") && (!(data217 % 1) && !isNaN(data217))) && (isFinite(data217)))){
+const err732 = {instancePath:instancePath+"/inputPreparation/probe/size/width",schemaPath:"#/properties/inputPreparation/properties/probe/properties/size/properties/width/type",keyword:"type",params:{type: "integer"},message:"must be integer"};
+if(vErrors === null){
+vErrors = [err732];
+}
+else {
+vErrors.push(err732);
+}
+errors++;
+}
+if((typeof data217 == "number") && (isFinite(data217))){
+if(data217 > 4096 || isNaN(data217)){
+const err733 = {instancePath:instancePath+"/inputPreparation/probe/size/width",schemaPath:"#/properties/inputPreparation/properties/probe/properties/size/properties/width/maximum",keyword:"maximum",params:{comparison: "<=", limit: 4096},message:"must be <= 4096"};
+if(vErrors === null){
+vErrors = [err733];
+}
+else {
+vErrors.push(err733);
+}
+errors++;
+}
+if(data217 < 1 || isNaN(data217)){
+const err734 = {instancePath:instancePath+"/inputPreparation/probe/size/width",schemaPath:"#/properties/inputPreparation/properties/probe/properties/size/properties/width/minimum",keyword:"minimum",params:{comparison: ">=", limit: 1},message:"must be >= 1"};
+if(vErrors === null){
+vErrors = [err734];
+}
+else {
+vErrors.push(err734);
+}
+errors++;
+}
+}
+}
+if(data216.height !== undefined){
+let data218 = data216.height;
+if(!(((typeof data218 == "number") && (!(data218 % 1) && !isNaN(data218))) && (isFinite(data218)))){
+const err735 = {instancePath:instancePath+"/inputPreparation/probe/size/height",schemaPath:"#/properties/inputPreparation/properties/probe/properties/size/properties/height/type",keyword:"type",params:{type: "integer"},message:"must be integer"};
+if(vErrors === null){
+vErrors = [err735];
+}
+else {
+vErrors.push(err735);
+}
+errors++;
+}
+if((typeof data218 == "number") && (isFinite(data218))){
+if(data218 > 4096 || isNaN(data218)){
+const err736 = {instancePath:instancePath+"/inputPreparation/probe/size/height",schemaPath:"#/properties/inputPreparation/properties/probe/properties/size/properties/height/maximum",keyword:"maximum",params:{comparison: "<=", limit: 4096},message:"must be <= 4096"};
+if(vErrors === null){
+vErrors = [err736];
+}
+else {
+vErrors.push(err736);
+}
+errors++;
+}
+if(data218 < 1 || isNaN(data218)){
+const err737 = {instancePath:instancePath+"/inputPreparation/probe/size/height",schemaPath:"#/properties/inputPreparation/properties/probe/properties/size/properties/height/minimum",keyword:"minimum",params:{comparison: ">=", limit: 1},message:"must be >= 1"};
+if(vErrors === null){
+vErrors = [err737];
+}
+else {
+vErrors.push(err737);
+}
+errors++;
+}
+}
+}
+}
+else {
+const err738 = {instancePath:instancePath+"/inputPreparation/probe/size",schemaPath:"#/properties/inputPreparation/properties/probe/properties/size/type",keyword:"type",params:{type: "object"},message:"must be object"};
+if(vErrors === null){
+vErrors = [err738];
+}
+else {
+vErrors.push(err738);
+}
+errors++;
+}
+}
+if(data211.orientation !== undefined){
+let data219 = data211.orientation;
+if(!(((typeof data219 == "number") && (!(data219 % 1) && !isNaN(data219))) && (isFinite(data219)))){
+const err739 = {instancePath:instancePath+"/inputPreparation/probe/orientation",schemaPath:"#/properties/inputPreparation/properties/probe/properties/orientation/type",keyword:"type",params:{type: "integer"},message:"must be integer"};
+if(vErrors === null){
+vErrors = [err739];
+}
+else {
+vErrors.push(err739);
+}
+errors++;
+}
+if((typeof data219 == "number") && (isFinite(data219))){
+if(data219 > 8 || isNaN(data219)){
+const err740 = {instancePath:instancePath+"/inputPreparation/probe/orientation",schemaPath:"#/properties/inputPreparation/properties/probe/properties/orientation/maximum",keyword:"maximum",params:{comparison: "<=", limit: 8},message:"must be <= 8"};
+if(vErrors === null){
+vErrors = [err740];
+}
+else {
+vErrors.push(err740);
+}
+errors++;
+}
+if(data219 < 1 || isNaN(data219)){
+const err741 = {instancePath:instancePath+"/inputPreparation/probe/orientation",schemaPath:"#/properties/inputPreparation/properties/probe/properties/orientation/minimum",keyword:"minimum",params:{comparison: ">=", limit: 1},message:"must be >= 1"};
+if(vErrors === null){
+vErrors = [err741];
+}
+else {
+vErrors.push(err741);
+}
+errors++;
+}
+}
+}
+if(data211.iccConverted !== undefined){
+if(typeof data211.iccConverted !== "boolean"){
+const err742 = {instancePath:instancePath+"/inputPreparation/probe/iccConverted",schemaPath:"#/properties/inputPreparation/properties/probe/properties/iccConverted/type",keyword:"type",params:{type: "boolean"},message:"must be boolean"};
+if(vErrors === null){
+vErrors = [err742];
+}
+else {
+vErrors.push(err742);
+}
+errors++;
+}
+}
+if(data211.sourceToNormalized !== undefined){
+let data221 = data211.sourceToNormalized;
+if(Array.isArray(data221)){
+if(data221.length > 6){
+const err743 = {instancePath:instancePath+"/inputPreparation/probe/sourceToNormalized",schemaPath:"#/properties/inputPreparation/properties/probe/properties/sourceToNormalized/maxItems",keyword:"maxItems",params:{limit: 6},message:"must NOT have more than 6 items"};
+if(vErrors === null){
+vErrors = [err743];
+}
+else {
+vErrors.push(err743);
+}
+errors++;
+}
+if(data221.length < 6){
+const err744 = {instancePath:instancePath+"/inputPreparation/probe/sourceToNormalized",schemaPath:"#/properties/inputPreparation/properties/probe/properties/sourceToNormalized/minItems",keyword:"minItems",params:{limit: 6},message:"must NOT have fewer than 6 items"};
+if(vErrors === null){
+vErrors = [err744];
+}
+else {
+vErrors.push(err744);
+}
+errors++;
+}
+const len30 = data221.length;
+for(let i32=0; i32<len30; i32++){
+let data222 = data221[i32];
+if(!((typeof data222 == "number") && (isFinite(data222)))){
+const err745 = {instancePath:instancePath+"/inputPreparation/probe/sourceToNormalized/" + i32,schemaPath:"#/properties/inputPreparation/properties/probe/properties/sourceToNormalized/items/type",keyword:"type",params:{type: "number"},message:"must be number"};
+if(vErrors === null){
+vErrors = [err745];
+}
+else {
+vErrors.push(err745);
+}
+errors++;
+}
+}
+}
+else {
+const err746 = {instancePath:instancePath+"/inputPreparation/probe/sourceToNormalized",schemaPath:"#/properties/inputPreparation/properties/probe/properties/sourceToNormalized/type",keyword:"type",params:{type: "array"},message:"must be array"};
+if(vErrors === null){
+vErrors = [err746];
+}
+else {
+vErrors.push(err746);
+}
+errors++;
+}
+}
+if(data211.reduced !== undefined){
+if(typeof data211.reduced !== "boolean"){
+const err747 = {instancePath:instancePath+"/inputPreparation/probe/reduced",schemaPath:"#/properties/inputPreparation/properties/probe/properties/reduced/type",keyword:"type",params:{type: "boolean"},message:"must be boolean"};
+if(vErrors === null){
+vErrors = [err747];
+}
+else {
+vErrors.push(err747);
+}
+errors++;
+}
+}
+if(data211.estimatedWorkingBytes !== undefined){
+let data224 = data211.estimatedWorkingBytes;
+if(!(((typeof data224 == "number") && (!(data224 % 1) && !isNaN(data224))) && (isFinite(data224)))){
+const err748 = {instancePath:instancePath+"/inputPreparation/probe/estimatedWorkingBytes",schemaPath:"#/properties/inputPreparation/properties/probe/properties/estimatedWorkingBytes/type",keyword:"type",params:{type: "integer"},message:"must be integer"};
+if(vErrors === null){
+vErrors = [err748];
+}
+else {
+vErrors.push(err748);
+}
+errors++;
+}
+if((typeof data224 == "number") && (isFinite(data224))){
+if(data224 > 402653184 || isNaN(data224)){
+const err749 = {instancePath:instancePath+"/inputPreparation/probe/estimatedWorkingBytes",schemaPath:"#/properties/inputPreparation/properties/probe/properties/estimatedWorkingBytes/maximum",keyword:"maximum",params:{comparison: "<=", limit: 402653184},message:"must be <= 402653184"};
+if(vErrors === null){
+vErrors = [err749];
+}
+else {
+vErrors.push(err749);
+}
+errors++;
+}
+if(data224 < 0 || isNaN(data224)){
+const err750 = {instancePath:instancePath+"/inputPreparation/probe/estimatedWorkingBytes",schemaPath:"#/properties/inputPreparation/properties/probe/properties/estimatedWorkingBytes/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0},message:"must be >= 0"};
+if(vErrors === null){
+vErrors = [err750];
+}
+else {
+vErrors.push(err750);
+}
+errors++;
+}
+}
+}
+if(data211.format !== undefined){
+let data225 = data211.format;
+if(!((data225 === "png") || (data225 === "jpeg"))){
+const err751 = {instancePath:instancePath+"/inputPreparation/probe/format",schemaPath:"#/properties/inputPreparation/properties/probe/properties/format/enum",keyword:"enum",params:{allowedValues: schema31.properties.inputPreparation.properties.probe.properties.format.enum},message:"must be equal to one of the allowed values"};
+if(vErrors === null){
+vErrors = [err751];
+}
+else {
+vErrors.push(err751);
+}
+errors++;
+}
+}
+if(data211.hasAlpha !== undefined){
+if(typeof data211.hasAlpha !== "boolean"){
+const err752 = {instancePath:instancePath+"/inputPreparation/probe/hasAlpha",schemaPath:"#/properties/inputPreparation/properties/probe/properties/hasAlpha/type",keyword:"type",params:{type: "boolean"},message:"must be boolean"};
+if(vErrors === null){
+vErrors = [err752];
+}
+else {
+vErrors.push(err752);
+}
+errors++;
+}
+}
+if(data211.faceCount !== undefined){
+let data227 = data211.faceCount;
+if(!(((typeof data227 == "number") && (!(data227 % 1) && !isNaN(data227))) && (isFinite(data227)))){
+const err753 = {instancePath:instancePath+"/inputPreparation/probe/faceCount",schemaPath:"#/properties/inputPreparation/properties/probe/properties/faceCount/type",keyword:"type",params:{type: "integer"},message:"must be integer"};
+if(vErrors === null){
+vErrors = [err753];
+}
+else {
+vErrors.push(err753);
+}
+errors++;
+}
+if((typeof data227 == "number") && (isFinite(data227))){
+if(data227 > 8 || isNaN(data227)){
+const err754 = {instancePath:instancePath+"/inputPreparation/probe/faceCount",schemaPath:"#/properties/inputPreparation/properties/probe/properties/faceCount/maximum",keyword:"maximum",params:{comparison: "<=", limit: 8},message:"must be <= 8"};
+if(vErrors === null){
+vErrors = [err754];
+}
+else {
+vErrors.push(err754);
+}
+errors++;
+}
+if(data227 < 0 || isNaN(data227)){
+const err755 = {instancePath:instancePath+"/inputPreparation/probe/faceCount",schemaPath:"#/properties/inputPreparation/properties/probe/properties/faceCount/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0},message:"must be >= 0"};
+if(vErrors === null){
+vErrors = [err755];
+}
+else {
+vErrors.push(err755);
+}
+errors++;
+}
+}
+}
+if(data211.candidates !== undefined){
+let data228 = data211.candidates;
+if(Array.isArray(data228)){
+if(data228.length > 8){
+const err756 = {instancePath:instancePath+"/inputPreparation/probe/candidates",schemaPath:"#/properties/inputPreparation/properties/probe/properties/candidates/maxItems",keyword:"maxItems",params:{limit: 8},message:"must NOT have more than 8 items"};
+if(vErrors === null){
+vErrors = [err756];
+}
+else {
+vErrors.push(err756);
+}
+errors++;
+}
+const len31 = data228.length;
+for(let i33=0; i33<len31; i33++){
+let data229 = data228[i33];
+if(data229 && typeof data229 == "object" && !Array.isArray(data229)){
+if(data229.rect === undefined){
+const err757 = {instancePath:instancePath+"/inputPreparation/probe/candidates/" + i33,schemaPath:"#/properties/inputPreparation/properties/probe/properties/candidates/items/required",keyword:"required",params:{missingProperty: "rect"},message:"must have required property '"+"rect"+"'"};
+if(vErrors === null){
+vErrors = [err757];
+}
+else {
+vErrors.push(err757);
+}
+errors++;
+}
+if(data229.method === undefined){
+const err758 = {instancePath:instancePath+"/inputPreparation/probe/candidates/" + i33,schemaPath:"#/properties/inputPreparation/properties/probe/properties/candidates/items/required",keyword:"required",params:{missingProperty: "method"},message:"must have required property '"+"method"+"'"};
+if(vErrors === null){
+vErrors = [err758];
+}
+else {
+vErrors.push(err758);
+}
+errors++;
+}
+for(const key38 in data229){
+if(!((key38 === "rect") || (key38 === "method"))){
+const err759 = {instancePath:instancePath+"/inputPreparation/probe/candidates/" + i33,schemaPath:"#/properties/inputPreparation/properties/probe/properties/candidates/items/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key38},message:"must NOT have additional properties"};
+if(vErrors === null){
+vErrors = [err759];
+}
+else {
+vErrors.push(err759);
+}
+errors++;
+}
+}
+if(data229.rect !== undefined){
+let data230 = data229.rect;
+if(data230 && typeof data230 == "object" && !Array.isArray(data230)){
+if(data230.x === undefined){
+const err760 = {instancePath:instancePath+"/inputPreparation/probe/candidates/" + i33+"/rect",schemaPath:"#/properties/inputPreparation/properties/probe/properties/candidates/items/properties/rect/required",keyword:"required",params:{missingProperty: "x"},message:"must have required property '"+"x"+"'"};
+if(vErrors === null){
+vErrors = [err760];
+}
+else {
+vErrors.push(err760);
+}
+errors++;
+}
+if(data230.y === undefined){
+const err761 = {instancePath:instancePath+"/inputPreparation/probe/candidates/" + i33+"/rect",schemaPath:"#/properties/inputPreparation/properties/probe/properties/candidates/items/properties/rect/required",keyword:"required",params:{missingProperty: "y"},message:"must have required property '"+"y"+"'"};
+if(vErrors === null){
+vErrors = [err761];
+}
+else {
+vErrors.push(err761);
+}
+errors++;
+}
+if(data230.width === undefined){
+const err762 = {instancePath:instancePath+"/inputPreparation/probe/candidates/" + i33+"/rect",schemaPath:"#/properties/inputPreparation/properties/probe/properties/candidates/items/properties/rect/required",keyword:"required",params:{missingProperty: "width"},message:"must have required property '"+"width"+"'"};
+if(vErrors === null){
+vErrors = [err762];
+}
+else {
+vErrors.push(err762);
+}
+errors++;
+}
+if(data230.height === undefined){
+const err763 = {instancePath:instancePath+"/inputPreparation/probe/candidates/" + i33+"/rect",schemaPath:"#/properties/inputPreparation/properties/probe/properties/candidates/items/properties/rect/required",keyword:"required",params:{missingProperty: "height"},message:"must have required property '"+"height"+"'"};
+if(vErrors === null){
+vErrors = [err763];
+}
+else {
+vErrors.push(err763);
+}
+errors++;
+}
+for(const key39 in data230){
+if(!((((key39 === "x") || (key39 === "y")) || (key39 === "width")) || (key39 === "height"))){
+const err764 = {instancePath:instancePath+"/inputPreparation/probe/candidates/" + i33+"/rect",schemaPath:"#/properties/inputPreparation/properties/probe/properties/candidates/items/properties/rect/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key39},message:"must NOT have additional properties"};
+if(vErrors === null){
+vErrors = [err764];
+}
+else {
+vErrors.push(err764);
+}
+errors++;
+}
+}
+if(data230.x !== undefined){
+let data231 = data230.x;
+if(!(((typeof data231 == "number") && (!(data231 % 1) && !isNaN(data231))) && (isFinite(data231)))){
+const err765 = {instancePath:instancePath+"/inputPreparation/probe/candidates/" + i33+"/rect/x",schemaPath:"#/properties/inputPreparation/properties/probe/properties/candidates/items/properties/rect/properties/x/type",keyword:"type",params:{type: "integer"},message:"must be integer"};
+if(vErrors === null){
+vErrors = [err765];
+}
+else {
+vErrors.push(err765);
+}
+errors++;
+}
+if((typeof data231 == "number") && (isFinite(data231))){
+if(data231 > 4096 || isNaN(data231)){
+const err766 = {instancePath:instancePath+"/inputPreparation/probe/candidates/" + i33+"/rect/x",schemaPath:"#/properties/inputPreparation/properties/probe/properties/candidates/items/properties/rect/properties/x/maximum",keyword:"maximum",params:{comparison: "<=", limit: 4096},message:"must be <= 4096"};
+if(vErrors === null){
+vErrors = [err766];
+}
+else {
+vErrors.push(err766);
+}
+errors++;
+}
+if(data231 < 0 || isNaN(data231)){
+const err767 = {instancePath:instancePath+"/inputPreparation/probe/candidates/" + i33+"/rect/x",schemaPath:"#/properties/inputPreparation/properties/probe/properties/candidates/items/properties/rect/properties/x/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0},message:"must be >= 0"};
+if(vErrors === null){
+vErrors = [err767];
+}
+else {
+vErrors.push(err767);
+}
+errors++;
+}
+}
+}
+if(data230.y !== undefined){
+let data232 = data230.y;
+if(!(((typeof data232 == "number") && (!(data232 % 1) && !isNaN(data232))) && (isFinite(data232)))){
+const err768 = {instancePath:instancePath+"/inputPreparation/probe/candidates/" + i33+"/rect/y",schemaPath:"#/properties/inputPreparation/properties/probe/properties/candidates/items/properties/rect/properties/y/type",keyword:"type",params:{type: "integer"},message:"must be integer"};
+if(vErrors === null){
+vErrors = [err768];
+}
+else {
+vErrors.push(err768);
+}
+errors++;
+}
+if((typeof data232 == "number") && (isFinite(data232))){
+if(data232 > 4096 || isNaN(data232)){
+const err769 = {instancePath:instancePath+"/inputPreparation/probe/candidates/" + i33+"/rect/y",schemaPath:"#/properties/inputPreparation/properties/probe/properties/candidates/items/properties/rect/properties/y/maximum",keyword:"maximum",params:{comparison: "<=", limit: 4096},message:"must be <= 4096"};
+if(vErrors === null){
+vErrors = [err769];
+}
+else {
+vErrors.push(err769);
+}
+errors++;
+}
+if(data232 < 0 || isNaN(data232)){
+const err770 = {instancePath:instancePath+"/inputPreparation/probe/candidates/" + i33+"/rect/y",schemaPath:"#/properties/inputPreparation/properties/probe/properties/candidates/items/properties/rect/properties/y/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0},message:"must be >= 0"};
+if(vErrors === null){
+vErrors = [err770];
+}
+else {
+vErrors.push(err770);
+}
+errors++;
+}
+}
+}
+if(data230.width !== undefined){
+let data233 = data230.width;
+if(!(((typeof data233 == "number") && (!(data233 % 1) && !isNaN(data233))) && (isFinite(data233)))){
+const err771 = {instancePath:instancePath+"/inputPreparation/probe/candidates/" + i33+"/rect/width",schemaPath:"#/properties/inputPreparation/properties/probe/properties/candidates/items/properties/rect/properties/width/type",keyword:"type",params:{type: "integer"},message:"must be integer"};
+if(vErrors === null){
+vErrors = [err771];
+}
+else {
+vErrors.push(err771);
+}
+errors++;
+}
+if((typeof data233 == "number") && (isFinite(data233))){
+if(data233 > 4096 || isNaN(data233)){
+const err772 = {instancePath:instancePath+"/inputPreparation/probe/candidates/" + i33+"/rect/width",schemaPath:"#/properties/inputPreparation/properties/probe/properties/candidates/items/properties/rect/properties/width/maximum",keyword:"maximum",params:{comparison: "<=", limit: 4096},message:"must be <= 4096"};
+if(vErrors === null){
+vErrors = [err772];
+}
+else {
+vErrors.push(err772);
+}
+errors++;
+}
+if(data233 < 1 || isNaN(data233)){
+const err773 = {instancePath:instancePath+"/inputPreparation/probe/candidates/" + i33+"/rect/width",schemaPath:"#/properties/inputPreparation/properties/probe/properties/candidates/items/properties/rect/properties/width/minimum",keyword:"minimum",params:{comparison: ">=", limit: 1},message:"must be >= 1"};
+if(vErrors === null){
+vErrors = [err773];
+}
+else {
+vErrors.push(err773);
+}
+errors++;
+}
+}
+}
+if(data230.height !== undefined){
+let data234 = data230.height;
+if(!(((typeof data234 == "number") && (!(data234 % 1) && !isNaN(data234))) && (isFinite(data234)))){
+const err774 = {instancePath:instancePath+"/inputPreparation/probe/candidates/" + i33+"/rect/height",schemaPath:"#/properties/inputPreparation/properties/probe/properties/candidates/items/properties/rect/properties/height/type",keyword:"type",params:{type: "integer"},message:"must be integer"};
+if(vErrors === null){
+vErrors = [err774];
+}
+else {
+vErrors.push(err774);
+}
+errors++;
+}
+if((typeof data234 == "number") && (isFinite(data234))){
+if(data234 > 4096 || isNaN(data234)){
+const err775 = {instancePath:instancePath+"/inputPreparation/probe/candidates/" + i33+"/rect/height",schemaPath:"#/properties/inputPreparation/properties/probe/properties/candidates/items/properties/rect/properties/height/maximum",keyword:"maximum",params:{comparison: "<=", limit: 4096},message:"must be <= 4096"};
+if(vErrors === null){
+vErrors = [err775];
+}
+else {
+vErrors.push(err775);
+}
+errors++;
+}
+if(data234 < 1 || isNaN(data234)){
+const err776 = {instancePath:instancePath+"/inputPreparation/probe/candidates/" + i33+"/rect/height",schemaPath:"#/properties/inputPreparation/properties/probe/properties/candidates/items/properties/rect/properties/height/minimum",keyword:"minimum",params:{comparison: ">=", limit: 1},message:"must be >= 1"};
+if(vErrors === null){
+vErrors = [err776];
+}
+else {
+vErrors.push(err776);
+}
+errors++;
+}
+}
+}
+}
+else {
+const err777 = {instancePath:instancePath+"/inputPreparation/probe/candidates/" + i33+"/rect",schemaPath:"#/properties/inputPreparation/properties/probe/properties/candidates/items/properties/rect/type",keyword:"type",params:{type: "object"},message:"must be object"};
+if(vErrors === null){
+vErrors = [err777];
+}
+else {
+vErrors.push(err777);
+}
+errors++;
+}
+}
+if(data229.method !== undefined){
+let data235 = data229.method;
+if(!(((data235 === "alpha") || (data235 === "face")) || (data235 === "manual-required"))){
+const err778 = {instancePath:instancePath+"/inputPreparation/probe/candidates/" + i33+"/method",schemaPath:"#/properties/inputPreparation/properties/probe/properties/candidates/items/properties/method/enum",keyword:"enum",params:{allowedValues: schema31.properties.inputPreparation.properties.probe.properties.candidates.items.properties.method.enum},message:"must be equal to one of the allowed values"};
+if(vErrors === null){
+vErrors = [err778];
+}
+else {
+vErrors.push(err778);
+}
+errors++;
+}
+}
+}
+else {
+const err779 = {instancePath:instancePath+"/inputPreparation/probe/candidates/" + i33,schemaPath:"#/properties/inputPreparation/properties/probe/properties/candidates/items/type",keyword:"type",params:{type: "object"},message:"must be object"};
+if(vErrors === null){
+vErrors = [err779];
+}
+else {
+vErrors.push(err779);
+}
+errors++;
+}
+}
+}
+else {
+const err780 = {instancePath:instancePath+"/inputPreparation/probe/candidates",schemaPath:"#/properties/inputPreparation/properties/probe/properties/candidates/type",keyword:"type",params:{type: "array"},message:"must be array"};
+if(vErrors === null){
+vErrors = [err780];
+}
+else {
+vErrors.push(err780);
+}
+errors++;
+}
+}
+}
+else {
+const err781 = {instancePath:instancePath+"/inputPreparation/probe",schemaPath:"#/properties/inputPreparation/properties/probe/type",keyword:"type",params:{type: "object"},message:"must be object"};
+if(vErrors === null){
+vErrors = [err781];
+}
+else {
+vErrors.push(err781);
+}
+errors++;
+}
+}
+if(data205.selection !== undefined){
+let data236 = data205.selection;
+if(data236 && typeof data236 == "object" && !Array.isArray(data236)){
+if(data236.rect === undefined){
+const err782 = {instancePath:instancePath+"/inputPreparation/selection",schemaPath:"#/properties/inputPreparation/properties/selection/required",keyword:"required",params:{missingProperty: "rect"},message:"must have required property '"+"rect"+"'"};
+if(vErrors === null){
+vErrors = [err782];
+}
+else {
+vErrors.push(err782);
+}
+errors++;
+}
+if(data236.backgroundTolerance === undefined){
+const err783 = {instancePath:instancePath+"/inputPreparation/selection",schemaPath:"#/properties/inputPreparation/properties/selection/required",keyword:"required",params:{missingProperty: "backgroundTolerance"},message:"must have required property '"+"backgroundTolerance"+"'"};
+if(vErrors === null){
+vErrors = [err783];
+}
+else {
+vErrors.push(err783);
+}
+errors++;
+}
+if(data236.masks === undefined){
+const err784 = {instancePath:instancePath+"/inputPreparation/selection",schemaPath:"#/properties/inputPreparation/properties/selection/required",keyword:"required",params:{missingProperty: "masks"},message:"must have required property '"+"masks"+"'"};
+if(vErrors === null){
+vErrors = [err784];
+}
+else {
+vErrors.push(err784);
+}
+errors++;
+}
+if(data236.occluded === undefined){
+const err785 = {instancePath:instancePath+"/inputPreparation/selection",schemaPath:"#/properties/inputPreparation/properties/selection/required",keyword:"required",params:{missingProperty: "occluded"},message:"must have required property '"+"occluded"+"'"};
+if(vErrors === null){
+vErrors = [err785];
+}
+else {
+vErrors.push(err785);
+}
+errors++;
+}
+for(const key40 in data236){
+if(!((((key40 === "rect") || (key40 === "backgroundTolerance")) || (key40 === "masks")) || (key40 === "occluded"))){
+const err786 = {instancePath:instancePath+"/inputPreparation/selection",schemaPath:"#/properties/inputPreparation/properties/selection/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key40},message:"must NOT have additional properties"};
+if(vErrors === null){
+vErrors = [err786];
+}
+else {
+vErrors.push(err786);
+}
+errors++;
+}
+}
+if(data236.rect !== undefined){
+let data237 = data236.rect;
+if(data237 && typeof data237 == "object" && !Array.isArray(data237)){
+if(data237.x === undefined){
+const err787 = {instancePath:instancePath+"/inputPreparation/selection/rect",schemaPath:"#/properties/inputPreparation/properties/selection/properties/rect/required",keyword:"required",params:{missingProperty: "x"},message:"must have required property '"+"x"+"'"};
+if(vErrors === null){
+vErrors = [err787];
+}
+else {
+vErrors.push(err787);
+}
+errors++;
+}
+if(data237.y === undefined){
+const err788 = {instancePath:instancePath+"/inputPreparation/selection/rect",schemaPath:"#/properties/inputPreparation/properties/selection/properties/rect/required",keyword:"required",params:{missingProperty: "y"},message:"must have required property '"+"y"+"'"};
+if(vErrors === null){
+vErrors = [err788];
+}
+else {
+vErrors.push(err788);
+}
+errors++;
+}
+if(data237.width === undefined){
+const err789 = {instancePath:instancePath+"/inputPreparation/selection/rect",schemaPath:"#/properties/inputPreparation/properties/selection/properties/rect/required",keyword:"required",params:{missingProperty: "width"},message:"must have required property '"+"width"+"'"};
+if(vErrors === null){
+vErrors = [err789];
+}
+else {
+vErrors.push(err789);
+}
+errors++;
+}
+if(data237.height === undefined){
+const err790 = {instancePath:instancePath+"/inputPreparation/selection/rect",schemaPath:"#/properties/inputPreparation/properties/selection/properties/rect/required",keyword:"required",params:{missingProperty: "height"},message:"must have required property '"+"height"+"'"};
+if(vErrors === null){
+vErrors = [err790];
+}
+else {
+vErrors.push(err790);
+}
+errors++;
+}
+for(const key41 in data237){
+if(!((((key41 === "x") || (key41 === "y")) || (key41 === "width")) || (key41 === "height"))){
+const err791 = {instancePath:instancePath+"/inputPreparation/selection/rect",schemaPath:"#/properties/inputPreparation/properties/selection/properties/rect/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key41},message:"must NOT have additional properties"};
+if(vErrors === null){
+vErrors = [err791];
+}
+else {
+vErrors.push(err791);
+}
+errors++;
+}
+}
+if(data237.x !== undefined){
+let data238 = data237.x;
+if(!(((typeof data238 == "number") && (!(data238 % 1) && !isNaN(data238))) && (isFinite(data238)))){
+const err792 = {instancePath:instancePath+"/inputPreparation/selection/rect/x",schemaPath:"#/properties/inputPreparation/properties/selection/properties/rect/properties/x/type",keyword:"type",params:{type: "integer"},message:"must be integer"};
+if(vErrors === null){
+vErrors = [err792];
+}
+else {
+vErrors.push(err792);
+}
+errors++;
+}
+if((typeof data238 == "number") && (isFinite(data238))){
+if(data238 > 4096 || isNaN(data238)){
+const err793 = {instancePath:instancePath+"/inputPreparation/selection/rect/x",schemaPath:"#/properties/inputPreparation/properties/selection/properties/rect/properties/x/maximum",keyword:"maximum",params:{comparison: "<=", limit: 4096},message:"must be <= 4096"};
+if(vErrors === null){
+vErrors = [err793];
+}
+else {
+vErrors.push(err793);
+}
+errors++;
+}
+if(data238 < 0 || isNaN(data238)){
+const err794 = {instancePath:instancePath+"/inputPreparation/selection/rect/x",schemaPath:"#/properties/inputPreparation/properties/selection/properties/rect/properties/x/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0},message:"must be >= 0"};
+if(vErrors === null){
+vErrors = [err794];
+}
+else {
+vErrors.push(err794);
+}
+errors++;
+}
+}
+}
+if(data237.y !== undefined){
+let data239 = data237.y;
+if(!(((typeof data239 == "number") && (!(data239 % 1) && !isNaN(data239))) && (isFinite(data239)))){
+const err795 = {instancePath:instancePath+"/inputPreparation/selection/rect/y",schemaPath:"#/properties/inputPreparation/properties/selection/properties/rect/properties/y/type",keyword:"type",params:{type: "integer"},message:"must be integer"};
+if(vErrors === null){
+vErrors = [err795];
+}
+else {
+vErrors.push(err795);
+}
+errors++;
+}
+if((typeof data239 == "number") && (isFinite(data239))){
+if(data239 > 4096 || isNaN(data239)){
+const err796 = {instancePath:instancePath+"/inputPreparation/selection/rect/y",schemaPath:"#/properties/inputPreparation/properties/selection/properties/rect/properties/y/maximum",keyword:"maximum",params:{comparison: "<=", limit: 4096},message:"must be <= 4096"};
+if(vErrors === null){
+vErrors = [err796];
+}
+else {
+vErrors.push(err796);
+}
+errors++;
+}
+if(data239 < 0 || isNaN(data239)){
+const err797 = {instancePath:instancePath+"/inputPreparation/selection/rect/y",schemaPath:"#/properties/inputPreparation/properties/selection/properties/rect/properties/y/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0},message:"must be >= 0"};
+if(vErrors === null){
+vErrors = [err797];
+}
+else {
+vErrors.push(err797);
+}
+errors++;
+}
+}
+}
+if(data237.width !== undefined){
+let data240 = data237.width;
+if(!(((typeof data240 == "number") && (!(data240 % 1) && !isNaN(data240))) && (isFinite(data240)))){
+const err798 = {instancePath:instancePath+"/inputPreparation/selection/rect/width",schemaPath:"#/properties/inputPreparation/properties/selection/properties/rect/properties/width/type",keyword:"type",params:{type: "integer"},message:"must be integer"};
+if(vErrors === null){
+vErrors = [err798];
+}
+else {
+vErrors.push(err798);
+}
+errors++;
+}
+if((typeof data240 == "number") && (isFinite(data240))){
+if(data240 > 4096 || isNaN(data240)){
+const err799 = {instancePath:instancePath+"/inputPreparation/selection/rect/width",schemaPath:"#/properties/inputPreparation/properties/selection/properties/rect/properties/width/maximum",keyword:"maximum",params:{comparison: "<=", limit: 4096},message:"must be <= 4096"};
+if(vErrors === null){
+vErrors = [err799];
+}
+else {
+vErrors.push(err799);
+}
+errors++;
+}
+if(data240 < 1 || isNaN(data240)){
+const err800 = {instancePath:instancePath+"/inputPreparation/selection/rect/width",schemaPath:"#/properties/inputPreparation/properties/selection/properties/rect/properties/width/minimum",keyword:"minimum",params:{comparison: ">=", limit: 1},message:"must be >= 1"};
+if(vErrors === null){
+vErrors = [err800];
+}
+else {
+vErrors.push(err800);
+}
+errors++;
+}
+}
+}
+if(data237.height !== undefined){
+let data241 = data237.height;
+if(!(((typeof data241 == "number") && (!(data241 % 1) && !isNaN(data241))) && (isFinite(data241)))){
+const err801 = {instancePath:instancePath+"/inputPreparation/selection/rect/height",schemaPath:"#/properties/inputPreparation/properties/selection/properties/rect/properties/height/type",keyword:"type",params:{type: "integer"},message:"must be integer"};
+if(vErrors === null){
+vErrors = [err801];
+}
+else {
+vErrors.push(err801);
+}
+errors++;
+}
+if((typeof data241 == "number") && (isFinite(data241))){
+if(data241 > 4096 || isNaN(data241)){
+const err802 = {instancePath:instancePath+"/inputPreparation/selection/rect/height",schemaPath:"#/properties/inputPreparation/properties/selection/properties/rect/properties/height/maximum",keyword:"maximum",params:{comparison: "<=", limit: 4096},message:"must be <= 4096"};
+if(vErrors === null){
+vErrors = [err802];
+}
+else {
+vErrors.push(err802);
+}
+errors++;
+}
+if(data241 < 1 || isNaN(data241)){
+const err803 = {instancePath:instancePath+"/inputPreparation/selection/rect/height",schemaPath:"#/properties/inputPreparation/properties/selection/properties/rect/properties/height/minimum",keyword:"minimum",params:{comparison: ">=", limit: 1},message:"must be >= 1"};
+if(vErrors === null){
+vErrors = [err803];
+}
+else {
+vErrors.push(err803);
+}
+errors++;
+}
+}
+}
+}
+else {
+const err804 = {instancePath:instancePath+"/inputPreparation/selection/rect",schemaPath:"#/properties/inputPreparation/properties/selection/properties/rect/type",keyword:"type",params:{type: "object"},message:"must be object"};
+if(vErrors === null){
+vErrors = [err804];
+}
+else {
+vErrors.push(err804);
+}
+errors++;
+}
+}
+if(data236.backgroundTolerance !== undefined){
+let data242 = data236.backgroundTolerance;
+const _errs533 = errors;
+let valid117 = false;
+const _errs534 = errors;
+if(data242 !== null){
+const err805 = {instancePath:instancePath+"/inputPreparation/selection/backgroundTolerance",schemaPath:"#/properties/inputPreparation/properties/selection/properties/backgroundTolerance/anyOf/0/type",keyword:"type",params:{type: "null"},message:"must be null"};
+if(vErrors === null){
+vErrors = [err805];
+}
+else {
+vErrors.push(err805);
+}
+errors++;
+}
+var _valid9 = _errs534 === errors;
+valid117 = valid117 || _valid9;
+const _errs536 = errors;
+if(!(((typeof data242 == "number") && (!(data242 % 1) && !isNaN(data242))) && (isFinite(data242)))){
+const err806 = {instancePath:instancePath+"/inputPreparation/selection/backgroundTolerance",schemaPath:"#/properties/inputPreparation/properties/selection/properties/backgroundTolerance/anyOf/1/type",keyword:"type",params:{type: "integer"},message:"must be integer"};
+if(vErrors === null){
+vErrors = [err806];
+}
+else {
+vErrors.push(err806);
+}
+errors++;
+}
+if((typeof data242 == "number") && (isFinite(data242))){
+if(data242 > 80 || isNaN(data242)){
+const err807 = {instancePath:instancePath+"/inputPreparation/selection/backgroundTolerance",schemaPath:"#/properties/inputPreparation/properties/selection/properties/backgroundTolerance/anyOf/1/maximum",keyword:"maximum",params:{comparison: "<=", limit: 80},message:"must be <= 80"};
+if(vErrors === null){
+vErrors = [err807];
+}
+else {
+vErrors.push(err807);
+}
+errors++;
+}
+if(data242 < 0 || isNaN(data242)){
+const err808 = {instancePath:instancePath+"/inputPreparation/selection/backgroundTolerance",schemaPath:"#/properties/inputPreparation/properties/selection/properties/backgroundTolerance/anyOf/1/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0},message:"must be >= 0"};
+if(vErrors === null){
+vErrors = [err808];
+}
+else {
+vErrors.push(err808);
+}
+errors++;
+}
+}
+var _valid9 = _errs536 === errors;
+valid117 = valid117 || _valid9;
+if(!valid117){
+const err809 = {instancePath:instancePath+"/inputPreparation/selection/backgroundTolerance",schemaPath:"#/properties/inputPreparation/properties/selection/properties/backgroundTolerance/anyOf",keyword:"anyOf",params:{},message:"must match a schema in anyOf"};
+if(vErrors === null){
+vErrors = [err809];
+}
+else {
+vErrors.push(err809);
+}
+errors++;
+}
+else {
+errors = _errs533;
+if(vErrors !== null){
+if(_errs533){
+vErrors.length = _errs533;
+}
+else {
+vErrors = null;
+}
+}
+}
+}
+if(data236.masks !== undefined){
+let data243 = data236.masks;
+if(Array.isArray(data243)){
+if(data243.length > 64){
+const err810 = {instancePath:instancePath+"/inputPreparation/selection/masks",schemaPath:"#/properties/inputPreparation/properties/selection/properties/masks/maxItems",keyword:"maxItems",params:{limit: 64},message:"must NOT have more than 64 items"};
+if(vErrors === null){
+vErrors = [err810];
+}
+else {
+vErrors.push(err810);
+}
+errors++;
+}
+const len32 = data243.length;
+for(let i34=0; i34<len32; i34++){
+let data244 = data243[i34];
+if(data244 && typeof data244 == "object" && !Array.isArray(data244)){
+if(data244.mode === undefined){
+const err811 = {instancePath:instancePath+"/inputPreparation/selection/masks/" + i34,schemaPath:"#/properties/inputPreparation/properties/selection/properties/masks/items/required",keyword:"required",params:{missingProperty: "mode"},message:"must have required property '"+"mode"+"'"};
+if(vErrors === null){
+vErrors = [err811];
+}
+else {
+vErrors.push(err811);
+}
+errors++;
+}
+if(data244.rect === undefined){
+const err812 = {instancePath:instancePath+"/inputPreparation/selection/masks/" + i34,schemaPath:"#/properties/inputPreparation/properties/selection/properties/masks/items/required",keyword:"required",params:{missingProperty: "rect"},message:"must have required property '"+"rect"+"'"};
+if(vErrors === null){
+vErrors = [err812];
+}
+else {
+vErrors.push(err812);
+}
+errors++;
+}
+for(const key42 in data244){
+if(!((key42 === "mode") || (key42 === "rect"))){
+const err813 = {instancePath:instancePath+"/inputPreparation/selection/masks/" + i34,schemaPath:"#/properties/inputPreparation/properties/selection/properties/masks/items/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key42},message:"must NOT have additional properties"};
+if(vErrors === null){
+vErrors = [err813];
+}
+else {
+vErrors.push(err813);
+}
+errors++;
+}
+}
+if(data244.mode !== undefined){
+let data245 = data244.mode;
+if(!((data245 === "erase") || (data245 === "restore"))){
+const err814 = {instancePath:instancePath+"/inputPreparation/selection/masks/" + i34+"/mode",schemaPath:"#/properties/inputPreparation/properties/selection/properties/masks/items/properties/mode/enum",keyword:"enum",params:{allowedValues: schema31.properties.inputPreparation.properties.selection.properties.masks.items.properties.mode.enum},message:"must be equal to one of the allowed values"};
+if(vErrors === null){
+vErrors = [err814];
+}
+else {
+vErrors.push(err814);
+}
+errors++;
+}
+}
+if(data244.rect !== undefined){
+let data246 = data244.rect;
+if(data246 && typeof data246 == "object" && !Array.isArray(data246)){
+if(data246.x === undefined){
+const err815 = {instancePath:instancePath+"/inputPreparation/selection/masks/" + i34+"/rect",schemaPath:"#/properties/inputPreparation/properties/selection/properties/masks/items/properties/rect/required",keyword:"required",params:{missingProperty: "x"},message:"must have required property '"+"x"+"'"};
+if(vErrors === null){
+vErrors = [err815];
+}
+else {
+vErrors.push(err815);
+}
+errors++;
+}
+if(data246.y === undefined){
+const err816 = {instancePath:instancePath+"/inputPreparation/selection/masks/" + i34+"/rect",schemaPath:"#/properties/inputPreparation/properties/selection/properties/masks/items/properties/rect/required",keyword:"required",params:{missingProperty: "y"},message:"must have required property '"+"y"+"'"};
+if(vErrors === null){
+vErrors = [err816];
+}
+else {
+vErrors.push(err816);
+}
+errors++;
+}
+if(data246.width === undefined){
+const err817 = {instancePath:instancePath+"/inputPreparation/selection/masks/" + i34+"/rect",schemaPath:"#/properties/inputPreparation/properties/selection/properties/masks/items/properties/rect/required",keyword:"required",params:{missingProperty: "width"},message:"must have required property '"+"width"+"'"};
+if(vErrors === null){
+vErrors = [err817];
+}
+else {
+vErrors.push(err817);
+}
+errors++;
+}
+if(data246.height === undefined){
+const err818 = {instancePath:instancePath+"/inputPreparation/selection/masks/" + i34+"/rect",schemaPath:"#/properties/inputPreparation/properties/selection/properties/masks/items/properties/rect/required",keyword:"required",params:{missingProperty: "height"},message:"must have required property '"+"height"+"'"};
+if(vErrors === null){
+vErrors = [err818];
+}
+else {
+vErrors.push(err818);
+}
+errors++;
+}
+for(const key43 in data246){
+if(!((((key43 === "x") || (key43 === "y")) || (key43 === "width")) || (key43 === "height"))){
+const err819 = {instancePath:instancePath+"/inputPreparation/selection/masks/" + i34+"/rect",schemaPath:"#/properties/inputPreparation/properties/selection/properties/masks/items/properties/rect/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key43},message:"must NOT have additional properties"};
+if(vErrors === null){
+vErrors = [err819];
+}
+else {
+vErrors.push(err819);
+}
+errors++;
+}
+}
+if(data246.x !== undefined){
+let data247 = data246.x;
+if(!(((typeof data247 == "number") && (!(data247 % 1) && !isNaN(data247))) && (isFinite(data247)))){
+const err820 = {instancePath:instancePath+"/inputPreparation/selection/masks/" + i34+"/rect/x",schemaPath:"#/properties/inputPreparation/properties/selection/properties/masks/items/properties/rect/properties/x/type",keyword:"type",params:{type: "integer"},message:"must be integer"};
+if(vErrors === null){
+vErrors = [err820];
+}
+else {
+vErrors.push(err820);
+}
+errors++;
+}
+if((typeof data247 == "number") && (isFinite(data247))){
+if(data247 > 4096 || isNaN(data247)){
+const err821 = {instancePath:instancePath+"/inputPreparation/selection/masks/" + i34+"/rect/x",schemaPath:"#/properties/inputPreparation/properties/selection/properties/masks/items/properties/rect/properties/x/maximum",keyword:"maximum",params:{comparison: "<=", limit: 4096},message:"must be <= 4096"};
+if(vErrors === null){
+vErrors = [err821];
+}
+else {
+vErrors.push(err821);
+}
+errors++;
+}
+if(data247 < 0 || isNaN(data247)){
+const err822 = {instancePath:instancePath+"/inputPreparation/selection/masks/" + i34+"/rect/x",schemaPath:"#/properties/inputPreparation/properties/selection/properties/masks/items/properties/rect/properties/x/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0},message:"must be >= 0"};
+if(vErrors === null){
+vErrors = [err822];
+}
+else {
+vErrors.push(err822);
+}
+errors++;
+}
+}
+}
+if(data246.y !== undefined){
+let data248 = data246.y;
+if(!(((typeof data248 == "number") && (!(data248 % 1) && !isNaN(data248))) && (isFinite(data248)))){
+const err823 = {instancePath:instancePath+"/inputPreparation/selection/masks/" + i34+"/rect/y",schemaPath:"#/properties/inputPreparation/properties/selection/properties/masks/items/properties/rect/properties/y/type",keyword:"type",params:{type: "integer"},message:"must be integer"};
+if(vErrors === null){
+vErrors = [err823];
+}
+else {
+vErrors.push(err823);
+}
+errors++;
+}
+if((typeof data248 == "number") && (isFinite(data248))){
+if(data248 > 4096 || isNaN(data248)){
+const err824 = {instancePath:instancePath+"/inputPreparation/selection/masks/" + i34+"/rect/y",schemaPath:"#/properties/inputPreparation/properties/selection/properties/masks/items/properties/rect/properties/y/maximum",keyword:"maximum",params:{comparison: "<=", limit: 4096},message:"must be <= 4096"};
+if(vErrors === null){
+vErrors = [err824];
+}
+else {
+vErrors.push(err824);
+}
+errors++;
+}
+if(data248 < 0 || isNaN(data248)){
+const err825 = {instancePath:instancePath+"/inputPreparation/selection/masks/" + i34+"/rect/y",schemaPath:"#/properties/inputPreparation/properties/selection/properties/masks/items/properties/rect/properties/y/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0},message:"must be >= 0"};
+if(vErrors === null){
+vErrors = [err825];
+}
+else {
+vErrors.push(err825);
+}
+errors++;
+}
+}
+}
+if(data246.width !== undefined){
+let data249 = data246.width;
+if(!(((typeof data249 == "number") && (!(data249 % 1) && !isNaN(data249))) && (isFinite(data249)))){
+const err826 = {instancePath:instancePath+"/inputPreparation/selection/masks/" + i34+"/rect/width",schemaPath:"#/properties/inputPreparation/properties/selection/properties/masks/items/properties/rect/properties/width/type",keyword:"type",params:{type: "integer"},message:"must be integer"};
+if(vErrors === null){
+vErrors = [err826];
+}
+else {
+vErrors.push(err826);
+}
+errors++;
+}
+if((typeof data249 == "number") && (isFinite(data249))){
+if(data249 > 4096 || isNaN(data249)){
+const err827 = {instancePath:instancePath+"/inputPreparation/selection/masks/" + i34+"/rect/width",schemaPath:"#/properties/inputPreparation/properties/selection/properties/masks/items/properties/rect/properties/width/maximum",keyword:"maximum",params:{comparison: "<=", limit: 4096},message:"must be <= 4096"};
+if(vErrors === null){
+vErrors = [err827];
+}
+else {
+vErrors.push(err827);
+}
+errors++;
+}
+if(data249 < 1 || isNaN(data249)){
+const err828 = {instancePath:instancePath+"/inputPreparation/selection/masks/" + i34+"/rect/width",schemaPath:"#/properties/inputPreparation/properties/selection/properties/masks/items/properties/rect/properties/width/minimum",keyword:"minimum",params:{comparison: ">=", limit: 1},message:"must be >= 1"};
+if(vErrors === null){
+vErrors = [err828];
+}
+else {
+vErrors.push(err828);
+}
+errors++;
+}
+}
+}
+if(data246.height !== undefined){
+let data250 = data246.height;
+if(!(((typeof data250 == "number") && (!(data250 % 1) && !isNaN(data250))) && (isFinite(data250)))){
+const err829 = {instancePath:instancePath+"/inputPreparation/selection/masks/" + i34+"/rect/height",schemaPath:"#/properties/inputPreparation/properties/selection/properties/masks/items/properties/rect/properties/height/type",keyword:"type",params:{type: "integer"},message:"must be integer"};
+if(vErrors === null){
+vErrors = [err829];
+}
+else {
+vErrors.push(err829);
+}
+errors++;
+}
+if((typeof data250 == "number") && (isFinite(data250))){
+if(data250 > 4096 || isNaN(data250)){
+const err830 = {instancePath:instancePath+"/inputPreparation/selection/masks/" + i34+"/rect/height",schemaPath:"#/properties/inputPreparation/properties/selection/properties/masks/items/properties/rect/properties/height/maximum",keyword:"maximum",params:{comparison: "<=", limit: 4096},message:"must be <= 4096"};
+if(vErrors === null){
+vErrors = [err830];
+}
+else {
+vErrors.push(err830);
+}
+errors++;
+}
+if(data250 < 1 || isNaN(data250)){
+const err831 = {instancePath:instancePath+"/inputPreparation/selection/masks/" + i34+"/rect/height",schemaPath:"#/properties/inputPreparation/properties/selection/properties/masks/items/properties/rect/properties/height/minimum",keyword:"minimum",params:{comparison: ">=", limit: 1},message:"must be >= 1"};
+if(vErrors === null){
+vErrors = [err831];
+}
+else {
+vErrors.push(err831);
+}
+errors++;
+}
+}
+}
+}
+else {
+const err832 = {instancePath:instancePath+"/inputPreparation/selection/masks/" + i34+"/rect",schemaPath:"#/properties/inputPreparation/properties/selection/properties/masks/items/properties/rect/type",keyword:"type",params:{type: "object"},message:"must be object"};
+if(vErrors === null){
+vErrors = [err832];
+}
+else {
+vErrors.push(err832);
+}
+errors++;
+}
+}
+}
+else {
+const err833 = {instancePath:instancePath+"/inputPreparation/selection/masks/" + i34,schemaPath:"#/properties/inputPreparation/properties/selection/properties/masks/items/type",keyword:"type",params:{type: "object"},message:"must be object"};
+if(vErrors === null){
+vErrors = [err833];
+}
+else {
+vErrors.push(err833);
+}
+errors++;
+}
+}
+}
+else {
+const err834 = {instancePath:instancePath+"/inputPreparation/selection/masks",schemaPath:"#/properties/inputPreparation/properties/selection/properties/masks/type",keyword:"type",params:{type: "array"},message:"must be array"};
+if(vErrors === null){
+vErrors = [err834];
+}
+else {
+vErrors.push(err834);
+}
+errors++;
+}
+}
+if(data236.occluded !== undefined){
+if(typeof data236.occluded !== "boolean"){
+const err835 = {instancePath:instancePath+"/inputPreparation/selection/occluded",schemaPath:"#/properties/inputPreparation/properties/selection/properties/occluded/type",keyword:"type",params:{type: "boolean"},message:"must be boolean"};
+if(vErrors === null){
+vErrors = [err835];
+}
+else {
+vErrors.push(err835);
+}
+errors++;
+}
+}
+}
+else {
+const err836 = {instancePath:instancePath+"/inputPreparation/selection",schemaPath:"#/properties/inputPreparation/properties/selection/type",keyword:"type",params:{type: "object"},message:"must be object"};
+if(vErrors === null){
+vErrors = [err836];
+}
+else {
+vErrors.push(err836);
+}
+errors++;
+}
+}
+if(data205.analysis !== undefined){
+let data252 = data205.analysis;
+if(data252 && typeof data252 == "object" && !Array.isArray(data252)){
+if(data252.faces === undefined){
+const err837 = {instancePath:instancePath+"/inputPreparation/analysis",schemaPath:"#/properties/inputPreparation/properties/analysis/required",keyword:"required",params:{missingProperty: "faces"},message:"must have required property '"+"faces"+"'"};
+if(vErrors === null){
+vErrors = [err837];
+}
+else {
+vErrors.push(err837);
+}
+errors++;
+}
+if(data252.warnings === undefined){
+const err838 = {instancePath:instancePath+"/inputPreparation/analysis",schemaPath:"#/properties/inputPreparation/properties/analysis/required",keyword:"required",params:{missingProperty: "warnings"},message:"must have required property '"+"warnings"+"'"};
+if(vErrors === null){
+vErrors = [err838];
+}
+else {
+vErrors.push(err838);
+}
+errors++;
+}
+if(data252.crop === undefined){
+const err839 = {instancePath:instancePath+"/inputPreparation/analysis",schemaPath:"#/properties/inputPreparation/properties/analysis/required",keyword:"required",params:{missingProperty: "crop"},message:"must have required property '"+"crop"+"'"};
+if(vErrors === null){
+vErrors = [err839];
+}
+else {
+vErrors.push(err839);
+}
+errors++;
+}
+if(data252.analysisSize === undefined){
+const err840 = {instancePath:instancePath+"/inputPreparation/analysis",schemaPath:"#/properties/inputPreparation/properties/analysis/required",keyword:"required",params:{missingProperty: "analysisSize"},message:"must have required property '"+"analysisSize"+"'"};
+if(vErrors === null){
+vErrors = [err840];
+}
+else {
+vErrors.push(err840);
+}
+errors++;
+}
+for(const key44 in data252){
+if(!((((key44 === "faces") || (key44 === "warnings")) || (key44 === "crop")) || (key44 === "analysisSize"))){
+const err841 = {instancePath:instancePath+"/inputPreparation/analysis",schemaPath:"#/properties/inputPreparation/properties/analysis/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key44},message:"must NOT have additional properties"};
+if(vErrors === null){
+vErrors = [err841];
+}
+else {
+vErrors.push(err841);
+}
+errors++;
+}
+}
+if(data252.faces !== undefined){
+let data253 = data252.faces;
+if(Array.isArray(data253)){
+if(data253.length > 8){
+const err842 = {instancePath:instancePath+"/inputPreparation/analysis/faces",schemaPath:"#/properties/inputPreparation/properties/analysis/properties/faces/maxItems",keyword:"maxItems",params:{limit: 8},message:"must NOT have more than 8 items"};
+if(vErrors === null){
+vErrors = [err842];
+}
+else {
+vErrors.push(err842);
+}
+errors++;
+}
+const len33 = data253.length;
+for(let i35=0; i35<len33; i35++){
+let data254 = data253[i35];
+if(data254 && typeof data254 == "object" && !Array.isArray(data254)){
+if(data254.x === undefined){
+const err843 = {instancePath:instancePath+"/inputPreparation/analysis/faces/" + i35,schemaPath:"#/properties/inputPreparation/properties/analysis/properties/faces/items/required",keyword:"required",params:{missingProperty: "x"},message:"must have required property '"+"x"+"'"};
+if(vErrors === null){
+vErrors = [err843];
+}
+else {
+vErrors.push(err843);
+}
+errors++;
+}
+if(data254.y === undefined){
+const err844 = {instancePath:instancePath+"/inputPreparation/analysis/faces/" + i35,schemaPath:"#/properties/inputPreparation/properties/analysis/properties/faces/items/required",keyword:"required",params:{missingProperty: "y"},message:"must have required property '"+"y"+"'"};
+if(vErrors === null){
+vErrors = [err844];
+}
+else {
+vErrors.push(err844);
+}
+errors++;
+}
+if(data254.width === undefined){
+const err845 = {instancePath:instancePath+"/inputPreparation/analysis/faces/" + i35,schemaPath:"#/properties/inputPreparation/properties/analysis/properties/faces/items/required",keyword:"required",params:{missingProperty: "width"},message:"must have required property '"+"width"+"'"};
+if(vErrors === null){
+vErrors = [err845];
+}
+else {
+vErrors.push(err845);
+}
+errors++;
+}
+if(data254.height === undefined){
+const err846 = {instancePath:instancePath+"/inputPreparation/analysis/faces/" + i35,schemaPath:"#/properties/inputPreparation/properties/analysis/properties/faces/items/required",keyword:"required",params:{missingProperty: "height"},message:"must have required property '"+"height"+"'"};
+if(vErrors === null){
+vErrors = [err846];
+}
+else {
+vErrors.push(err846);
+}
+errors++;
+}
+for(const key45 in data254){
+if(!((((key45 === "x") || (key45 === "y")) || (key45 === "width")) || (key45 === "height"))){
+const err847 = {instancePath:instancePath+"/inputPreparation/analysis/faces/" + i35,schemaPath:"#/properties/inputPreparation/properties/analysis/properties/faces/items/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key45},message:"must NOT have additional properties"};
+if(vErrors === null){
+vErrors = [err847];
+}
+else {
+vErrors.push(err847);
+}
+errors++;
+}
+}
+if(data254.x !== undefined){
+let data255 = data254.x;
+if((typeof data255 == "number") && (isFinite(data255))){
+if(data255 > 1024 || isNaN(data255)){
+const err848 = {instancePath:instancePath+"/inputPreparation/analysis/faces/" + i35+"/x",schemaPath:"#/properties/inputPreparation/properties/analysis/properties/faces/items/properties/x/maximum",keyword:"maximum",params:{comparison: "<=", limit: 1024},message:"must be <= 1024"};
+if(vErrors === null){
+vErrors = [err848];
+}
+else {
+vErrors.push(err848);
+}
+errors++;
+}
+if(data255 < 0 || isNaN(data255)){
+const err849 = {instancePath:instancePath+"/inputPreparation/analysis/faces/" + i35+"/x",schemaPath:"#/properties/inputPreparation/properties/analysis/properties/faces/items/properties/x/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0},message:"must be >= 0"};
+if(vErrors === null){
+vErrors = [err849];
+}
+else {
+vErrors.push(err849);
+}
+errors++;
+}
+}
+else {
+const err850 = {instancePath:instancePath+"/inputPreparation/analysis/faces/" + i35+"/x",schemaPath:"#/properties/inputPreparation/properties/analysis/properties/faces/items/properties/x/type",keyword:"type",params:{type: "number"},message:"must be number"};
+if(vErrors === null){
+vErrors = [err850];
+}
+else {
+vErrors.push(err850);
+}
+errors++;
+}
+}
+if(data254.y !== undefined){
+let data256 = data254.y;
+if((typeof data256 == "number") && (isFinite(data256))){
+if(data256 > 1024 || isNaN(data256)){
+const err851 = {instancePath:instancePath+"/inputPreparation/analysis/faces/" + i35+"/y",schemaPath:"#/properties/inputPreparation/properties/analysis/properties/faces/items/properties/y/maximum",keyword:"maximum",params:{comparison: "<=", limit: 1024},message:"must be <= 1024"};
+if(vErrors === null){
+vErrors = [err851];
+}
+else {
+vErrors.push(err851);
+}
+errors++;
+}
+if(data256 < 0 || isNaN(data256)){
+const err852 = {instancePath:instancePath+"/inputPreparation/analysis/faces/" + i35+"/y",schemaPath:"#/properties/inputPreparation/properties/analysis/properties/faces/items/properties/y/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0},message:"must be >= 0"};
+if(vErrors === null){
+vErrors = [err852];
+}
+else {
+vErrors.push(err852);
+}
+errors++;
+}
+}
+else {
+const err853 = {instancePath:instancePath+"/inputPreparation/analysis/faces/" + i35+"/y",schemaPath:"#/properties/inputPreparation/properties/analysis/properties/faces/items/properties/y/type",keyword:"type",params:{type: "number"},message:"must be number"};
+if(vErrors === null){
+vErrors = [err853];
+}
+else {
+vErrors.push(err853);
+}
+errors++;
+}
+}
+if(data254.width !== undefined){
+let data257 = data254.width;
+if((typeof data257 == "number") && (isFinite(data257))){
+if(data257 > 1024 || isNaN(data257)){
+const err854 = {instancePath:instancePath+"/inputPreparation/analysis/faces/" + i35+"/width",schemaPath:"#/properties/inputPreparation/properties/analysis/properties/faces/items/properties/width/maximum",keyword:"maximum",params:{comparison: "<=", limit: 1024},message:"must be <= 1024"};
+if(vErrors === null){
+vErrors = [err854];
+}
+else {
+vErrors.push(err854);
+}
+errors++;
+}
+if(data257 <= 0 || isNaN(data257)){
+const err855 = {instancePath:instancePath+"/inputPreparation/analysis/faces/" + i35+"/width",schemaPath:"#/properties/inputPreparation/properties/analysis/properties/faces/items/properties/width/exclusiveMinimum",keyword:"exclusiveMinimum",params:{comparison: ">", limit: 0},message:"must be > 0"};
+if(vErrors === null){
+vErrors = [err855];
+}
+else {
+vErrors.push(err855);
+}
+errors++;
+}
+}
+else {
+const err856 = {instancePath:instancePath+"/inputPreparation/analysis/faces/" + i35+"/width",schemaPath:"#/properties/inputPreparation/properties/analysis/properties/faces/items/properties/width/type",keyword:"type",params:{type: "number"},message:"must be number"};
+if(vErrors === null){
+vErrors = [err856];
+}
+else {
+vErrors.push(err856);
+}
+errors++;
+}
+}
+if(data254.height !== undefined){
+let data258 = data254.height;
+if((typeof data258 == "number") && (isFinite(data258))){
+if(data258 > 1024 || isNaN(data258)){
+const err857 = {instancePath:instancePath+"/inputPreparation/analysis/faces/" + i35+"/height",schemaPath:"#/properties/inputPreparation/properties/analysis/properties/faces/items/properties/height/maximum",keyword:"maximum",params:{comparison: "<=", limit: 1024},message:"must be <= 1024"};
+if(vErrors === null){
+vErrors = [err857];
+}
+else {
+vErrors.push(err857);
+}
+errors++;
+}
+if(data258 <= 0 || isNaN(data258)){
+const err858 = {instancePath:instancePath+"/inputPreparation/analysis/faces/" + i35+"/height",schemaPath:"#/properties/inputPreparation/properties/analysis/properties/faces/items/properties/height/exclusiveMinimum",keyword:"exclusiveMinimum",params:{comparison: ">", limit: 0},message:"must be > 0"};
+if(vErrors === null){
+vErrors = [err858];
+}
+else {
+vErrors.push(err858);
+}
+errors++;
+}
+}
+else {
+const err859 = {instancePath:instancePath+"/inputPreparation/analysis/faces/" + i35+"/height",schemaPath:"#/properties/inputPreparation/properties/analysis/properties/faces/items/properties/height/type",keyword:"type",params:{type: "number"},message:"must be number"};
+if(vErrors === null){
+vErrors = [err859];
+}
+else {
+vErrors.push(err859);
+}
+errors++;
+}
+}
+}
+else {
+const err860 = {instancePath:instancePath+"/inputPreparation/analysis/faces/" + i35,schemaPath:"#/properties/inputPreparation/properties/analysis/properties/faces/items/type",keyword:"type",params:{type: "object"},message:"must be object"};
+if(vErrors === null){
+vErrors = [err860];
+}
+else {
+vErrors.push(err860);
+}
+errors++;
+}
+}
+}
+else {
+const err861 = {instancePath:instancePath+"/inputPreparation/analysis/faces",schemaPath:"#/properties/inputPreparation/properties/analysis/properties/faces/type",keyword:"type",params:{type: "array"},message:"must be array"};
+if(vErrors === null){
+vErrors = [err861];
+}
+else {
+vErrors.push(err861);
+}
+errors++;
+}
+}
+if(data252.warnings !== undefined){
+let data259 = data252.warnings;
+if(Array.isArray(data259)){
+if(data259.length > 8){
+const err862 = {instancePath:instancePath+"/inputPreparation/analysis/warnings",schemaPath:"#/properties/inputPreparation/properties/analysis/properties/warnings/maxItems",keyword:"maxItems",params:{limit: 8},message:"must NOT have more than 8 items"};
+if(vErrors === null){
+vErrors = [err862];
+}
+else {
+vErrors.push(err862);
+}
+errors++;
+}
+const len34 = data259.length;
+for(let i36=0; i36<len34; i36++){
+let data260 = data259[i36];
+if(!(((((data260 === "DETECTOR_UNAVAILABLE") || (data260 === "FACE_UNCONFIRMED")) || (data260 === "SMALL_FACE")) || (data260 === "EDGE_CROPPED_POSSIBLE")) || (data260 === "OCCLUDED_USER_REPORTED"))){
+const err863 = {instancePath:instancePath+"/inputPreparation/analysis/warnings/" + i36,schemaPath:"#/properties/inputPreparation/properties/analysis/properties/warnings/items/enum",keyword:"enum",params:{allowedValues: schema31.properties.inputPreparation.properties.analysis.properties.warnings.items.enum},message:"must be equal to one of the allowed values"};
+if(vErrors === null){
+vErrors = [err863];
+}
+else {
+vErrors.push(err863);
+}
+errors++;
+}
+}
+}
+else {
+const err864 = {instancePath:instancePath+"/inputPreparation/analysis/warnings",schemaPath:"#/properties/inputPreparation/properties/analysis/properties/warnings/type",keyword:"type",params:{type: "array"},message:"must be array"};
+if(vErrors === null){
+vErrors = [err864];
+}
+else {
+vErrors.push(err864);
+}
+errors++;
+}
+}
+if(data252.crop !== undefined){
+let data261 = data252.crop;
+if(data261 && typeof data261 == "object" && !Array.isArray(data261)){
+if(data261.x === undefined){
+const err865 = {instancePath:instancePath+"/inputPreparation/analysis/crop",schemaPath:"#/properties/inputPreparation/properties/analysis/properties/crop/required",keyword:"required",params:{missingProperty: "x"},message:"must have required property '"+"x"+"'"};
+if(vErrors === null){
+vErrors = [err865];
+}
+else {
+vErrors.push(err865);
+}
+errors++;
+}
+if(data261.y === undefined){
+const err866 = {instancePath:instancePath+"/inputPreparation/analysis/crop",schemaPath:"#/properties/inputPreparation/properties/analysis/properties/crop/required",keyword:"required",params:{missingProperty: "y"},message:"must have required property '"+"y"+"'"};
+if(vErrors === null){
+vErrors = [err866];
+}
+else {
+vErrors.push(err866);
+}
+errors++;
+}
+if(data261.width === undefined){
+const err867 = {instancePath:instancePath+"/inputPreparation/analysis/crop",schemaPath:"#/properties/inputPreparation/properties/analysis/properties/crop/required",keyword:"required",params:{missingProperty: "width"},message:"must have required property '"+"width"+"'"};
+if(vErrors === null){
+vErrors = [err867];
+}
+else {
+vErrors.push(err867);
+}
+errors++;
+}
+if(data261.height === undefined){
+const err868 = {instancePath:instancePath+"/inputPreparation/analysis/crop",schemaPath:"#/properties/inputPreparation/properties/analysis/properties/crop/required",keyword:"required",params:{missingProperty: "height"},message:"must have required property '"+"height"+"'"};
+if(vErrors === null){
+vErrors = [err868];
+}
+else {
+vErrors.push(err868);
+}
+errors++;
+}
+for(const key46 in data261){
+if(!((((key46 === "x") || (key46 === "y")) || (key46 === "width")) || (key46 === "height"))){
+const err869 = {instancePath:instancePath+"/inputPreparation/analysis/crop",schemaPath:"#/properties/inputPreparation/properties/analysis/properties/crop/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key46},message:"must NOT have additional properties"};
+if(vErrors === null){
+vErrors = [err869];
+}
+else {
+vErrors.push(err869);
+}
+errors++;
+}
+}
+if(data261.x !== undefined){
+let data262 = data261.x;
+if(!(((typeof data262 == "number") && (!(data262 % 1) && !isNaN(data262))) && (isFinite(data262)))){
+const err870 = {instancePath:instancePath+"/inputPreparation/analysis/crop/x",schemaPath:"#/properties/inputPreparation/properties/analysis/properties/crop/properties/x/type",keyword:"type",params:{type: "integer"},message:"must be integer"};
+if(vErrors === null){
+vErrors = [err870];
+}
+else {
+vErrors.push(err870);
+}
+errors++;
+}
+if((typeof data262 == "number") && (isFinite(data262))){
+if(data262 > 4096 || isNaN(data262)){
+const err871 = {instancePath:instancePath+"/inputPreparation/analysis/crop/x",schemaPath:"#/properties/inputPreparation/properties/analysis/properties/crop/properties/x/maximum",keyword:"maximum",params:{comparison: "<=", limit: 4096},message:"must be <= 4096"};
+if(vErrors === null){
+vErrors = [err871];
+}
+else {
+vErrors.push(err871);
+}
+errors++;
+}
+if(data262 < 0 || isNaN(data262)){
+const err872 = {instancePath:instancePath+"/inputPreparation/analysis/crop/x",schemaPath:"#/properties/inputPreparation/properties/analysis/properties/crop/properties/x/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0},message:"must be >= 0"};
+if(vErrors === null){
+vErrors = [err872];
+}
+else {
+vErrors.push(err872);
+}
+errors++;
+}
+}
+}
+if(data261.y !== undefined){
+let data263 = data261.y;
+if(!(((typeof data263 == "number") && (!(data263 % 1) && !isNaN(data263))) && (isFinite(data263)))){
+const err873 = {instancePath:instancePath+"/inputPreparation/analysis/crop/y",schemaPath:"#/properties/inputPreparation/properties/analysis/properties/crop/properties/y/type",keyword:"type",params:{type: "integer"},message:"must be integer"};
+if(vErrors === null){
+vErrors = [err873];
+}
+else {
+vErrors.push(err873);
+}
+errors++;
+}
+if((typeof data263 == "number") && (isFinite(data263))){
+if(data263 > 4096 || isNaN(data263)){
+const err874 = {instancePath:instancePath+"/inputPreparation/analysis/crop/y",schemaPath:"#/properties/inputPreparation/properties/analysis/properties/crop/properties/y/maximum",keyword:"maximum",params:{comparison: "<=", limit: 4096},message:"must be <= 4096"};
+if(vErrors === null){
+vErrors = [err874];
+}
+else {
+vErrors.push(err874);
+}
+errors++;
+}
+if(data263 < 0 || isNaN(data263)){
+const err875 = {instancePath:instancePath+"/inputPreparation/analysis/crop/y",schemaPath:"#/properties/inputPreparation/properties/analysis/properties/crop/properties/y/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0},message:"must be >= 0"};
+if(vErrors === null){
+vErrors = [err875];
+}
+else {
+vErrors.push(err875);
+}
+errors++;
+}
+}
+}
+if(data261.width !== undefined){
+let data264 = data261.width;
+if(!(((typeof data264 == "number") && (!(data264 % 1) && !isNaN(data264))) && (isFinite(data264)))){
+const err876 = {instancePath:instancePath+"/inputPreparation/analysis/crop/width",schemaPath:"#/properties/inputPreparation/properties/analysis/properties/crop/properties/width/type",keyword:"type",params:{type: "integer"},message:"must be integer"};
+if(vErrors === null){
+vErrors = [err876];
+}
+else {
+vErrors.push(err876);
+}
+errors++;
+}
+if((typeof data264 == "number") && (isFinite(data264))){
+if(data264 > 4096 || isNaN(data264)){
+const err877 = {instancePath:instancePath+"/inputPreparation/analysis/crop/width",schemaPath:"#/properties/inputPreparation/properties/analysis/properties/crop/properties/width/maximum",keyword:"maximum",params:{comparison: "<=", limit: 4096},message:"must be <= 4096"};
+if(vErrors === null){
+vErrors = [err877];
+}
+else {
+vErrors.push(err877);
+}
+errors++;
+}
+if(data264 < 1 || isNaN(data264)){
+const err878 = {instancePath:instancePath+"/inputPreparation/analysis/crop/width",schemaPath:"#/properties/inputPreparation/properties/analysis/properties/crop/properties/width/minimum",keyword:"minimum",params:{comparison: ">=", limit: 1},message:"must be >= 1"};
+if(vErrors === null){
+vErrors = [err878];
+}
+else {
+vErrors.push(err878);
+}
+errors++;
+}
+}
+}
+if(data261.height !== undefined){
+let data265 = data261.height;
+if(!(((typeof data265 == "number") && (!(data265 % 1) && !isNaN(data265))) && (isFinite(data265)))){
+const err879 = {instancePath:instancePath+"/inputPreparation/analysis/crop/height",schemaPath:"#/properties/inputPreparation/properties/analysis/properties/crop/properties/height/type",keyword:"type",params:{type: "integer"},message:"must be integer"};
+if(vErrors === null){
+vErrors = [err879];
+}
+else {
+vErrors.push(err879);
+}
+errors++;
+}
+if((typeof data265 == "number") && (isFinite(data265))){
+if(data265 > 4096 || isNaN(data265)){
+const err880 = {instancePath:instancePath+"/inputPreparation/analysis/crop/height",schemaPath:"#/properties/inputPreparation/properties/analysis/properties/crop/properties/height/maximum",keyword:"maximum",params:{comparison: "<=", limit: 4096},message:"must be <= 4096"};
+if(vErrors === null){
+vErrors = [err880];
+}
+else {
+vErrors.push(err880);
+}
+errors++;
+}
+if(data265 < 1 || isNaN(data265)){
+const err881 = {instancePath:instancePath+"/inputPreparation/analysis/crop/height",schemaPath:"#/properties/inputPreparation/properties/analysis/properties/crop/properties/height/minimum",keyword:"minimum",params:{comparison: ">=", limit: 1},message:"must be >= 1"};
+if(vErrors === null){
+vErrors = [err881];
+}
+else {
+vErrors.push(err881);
+}
+errors++;
+}
+}
+}
+}
+else {
+const err882 = {instancePath:instancePath+"/inputPreparation/analysis/crop",schemaPath:"#/properties/inputPreparation/properties/analysis/properties/crop/type",keyword:"type",params:{type: "object"},message:"must be object"};
+if(vErrors === null){
+vErrors = [err882];
+}
+else {
+vErrors.push(err882);
+}
+errors++;
+}
+}
+if(data252.analysisSize !== undefined){
+let data266 = data252.analysisSize;
+if(data266 && typeof data266 == "object" && !Array.isArray(data266)){
+if(data266.width === undefined){
+const err883 = {instancePath:instancePath+"/inputPreparation/analysis/analysisSize",schemaPath:"#/properties/inputPreparation/properties/analysis/properties/analysisSize/required",keyword:"required",params:{missingProperty: "width"},message:"must have required property '"+"width"+"'"};
+if(vErrors === null){
+vErrors = [err883];
+}
+else {
+vErrors.push(err883);
+}
+errors++;
+}
+if(data266.height === undefined){
+const err884 = {instancePath:instancePath+"/inputPreparation/analysis/analysisSize",schemaPath:"#/properties/inputPreparation/properties/analysis/properties/analysisSize/required",keyword:"required",params:{missingProperty: "height"},message:"must have required property '"+"height"+"'"};
+if(vErrors === null){
+vErrors = [err884];
+}
+else {
+vErrors.push(err884);
+}
+errors++;
+}
+for(const key47 in data266){
+if(!((key47 === "width") || (key47 === "height"))){
+const err885 = {instancePath:instancePath+"/inputPreparation/analysis/analysisSize",schemaPath:"#/properties/inputPreparation/properties/analysis/properties/analysisSize/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key47},message:"must NOT have additional properties"};
+if(vErrors === null){
+vErrors = [err885];
+}
+else {
+vErrors.push(err885);
+}
+errors++;
+}
+}
+if(data266.width !== undefined){
+let data267 = data266.width;
+if(!(((typeof data267 == "number") && (!(data267 % 1) && !isNaN(data267))) && (isFinite(data267)))){
+const err886 = {instancePath:instancePath+"/inputPreparation/analysis/analysisSize/width",schemaPath:"#/properties/inputPreparation/properties/analysis/properties/analysisSize/properties/width/type",keyword:"type",params:{type: "integer"},message:"must be integer"};
+if(vErrors === null){
+vErrors = [err886];
+}
+else {
+vErrors.push(err886);
+}
+errors++;
+}
+if((typeof data267 == "number") && (isFinite(data267))){
+if(data267 > 4096 || isNaN(data267)){
+const err887 = {instancePath:instancePath+"/inputPreparation/analysis/analysisSize/width",schemaPath:"#/properties/inputPreparation/properties/analysis/properties/analysisSize/properties/width/maximum",keyword:"maximum",params:{comparison: "<=", limit: 4096},message:"must be <= 4096"};
+if(vErrors === null){
+vErrors = [err887];
+}
+else {
+vErrors.push(err887);
+}
+errors++;
+}
+if(data267 < 1 || isNaN(data267)){
+const err888 = {instancePath:instancePath+"/inputPreparation/analysis/analysisSize/width",schemaPath:"#/properties/inputPreparation/properties/analysis/properties/analysisSize/properties/width/minimum",keyword:"minimum",params:{comparison: ">=", limit: 1},message:"must be >= 1"};
+if(vErrors === null){
+vErrors = [err888];
+}
+else {
+vErrors.push(err888);
+}
+errors++;
+}
+}
+}
+if(data266.height !== undefined){
+let data268 = data266.height;
+if(!(((typeof data268 == "number") && (!(data268 % 1) && !isNaN(data268))) && (isFinite(data268)))){
+const err889 = {instancePath:instancePath+"/inputPreparation/analysis/analysisSize/height",schemaPath:"#/properties/inputPreparation/properties/analysis/properties/analysisSize/properties/height/type",keyword:"type",params:{type: "integer"},message:"must be integer"};
+if(vErrors === null){
+vErrors = [err889];
+}
+else {
+vErrors.push(err889);
+}
+errors++;
+}
+if((typeof data268 == "number") && (isFinite(data268))){
+if(data268 > 4096 || isNaN(data268)){
+const err890 = {instancePath:instancePath+"/inputPreparation/analysis/analysisSize/height",schemaPath:"#/properties/inputPreparation/properties/analysis/properties/analysisSize/properties/height/maximum",keyword:"maximum",params:{comparison: "<=", limit: 4096},message:"must be <= 4096"};
+if(vErrors === null){
+vErrors = [err890];
+}
+else {
+vErrors.push(err890);
+}
+errors++;
+}
+if(data268 < 1 || isNaN(data268)){
+const err891 = {instancePath:instancePath+"/inputPreparation/analysis/analysisSize/height",schemaPath:"#/properties/inputPreparation/properties/analysis/properties/analysisSize/properties/height/minimum",keyword:"minimum",params:{comparison: ">=", limit: 1},message:"must be >= 1"};
+if(vErrors === null){
+vErrors = [err891];
+}
+else {
+vErrors.push(err891);
+}
+errors++;
+}
+}
+}
+}
+else {
+const err892 = {instancePath:instancePath+"/inputPreparation/analysis/analysisSize",schemaPath:"#/properties/inputPreparation/properties/analysis/properties/analysisSize/type",keyword:"type",params:{type: "object"},message:"must be object"};
+if(vErrors === null){
+vErrors = [err892];
+}
+else {
+vErrors.push(err892);
+}
+errors++;
+}
+}
+}
+else {
+const err893 = {instancePath:instancePath+"/inputPreparation/analysis",schemaPath:"#/properties/inputPreparation/properties/analysis/type",keyword:"type",params:{type: "object"},message:"must be object"};
+if(vErrors === null){
+vErrors = [err893];
+}
+else {
+vErrors.push(err893);
+}
+errors++;
+}
+}
+}
+else {
+const err894 = {instancePath:instancePath+"/inputPreparation",schemaPath:"#/properties/inputPreparation/type",keyword:"type",params:{type: "object"},message:"must be object"};
+if(vErrors === null){
+vErrors = [err894];
+}
+else {
+vErrors.push(err894);
+}
+errors++;
+}
+}
+}
+else {
+const err895 = {instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"},message:"must be object"};
+if(vErrors === null){
+vErrors = [err895];
+}
+else {
+vErrors.push(err895);
 }
 errors++;
 }

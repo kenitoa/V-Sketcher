@@ -18,6 +18,14 @@ export function validateProject(value: unknown): ValidationIssue[] {
   };
   ids.add(p.projectId);
   const assets = unique(p.assets,'/assets'); const parts = unique(p.parts,'/parts'); const groups = unique(p.groups,'/groups');
+  if (p.inputPreparation) {
+    const i=p.inputPreparation;const o=assets.get(i.originalAssetId),n=assets.get(i.normalizedAssetId),s=assets.get(i.selectedAssetId),a=assets.get(i.analysisAssetId);
+    if (p.schemaVersion.minor<2 || !o || !n || !s || !a || o.kind!=='original-image' || !p.inputAssetIds.includes(o.id) || !n.parentAssetIds.includes(o.id) || !s.parentAssetIds.includes(n.id) || !a.parentAssetIds.includes(s.id)) issue('E_INPUT_REFERENCE','/inputPreparation');
+    if (o && (o.dimensions.width!==i.probe.originalSize.width || o.dimensions.height!==i.probe.originalSize.height) || n && (n.dimensions.width!==i.probe.size.width || n.dimensions.height!==i.probe.size.height) || s && (s.dimensions.width!==i.analysis.crop.width || s.dimensions.height!==i.analysis.crop.height) || a && (a.dimensions.width!==i.analysis.analysisSize.width || a.dimensions.height!==i.analysis.analysisSize.height)) issue('E_INPUT_GEOMETRY','/inputPreparation');
+    try { inverse(i.probe.sourceToNormalized); } catch { issue('E_INPUT_GEOMETRY','/inputPreparation/probe'); }
+    const inside=(r:{ x:number;y:number;width:number;height:number }) => r.x+r.width<=i.probe.size.width && r.y+r.height<=i.probe.size.height;
+    if (![i.selection.rect,i.analysis.crop,...i.selection.masks.map(m=>m.rect),...i.probe.candidates.map(c=>c.rect)].every(inside) || i.analysis.faces.length>1) issue('E_INPUT_REGION','/inputPreparation');
+  }
   const parameters = unique(p.parameters,'/parameters'); unique(p.partBindings,'/partBindings'); unique(p.inputBindings,'/inputBindings');
   const expressions = unique(p.expressions,'/expressions'); unique([p.runtimeProfile],'/runtimeProfile'); unique(p.broadcastProfiles,'/broadcastProfiles'); unique(p.exportProfiles,'/exportProfiles');
   const matrix = (m: Affine, location: string): void => { try { inverse(m); } catch { issue('E_TRANSFORM_INVALID',location); } };

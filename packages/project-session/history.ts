@@ -11,6 +11,7 @@ function restore(flow:Workflow,snapshot:Project,label:string):void {
   flow.edit(label,draft => {
     const protectedFields = new Set(['projectId','sourceType','createdAt','modifiedAt','revision','savedRevision','schemaVersion']);
     if (!snapshot.motion) delete draft.motion;
+    if (!snapshot.inputPreparation) delete draft.inputPreparation;
     for (const [key,value] of Object.entries(snapshot)) if (!protectedFields.has(key)) (draft as unknown as Record<string,unknown>)[key] = structuredClone(value);
   });
 }

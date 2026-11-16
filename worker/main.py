@@ -57,4 +57,13 @@ def serve(source,sink):
         sink.write((json.dumps(reply,separators=(',',':'))+'\n').encode());sink.flush()
         if shutdown or len(line)>MAX_BYTES:return
 
-if __name__=='__main__':serve(sys.stdin.buffer,sys.stdout.buffer)
+if __name__=='__main__':
+    if '--image-input' in sys.argv:
+        if getattr(sys,'frozen',False):
+            from image_input import cli
+        else:
+            import importlib.util
+            spec=importlib.util.spec_from_file_location('image_input',Path(__file__).with_name('image_input.py'))
+            module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module);cli=module.cli
+        cli()
+    else:serve(sys.stdin.buffer,sys.stdout.buffer)

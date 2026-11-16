@@ -36,8 +36,8 @@ const motion = object({ version:{ const:1 },faceWidth:positive,maxRollDegrees:{ 
   settings:object({ strength:{ type:'number',minimum:0,maximum:1 },smoothingMs:integer(1000),pose:array(object({ parameterId:id,value:number }),128) }),
   meshes:array(object({ partId:id,pivot:pair,yawParameterId:nullable(id),rollParameterId:nullable(id),curve:choice('linear','smoothstep'),
     vertices:{ ...array(object({ position:pair,weight:{ type:'number',minimum:0,maximum:1 },minimum:pair,maximum:pair }),1024),minItems:3 },triangles:{ ...array(integer(1023),6144),minItems:3 } }),64) });
-export const PROJECT_SCHEMA = { $schema:'https://json-schema.org/draft/2020-12/schema', $id:'https://2dsketcher.local/schema/project-1.1',
-  ...object({ projectId:id,schemaVersion:object({ major:{ const:1 },minor:{ enum:[0,1] } }),displayName:string(),sourceType:choice('parts','single-image','split-image'),
+export const PROJECT_SCHEMA = { $schema:'https://json-schema.org/draft/2020-12/schema', $id:'https://2dsketcher.local/schema/project-1.2',
+  ...object({ projectId:id,schemaVersion:object({ major:{ const:1 },minor:{ enum:[0,1,2] } }),displayName:string(),sourceType:choice('parts','single-image','split-image'),
     createdAt:{ ...string(24),pattern:'^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$' },modifiedAt:{ ...string(24),pattern:'^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$' },
     revision,savedRevision:nullable(revision),canvas:size,inputAssetIds:{ ...array(id),uniqueItems:true },assets:array(asset),parts:array(part,64),
     groups:array(object({ id,displayName:string(),parentGroupId:nullable(id),visible:boolean }),128),parameters:array(parameter,128),
@@ -51,5 +51,19 @@ export const PROJECT_SCHEMA = { $schema:'https://json-schema.org/draft/2020-12/s
     provenance:object({ preparation:string(512),limitations:array(string(512),128) }),derivedProjects:array(object({ projectId:id,relation:choice('3d','generated-variant') }),32) }) };
 // The optional motion extension is written only with minor 1; legacy 1.0 remains readable.
 ((PROJECT_SCHEMA as Record<string,unknown>).properties as Record<string,Schema>).motion = motion;
+const INPUT_SCHEMA=(() => {
+const object=(properties:Record<string,unknown>) => ({ type:'object',additionalProperties:false,properties,required:Object.keys(properties) });
+const number={ type:'number' };const integer={ type:'integer',minimum:0,maximum:4096 };const size=object({ width:{ ...integer,minimum:1 },height:{ ...integer,minimum:1 } });
+const rect=object({ x:integer,y:integer,width:{ ...integer,minimum:1 },height:{ ...integer,minimum:1 } });
+const face=object({ x:{ ...number,minimum:0,maximum:1024 },y:{ ...number,minimum:0,maximum:1024 },width:{ ...number,exclusiveMinimum:0,maximum:1024 },height:{ ...number,exclusiveMinimum:0,maximum:1024 } });
+const id={ type:'string',pattern:'^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$' };const array=(items:unknown,maxItems:number) => ({ type:'array',items,maxItems });
+const INPUT_SCHEMA=object({ version:{ const:1 },originalAssetId:id,normalizedAssetId:id,selectedAssetId:id,analysisAssetId:id,
+  probe:object({ detectorAvailable:{ type:'boolean' },originalSize:size,size,orientation:{ type:'integer',minimum:1,maximum:8 },iccConverted:{ type:'boolean' },sourceToNormalized:{ type:'array',items:number,minItems:6,maxItems:6 },reduced:{ type:'boolean' },estimatedWorkingBytes:{ type:'integer',minimum:0,maximum:384*1024*1024 },format:{ enum:['png','jpeg'] },hasAlpha:{ type:'boolean' },faceCount:{ type:'integer',minimum:0,maximum:8 },candidates:array(object({ rect,method:{ enum:['alpha','face','manual-required'] } }),8) }),
+  selection:object({ rect,backgroundTolerance:{ anyOf:[{ type:'null' },{ type:'integer',minimum:0,maximum:80 }] },masks:array(object({ mode:{ enum:['erase','restore'] },rect }),64),occluded:{ type:'boolean' } }),
+  analysis:object({ faces:array(face,8),warnings:array({ enum:['DETECTOR_UNAVAILABLE','FACE_UNCONFIRMED','SMALL_FACE','EDGE_CROPPED_POSSIBLE','OCCLUDED_USER_REPORTED'] },8),crop:rect,analysisSize:size }) });
+
+return INPUT_SCHEMA;
+})();
+((PROJECT_SCHEMA as Record<string,unknown>).properties as Record<string,unknown>).inputPreparation = INPUT_SCHEMA;
 export const MACHINE_SCHEMA = { $schema:'https://json-schema.org/draft/2020-12/schema', ...object({ schemaVersion:{ const:1 },projectId:id,
   cameraId:nullable(string(512)),microphoneId:nullable(string(512)),calibrations:array(object({ bindingId:id,inputRange:pair }),128) }) };

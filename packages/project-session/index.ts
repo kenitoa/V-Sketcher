@@ -1,3 +1,5 @@
+import { InputSession } from '../image-input/session';
+import type { InputProcessor } from '../image-input/types';
 import { readFile, mkdir } from 'node:fs/promises';
 import { join, basename, resolve } from 'node:path';
 import { randomUUID } from 'node:crypto';
@@ -14,9 +16,9 @@ import { atomicBundle, storageError, type AtomicOptions } from '../project-stora
 import { contentKey, duplicateProject, EditHistory } from './history';
 import { parseSessionCommand, type SessionView, type SessionCommand, type SessionReply, type RecoveryComparison } from './contracts';
 export type LeaveDecision = 'save' | 'discard' | 'cancel';
-export interface ProjectDialogs { openProject():Promise<string | null>; saveProject(suggested:string):Promise<string | null>; relinkImage():Promise<string | null>; unsaved(name:string):Promise<LeaveDecision>; }
-export interface SessionOptions { dataDir:string; dialogs:ProjectDialogs; bundled:Project; bundledBytes:ReadonlyMap<string,Buffer>; now?:()=>number; autoTimers?:boolean; saveFault?:AtomicOptions['fault']; }
-interface Document { loadedMinor:number;upgradeSource:string | null;id:string; flow:Workflow; history:EditHistory; target:string | null; expectedHash:string | null; savedKey:string | null; label:string; mode:'editable'; available:Set<string>; unresolved:Set<string>; lastRecoveryAt:string | null; recoveryKey:string | null; }
+export interface ProjectDialogs { chooseImage?():Promise<string | null>; openProject():Promise<string | null>; saveProject(suggested:string):Promise<string | null>; relinkImage():Promise<string | null>; unsaved(name:string):Promise<LeaveDecision>; }
+export interface SessionOptions { inputProcessor?:InputProcessor; dataDir:string; dialogs:ProjectDialogs; bundled:Project; bundledBytes:ReadonlyMap<string,Buffer>; now?:()=>number; autoTimers?:boolean; saveFault?:AtomicOptions['fault']; }
+interface Document { input?:InputSession; loadedMinor:number;upgradeSource:string | null;id:string; flow:Workflow; history:EditHistory; target:string | null; expectedHash:string | null; savedKey:string | null; label:string; mode:'editable'; available:Set<string>; unresolved:Set<string>; lastRecoveryAt:string | null; recoveryKey:string | null; }
 export class ProjectSession {
   private viewSequence = 0;
   readonly cache:ResourceCache; readonly catalog:ProjectCatalog;
@@ -37,12 +39,12 @@ export class ProjectSession {
     this.grants.set(token,allowed);
     try { const result = projectToPreview(copy,asset => `assets/session/${token}/${asset.fingerprint.sha256}.${asset.mediaType === 'image/png' ? 'png' : 'jpg'}`); return result.layers.length ? result : null; } catch { return null; }
   }
-  async resource(token:string,name:string):Promise<Buffer | null> { const asset = this.grants.get(token)?.get(name); return asset ? this.cache.read(asset) : null; }
+  async resource(token:string,name:string):Promise<Buffer | null> { const asset = this.grants.get(token)?.get(name); return asset ? this.cache.read(asset) : this.document?.input?.resource(token,name) ?? null; }
   view():SessionView {
     const d = this.document; const p = d?.flow.project() ?? null; const scene = d && p ? this.scene(p,d.available,d.id) : null;
     const renderKey = scene ? sha256(Buffer.from(JSON.stringify({ canvas:scene.canvas,layers:scene.layers }))) : 'empty';
-    const original = p?.assets.find(a => a.id === p.inputAssetIds[0] && d?.available.has(a.id));
-    return { sequence:++this.viewSequence,sessionId:d?.id ?? null,mode:this.readOnly ? 'read-only' : d ? 'editable' : 'empty',project:p,label:d?.label ?? this.readOnlyLabel,dirty:this.dirty(),saving:this.saving !== null,canUndo:!this.saving && !!d?.history.canUndo,canRedo:!this.saving && !!d?.history.canRedo,
+    const original = p?.assets.find(a => a.id === (p.inputPreparation?.normalizedAssetId ?? p.inputAssetIds[0]) && d?.available.has(a.id));
+    return { input:d?.input?.view() ?? null,sequence:++this.viewSequence,sessionId:d?.id ?? null,mode:this.readOnly ? 'read-only' : d ? 'editable' : 'empty',project:p,label:d?.label ?? this.readOnlyLabel,dirty:this.dirty(),saving:this.saving !== null,canUndo:!this.saving && !!d?.history.canUndo,canRedo:!this.saving && !!d?.history.canRedo,
       scene,originalScene:original && p && d ? originalScene([p.canvas.width,p.canvas.height],{ x:original.dimensions.width,y:original.dimensions.height },`assets/session/${d.id}/${original.fingerprint.sha256}.${original.mediaType === 'image/png' ? 'png' : 'jpg'}`) : null,jobs:d?.flow.view().jobs ?? [],renderKey,issues:d && p ? p.assets.filter(a => !d.available.has(a.id) || d.unresolved.has(a.id)).map(a => ({ assetId:a.id,code:'E_RESOURCE_MISSING' })) : [],errorCode:this.lastError,lastRecoveryAt:d?.lastRecoveryAt ?? null,
       recent:this.catalog.recent().map(({ id,displayName,openedAt,sourceType }) => ({ id,displayName,openedAt,sourceType })),
       recoveries:this.catalog.recoveries().slice(0,30).map(r => ({ id:r.id,displayName:r.displayName,revision:r.revision,createdAt:r.createdAt,kind:r.kind,reason:r.reason,originalLabel:r.sourcePath ? basename(r.sourcePath) : null,pending:r.pending })),
@@ -66,7 +68,7 @@ export class ProjectSession {
       if (bundle && project) await this.cache.ingest(bundle);
       const available = project ? await this.cache.available(project) : new Set<string>();
       if (previous && previous.flow.project().revision !== permit.revision) throw new Error('E_EDIT_STALE');
-      if (previous) { await previous.flow.close(); if (permit.discard || !this.dirty(previous)) { try { await this.catalog.acknowledge(previous.flow.project().projectId); } catch { /* valid snapshots remain available */ } } this.grants.delete(previous.id); }
+      if (previous) { previous.input?.dispose();await previous.flow.close(); if (permit.discard || !this.dirty(previous)) { try { await this.catalog.acknowledge(previous.flow.project().projectId); } catch { /* valid snapshots remain available */ } } this.grants.delete(previous.id); }
       this.cancelTimer(); this.document = null; this.readOnly = null; this.readOnlyLabel = '';
       if (bundle?.mode === 'read-only') { this.readOnly = bundle; this.readOnlyLabel = target ? basename(target) : '읽기 전용'; }
       else if (project) {
@@ -74,12 +76,14 @@ export class ProjectSession {
         flow.subscribe(() => this.emit());
         this.document = { loadedMinor:project.schemaVersion.minor,upgradeSource:null,id:randomUUID(),flow,history:new EditHistory(flow),target:!restored && complete ? target : null,expectedHash:!restored && complete ? bundle?.fileHash ?? null : null,
           savedKey:target && !restored && complete ? contentKey(project) : null,label:restored ? '복구본 · 새 파일로 저장' : target ? basename(target) : '저장 위치 없음',mode:'editable',available,unresolved:new Set(bundle?.issues.map(issue => issue.assetId) ?? []),lastRecoveryAt:null,recoveryKey:null };
+        const d=this.document;if(this.options.inputProcessor && this.options.dialogs.chooseImage)d.input=new InputSession({ flow,cache:this.cache,current:()=>this.document===d && !this.stopped,checkpoint:()=>this.checkpoint('그림/영역 변경 전'),commit:async change=>{d.history.change('그림 대상 적용',change);d.available=await this.cache.available(d.flow.project());d.unresolved.clear();this.changed();},emit:()=>this.emit() },this.options.inputProcessor,()=>this.options.dialogs.chooseImage!());
         if (target && !restored) { try { await this.catalog.addRecent(target,project); } catch { /* opening is independent from recent-list persistence */ } }
       }
       this.lastError = null; this.lastEdit = this.now(); this.lastAuto = this.now(); this.scheduleAuto(); this.emit(); return true;
     } finally { this.transitioning = false; }
   }
   async newProject(name:string,sourceType:SourceType):Promise<boolean> { const permit = await this.permission(); if (!permit) return false; return this.activate(createProject(name.trim() || '새 프로젝트',sourceType),null,null,permit); }
+  dropImage(file:string):SessionReply { const input=this.editable().input;if(!input)throw new Error('E_INPUT_UNAVAILABLE');input.drop(file);return {view:this.view()}; }
   async openFile(file:string):Promise<boolean> { const bundle = await readBundle(file,true); const permit = await this.permission(); if (!permit) return false; return this.activate(bundle.project,bundle,resolve(file),permit); }
   async save(saveAs:boolean):Promise<boolean> {
     if (this.saving) return this.saving; const d = this.editable(); d.history.settle();
@@ -135,7 +139,7 @@ export class ProjectSession {
     const d = this.editable(); const revision = d.flow.project().revision; await this.checkpoint('예제 캐릭터 삽입 전'); const source = this.options.bundled;
     for (const asset of source.assets) { const data = this.options.bundledBytes.get(asset.id); if (!data) throw new Error('E_SAMPLE_RESOURCE'); await this.cache.put(asset,data); }
     if (this.document !== d || d.flow.project().revision !== revision) throw new Error('E_EDIT_STALE');
-    d.history.change('고급 예제 캐릭터',draft => { for (const field of ['canvas','assets','parts','groups','parameters','partBindings','inputBindings','expressions','runtimeProfile','broadcastProfiles','exportProfiles','inputAssetIds'] as const) (draft as unknown as Record<string,unknown>)[field] = structuredClone(source[field]); if (source.motion) { draft.schemaVersion.minor = 1; draft.motion = structuredClone(source.motion); } else delete draft.motion; draft.provenance = { preparation:'Bundled authored example; not route-specific automatic preparation',limitations:source.provenance.limitations }; });
+    d.history.change('고급 예제 캐릭터',draft => { for (const field of ['canvas','assets','parts','groups','parameters','partBindings','inputBindings','expressions','runtimeProfile','broadcastProfiles','exportProfiles','inputAssetIds'] as const) (draft as unknown as Record<string,unknown>)[field] = structuredClone(source[field]); if (source.motion) { draft.schemaVersion.minor = Math.max(draft.schemaVersion.minor,source.schemaVersion.minor); draft.motion = structuredClone(source.motion); } else delete draft.motion; delete draft.inputPreparation;draft.provenance = { preparation:'Bundled authored example; not route-specific automatic preparation',limitations:source.provenance.limitations }; });
     d.available = await this.cache.available(d.flow.project()); d.unresolved.clear(); this.changed();
   }
   private async relink(assetId:string):Promise<void> {
@@ -161,7 +165,8 @@ export class ProjectSession {
   async dispatch(input:unknown):Promise<SessionReply> {
     try {
       const command = parseSessionCommand(input); let value:string | undefined; let preview:RecoveryComparison | undefined;
-      if (command.type === 'new') await this.newProject(command.name,command.sourceType);
+      if (['import-image','input-cancel','input-retry','input-apply'].includes(command.type)) { const input=this.editable().input;if(!input)throw new Error('E_INPUT_UNAVAILABLE');if(command.type==='import-image')await input.choose();else if(command.type==='input-cancel')input.cancel();else if(command.type==='input-retry')input.retry();else if(command.type==='input-apply')await input.apply(command.draftId,command.selection); }
+      else if (command.type === 'new') await this.newProject(command.name,command.sourceType);
       else if (command.type === 'open') { const file = await this.options.dialogs.openProject(); if (file) await this.openFile(file); }
       else if (command.type === 'recent') { const entry = this.catalog.recent().find(r => r.id === command.id); if (!entry) throw new Error('E_RECENT_UNKNOWN'); await this.openFile(entry.path); }
       else if (command.type === 'remove-recent') await this.catalog.removeRecent(command.id);
@@ -177,7 +182,7 @@ export class ProjectSession {
         const d = this.editable(); if (command.expectedRevision !== d.flow.project().revision) throw new Error('E_EDIT_STALE');
         if (command.type === 'prepare-motion') { await this.checkpoint('움직임 연결 준비 전'); if (command.expectedRevision !== d.flow.project().revision) throw new Error('E_EDIT_STALE'); }
         d.history.change('움직임 설정',p => {
-          if (command.type === 'prepare-motion') { p.schemaVersion.minor = 1; p.motion = authorRig(p); }
+          if (command.type === 'prepare-motion') { p.schemaVersion.minor = Math.max(1,p.schemaVersion.minor); p.motion = authorRig(p); }
           else if (command.type === 'motion-settings') { if (!p.motion) throw new Error('E_MOTION_UNSUPPORTED'); p.motion.settings = { strength:command.strength,smoothingMs:command.smoothingMs,pose:structuredClone(command.pose) }; }
           else { const param = p.parameters.find(v => v.id === command.id); if (!param) throw new Error('E_REFERENCE_MISSING'); Object.assign(param,{ min:command.min,neutral:command.neutral,max:command.max }); if (!(param.min<param.max && param.min<=param.neutral && param.neutral<=param.max)) throw new Error('E_PARAMETER_RANGE');
             const clamp = (v:number) => Math.max(param.min,Math.min(param.max,v)); for (const e of p.expressions) for (const v of e.values) if (v.parameterId===param.id) v.value = clamp(v.value); for (const b of p.inputBindings) if (b.parameterId===param.id) b.fallback.value = clamp(b.fallback.value); for (const v of p.motion?.settings.pose ?? []) if (v.parameterId===param.id) v.value = clamp(v.value);
@@ -185,8 +190,8 @@ export class ProjectSession {
         }); this.changed();
       }
       else if (command.type === 'check-resources') this.checkResources();
-      else if (command.type === 'cancel-task') this.editable().flow.cancel(command.id);
-      else if (command.type === 'retry-task') { const d = this.editable(); const job = d.flow.retry(command.id); this.lastError = null; this.watchCheck(d,job.jobId); }
+      else if (command.type === 'cancel-task') { const d=this.editable();if(d.input?.view().jobId===command.id)d.input.cancel();else d.flow.cancel(command.id); }
+      else if (command.type === 'retry-task') { const d = this.editable(); if(d.input?.view().jobId===command.id)d.input.retry();else { const job = d.flow.retry(command.id); this.lastError = null; this.watchCheck(d,job.jobId); } }
       else if (command.type === 'checkpoint') await this.checkpoint('사용자 복구 지점');
       else if (command.type === 'relink') await this.relink(command.assetId);
       else if (command.type === 'preview-recovery') preview = await this.comparison(command.id);
@@ -202,5 +207,5 @@ export class ProjectSession {
     } catch (error) { this.lastError = storageError(error); this.emit(); return { view:this.view() }; }
   }
   async requestClose():Promise<boolean> { const permit = await this.permission(); if (!permit) return false; if (this.autoPromise) { try { await this.autoPromise; } catch { /* explicit discard or successful manual save governs leaving */ } } if (this.document !== permit.doc || this.document && this.document.flow.project().revision !== permit.revision) return false; if (this.document && permit.discard) await this.catalog.acknowledge(this.document.flow.project().projectId); return true; }
-  async shutdown():Promise<void> { this.stopped = true; this.cancelTimer(); if (this.saving) await this.saving; if (this.autoPromise) { try { await this.autoPromise; } catch { /* shutdown follows an explicit save/discard guard */ } } if (this.document) await this.document.flow.close(); this.listeners.clear(); this.grants.clear(); }
+  async shutdown():Promise<void> { this.stopped = true; this.cancelTimer(); if (this.saving) await this.saving; if (this.autoPromise) { try { await this.autoPromise; } catch { /* shutdown follows an explicit save/discard guard */ } } if (this.document) { this.document.input?.dispose();await this.document.flow.close(); } this.listeners.clear(); this.grants.clear(); }
 }

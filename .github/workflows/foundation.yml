@@ -25,27 +25,29 @@ jobs:
       - name: Install locked Node dependencies
         run: tools/dev.cmd ci
       - name: Required static, contract and file checks
-        run: .local/toolchain/node-v24.22.3-win-x64/node.exe scripts/verify-motion.mjs
+        run: .local/toolchain/node-v24.22.3-win-x64/node.exe scripts/verify-input.mjs
       - name: Build Windows runtime package
         run: tools/dev.cmd run make
       - name: Isolated packaged startup and shutdown
-        run: tools/dev.cmd run package:check -- --evidence-dir=evidence/phase11
+        run: tools/dev.cmd run package:check -- --evidence-dir=evidence/phase12
       - name: Retain verification evidence
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: foundation-evidence
           path: |
-            evidence/phase11/packaged-run-*.json
-            evidence/phase11/package-audit.json
-            evidence/phase11/release-studio.png
-            evidence/phase11/verification.json
-            evidence/phase11/development-run.json
-            evidence/phase11/review-ui.png
-            evidence/phase11/project-ui.png
-            evidence/phase11/release-project.png
-            evidence/phase11/editor-ui.png
-            evidence/phase11/motion-ui.png
-            evidence/phase11/release-motion*.png
-            evidence/phase11/release-editor*.png
+            evidence/phase12/packaged-run-*.json
+            evidence/phase12/package-audit.json
+            evidence/phase12/release-studio.png
+            evidence/phase12/verification.json
+            evidence/phase12/development-run.json
+            evidence/phase12/review-ui.png
+            evidence/phase12/project-ui.png
+            evidence/phase12/release-project.png
+            evidence/phase12/editor-ui.png
+            evidence/phase12/motion-ui.png
+            evidence/phase12/input-ui.png
+            evidence/phase12/release-input*.png
+            evidence/phase12/release-motion*.png
+            evidence/phase12/release-editor*.png
           retention-days: 7
           if-no-files-found: error

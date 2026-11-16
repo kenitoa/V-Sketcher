@@ -3,9 +3,11 @@ import type { SessionCommand,SessionView,SessionReply } from '../../../packages/
 declare global {
   interface Window {
     workflowLabCheck?: (options?:{ holdForCapture:boolean }) => Promise<Record<string,unknown>>;
-    studio: { info: () => Promise<StudioInfo>; health: () => Promise<{ ready: boolean }>; projects:{ view:()=>Promise<SessionView>; command:(command:SessionCommand)=>Promise<SessionReply>; subscribe:(listener:(view:SessionView)=>void)=>()=>void } };
+    studio: { info: () => Promise<StudioInfo>; health: () => Promise<{ ready: boolean }>; projects:{ dropImage:(file:File)=>Promise<SessionReply>;view:()=>Promise<SessionView>; command:(command:SessionCommand)=>Promise<SessionReply>; subscribe:(listener:(view:SessionView)=>void)=>()=>void } };
     projectSelfCheck?:()=>Promise<Record<string,unknown>>;
     projectSelfCheckCapture?:()=>Promise<void>;
+    inputSelfCheck?:()=>Promise<Record<string,unknown>>;
+    inputCapture?:()=>Promise<void>;
     motionSelfCheck?:()=>Promise<Record<string,unknown>>;
     motionCapture?:()=>Promise<void>;
     editorSelfCheck?:()=>Promise<Record<string,unknown>>;
