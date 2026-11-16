@@ -25,33 +25,40 @@ jobs:
       - name: Install locked Node dependencies
         run: tools/dev.cmd ci
       - name: Required static, contract and file checks
-        run: .local/toolchain/node-v24.22.3-win-x64/node.exe scripts/verify-parts.mjs
+        run: .local/toolchain/node-v24.22.3-win-x64/node.exe scripts/verify-structure.mjs
+      - name: Measure original and expression quality
+        run: .venv-product/Scripts/python.exe scripts/structure-quality.py
       - name: Build Windows runtime package
         run: tools/dev.cmd run make
       - name: Isolated packaged startup and shutdown
-        run: tools/dev.cmd run package:check -- --evidence-dir=evidence/phase13
+        run: tools/dev.cmd run package:check -- --evidence-dir=evidence/phase14
       - name: Retain verification evidence
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: foundation-evidence
           path: |
-            evidence/phase13/packaged-run-*.json
-            evidence/phase13/package-audit.json
-            evidence/phase13/release-studio.png
-            evidence/phase13/verification.json
-            evidence/phase13/development-run.json
-            evidence/phase13/review-ui.png
-            evidence/phase13/project-ui.png
-            evidence/phase13/release-project.png
-            evidence/phase13/editor-ui.png
-            evidence/phase13/motion-ui.png
-            evidence/phase13/input-ui.png
-            evidence/phase13/parts-ui.png
-            evidence/phase13/parts-contact.png
-            evidence/phase13/parts-extremes.png
-            evidence/phase13/release-parts*.png
-            evidence/phase13/release-input*.png
-            evidence/phase13/release-motion*.png
-            evidence/phase13/release-editor*.png
+            evidence/phase14/packaged-run-*.json
+            evidence/phase14/package-audit.json
+            evidence/phase14/release-studio.png
+            evidence/phase14/verification.json
+            evidence/phase14/development-run.json
+            evidence/phase14/review-ui.png
+            evidence/phase14/project-ui.png
+            evidence/phase14/release-project.png
+            evidence/phase14/editor-ui.png
+            evidence/phase14/motion-ui.png
+            evidence/phase14/input-ui.png
+            evidence/phase14/structure-ui.png
+            evidence/phase14/structure-extremes.png
+            evidence/phase14/release-structure*.png
+            evidence/phase14/quality*.json
+            evidence/phase14/quality*.png
+            evidence/phase14/parts-ui.png
+            evidence/phase14/parts-contact.png
+            evidence/phase14/parts-extremes.png
+            evidence/phase14/release-parts*.png
+            evidence/phase14/release-input*.png
+            evidence/phase14/release-motion*.png
+            evidence/phase14/release-editor*.png
           retention-days: 7
           if-no-files-found: error

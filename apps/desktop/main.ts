@@ -66,7 +66,7 @@ app.whenReady().then(async () => {
   window.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
   window.webContents.on('will-navigate', event => event.preventDefault());
   window.on('close',event => { if (!quitting) { event.preventDefault(); void requestExit(); } });
-  const testSaves = reportPath ? ['project-a.2dsketch','project-b.2dsketch','project-premium.2dsketch','project-other.2dsketch','project-copy.2dsketch','project-recovered.2dsketch','input-project.2dsketch','parts-project.2dsketch','parts-copy.2dsketch'].map(name => join(app.getPath('userData'),name)) : [];
+  const testSaves = reportPath ? ['project-a.2dsketch','project-b.2dsketch','project-premium.2dsketch','project-other.2dsketch','project-copy.2dsketch','project-recovered.2dsketch','input-project.2dsketch','parts-project.2dsketch','parts-copy.2dsketch','structure-project.2dsketch','structure-copy.2dsketch'].map(name => join(app.getPath('userData'),name)) : [];
   let testLeave:'cancel' | 'discard' = 'cancel';
   const dialogs:ProjectDialogs = {
     chooseImage:async () => { if(reportPath)return join(app.getPath('userData'),'input-check.png');const result=await dialog.showOpenDialog(window,{ title:'캐릭터 그림 가져오기 · PNG/JPEG',properties:['openFile'],filters:[{ name:'RGB/RGBA 8bit · 256~4096px · 최대 64MiB',extensions:['png','jpg','jpeg'] }] });return result.canceled ? null : result.filePaths[0] ?? null; },
@@ -114,6 +114,10 @@ app.whenReady().then(async () => {
       stage='parts-pixels';const scenes=Array.from({length:64},(_,i)=>projectToPreview(combination(catalog,i),a=>'assets/'+catalog.files[a.fingerprint.sha256]+'?asset='+a.id));renderer.partsPixels=await window.webContents.executeJavaScript('window.partsPixels('+JSON.stringify(scenes)+')');
       const partsContact=argument('parts-contact');if(partsContact){const data=await window.webContents.executeJavaScript('window.partsContactData') as string;await mkdir(resolve(partsContact,'..'),{recursive:true});await writeFile(partsContact,Buffer.from(data.split(',')[1]!,'base64'));}
       const partsExtremes=argument('parts-extremes');if(partsExtremes){const data=await window.webContents.executeJavaScript('window.partsExtremeData') as string;await mkdir(resolve(partsExtremes,'..'),{recursive:true});await writeFile(partsExtremes,Buffer.from(data.split(',')[1]!,'base64'));}
+      stage='structure-ui';const structure=await window.webContents.executeJavaScript('window.structureSelfCheck()') as Record<string,unknown>;
+      const structureScreenshot=argument('structure-screenshot');if(structureScreenshot){await mkdir(resolve(structureScreenshot,'..'),{recursive:true});await writeFile(structureScreenshot,(await window.webContents.capturePage()).toPNG());}
+      const structureExtremes=argument('structure-extremes');if(structureExtremes){const data=await window.webContents.executeJavaScript('window.structureExtremeData') as string;await mkdir(resolve(structureExtremes,'..'),{recursive:true});await writeFile(structureExtremes,Buffer.from(data.split(',')[1]!,'base64'));}
+      await window.webContents.executeJavaScript("window.studio.projects.command({type:'structure-cancel'})");
       await projectSession.dispatch({ type:'new',name:'Exit guard check',sourceType:'parts' }); const guardedId = projectSession.view().project?.projectId;
       window.close(); await new Promise(resolve => setTimeout(resolve,100));
       projects.windowCloseCancelled = !window.isDestroyed() && projectSession.view().project?.projectId === guardedId;
@@ -143,12 +147,12 @@ app.whenReady().then(async () => {
       }
       await projectSession.shutdown(); await worker.stop(); worker = undefined;
       passed = renderer.webgl2 === true && Number(renderer.visiblePixels) > 1000 && Number(renderer.transparentPixels) > 1000 && renderer.glError === 0 && renderer.nodeExposed === false && renderer.shellExposed === false && renderer.appInfoDialog === true && (renderer.modelPixels as { passed?:boolean } | undefined)?.passed === true && (renderer.workflowCore as { passed?:boolean } | undefined)?.passed === true && (renderer.workflowUI as { passed?:boolean } | undefined)?.passed === true && renderer.sampleRuntimeFrozen === true && health.modelLoaded === true && (!app.isPackaged || health.dependencyFilesInsideBundle === true);
-      passed = passed && parts.passed===true && (renderer.partsPixels as {passed?:boolean}).passed===true && input.passed === true && projects.passed === true && editor.passed === true && motion.passed === true && (renderer.motionPixels as { passed?:boolean } | undefined)?.passed === true;
-      const report = { passed, projects, editor, motion, input, parts, packaged: app.isPackaged, channel: build.channel, appVersion: build.version,
+      passed = passed && structure.passed===true && parts.passed===true && (renderer.partsPixels as {passed?:boolean}).passed===true && input.passed === true && projects.passed === true && editor.passed === true && motion.passed === true && (renderer.motionPixels as { passed?:boolean } | undefined)?.passed === true;
+      const report = { passed, projects, editor, motion, input, parts, structure, packaged: app.isPackaged, channel: build.channel, appVersion: build.version,
         electron: process.versions.electron, node: process.versions.node, worker: health, workerStopped: true, renderer,
         protections: { sandbox: true, contextIsolation: true, nodeIntegration: false, externalNetworkBlocked: true },
         gpuFeatureStatus: app.getGPUFeatureStatus(), devicesOpened: false,
-        windowSize:window.getSize(),scope: 'Local project lifecycle/common editor, GPU and bundled worker; no automatic creation, live tracking, clean-OS or M0 performance claim' };
+        windowSize:window.getSize(),scope: 'Local project lifecycle/common editor, GPU and bundled worker; no live tracking, clean-OS or M0 performance claim' };
       await mkdir(resolve(reportPath, '..'), { recursive: true }); await writeFile(reportPath, JSON.stringify(report, null, 2) + '\n');
     } catch (error) {
       const failureCapture = argument('editor-screenshot');

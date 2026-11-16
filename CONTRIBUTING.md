@@ -8,7 +8,7 @@
 
 일반 변경은 `tools/dev.cmd run check`로 TypeScript 엄격 검사, Ruff의 실행 오류 검사, 계약/무결성/상태/진단/실제 INP 검사, worker 프로토콜 검사와 시험 빌드를 실행합니다. 정적 검사 규칙은 `scripts/check.mjs`에 있습니다. 스타일 검사만으로 기능 검증을 대체하지 않습니다. 패키지·의존성·런타임 경로 변경에는 `run make`와 `run package:check`도 필요합니다. 외부 INP 검사는 실제 동작·표현 보존 검사의 선행 조건이며 외부 프로그램 구동 완료를 뜻하지 않습니다.
 
-현재 공통 모델 검사는 [07 계약](docs/architecture/project-model.md), 작업/트랜잭션은 [08 계약](docs/architecture/workflow.md)을 따릅니다. schema 변경 시 `generate-project-validators.mjs`를 실행해 사전 생성 파일을 함께 변경합니다. 원본/생성 불일치는 필수 검사와 빌드를 실패시킵니다. 이전 phase의 evidence를 덮어쓰지 말고 현재 패키지 증거 경로를 명시합니다. 현재 CI는 `verify-parts.mjs`로 필수 검사와 실제 Electron UI를 함께 실행합니다. 일반 `verify-model.mjs` 결과는 `.local/model-verification/`에 두어 과거 07 보고서를 덮어쓰지 않습니다.
+현재 공통 모델 검사는 [07 계약](docs/architecture/project-model.md), 작업/트랜잭션은 [08 계약](docs/architecture/workflow.md)을 따릅니다. schema 변경 시 `generate-project-validators.mjs`를 실행해 사전 생성 파일을 함께 변경합니다. 원본/생성 불일치는 필수 검사와 빌드를 실패시킵니다. 이전 phase의 evidence를 덮어쓰지 말고 현재 패키지 증거 경로를 명시합니다. 현재 CI는 `verify-structure.mjs`로 필수 검사와 실제 Electron UI를 함께 실행합니다. 일반 `verify-model.mjs` 결과는 `.local/model-verification/`에 두어 과거 07 보고서를 덮어쓰지 않습니다.
 
 CI는 `.github/workflows/foundation.yml`에 같은 명령으로 구성했습니다. Windows 2025 runner, 정확한 Python 버전, 로컬 Node 및 잠금 의존성을 사용하며 Action은 공식 태그의 commit SHA로 고정합니다. 호스팅 CI를 실행했다는 주장은 실제 run이 있을 때만 기록합니다. 이 저장소는 아직 원격에 업로드하지 않았습니다. CI에는 배포·서명·게시 단계가 없습니다.
 

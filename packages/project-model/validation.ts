@@ -4,6 +4,7 @@ import { projectStructure, machineStructure } from './structure.generated';
 import type { Project, MachineSettings, ValidationIssue } from './types';
 import { deformPoint } from '../motion/geometry';
 import { NEUTRAL } from '../scene-core';
+import {assertReport} from '../single-image/types';
 const check = projectStructure as ValidateFunction<Project>; const checkMachine = machineStructure as ValidateFunction<MachineSettings>;
 export function portableResourcePath(value: string): boolean {
   return value.length <= 240 && value.normalize('NFC') === value && value.startsWith('resources/') && !/[\\:\x00-\x1f%<>"|?*]/.test(value) &&
@@ -18,6 +19,7 @@ export function validateProject(value: unknown): ValidationIssue[] {
   };
   ids.add(p.projectId);
   const assets = unique(p.assets,'/assets'); const parts = unique(p.parts,'/parts'); const groups = unique(p.groups,'/groups');
+  if(p.structure){const s=p.structure;try{assertReport(s.report);}catch{issue('E_STRUCTURE_REPORT','/structure');}if(p.schemaVersion.minor<4||p.sourceType!=='single-image'||!p.inputPreparation||s.inputAssetId!==p.inputPreparation.selectedAssetId||!assets.has(s.inputAssetId)||s.inputRevision>p.revision)issue('E_STRUCTURE_REFERENCE','/structure');for(const r of s.report.regions)if(r.rect.x+r.rect.width>p.canvas.width||r.rect.y+r.rect.height>p.canvas.height)issue('E_STRUCTURE_REGION','/structure');}
   if (p.inputPreparation) {
     const i=p.inputPreparation;const o=assets.get(i.originalAssetId),n=assets.get(i.normalizedAssetId),s=assets.get(i.selectedAssetId),a=assets.get(i.analysisAssetId);
     if (p.schemaVersion.minor<2 || !o || !n || !s || !a || o.kind!=='original-image' || !p.inputAssetIds.includes(o.id) || !n.parentAssetIds.includes(o.id) || !s.parentAssetIds.includes(n.id) || !a.parentAssetIds.includes(s.id)) issue('E_INPUT_REFERENCE','/inputPreparation');

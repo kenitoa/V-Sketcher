@@ -9,10 +9,10 @@ void main(){vec2 p=(dynamic*vec3(position,1.)).xy;float angle=roll*weight;float 
 float t=abs(yaw);t=mix(t,t*t*(3.-2.*t),smoothCurve);p+=mix(maximumDelta,minimumDelta,step(yaw,-.0000001))*t;
 gl_Position=vec4((p-canvasSize*.5)/canvasSize*vec2(2.,-2.)*fit,0.,1.);texCoord=uv;}`;
 const fragment = `#version 300 es
-precision highp float;in vec2 texCoord;uniform sampler2D artwork;uniform float opacity;uniform vec4 crop;uniform vec4 tint;out vec4 color;
+precision highp float;in vec2 texCoord;uniform sampler2D artwork;uniform sampler2D artworkNext;uniform float stateMix;uniform float opacity;uniform vec4 crop;uniform vec4 tint;out vec4 color;
 vec3 hsv(vec3 c){float hi=max(c.r,max(c.g,c.b)),lo=min(c.r,min(c.g,c.b)),d=hi-lo,h=0.;if(d>.00001){if(hi==c.r)h=(c.g-c.b)/d;else if(hi==c.g)h=2.+(c.b-c.r)/d;else h=4.+(c.r-c.g)/d;}return vec3(fract(h/6.+1.),hi>.00001?d/hi:0.,hi);}
 vec3 rgb(vec3 c){vec3 p=abs(fract(vec3(c.x)+vec3(0.,2./3.,1./3.))*6.-3.);return c.z*mix(vec3(1.),clamp(p-1.,0.,1.),c.y);}
-void main(){if(texCoord.x<crop.x||texCoord.y<crop.y||texCoord.x>=crop.z||texCoord.y>=crop.w)discard;vec4 c=texture(artwork,texCoord);if(c.a>.00001&&abs(tint.x)>.00001){vec3 v=hsv(c.rgb/c.a);bool inside=tint.y<=tint.z?(v.x>=tint.y&&v.x<=tint.z):(v.x>=tint.y||v.x<=tint.z);if(inside&&v.y>=tint.w){v.x=fract(v.x+tint.x/360.+1.);c.rgb=rgb(v)*c.a;}}color=c*opacity;}`;
+void main(){if(texCoord.x<crop.x||texCoord.y<crop.y||texCoord.x>=crop.z||texCoord.y>=crop.w)discard;vec4 c=mix(texture(artwork,texCoord),texture(artworkNext,texCoord),stateMix);if(c.a>.00001&&abs(tint.x)>.00001){vec3 v=hsv(c.rgb/c.a);bool inside=tint.y<=tint.z?(v.x>=tint.y&&v.x<=tint.z):(v.x>=tint.y||v.x<=tint.z);if(inside&&v.y>=tint.w){v.x=fract(v.x+tint.x/360.+1.);c.rgb=rgb(v)*c.a;}}color=c*opacity;}`;
 interface Texture { texture:WebGLTexture;width:number;height:number;image:HTMLImageElement; }
 interface Batch { buffer:WebGLBuffer;data:Float32Array;count:number;crop:[number,number,number,number]; }
 export class AvatarRenderer {
@@ -45,14 +45,16 @@ export class AvatarRenderer {
   }
   draw(input:Partial<Parameters> = {}):void {
     this.current = parameters({ ...(this.scene.defaults ?? NEUTRAL),...input }); const gl = this.gl; const [width,height] = this.scene.canvas; gl.viewport(0,0,this.canvas.width,this.canvas.height); gl.clearColor(0,0,0,0); gl.clear(gl.COLOR_BUFFER_BIT); gl.useProgram(this.program);
+    gl.uniform1i(gl.getUniformLocation(this.program,'artwork'),0);gl.uniform1i(gl.getUniformLocation(this.program,'artworkNext'),1);
     const fit = Math.min(this.canvas.width/width,this.canvas.height/height); gl.uniform2f(gl.getUniformLocation(this.program,'canvasSize'),width,height); gl.uniform2f(gl.getUniformLocation(this.program,'fit'),fit*width/this.canvas.width,fit*height/this.canvas.height);
     for (const layer of this.ordered()) {
       const color=layer.color;gl.uniform4f(gl.getUniformLocation(this.program,'tint'),color?.hueDegrees??0,color?.minimumHue??0,color?.maximumHue??1,color?.minimumSaturation??1);
       const m = layer.mesh; const dynamic = dynamicMatrix(layer,this.current); gl.uniformMatrix3fv(gl.getUniformLocation(this.program,'dynamic'),false,new Float32Array([dynamic[0],dynamic[1],0,dynamic[2],dynamic[3],0,dynamic[4],dynamic[5],1]));
       gl.uniform2f(gl.getUniformLocation(this.program,'pivot'),m?.pivot[0] ?? 0,m?.pivot[1] ?? 0); gl.uniform1f(gl.getUniformLocation(this.program,'yaw'),m?.yaw ? this.current.head_yaw : 0); gl.uniform1f(gl.getUniformLocation(this.program,'roll'),m?.roll ? this.current.head_roll*m.maxRollDegrees*Math.PI/180 : 0); gl.uniform1f(gl.getUniformLocation(this.program,'smoothCurve'),m?.curve === 'smoothstep' ? 1 : 0);
-      for (const [path,opacity] of activeTextures(layer,this.current)) { if (opacity<=0) continue; const tex = this.textures.get(path); const batch = this.batches.get(layer.id+'|'+path); if (!tex || !batch) throw new Error('E_TEXTURE_MISSING');
+      const active=activeTextures(layer,this.current).filter(([,opacity])=>opacity>0);const paired=layer.stateBlend==='interpolate'&&active.length===2;const draws=paired?[[active[0]![0],1] as [string,number]]:active;
+      for (const [path,opacity] of draws) { if (opacity<=0) continue; const tex = this.textures.get(path); const batch = this.batches.get(layer.id+'|'+path); if (!tex || !batch) throw new Error('E_TEXTURE_MISSING');
         gl.bindBuffer(gl.ARRAY_BUFFER,batch.buffer); for (const [name,size,offset] of [['position',2,0],['uv',2,8],['weight',1,16],['minimumDelta',2,20],['maximumDelta',2,28]] as const) { const at = gl.getAttribLocation(this.program,name); gl.enableVertexAttribArray(at); gl.vertexAttribPointer(at,size,gl.FLOAT,false,36,offset); }
-        gl.uniform4fv(gl.getUniformLocation(this.program,'crop'),batch.crop); gl.bindTexture(gl.TEXTURE_2D,tex.texture); gl.uniform1f(gl.getUniformLocation(this.program,'opacity'),opacity*layer.opacity); gl.drawArrays(gl.TRIANGLES,0,batch.count);
+        const next=paired?this.textures.get(active[1]![0])!:tex;if(paired&&(next.width!==tex.width||next.height!==tex.height||JSON.stringify(layer.geometry?.[path])!==JSON.stringify(layer.geometry?.[active[1]![0]])))throw new Error('E_STATE_INTERPOLATION_GEOMETRY');gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,tex.texture);gl.activeTexture(gl.TEXTURE1);gl.bindTexture(gl.TEXTURE_2D,next.texture);gl.activeTexture(gl.TEXTURE0);gl.uniform1f(gl.getUniformLocation(this.program,'stateMix'),paired?active[1]![1]/(active[0]![1]+active[1]![1]):0);gl.uniform4fv(gl.getUniformLocation(this.program,'crop'),batch.crop); gl.uniform1f(gl.getUniformLocation(this.program,'opacity'),opacity*layer.opacity); gl.drawArrays(gl.TRIANGLES,0,batch.count);
       }
     } this.frameCount++;
   }

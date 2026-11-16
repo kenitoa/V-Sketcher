@@ -13,6 +13,7 @@ function restore(flow:Workflow,snapshot:Project,label:string):void {
     if (!snapshot.motion) delete draft.motion;
     if (!snapshot.inputPreparation) delete draft.inputPreparation;
     if (!snapshot.assembly) delete draft.assembly;
+    if (!snapshot.structure) delete draft.structure;
     for (const [key,value] of Object.entries(snapshot)) if (!protectedFields.has(key)) (draft as unknown as Record<string,unknown>)[key] = structuredClone(value);
   });
 }
@@ -44,5 +45,5 @@ export class EditHistory {
 }
 export function duplicateProject(input:Project):Project {
   assertProject(input); const result = structuredClone(input); result.projectId = crypto.randomUUID(); result.displayName = (input.displayName.slice(0,110)+' (복사본)').trim();
-  result.createdAt = new Date().toISOString(); result.modifiedAt = result.createdAt; result.revision = 0; result.savedRevision = null; assertProject(result); return freeze(result);
+  result.createdAt = new Date().toISOString(); result.modifiedAt = result.createdAt; result.revision = 0; if(result.structure)result.structure.inputRevision=0; result.savedRevision = null; assertProject(result); return freeze(result);
 }

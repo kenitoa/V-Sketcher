@@ -137,6 +137,13 @@ def select(image,selection,model):
 def execute(request):
     root=Path(sys._MEIPASS) if getattr(sys,'frozen',False) else Path(__file__).resolve().parent.parent/'.local'
     model=root/'models/face_landmarker.task';target=Path(request['output'])
+    if request['operation'] in ['structure-analyze','structure-build']:
+        from structure import analyze,build
+        image=Image.open(request['source']).convert('RGBA')
+        if max(image.size)>4096 or image.width*image.height>MAX_PIXELS:fail('E_INPUT_DIMENSIONS')
+        settings=request['selection']
+        if request['operation']=='structure-analyze':return analyze(image,model,settings['occluded'])
+        return build(image,settings['report'],target,settings['completion'])
     if request['operation']=='probe':
         data=Path(request['source']).read_bytes();image,report=decode(data,request['suffix']);image.save(target/'normalized.png')
         small=image.copy();small.thumbnail((1024,1024),Image.Resampling.LANCZOS);available=True
