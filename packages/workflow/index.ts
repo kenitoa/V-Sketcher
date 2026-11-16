@@ -55,6 +55,7 @@ export class Workflow {
   readonly derived = new DerivedRegistry();
   constructor(project:Project) { assertProject(project); this.current = freeze(structuredClone(project)); this.axes = initialAxes(project); }
   project():Project { return this.current; }
+  acknowledgeSaved(snapshotRevision:number):void { this.available(); this.current = freeze(acknowledgeSave(this.current,snapshotRevision)); this.axes.save = isDirty(this.current) ? 'DIRTY' : 'CLEAN'; this.emit(); }
   view():{ project:Project; axes:Axes; generation:number; switching:boolean; jobs:JobView[]; runtimeProjectId:string | null; runtimeRevision:number | null; checkpointCount:number } {
     const axes = { ...this.axes }; const active = [...this.entries.values()].filter(e => e.identity.generation === this.generation && e.executing && ['RUNNING','CANCEL_REQUESTED','RESULT_READY'].includes(e.view.state));
     if (active.some(e => e.plan.kind === 'prepare')) axes.preparation = 'ANALYZING';

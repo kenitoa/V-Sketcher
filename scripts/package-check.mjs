@@ -40,7 +40,7 @@ const reports = [];
 for (const attempt of [1, 2]) {
   const reportPath = join(target, `report-${attempt}.json`);
   const args = [`--profile-dir=${join(target, `profile-${attempt}`)}`, `--self-check-report=${reportPath}`];
-  if (attempt === 1) args.push(`--screenshot=${join(evidence, 'release-studio.png')}`);
+  if (attempt === 1) args.push(`--screenshot=${join(evidence, 'release-studio.png')}`,`--project-screenshot=${join(evidence,'release-project.png')}`);
   const result = spawnSync(join(bundle, '2DSketcher.exe'), args, { cwd: target, env, windowsHide: true, encoding: 'utf8', timeout: 120000 });
   writeFileSync(join(target, `launch-${attempt}.log`), (result.stdout ?? '') + (result.stderr ?? ''));
   if (result.error) throw result.error;
@@ -50,7 +50,8 @@ for (const attempt of [1, 2]) {
   assert.equal(report.channel, 'release'); assert.equal(report.worker.frozen, true);
   assert.equal(report.worker.dependencyFilesInsideBundle, true); assert.equal(report.worker.modelLoaded, true);
   assert.equal(report.workerStopped, true); assert.equal(report.renderer.workerReady, true);
-  assert.equal(report.renderer.diagnosticsVisible, false); assert.equal(report.renderer.creationControlsDisabled, true);
+  assert.equal(report.renderer.diagnosticsVisible, false); assert.equal(report.renderer.projectRoutesEnabled, true); assert.equal(report.projects?.passed,true);
+  assert.equal(report.projects?.recoveryToNewFile,true); assert.equal(report.projects?.recoveryComparison,true);
   assert.equal(report.renderer.projectModel?.schemaVersion, '1.0');
   assert.equal(report.renderer.projectModel?.projectId, model.projectId);
   assert.equal(report.renderer.modelPixels?.passed, true);

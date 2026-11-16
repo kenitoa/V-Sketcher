@@ -16,6 +16,7 @@ export class AvatarRenderer {
   private textures = new Map<string, Texture>();
   private buffer: WebGLBuffer;
   private frameCount = 0;
+  private disposed = false;
   private current: Parameters = { ...NEUTRAL };
   constructor(private canvas: HTMLCanvasElement, private scene: PreviewScene) {
     validateScene(scene);
@@ -40,6 +41,7 @@ export class AvatarRenderer {
   async load(base: string): Promise<void> {
     for (const path of new Set(this.scene.layers.flatMap(layer => Object.values(layer.states)))) {
       const image = new Image(); image.src = new URL(path, base).href; await image.decode();
+      if (this.disposed) return;
       for (const layer of this.scene.layers) {
         const crop = layer.geometry?.[path]?.crop;
         if (crop && (crop.x+crop.width > image.naturalWidth || crop.y+crop.height > image.naturalHeight)) throw new Error('E_ASSET_GEOMETRY');
@@ -91,5 +93,5 @@ export class AvatarRenderer {
       visiblePixels: visible, transparentPixels: transparent, glError: this.gl.getError(),
       scope: 'Static/limited planar premium preview; not complete character rigging, live tracking or performance gate' };
   }
-  dispose(): void { for (const value of this.textures.values()) this.gl.deleteTexture(value.texture); this.gl.deleteBuffer(this.buffer); this.gl.deleteProgram(this.program); }
+  dispose(): void { if (this.disposed) return; this.disposed = true; for (const value of this.textures.values()) this.gl.deleteTexture(value.texture); this.textures.clear(); this.gl.deleteBuffer(this.buffer); this.gl.deleteProgram(this.program); }
 }

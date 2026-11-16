@@ -1,6 +1,6 @@
 # 2DSketcher
 
-Windows용 버추얼 캐릭터 제작 도구의 개발 기반입니다. **0.3.0 미리보기**는 공통 모델 1.0과 비동기 작업/편집 트랜잭션·독립 상태·결과 검토·실행 스냅샷을 사용합니다. 고급 캐릭터를 WebGL2로 표시하며 독립 Python worker와 통신합니다. 제작/재연결 UI·리깅·실시간 추적·OBS 연결·프로젝트 안전 저장은 후속 구현 대상입니다. 전체 요구사항은 [PRD](docs/PRD.md), 작업 상태는 [Todo](docs/Todo)를 따릅니다. M0는 HOLD입니다.
+Windows용 버추얼 캐릭터 제작 도구입니다. **0.4.0 미리보기**는 세 경로의 프로젝트 초안 생성·리소스 포함 ZIP 저장·다른 이름 저장·복제·자동 복구·되돌리기를 제공합니다. 고급 예제를 넣어 부위와 표정을 편집하고 저장한 작업을 다시 열 수 있습니다. 공통 모델 1.0·WebGL2·독립 Python worker를 사용합니다. 경로별 자동 제작·리깅·제품 실시간 추적·OBS 연결은 후속 구현 대상입니다. 전체 요구사항은 [PRD](docs/PRD.md), 작업 상태는 [Todo](docs/Todo)를 따릅니다. M0는 HOLD입니다.
 
 개발 환경은 Windows x64, Python **3.14.10 x64**, Git입니다. 최초 준비에는 인터넷이 필요하며 Node와 Python 패키지는 프로젝트 안에 설치됩니다. PowerShell 실행 정책 변경과 전역 npm 설치는 필요하지 않습니다.
 
@@ -17,13 +17,15 @@ Windows 패키지와 격리 실행 검증:
 
 ```powershell
 tools/dev.cmd run make
-tools/dev.cmd run package:check -- --evidence-dir=evidence/phase08
+tools/dev.cmd run package:check -- --evidence-dir=evidence/phase09
 ```
 
 EXE는 `out/2DSketcher-win32-x64/2DSketcher.exe`, ZIP은 `out/make/zip/win32/x64/`에 생성됩니다. ZIP을 풀 때 폴더 전체를 유지해야 합니다. Electron과 Python·라이브러리·얼굴 모델이 포함되어 사용자의 Node/Python 설치를 요구하지 않습니다. 서명·설치 프로그램·공개 배포 승인을 완료한 제품은 아닙니다.
 
-검증 명령은 새 프로필과 한글·공백 경로에서 두 번 실행하고 PATH를 Windows 시스템 도구만 남겨 제한합니다. 실제 카메라·마이크를 켜지 않고 모델 로드·화면·GPU 좌표·IPC·작업 상태·정상 종료를 확인합니다. **현재 PC의 OS/DLL/드라이버는 유지되므로 새 Windows 시험을 대신했다는 주장을 하지 않습니다.** 현재 결과는 `evidence/phase08/`, 이전 06~07 결과는 동결 보존합니다. 명시적 evidence 인수가 없으면 패키지 검사는 `.local/smoke/package/`에 기록합니다. 개인 경로가 포함될 수 있는 개발 로그와 임시 실행본은 `.local/`에 보관합니다.
+검증 명령은 새 프로필과 한글·공백 경로에서 두 번 실행하고 PATH를 Windows 시스템 도구만 남겨 제한합니다. 카메라·마이크를 켜지 않고 모델 로드·GPU 좌표·IPC·작업 상태·실제 프로젝트 파일 저장/복구 UI·종료 취소·정상 종료를 확인합니다. 파일 선택은 self-check 전용 adapter를 사용합니다. **현재 PC의 OS/DLL/드라이버는 유지되므로 새 Windows 시험을 대신했다는 주장을 하지 않습니다.** 현재 결과는 `evidence/phase09/`, 이전 06~08 결과는 동결 보존합니다. 명시적 evidence 인수가 없으면 패키지 검사는 `.local/smoke/package/`에 기록합니다. 개인 경로가 포함될 수 있는 개발 로그와 임시 실행본은 `.local/`에 보관합니다.
 
-`.local/toolchain/node-v24.22.3-win-x64/node.exe scripts/verify-workflow.mjs`는 필수 검사와 실제 앱의 상태 시험 UI를 자동 검증합니다. `run dev`의 “작업 상태 시험”에서는 비교/선택 적용·재검증·취소·재시도·폐기/재실행을 직접 확인할 수 있습니다. 고정 입력 모의 작업임을 표시하며 정상 release에는 시험 버튼이 없습니다.
+시작 화면에서 제작 경로와 이름을 선택해 초안을 만들고 **고급 예제 넣기**를 누르면 현재 편집/저장 기능을 사용할 수 있습니다. 저장·다른 이름 저장·복제·열기는 실제 `.2dsketch` 파일을 만듭니다. 빠진 이미지는 같은 원본 파일을 다시 지정해 연결합니다. 자동 복구는 명시적 저장과 구분되며 **복구본**에서 기존 저장본과 비교해 선택합니다. 복구한 내용은 새 파일로 저장합니다. [사용 방법과 검증 범위](docs/planning/09-project-lifecycle.md)를 확인하세요.
 
-[개발 규칙](CONTRIBUTING.md) · [공통 모델](docs/architecture/project-model.md) · [작업/트랜잭션](docs/architecture/workflow.md) · [자산 정책](docs/architecture/assets.md) · [08 완료 근거](docs/planning/08-async-workflow.md)
+`.local/toolchain/node-v24.22.3-win-x64/node.exe scripts/verify-project-session.mjs`는 64개 검사 그룹과 실제 앱의 저장/복구·상태 UI를 자동 검증합니다. `run dev`의 “작업 상태 시험”은 이전 고정 입력 모의 작업을 표시하며 정상 release에는 시험 버튼이 없습니다. 물리적 디스크 고갈·전원 차단·동기화/네트워크 폴더 검증은 후속입니다.
+
+[개발 규칙](CONTRIBUTING.md) · [공통 모델](docs/architecture/project-model.md) · [작업/트랜잭션](docs/architecture/workflow.md) · [프로젝트 저장/복구](docs/architecture/project-session.md) · [자산 정책](docs/architecture/assets.md) · [09 완료 근거](docs/planning/09-project-lifecycle.md)

@@ -1,0 +1,22 @@
+{
+  "passed": true,
+  "errors": [],
+  "created": "2026-11-16T15:49:38.213796+00:00",
+  "scope": "Task/document/identity/provenance audit; functional groups counted separately",
+  "tasks": 410,
+  "completedTasks": 90,
+  "functionIDs": 52,
+  "productDirectionIDs": 12,
+  "acceptanceIDs": 15,
+  "functionalGroups": 64,
+  "newStorageSessionGroups": 19,
+  "actualProjectAndRecoveryUI": true,
+  "actualKilledWriterRecovery": true,
+  "packagedRuns": 2,
+  "m0State": "HOLD",
+  "openM0Returns": 5,
+  "hostedCIRun": false,
+  "cleanWindowsOS": false,
+  "fullAnalysisTrackingOutputIntegration": "T-268/T-271 NOT_RUN",
+  "physicalDiskFullAndPowerLoss": false
+}

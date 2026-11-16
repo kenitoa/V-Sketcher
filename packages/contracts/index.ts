@@ -43,4 +43,4 @@ export function matches(request: RequestEnvelope, response: ResponseEnvelope): b
     request[key as keyof RequestEnvelope] === response[key as keyof ResponseEnvelope]);
 }
 export interface BuildProfile { channel: 'development' | 'test' | 'release'; version: string; protocol: 1; }
-export interface StudioInfo { name: string; version: string; channel: BuildProfile['channel']; features: { creation: false; tracking: false; preview: true }; }
+export interface StudioInfo { name: string; version: string; channel: BuildProfile['channel']; features: { creation: false; tracking: false; preview: true; projects:true }; }
