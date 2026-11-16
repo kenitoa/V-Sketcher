@@ -3,7 +3,7 @@ import { mkdirSync, writeFileSync, appendFileSync, readFileSync, readdirSync } f
 import { resolve, join, relative, dirname } from 'node:path';
 import { createHash } from 'node:crypto';
 import { root, python } from './common.mjs';
-const output = resolve(root,'evidence/phase07'); const privateLog = resolve(root,'.local/phase07-check.log');
+const output = resolve(root,'.local/model-verification'); const privateLog = resolve(root,'.local/model-check.log');
 mkdirSync(output,{ recursive:true }); writeFileSync(privateLog,'');
 const env = { ...process.env,PATH:dirname(process.execPath)+';'+process.env.PATH }; delete env.ELECTRON_RUN_AS_NODE;
 const commands = [[process.execPath,['scripts/generate-project-validators.mjs','--check']],

@@ -1,0 +1,57 @@
+{
+  "passed": true,
+  "created": "2026-11-16T14:57:19.629Z",
+  "appVersion": "0.3.0",
+  "node": "24.22.3",
+  "nodeTestGroups": 42,
+  "pythonTestGroups": 3,
+  "totalTestGroups": 45,
+  "workflowNodeGroups": 20,
+  "typecheck": true,
+  "ruff": true,
+  "generatedValidatorMatches": true,
+  "testBuild": true,
+  "browserCore": {
+    "passed": true,
+    "staleHeld": true,
+    "reviewApplied": true,
+    "latestEditPreserved": true,
+    "runtimeSnapshotPreserved": true,
+    "ownedResources": 0,
+    "scope": "Fixed in-memory async state check; no real analysis, disk save, tracking or broadcast"
+  },
+  "browserUI": {
+    "passed": true,
+    "comparisonVisible": true,
+    "comparisonValuesVisible": true,
+    "manualCorrectionPreserved": true,
+    "cancelled": true,
+    "ownedResources": 0
+  },
+  "realChildLifecycle": true,
+  "ownedScratchCleanup": true,
+  "scope": "Fixed-input task/state/transaction/resource tests and actual app UI; not real image analysis or durable saving",
+  "followup": [
+    "T-268",
+    "T-271"
+  ],
+  "sourceSha256": {
+    "packages/workflow/dependencies.ts": "67743345a8040401772513f126492a4f1ee3650f26900d65d26078c4df1c1e38",
+    "packages/workflow/index.ts": "6582921aee3775ce8b4535f8d4956003bd11d6fe8ee83397dc656bf0e1b17702",
+    "packages/workflow/transactions.ts": "36ea915f91f4996ef791ecc9fe2a5c444409599fef4617e648c110f6b391b90c",
+    "packages/workflow-host/index.ts": "07c93883ce2b74178c47cb0c6f845bc53bf96f275fc9fc78eb03c751ed303565",
+    "apps/renderer/src/assets.d.ts": "da5bf71d48cf909584a01c80b445f730507068f5b34c920f352e2bfcf0315e4c",
+    "apps/renderer/src/global.d.ts": "054fe99c49a6fa1ca5a5bab3ab1ae08d66fc01d4db0ba88d919df5321e845400",
+    "apps/renderer/src/main.tsx": "a904555aca4aa2792557ef21412dc14e0170316c29135e3aa3fbc616856fa17c",
+    "apps/renderer/src/model-self-check.ts": "27047d4c2727b91650c755f3fcca95bd2ad0ee0b1c33a6db0ace38ca81982c74",
+    "apps/renderer/src/output.css": "0b1d73e65de1f078aacfb3f082cc91611a34ccdd5dd5a346ba90c65d4fd5cbb9",
+    "apps/renderer/src/output.ts": "4807b291594b34697821c9aa172971eaa39ffd102d86f94b9b3130e0a3199aa4",
+    "apps/renderer/src/studio.css": "e86a7bafa0291662820d0e08bdee0d6e787f14d006f521d832161b5b4dfe0682",
+    "apps/renderer/src/workflow-lab.tsx": "a0a43221f3494bd964335c2a0225244b6f366889df93f1052ff50b07792ad966",
+    "apps/renderer/src/workflow-self-check.ts": "fea74aafe0c6dfd31990c3c97777d6a74cbe90ec1e8d4112f21be88017d74ddb",
+    "apps/renderer/src/workflow.css": "de34096d79f1ffbada158ff3e0fec5ef31c01ff117e084645b08c6de38dd6151",
+    "apps/desktop/main.ts": "9fd95bd4ba81a096fe93b66438a7fde03a824f8b8ef64b2f00a06570d5f0c515",
+    "tests/workflow.test.ts": "1bd1788c0210804a50fda4b079bc51e70cad2c2e7a74db6a6c56dea7db4ac6d1",
+    "tests/fixtures/workflow-child.cjs": "6822f3d9f48c42b9bb5dd3e4c930c3888945aefeddfaa7a1e19281263b9327b5"
+  }
+}

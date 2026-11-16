@@ -54,6 +54,8 @@ for (const attempt of [1, 2]) {
   assert.equal(report.renderer.projectModel?.schemaVersion, '1.0');
   assert.equal(report.renderer.projectModel?.projectId, model.projectId);
   assert.equal(report.renderer.modelPixels?.passed, true);
+  assert.equal(report.renderer.workflowCore?.passed, true); assert.equal(report.renderer.sampleRuntimeFrozen, true);
+  assert.equal(report.renderer.workflowLabVisible, false); assert.equal(report.renderer.workflowUI?.visible, false);
   reports.push({ attempt, freshProfile: true, exitCode: result.status, passed: report.passed });
 }
 const inventory = [];

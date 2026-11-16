@@ -15,6 +15,7 @@
 | `assets/product/preview-project.json` | 실제 공통 모델 1.0 고급 샘플 | 포함 | 포함 |
 | `tests/fixtures/common-model/` | 세 경로 준비 결과의 구조/파일 검사 | 포함 | 제외 |
 | `evidence/phase07/` | 공통 모델·GPU·패키지 검증 | 포함 | 제외 |
+| `evidence/phase08/` | 비동기 상태/검토 UI·호스트 자원·패키지 검증 | 포함 | 제외 |
 
 `provision.py`는 manifest 해시가 맞는 9개 자산과 공통 모델을 스테이징합니다. 실제 renderer는 7개 상태 텍스처를 로드하며 원화 2개는 출처 관계를 보존합니다. 앱 실행 중에는 experiments나 개발 캐시를 읽지 않습니다. 현재 샘플은 전체 초상화에 수동 작성된 눈·입 표정 패치를 합성하는 미리보기이며, 완성된 고급 분리 파츠 라이브러리 또는 자동 리깅 결과가 아닙니다. 아트 생성 기록과 원본 provenance는 빌드 통지에 함께 보존합니다.
 

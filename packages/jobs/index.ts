@@ -1,4 +1,5 @@
 export interface JobIdentity { jobId: string; projectId: string; revision: number; generation: number; }
+/** Legacy phase06 packet gate. Preparation results use workflow's AWAITING_REVIEW lifecycle. */
 export class ResultGate {
   private cancelled = new Set<string>();
   private completed = new Set<string>();

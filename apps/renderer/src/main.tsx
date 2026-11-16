@@ -4,6 +4,9 @@ import { AvatarRenderer } from '../../../packages/avatar-renderer';
 import { readProject } from '../../../packages/project-model';
 import { projectToPreview } from '../../../packages/project-model/preview';
 import { checkModelPixels } from './model-self-check';
+import { Workflow } from '../../../packages/workflow';
+import { WorkflowLab } from './workflow-lab';
+import { checkWorkflow } from './workflow-self-check';
 import type { Project } from '../../../packages/project-model';
 import type { StudioInfo } from '../../../packages/contracts';
 import './studio.css';
@@ -15,6 +18,8 @@ function Icon({ kind }: { kind: 'home' | 'layers' | 'image' | 'parts' | 'arrow' 
 function Studio() {
   const canvas = useRef<HTMLCanvasElement>(null); const renderer = useRef<AvatarRenderer | null>(null);
   const project = useRef<Project | null>(null);
+  const workflow = useRef<Workflow | null>(null);
+  const [labOpen,setLabOpen] = useState(false);
   const [info, setInfo] = useState<StudioInfo | null>(null); const [about, setAbout] = useState(false);
   const [previewReady, setPreviewReady] = useState(false); const [error, setError] = useState(false);
   useEffect(() => { void window.studio.info().then(setInfo); }, []);
@@ -25,17 +30,20 @@ function Studio() {
       const opened = readProject(await (await fetch(new URL('assets/preview-project.json', document.baseURI))).json());
       if (opened.mode !== 'read-write') throw new Error('E_SCHEMA_READ_ONLY');
       project.current = opened.project;
-      const scene = projectToPreview(opened.project);
+      const flow = new Workflow(opened.project); workflow.current = flow;
+      const scene = projectToPreview(flow.project());
       if (!canvas.current || disposed) return;
       const render = new AvatarRenderer(canvas.current, scene); renderer.current = render; await render.load(document.baseURI); if (disposed) { render.dispose(); return; }
       setPreviewReady(true);
+      flow.stageRuntime(); let published = false;
       const animate = (now: number) => {
+        if (!published) { flow.publishAtFrameBoundary(); published = true; }
         const t = now / 1000; const blink = Math.abs(t % 6 - 5.4) < .11 ? 0 : 1;
         render.draw({ eye_left: blink, eye_right: blink, mouth: 0, head_yaw: Math.sin(t * .3) * .14, head_roll: Math.sin(t * .38) * .16 });
         frame = requestAnimationFrame(animate);
       }; frame = requestAnimationFrame(animate);
     })().catch(() => setError(true));
-    return () => { disposed = true; cancelAnimationFrame(frame); renderer.current?.dispose(); };
+    return () => { disposed = true; cancelAnimationFrame(frame); renderer.current?.dispose(); void workflow.current?.close(); };
   }, []);
   useEffect(() => {
     if (!info || !previewReady || !renderer.current) return;
@@ -48,7 +56,15 @@ function Studio() {
       await new Promise(resolve => setTimeout(resolve, 80));
       const globals = window as unknown as Record<string, unknown>;
       const modelPixels = await checkModelPixels(project.current!);
-      return { ...renderer.current!.report(), modelPixels, workerReady: health.ready, nodeExposed: typeof globals.require !== 'undefined',
+      const workflowCore = await checkWorkflow(project.current!);
+      let workflowUI:Record<string,unknown> = { passed:true,developmentOnly:true,visible:false };
+      if (info.channel !== 'release') {
+        document.querySelector<HTMLButtonElement>('[data-workflow-lab]')?.click();
+        const start = performance.now(); while (!window.workflowLabCheck) { if (performance.now()-start > 5000) throw new Error('E_WORKFLOW_UI_TIMEOUT'); await new Promise(resolve => setTimeout(resolve,10)); }
+        workflowUI = await window.workflowLabCheck();
+        await new Promise(resolve => setTimeout(resolve,50));
+      }
+      return { ...renderer.current!.report(), modelPixels,workflowCore,workflowUI,sampleRuntimeFrozen:workflow.current?.runtimeSnapshot() !== null,workflowLabVisible:document.querySelector('[data-workflow-lab]') !== null, workerReady: health.ready, nodeExposed: typeof globals.require !== 'undefined',
         shellExposed: typeof (window.studio as unknown as Record<string, unknown>).shell !== 'undefined',
         appInfoDialog: dialog && document.querySelector('[role="dialog"]') === null,
         diagnosticsVisible: document.querySelector('[data-development]') !== null,
@@ -67,11 +83,12 @@ function Studio() {
         <section className="start-section" aria-labelledby="start-title"><div className="section-heading"><h2 id="start-title">어디에서 시작할까요?</h2><span>제작 기능 준비 중</span></div>
           <div className="routes">{[{ kind: 'parts' as const, n: '01', title: '파츠로 시작', desc: '어울리는 모습을 골라 조합하기' }, { kind: 'image' as const, n: '02', title: '그림 한 장', desc: '소중한 그림에서 시작하기' }, { kind: 'layers' as const, n: '03', title: '분리된 그림', desc: '준비된 부위들을 함께 연결하기' }].map(route => <button disabled data-create className="route" key={route.n}><span className="route-top"><Icon kind={route.kind}/><span>{route.n}</span></span><strong>{route.title}</strong><small>{route.desc}</small><span className="route-arrow"><Icon kind="arrow"/></span></button>)}</div>
         </section><section className="recent"><h2>이어서 작업하기</h2><div className="empty-project"><Icon kind="layers"/><div><strong>첫 번째 이야기를 기다리고 있어요</strong><p>프로젝트를 만들고 다시 이어가는 기능을 준비하고 있어요.</p></div></div></section>
-        <footer className="workspace-footer"><span>2DSketcher Studio</span><span>제작 · 저장 · 추적 기능은 아직 준비 중이에요.</span>{info?.channel !== 'release' && <span data-development className="dev-badge">{info?.channel === 'test' ? '시험 빌드' : '개발 빌드'}</span>}</footer>
+        <footer className="workspace-footer"><span>2DSketcher Studio</span><span>제작 · 저장 · 추적 기능은 아직 준비 중이에요.</span>{info && info.channel !== 'release' && <><span data-development className="dev-badge">{info.channel === 'test' ? '시험 빌드' : '개발 빌드'}</span><button data-workflow-lab onClick={() => setLabOpen(true)}>작업 상태 시험</button></>}</footer>
       </div>
     </main>
     <aside className="character-panel"><div className="preview-top"><span><i/>샘플 미리보기</span><span className="preview-label">ORIGINAL CHARACTER</span></div><div className="stage"><div className="stage-halo"/><div className="stage-line line-one"/><div className="stage-line line-two"/><canvas ref={canvas} width="800" height="1000" aria-label="고급 보라색 캐릭터 샘플"/>{error && <div className="preview-error">샘플을 불러오지 못했어요.<br/>앱을 다시 열어 확인해 주세요.</div>}</div><div className="character-caption"><span className="character-index">SAMPLE / 001</span><h2>Violet</h2><p>섬세한 선과 빛, 온전히 당신의 모습으로.</p><div className="preview-status"><span className={previewReady ? 'status-dot ready' : 'status-dot'}/>{previewReady ? '아트 미리보기' : '샘플을 준비하고 있어요'}<span className="status-separator"/>입력 장치 연결 전</div></div></aside>
     {about && <div className="modal-backdrop" role="presentation"><section className="about" role="dialog" aria-modal="true" aria-labelledby="about-title"><button className="close" onClick={() => setAbout(false)} aria-label="닫기">×</button><span className="eyebrow">YOUR LOCAL STUDIO</span><h2 id="about-title">2DSketcher</h2><p>버전 {info?.version} · 초기 미리보기</p><p>고급 캐릭터 미리보기를 제공하는 개발 초기 버전입니다.<br/>캐릭터 제작·저장·장치 추적 기능은 준비 중입니다.</p><button className="primary" onClick={() => setAbout(false)}>작업실로 돌아가기</button></section></div>}
+    {labOpen && project.current && info?.channel !== 'release' && <WorkflowLab project={project.current} onClose={() => setLabOpen(false)}/>}
   </div>;
 }
 createRoot(document.getElementById('root')!).render(<Studio/>);

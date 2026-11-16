@@ -74,8 +74,15 @@ app.whenReady().then(async () => {
       stage = 'capture';
       const screenshotPath = argument('screenshot');
       if (screenshotPath) { await mkdir(resolve(screenshotPath, '..'), { recursive: true }); await writeFile(screenshotPath, (await window.webContents.capturePage()).toPNG()); }
+      const workflowScreenshot = argument('workflow-screenshot');
+      if (workflowScreenshot && build.channel !== 'release') {
+        await window.webContents.executeJavaScript(`(async()=>{document.querySelector('[data-workflow-lab]').click();const start=Date.now();while(!window.workflowLabCheck){if(Date.now()-start>5000)throw new Error('E_WORKFLOW_UI_TIMEOUT');await new Promise(r=>setTimeout(r,10))}return window.workflowLabCheck({holdForCapture:true})})()`);
+        await window.webContents.executeJavaScript(`new Promise((resolve,reject)=>{const timeout=setTimeout(()=>reject(new Error('E_CAPTURE_TIMEOUT')),3000);requestAnimationFrame(()=>requestAnimationFrame(()=>{clearTimeout(timeout);resolve(true)}))})`);
+        await mkdir(resolve(workflowScreenshot,'..'),{ recursive:true }); await writeFile(workflowScreenshot,(await window.webContents.capturePage()).toPNG());
+        await window.webContents.executeJavaScript(`(async()=>{document.querySelector('.workflow-lab .close').click();const start=Date.now();while(document.querySelector('.workflow-lab')){if(Date.now()-start>5000)throw new Error('E_WORKFLOW_UI_TIMEOUT');await new Promise(r=>setTimeout(r,10))}})()`);
+      }
       await worker.stop(); worker = undefined;
-      passed = renderer.webgl2 === true && Number(renderer.visiblePixels) > 1000 && Number(renderer.transparentPixels) > 1000 && renderer.glError === 0 && renderer.nodeExposed === false && renderer.shellExposed === false && renderer.appInfoDialog === true && (renderer.modelPixels as { passed?:boolean } | undefined)?.passed === true && health.modelLoaded === true && (!app.isPackaged || health.dependencyFilesInsideBundle === true);
+      passed = renderer.webgl2 === true && Number(renderer.visiblePixels) > 1000 && Number(renderer.transparentPixels) > 1000 && renderer.glError === 0 && renderer.nodeExposed === false && renderer.shellExposed === false && renderer.appInfoDialog === true && (renderer.modelPixels as { passed?:boolean } | undefined)?.passed === true && (renderer.workflowCore as { passed?:boolean } | undefined)?.passed === true && (renderer.workflowUI as { passed?:boolean } | undefined)?.passed === true && renderer.sampleRuntimeFrozen === true && health.modelLoaded === true && (!app.isPackaged || health.dependencyFilesInsideBundle === true);
       const report = { passed, packaged: app.isPackaged, channel: build.channel, appVersion: build.version,
         electron: process.versions.electron, node: process.versions.node, worker: health, workerStopped: true, renderer,
         protections: { sandbox: true, contextIsolation: true, nodeIntegration: false, externalNetworkBlocked: true },
