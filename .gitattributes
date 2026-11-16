@@ -1,0 +1,14 @@
+* text=auto eol=lf
+# Frozen evidence is byte-addressed; never normalize its line endings.
+/experiments/** -text
+/evidence/** -text
+*.png -text
+*.jpg -text
+*.jpeg -text
+*.gif -text
+*.apng -text
+*.mkv -text
+*.inp -text
+*.pdf -text
+*.task -text
+*.zip -text
