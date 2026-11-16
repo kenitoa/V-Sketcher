@@ -10,8 +10,10 @@ import { checkWorkflow } from './workflow-self-check';
 import type { Project } from '../../../packages/project-model';
 import type { StudioInfo } from '../../../packages/contracts';
 import type { SessionView } from '../../../packages/project-session/contracts';
-import { ProjectDesk,ProjectPreview } from './project-desk';
+import { ProjectDesk } from './project-desk';
 import './studio.css';
+import './editor.css';
+import { Modal } from './ui-foundations';
 
 function Icon({ kind }: { kind: 'home' | 'layers' | 'image' | 'parts' | 'arrow' | 'settings' }) {
   const paths = { home: 'M3 10 12 3l9 7v10H7V10m3 10v-6h4v6', layers: 'm3 7 9-4 9 4-9 4-9-4m0 5 9 4 9-4M3 17l9 4 9-4', image: 'M3 4h18v16H3zm0 12 6-6 5 5 3-3 4 4M15 8h.01', parts: 'M4 4h6v6H4zm10 0h6v6h-6zM4 14h6v6H4zm10 0h6v6h-6z', arrow: 'M5 12h14m-5-5 5 5-5 5', settings: 'M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8m0-5v2m0 14v2M3 12h2m14 0h2M5.6 5.6 7 7m10 10 1.4 1.4M5.6 18.4 7 17M17 7l1.4-1.4' };
@@ -75,20 +77,20 @@ function Studio() {
     };
     return () => { delete window.foundationSelfCheck; };
   }, [info, previewReady]);
-  return <div className="studio">
+  return <div className={`studio ${sessionView?.mode === 'editable' ? 'is-editing' : ''}`}><a className="skip-link" href="#main-content">본문으로 건너뛰기</a>
     <aside className="sidebar"><div className="brand"><span className="brand-mark">S<span/></span><div>2D<span>SKETCHER</span></div></div>
-      <div className="nav-caption">YOUR STUDIO</div><nav aria-label="주 메뉴"><button className="nav active" aria-current="page"><Icon kind="home"/>작업실</button>
-        <button className="nav" onClick={() => document.querySelector('.project-desk')?.scrollIntoView({ behavior:'smooth' })}><Icon kind="layers"/>내 프로젝트</button><button className="nav" disabled><Icon kind="parts"/>파츠 보관함</button></nav>
+      <div className="nav-caption">YOUR STUDIO</div><nav aria-label="주 메뉴"><button className="nav active" aria-current="page" onClick={() => window.dispatchEvent(new Event('studio:home'))}><Icon kind="home"/>작업실</button>
+        <button className="nav" onClick={() => window.dispatchEvent(new Event('studio:recent'))}><Icon kind="layers"/>내 프로젝트</button><button className="nav" disabled><Icon kind="parts"/>파츠 보관함</button></nav>
       <div className="sidebar-bottom"><div className="local-dot"/>내 기기에서, 나의 작업실<div className="sidebar-sub">당신만의 캐릭터를 위한 공간</div><button data-about onClick={() => setAbout(true)} className="nav settings"><Icon kind="settings"/>앱 정보</button></div>
     </aside>
-    <main><header className="topbar"><span>작업실 <span className="crumb">/</span> <strong>시작하기</strong></span><div><span className="version">EARLY PREVIEW</span><span className="avatar-letter">S</span></div></header>
+    <main id="main-content" tabIndex={-1}><header className="topbar"><span>작업실 <span className="crumb">/</span> <strong>{sessionView?.project ? '캐릭터 편집' : '시작하기'}</strong></span><div><span className="version">EARLY PREVIEW</span><span className="avatar-letter">S</span></div></header>
       <div className="workspace"><section className="welcome" hidden={sessionView?.mode !== undefined && sessionView.mode !== 'empty'}><span className="eyebrow">A NEW CHAPTER STARTS HERE</span><h1>상상하던 모습이,<br/><em>나의 캐릭터로.</em></h1><p>그림을 준비하는 순간부터 무대에 오르기까지.<br/>당신의 이야기가 시작될 작은 작업실이에요.</p></section>
         <ProjectDesk onView={setSessionView}/>
         <footer className="workspace-footer"><span>2DSketcher Studio</span><span>프로젝트 저장·복구 가능 · 자동 제작·추적은 준비 중</span>{info && info.channel !== 'release' && <><span data-development className="dev-badge">{info.channel === 'test' ? '시험 빌드' : '개발 빌드'}</span><button data-workflow-lab onClick={() => setLabOpen(true)}>작업 상태 시험</button></>}</footer>
       </div>
     </main>
-    <aside className="character-panel"><div className="preview-top"><span><i/>샘플 미리보기</span><span className="preview-label">ORIGINAL CHARACTER</span></div><div className="stage"><div className="stage-halo"/><div className="stage-line line-one"/><div className="stage-line line-two"/><canvas hidden={!!sessionView && sessionView.mode !== 'empty'} ref={canvas} width="800" height="1000" aria-label="고급 보라색 캐릭터 샘플"/>{sessionView && sessionView.mode !== 'empty' && <ProjectPreview scene={sessionView.scene} label="현재 프로젝트"/>}{error && <div className="preview-error">샘플을 불러오지 못했어요.<br/>앱을 다시 열어 확인해 주세요.</div>}</div><div className="character-caption"><span className="character-index">SAMPLE / 001</span><h2>{sessionView?.project?.displayName ?? (sessionView?.mode === 'read-only' ? 'Read only' : 'Violet')}</h2><p>섬세한 선과 빛, 온전히 당신의 모습으로.</p><div className="preview-status"><span className={previewReady ? 'status-dot ready' : 'status-dot'}/>{previewReady ? '아트 미리보기' : '샘플을 준비하고 있어요'}<span className="status-separator"/>입력 장치 연결 전</div></div></aside>
-    {about && <div className="modal-backdrop" role="presentation"><section className="about" role="dialog" aria-modal="true" aria-labelledby="about-title"><button className="close" onClick={() => setAbout(false)} aria-label="닫기">×</button><span className="eyebrow">YOUR LOCAL STUDIO</span><h2 id="about-title">2DSketcher</h2><p>버전 {info?.version} · 초기 미리보기</p><p>고급 캐릭터 미리보기를 제공하는 개발 초기 버전입니다.<br/>프로젝트 생성·저장·복구·되돌리기를 제공합니다. 자동 제작·장치 추적은 준비 중입니다.</p><button className="primary" onClick={() => setAbout(false)}>작업실로 돌아가기</button></section></div>}
+    <aside className="character-panel"><div className="preview-top"><span><i/>샘플 미리보기</span><span className="preview-label">ORIGINAL CHARACTER</span></div><div className="stage"><div className="stage-halo"/><div className="stage-line line-one"/><div className="stage-line line-two"/><canvas hidden={!!sessionView && sessionView.mode !== 'empty'} ref={canvas} width="800" height="1000" aria-label="고급 보라색 캐릭터 샘플"/>{error && <div className="preview-error">샘플을 불러오지 못했어요.<br/>앱을 다시 열어 확인해 주세요.</div>}</div><div className="character-caption"><span className="character-index">SAMPLE / 001</span><h2>{sessionView?.project?.displayName ?? (sessionView?.mode === 'read-only' ? 'Read only' : 'Violet')}</h2><p>섬세한 선과 빛, 온전히 당신의 모습으로.</p><div className="preview-status"><span className={previewReady ? 'status-dot ready' : 'status-dot'}/>{previewReady ? '아트 미리보기' : '샘플을 준비하고 있어요'}<span className="status-separator"/>입력 장치 연결 전</div></div></aside>
+    {about && <Modal titleId="about-title" onClose={() => setAbout(false)}><span className="eyebrow">YOUR LOCAL STUDIO</span><h2 id="about-title">2DSketcher</h2><p>버전 {info?.version} · 초기 미리보기</p><p>고급 캐릭터 미리보기를 제공하는 개발 초기 버전입니다.<br/>프로젝트 생성·저장·복구·되돌리기를 제공합니다. 자동 제작·장치 추적은 준비 중입니다.</p><button className="primary" onClick={() => setAbout(false)}>작업실로 돌아가기</button></Modal>}
     {labOpen && project.current && info?.channel !== 'release' && <WorkflowLab project={project.current} onClose={() => setLabOpen(false)}/>}
   </div>;
 }

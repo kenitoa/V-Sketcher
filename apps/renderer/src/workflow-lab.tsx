@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './workflow.css';
+import { TaskCard,Modal } from './ui-foundations';
 import { Workflow, type JobState, type Plan, type Json } from '../../../packages/workflow';
 import { editProject, type Project } from '../../../packages/project-model';
 const labels:Record<JobState,string> = { QUEUED:'대기 중',RUNNING:'처리 중',CANCEL_REQUESTED:'취소 정리 중',RESULT_READY:'결과 확인 중',AWAITING_REVIEW:'최신 보정과 비교 필요',SUCCEEDED:'적용 완료',FAILED:'작업 실패',CANCELLED:'취소 완료',DISCARDED:'결과 폐기됨' };
@@ -39,17 +40,19 @@ export function WorkflowLab({ project,onClose }:{ project:Project; onClose:()=>v
       click('[data-workflow-apply]');
       await until(() => document.querySelector('[data-workflow-state]')?.getAttribute('data-workflow-state') === 'SUCCEEDED');
       const preserved = lab.flow.project().parts[0]!.displayName === '내 보정' && lab.flow.project().parts[1]!.opacity === .8;
-      click('[data-workflow-start]'); await until(() => lab.flow.view().jobs.at(-1)?.stageId === 'result'); click('[data-workflow-cancel]');
+      click('[data-workflow-start]'); await until(() => lab.flow.view().jobs.at(-1)?.stageId === 'result'); click('.workflow-lab [data-task-cancel]');
       await until(() => document.querySelector('[data-workflow-state]')?.getAttribute('data-workflow-state') === 'CANCELLED');
-      const result = { passed:hasComparison && comparisonValuesVisible && preserved && lab.owned() === 0,comparisonVisible:hasComparison,comparisonValuesVisible,manualCorrectionPreserved:preserved,cancelled:true,ownedResources:lab.owned() };
+      click('[data-workflow-start]'); await until(() => lab.flow.view().jobs.at(-1)?.stageId === 'result'); lab.fail(); click('[data-workflow-complete]');
+      await until(() => lab.flow.view().jobs.at(-1)?.state === 'FAILED'); click('.workflow-lab [data-task-retry]');
+      await until(() => lab.flow.view().jobs.at(-1)?.stageId === 'result' && lab.flow.view().jobs.at(-1)?.state === 'RUNNING'); click('[data-workflow-complete]'); await until(() => lab.flow.view().jobs.at(-1)?.state === 'SUCCEEDED');
+      const result = { passed:hasComparison && comparisonValuesVisible && preserved && lab.owned() === 0,comparisonVisible:hasComparison,comparisonValuesVisible,manualCorrectionPreserved:preserved,cancelled:true,commonTaskRetry:true,ownedResources:lab.owned() };
       await lab.flow.close(); onClose(); return result;
     };
     return () => { delete window.workflowLabCheck; };
   },[lab,onClose]);
-  return <div className="modal-backdrop"><section className="about workflow-lab" role="dialog" aria-modal="true" aria-labelledby="workflow-title">
-    <button className="close" aria-label="닫기" onClick={() => { void lab.flow.close().then(onClose); }}>×</button>
+  return <Modal titleId="workflow-title" className="workflow-lab" onClose={() => { void lab.flow.close().then(onClose); }}>
     <span className="eyebrow">DEVELOPMENT ONLY</span><h2 id="workflow-title">작업 상태 시험</h2><p>고정 입력을 사용하는 상태 시험입니다. 실제 분석·파일 저장을 실행하지 않습니다.</p>
-    <div data-workflow-state={job?.state ?? 'IDLE'} role="status"><strong>{job ? labels[job.state] : '시작 전'}</strong><p>{job?.stageId === 'input' ? '입력 고정' : job?.stageId === 'result' ? '결과 준비 단계' : '작업을 시작해 주세요.'}</p><progress max="1" value={job?.progress ?? 0}/></div>
+    <div data-workflow-state={job?.state ?? 'IDLE'} role="status"><strong>{job ? labels[job.state] : '시작 전'}</strong><p>{job?.stageId === 'input' ? '입력 고정' : job?.stageId === 'result' ? '결과 준비 단계' : '작업을 시작해 주세요.'}</p>{job && <TaskCard job={job} onCancel={() => { if (id) lab.flow.cancel(id); }} onRetry={() => { if (id) setId(lab.flow.retry(id).jobId); }}/ >}</div>
     <div className="workflow-actions"><button data-workflow-start disabled={!!job && !['SUCCEEDED','FAILED','CANCELLED','DISCARDED'].includes(job.state)} onClick={() => { setId(lab.start()); setMessage(''); }}>시험 시작</button>
       <button data-workflow-edit onClick={() => lab.edit()}>처리 중 수동 보정</button><button data-workflow-complete disabled={job?.state !== 'RUNNING' || job.stageId !== 'result'} onClick={() => lab.complete()}>현재 단계 완료</button>
       <button data-workflow-cancel disabled={!job || !['RUNNING','QUEUED','RESULT_READY','AWAITING_REVIEW'].includes(job.state)} onClick={() => { if (id) lab.flow.cancel(id); }}>취소</button>
@@ -58,5 +61,5 @@ export function WorkflowLab({ project,onClose }:{ project:Project; onClose:()=>v
       <div className="workflow-actions"><button data-workflow-apply disabled={!safe.length} onClick={() => { void apply(); }}>안전한 항목 적용</button><button onClick={() => { if (id) { const result = lab.flow.revalidate(id,comparison.revision,safe); setMessage(result.valid ? '선택 항목 검증 통과' : '추가 보정이 필요해요.'); } }}>재검증</button>
         <button onClick={() => { if (id) void lab.flow.discard(id); }}>결과 폐기</button><button onClick={() => { if (id) void lab.flow.rerun(id).then(next => setId(next.jobId)); }}>최신 입력으로 재실행</button></div></div>}
     <p role="status">{message}</p>
-  </section></div>;
+  </Modal>;
 }

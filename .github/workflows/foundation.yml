@@ -25,23 +25,25 @@ jobs:
       - name: Install locked Node dependencies
         run: tools/dev.cmd ci
       - name: Required static, contract and file checks
-        run: .local/toolchain/node-v24.22.3-win-x64/node.exe scripts/verify-project-session.mjs
+        run: .local/toolchain/node-v24.22.3-win-x64/node.exe scripts/verify-editor.mjs
       - name: Build Windows runtime package
         run: tools/dev.cmd run make
       - name: Isolated packaged startup and shutdown
-        run: tools/dev.cmd run package:check -- --evidence-dir=evidence/phase09
+        run: tools/dev.cmd run package:check -- --evidence-dir=evidence/phase10
       - name: Retain verification evidence
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: foundation-evidence
           path: |
-            evidence/phase09/packaged-run-*.json
-            evidence/phase09/package-audit.json
-            evidence/phase09/release-studio.png
-            evidence/phase09/verification.json
-            evidence/phase09/development-run.json
-            evidence/phase09/review-ui.png
-            evidence/phase09/project-ui.png
-            evidence/phase09/release-project.png
+            evidence/phase10/packaged-run-*.json
+            evidence/phase10/package-audit.json
+            evidence/phase10/release-studio.png
+            evidence/phase10/verification.json
+            evidence/phase10/development-run.json
+            evidence/phase10/review-ui.png
+            evidence/phase10/project-ui.png
+            evidence/phase10/release-project.png
+            evidence/phase10/editor-ui.png
+            evidence/phase10/release-editor*.png
           retention-days: 7
           if-no-files-found: error

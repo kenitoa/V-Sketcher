@@ -6,6 +6,10 @@ declare global {
     studio: { info: () => Promise<StudioInfo>; health: () => Promise<{ ready: boolean }>; projects:{ view:()=>Promise<SessionView>; command:(command:SessionCommand)=>Promise<SessionReply>; subscribe:(listener:(view:SessionView)=>void)=>()=>void } };
     projectSelfCheck?:()=>Promise<Record<string,unknown>>;
     projectSelfCheckCapture?:()=>Promise<void>;
+    editorSelfCheck?:()=>Promise<Record<string,unknown>>;
+    editorCapture?:()=>Promise<void>;
+    editorFailureState?:Record<string,unknown>;
+    previewProbe?:()=>{ matrix:import('../../../packages/coordinates').Affine;view:import('../../../packages/editor-view').ViewportState;selected:string | null;compare:boolean;ready:boolean;report:Record<string,unknown> | null;toClient:(point:{ x:number;y:number })=>{ x:number;y:number };hit:(point:{ x:number;y:number })=>string | null };
     foundationSelfCheck?: () => Promise<Record<string, unknown>>;
   }
 }

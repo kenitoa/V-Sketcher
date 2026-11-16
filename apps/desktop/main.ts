@@ -97,6 +97,9 @@ app.whenReady().then(async () => {
       const renderer = await window.webContents.executeJavaScript('window.foundationSelfCheck()') as Record<string, unknown>;
       stage = 'project-ui';
       const projects = await window.webContents.executeJavaScript('window.projectSelfCheck()') as Record<string,unknown>;
+      stage = 'editor-ui';
+      if (argument('compact-editor') === 'true') { window.setSize(1080,720); await window.webContents.executeJavaScript('new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))'); }
+      const editor = await window.webContents.executeJavaScript('window.editorSelfCheck()') as Record<string,unknown>;
       await projectSession.dispatch({ type:'new',name:'Exit guard check',sourceType:'parts' }); const guardedId = projectSession.view().project?.projectId;
       window.close(); await new Promise(resolve => setTimeout(resolve,100));
       projects.windowCloseCancelled = !window.isDestroyed() && projectSession.view().project?.projectId === guardedId;
@@ -105,6 +108,9 @@ app.whenReady().then(async () => {
       testLeave = 'discard'; await projectSession.dispatch({ type:'close' }); testLeave = 'cancel';
       const projectScreenshot = argument('project-screenshot');
       if (projectScreenshot) { await window.webContents.executeJavaScript('window.projectSelfCheckCapture()'); await window.webContents.executeJavaScript('new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))'); await mkdir(resolve(projectScreenshot,'..'),{ recursive:true }); await writeFile(projectScreenshot,(await window.webContents.capturePage()).toPNG()); await window.webContents.executeJavaScript("window.studio.projects.command({type:'close'})"); }
+      const editorScreenshot = argument('editor-screenshot');
+      if (editorScreenshot) { await window.webContents.executeJavaScript('window.editorCapture()'); await window.webContents.executeJavaScript('new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))'); await mkdir(resolve(editorScreenshot,'..'),{ recursive:true }); await writeFile(editorScreenshot,(await window.webContents.capturePage()).toPNG()); await window.webContents.executeJavaScript("window.studio.projects.command({type:'close'})"); }
+      await window.webContents.executeJavaScript('new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))');
       stage = 'capture';
       const screenshotPath = argument('screenshot');
       if (screenshotPath) { await mkdir(resolve(screenshotPath, '..'), { recursive: true }); await writeFile(screenshotPath, (await window.webContents.capturePage()).toPNG()); }
@@ -117,17 +123,20 @@ app.whenReady().then(async () => {
       }
       await projectSession.shutdown(); await worker.stop(); worker = undefined;
       passed = renderer.webgl2 === true && Number(renderer.visiblePixels) > 1000 && Number(renderer.transparentPixels) > 1000 && renderer.glError === 0 && renderer.nodeExposed === false && renderer.shellExposed === false && renderer.appInfoDialog === true && (renderer.modelPixels as { passed?:boolean } | undefined)?.passed === true && (renderer.workflowCore as { passed?:boolean } | undefined)?.passed === true && (renderer.workflowUI as { passed?:boolean } | undefined)?.passed === true && renderer.sampleRuntimeFrozen === true && health.modelLoaded === true && (!app.isPackaged || health.dependencyFilesInsideBundle === true);
-      passed = passed && projects.passed === true;
-      const report = { passed, projects, packaged: app.isPackaged, channel: build.channel, appVersion: build.version,
+      passed = passed && projects.passed === true && editor.passed === true;
+      const report = { passed, projects, editor, packaged: app.isPackaged, channel: build.channel, appVersion: build.version,
         electron: process.versions.electron, node: process.versions.node, worker: health, workerStopped: true, renderer,
         protections: { sandbox: true, contextIsolation: true, nodeIntegration: false, externalNetworkBlocked: true },
         gpuFeatureStatus: app.getGPUFeatureStatus(), devicesOpened: false,
-        scope: 'Foundation startup/render/bundled worker/shutdown only; no creation, live tracking, clean-OS or M0 performance claim' };
+        windowSize:window.getSize(),scope: 'Local project lifecycle/common editor, GPU and bundled worker; no automatic creation, live tracking, clean-OS or M0 performance claim' };
       await mkdir(resolve(reportPath, '..'), { recursive: true }); await writeFile(reportPath, JSON.stringify(report, null, 2) + '\n');
     } catch (error) {
+      const failureCapture = argument('editor-screenshot');
+      if (failureCapture && !window.isDestroyed()) { await mkdir(resolve(failureCapture,'..'),{ recursive:true }); await writeFile(failureCapture,(await window.webContents.capturePage()).toPNG()); }
       if (worker) { await worker.stop(); worker = undefined; }
       const detail = error instanceof Error ? error.message.match(/\bE_[A-Z_]{1,48}\b/)?.[0] : undefined;
-      await mkdir(resolve(reportPath, '..'), { recursive: true }); await writeFile(reportPath, JSON.stringify({ passed: false, code: 'E_FOUNDATION_CHECK', stage, detail, packaged: app.isPackaged }) + '\n');
+      const diagnostic = await window.webContents.executeJavaScript('window.editorFailureState ?? null').catch(() => null);
+      await mkdir(resolve(reportPath, '..'), { recursive: true }); await writeFile(reportPath, JSON.stringify({ passed: false, code: 'E_FOUNDATION_CHECK', stage, detail, diagnostic, packaged: app.isPackaged }) + '\n');
     }
     log.write('app-stop'); quitting = true; app.exit(passed ? 0 : 1);
   }

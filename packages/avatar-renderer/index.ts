@@ -1,5 +1,6 @@
 import { NEUTRAL, parameters, validateScene, type PreviewScene, type Parameters } from '../scene-core';
 import { transform } from '../coordinates';
+import { hitPart } from '../editor-view';
 
 const vertex = `#version 300 es
 in vec2 position; in vec2 uv; out vec2 texCoord;
@@ -14,6 +15,7 @@ export class AvatarRenderer {
   readonly gl: WebGL2RenderingContext;
   private program: WebGLProgram;
   private textures = new Map<string, Texture>();
+  private images = new Map<string,HTMLImageElement>();
   private buffer: WebGLBuffer;
   private frameCount = 0;
   private disposed = false;
@@ -42,6 +44,7 @@ export class AvatarRenderer {
     for (const path of new Set(this.scene.layers.flatMap(layer => Object.values(layer.states)))) {
       const image = new Image(); image.src = new URL(path, base).href; await image.decode();
       if (this.disposed) return;
+      this.images.set(path,image);
       for (const layer of this.scene.layers) {
         const crop = layer.geometry?.[path]?.crop;
         if (crop && (crop.x+crop.width > image.naturalWidth || crop.y+crop.height > image.naturalHeight)) throw new Error('E_ASSET_GEOMETRY');
@@ -93,5 +96,9 @@ export class AvatarRenderer {
       visiblePixels: visible, transparentPixels: transparent, glError: this.gl.getError(),
       scope: 'Static/limited planar premium preview; not complete character rigging, live tracking or performance gate' };
   }
-  dispose(): void { if (this.disposed) return; this.disposed = true; for (const value of this.textures.values()) this.gl.deleteTexture(value.texture); this.textures.clear(); this.gl.deleteBuffer(this.buffer); this.gl.deleteProgram(this.program); }
+  hitTest(point:{ x:number;y:number }):string | null {
+    const pixel = document.createElement('canvas'); pixel.width = pixel.height = 1; const context = pixel.getContext('2d',{ willReadFrequently:true }); if (!context) return null;
+    return hitPart(this.scene,point,(path,x,y) => { const image = this.images.get(path); if (!image) return 0; context.clearRect(0,0,1,1); context.drawImage(image,x,y,1,1,0,0,1,1); return context.getImageData(0,0,1,1).data[3]!; },this.current);
+  }
+  dispose(): void { if (this.disposed) return; this.disposed = true; for (const value of this.textures.values()) this.gl.deleteTexture(value.texture); this.textures.clear(); this.images.clear(); this.gl.deleteBuffer(this.buffer); this.gl.deleteProgram(this.program); }
 }

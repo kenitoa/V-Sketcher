@@ -4,6 +4,7 @@ import { randomUUID } from 'node:crypto';
 import { Workflow } from '../workflow';
 import { createProject, assertProject, type Project, type SourceType } from '../project-model';
 import { projectToPreview } from '../project-model/preview';
+import { originalScene } from '../editor-view';
 import type { PreviewScene } from '../scene-core';
 import { ResourceCache } from '../project-storage/cache';
 import { ProjectCatalog, type RecoveryRecord } from '../project-storage/catalog';
@@ -16,6 +17,7 @@ export interface ProjectDialogs { openProject():Promise<string | null>; saveProj
 export interface SessionOptions { dataDir:string; dialogs:ProjectDialogs; bundled:Project; bundledBytes:ReadonlyMap<string,Buffer>; now?:()=>number; autoTimers?:boolean; saveFault?:AtomicOptions['fault']; }
 interface Document { id:string; flow:Workflow; history:EditHistory; target:string | null; expectedHash:string | null; savedKey:string | null; label:string; mode:'editable'; available:Set<string>; unresolved:Set<string>; lastRecoveryAt:string | null; recoveryKey:string | null; }
 export class ProjectSession {
+  private viewSequence = 0;
   readonly cache:ResourceCache; readonly catalog:ProjectCatalog;
   private document:Document | null = null; private readOnly:LoadedBundle | null = null; private readOnlyLabel = '';
   private listeners = new Set<()=>void>(); private lastError:string | null = null; private saving:Promise<boolean> | null = null;
@@ -38,8 +40,9 @@ export class ProjectSession {
   view():SessionView {
     const d = this.document; const p = d?.flow.project() ?? null; const scene = d && p ? this.scene(p,d.available,d.id) : null;
     const renderKey = scene ? sha256(Buffer.from(JSON.stringify({ canvas:scene.canvas,layers:scene.layers }))) : 'empty';
-    return { sessionId:d?.id ?? null,mode:this.readOnly ? 'read-only' : d ? 'editable' : 'empty',project:p,label:d?.label ?? this.readOnlyLabel,dirty:this.dirty(),saving:this.saving !== null,canUndo:!this.saving && !!d?.history.canUndo,canRedo:!this.saving && !!d?.history.canRedo,
-      scene,renderKey,issues:d && p ? p.assets.filter(a => !d.available.has(a.id) || d.unresolved.has(a.id)).map(a => ({ assetId:a.id,code:'E_RESOURCE_MISSING' })) : [],errorCode:this.lastError,lastRecoveryAt:d?.lastRecoveryAt ?? null,
+    const original = p?.assets.find(a => a.id === p.inputAssetIds[0] && d?.available.has(a.id));
+    return { sequence:++this.viewSequence,sessionId:d?.id ?? null,mode:this.readOnly ? 'read-only' : d ? 'editable' : 'empty',project:p,label:d?.label ?? this.readOnlyLabel,dirty:this.dirty(),saving:this.saving !== null,canUndo:!this.saving && !!d?.history.canUndo,canRedo:!this.saving && !!d?.history.canRedo,
+      scene,originalScene:original && p && d ? originalScene([p.canvas.width,p.canvas.height],{ x:original.dimensions.width,y:original.dimensions.height },`assets/session/${d.id}/${original.fingerprint.sha256}.${original.mediaType === 'image/png' ? 'png' : 'jpg'}`) : null,jobs:d?.flow.view().jobs ?? [],renderKey,issues:d && p ? p.assets.filter(a => !d.available.has(a.id) || d.unresolved.has(a.id)).map(a => ({ assetId:a.id,code:'E_RESOURCE_MISSING' })) : [],errorCode:this.lastError,lastRecoveryAt:d?.lastRecoveryAt ?? null,
       recent:this.catalog.recent().map(({ id,displayName,openedAt,sourceType }) => ({ id,displayName,openedAt,sourceType })),
       recoveries:this.catalog.recoveries().slice(0,30).map(r => ({ id:r.id,displayName:r.displayName,revision:r.revision,createdAt:r.createdAt,kind:r.kind,reason:r.reason,originalLabel:r.sourcePath ? basename(r.sourcePath) : null,pending:r.pending })),
       readOnlyName:this.readOnly ? String((this.readOnly.raw as { displayName?:unknown } | null)?.displayName ?? '지원 범위가 다른 프로젝트') : null };
@@ -67,6 +70,7 @@ export class ProjectSession {
       if (bundle?.mode === 'read-only') { this.readOnly = bundle; this.readOnlyLabel = target ? basename(target) : '읽기 전용'; }
       else if (project) {
         const flow = new Workflow(project); const complete = available.size === project.assets.length && !bundle?.issues.length;
+        flow.subscribe(() => this.emit());
         this.document = { id:randomUUID(),flow,history:new EditHistory(flow),target:!restored && complete ? target : null,expectedHash:!restored && complete ? bundle?.fileHash ?? null : null,
           savedKey:target && !restored && complete ? contentKey(project) : null,label:restored ? '복구본 · 새 파일로 저장' : target ? basename(target) : '저장 위치 없음',mode:'editable',available,unresolved:new Set(bundle?.issues.map(issue => issue.assetId) ?? []),lastRecoveryAt:null,recoveryKey:null };
         if (target && !restored) { try { await this.catalog.addRecent(target,project); } catch { /* opening is independent from recent-list persistence */ } }
@@ -146,6 +150,13 @@ export class ProjectSession {
     if (record.sourcePath) { try { const original = await readBundle(record.sourcePath,false); if (original.project) { await this.cache.ingest(original); saved = { label:basename(record.sourcePath),revision:original.project.revision,modifiedAt:original.project.modifiedAt,scene:this.scene(original.project,await this.cache.available(original.project),'saved-'+id) }; } } catch { /* original unavailable; verified recovery remains usable */ } }
     return { recovered:{ label:record.displayName,revision:recovered.project.revision,modifiedAt:recovered.project.modifiedAt,scene:recoveredScene },saved };
   }
+  private checkResources():void {
+    const d = this.editable(); this.lastError = null;
+    const job = d.flow.start({ key:'resource-integrity',label:'저장에 필요한 이미지 확인',kind:'check',processingVersion:'1.0.0',settings:{ scope:'local-resource-hash' },
+      steps:[{ id:'verify-resources',version:'1.0.0',cache:'none',cancellable:true,run:async ctx => { let done = 0; for (const asset of ctx.input.assets) { ctx.checkpoint(); if (!await this.cache.read(asset)) throw new Error('E_RESOURCE_MISSING'); done++; ctx.progress(done/ctx.input.assets.length); await new Promise<void>(resolve => setImmediate(resolve)); } return { checked:done }; } }],
+      collect:(_input,identity) => ({ identity,outcome:{ kind:'checked',reportId:'local-resources',dependencies:['resources:*'] } }) }); this.watchCheck(d,job.jobId);
+  }
+  private watchCheck(d:Document,id:string):void { void d.flow.wait(id).then(async result => { if (this.document !== d) return; d.available = await this.cache.available(d.flow.project()); if (result.state === 'FAILED') this.lastError = result.errorCode; this.emit(); }).catch(() => {}); }
   async dispatch(input:unknown):Promise<SessionReply> {
     try {
       const command = parseSessionCommand(input); let value:string | undefined; let preview:RecoveryComparison | undefined;
@@ -160,6 +171,9 @@ export class ProjectSession {
       else if (command.type === 'edit') await this.edit(command);
       else if (command.type === 'undo' || command.type === 'redo') { const d = this.editable(); if (command.type === 'undo') d.history.undo(); else d.history.redo(); this.changed(); }
       else if (command.type === 'sample') await this.sample();
+      else if (command.type === 'check-resources') this.checkResources();
+      else if (command.type === 'cancel-task') this.editable().flow.cancel(command.id);
+      else if (command.type === 'retry-task') { const d = this.editable(); const job = d.flow.retry(command.id); this.lastError = null; this.watchCheck(d,job.jobId); }
       else if (command.type === 'checkpoint') await this.checkpoint('사용자 복구 지점');
       else if (command.type === 'relink') await this.relink(command.assetId);
       else if (command.type === 'preview-recovery') preview = await this.comparison(command.id);
