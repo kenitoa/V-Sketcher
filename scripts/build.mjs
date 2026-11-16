@@ -3,6 +3,7 @@ import { resolve } from 'node:path';
 import { root, python, run, bin } from './common.mjs';
 const mode = process.argv.find(v => v.startsWith('--mode='))?.slice(7) ?? 'release';
 if (!['development', 'test', 'release'].includes(mode)) throw new Error('Unknown build profile');
+run(process.execPath,['scripts/generate-project-validators.mjs','--check']);
 run(python, ['scripts/provision.py']);
 bin('typescript', 'tsc', ['-p', 'tsconfig.build.json']);
 bin('vite', 'vite', ['build']);

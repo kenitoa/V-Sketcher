@@ -1,0 +1,761 @@
+{
+  "projectId": "example-single-image",
+  "schemaVersion": {
+    "major": 1,
+    "minor": 0
+  },
+  "displayName": "S-001",
+  "sourceType": "single-image",
+  "createdAt": "2026-11-16T00:00:00.000Z",
+  "modifiedAt": "2026-11-16T00:00:00.000Z",
+  "revision": 1,
+  "savedRevision": null,
+  "canvas": {
+    "width": 512,
+    "height": 512
+  },
+  "inputAssetIds": [
+    "asset-6d899a13c74655275918c3e5"
+  ],
+  "assets": [
+    {
+      "id": "asset-6d899a13c74655275918c3e5",
+      "kind": "original-image",
+      "origin": "imported",
+      "parentAssetIds": [],
+      "storage": {
+        "path": "resources/6d899a13c74655275918c3e51019edf045217a635c51b11b9e736b6392e77e95.png"
+      },
+      "fingerprint": {
+        "sha256": "6d899a13c74655275918c3e51019edf045217a635c51b11b9e736b6392e77e95",
+        "bytes": 6611
+      },
+      "version": 1,
+      "mediaType": "image/png",
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "sourceRegion": {
+        "x": 0,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "sourceToEdited": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "colorSpace": "srgb",
+      "alphaMode": "straight",
+      "producer": {
+        "name": "frozen-prepared-model-import",
+        "version": "1.0.0"
+      },
+      "attribution": {
+        "creator": "2DSketcher experiment",
+        "source": "experiments/phase03/results/projects/single/source.png",
+        "usage": "Development structural fixture only",
+        "status": "unverified"
+      }
+    },
+    {
+      "id": "asset-367231ba35a1cfd902e54657",
+      "kind": "part-texture",
+      "origin": "auto-preparation",
+      "parentAssetIds": [
+        "asset-6d899a13c74655275918c3e5"
+      ],
+      "storage": {
+        "path": "resources/367231ba35a1cfd902e546578e21b1e36447ef2ac58c4a01afa510b21e8841e7.png"
+      },
+      "fingerprint": {
+        "sha256": "367231ba35a1cfd902e546578e21b1e36447ef2ac58c4a01afa510b21e8841e7",
+        "bytes": 11152
+      },
+      "version": 1,
+      "mediaType": "image/png",
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "sourceRegion": {
+        "x": 0,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "sourceToEdited": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "colorSpace": "srgb",
+      "alphaMode": "straight",
+      "producer": {
+        "name": "frozen-prepared-model-import",
+        "version": "1.0.0"
+      },
+      "attribution": {
+        "creator": "2DSketcher experiment",
+        "source": "experiments/phase03/results/projects/single/textures/00-base.png",
+        "usage": "Development structural fixture only",
+        "status": "unverified"
+      }
+    },
+    {
+      "id": "asset-0b6b129bf656e0233bdddc36",
+      "kind": "part-texture",
+      "origin": "auto-preparation",
+      "parentAssetIds": [
+        "asset-6d899a13c74655275918c3e5"
+      ],
+      "storage": {
+        "path": "resources/0b6b129bf656e0233bdddc367c1e7f0b403e29d1be80fb7b0f785988912e06e9.png"
+      },
+      "fingerprint": {
+        "sha256": "0b6b129bf656e0233bdddc367c1e7f0b403e29d1be80fb7b0f785988912e06e9",
+        "bytes": 599
+      },
+      "version": 1,
+      "mediaType": "image/png",
+      "dimensions": {
+        "width": 45,
+        "height": 48
+      },
+      "sourceRegion": {
+        "x": 0,
+        "y": 0,
+        "width": 45,
+        "height": 48
+      },
+      "sourceToEdited": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "colorSpace": "srgb",
+      "alphaMode": "straight",
+      "producer": {
+        "name": "frozen-prepared-model-import",
+        "version": "1.0.0"
+      },
+      "attribution": {
+        "creator": "2DSketcher experiment",
+        "source": "experiments/phase03/results/projects/single/textures/01-open.png",
+        "usage": "Development structural fixture only",
+        "status": "unverified"
+      }
+    },
+    {
+      "id": "asset-e23d23c9738ae80ae6bd0d57",
+      "kind": "part-texture",
+      "origin": "auto-preparation",
+      "parentAssetIds": [
+        "asset-6d899a13c74655275918c3e5"
+      ],
+      "storage": {
+        "path": "resources/e23d23c9738ae80ae6bd0d57a7a3fcfc5dbb7748b721deef35e6256dd2cf9c14.png"
+      },
+      "fingerprint": {
+        "sha256": "e23d23c9738ae80ae6bd0d57a7a3fcfc5dbb7748b721deef35e6256dd2cf9c14",
+        "bytes": 614
+      },
+      "version": 1,
+      "mediaType": "image/png",
+      "dimensions": {
+        "width": 45,
+        "height": 48
+      },
+      "sourceRegion": {
+        "x": 0,
+        "y": 0,
+        "width": 45,
+        "height": 48
+      },
+      "sourceToEdited": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "colorSpace": "srgb",
+      "alphaMode": "straight",
+      "producer": {
+        "name": "frozen-prepared-model-import",
+        "version": "1.0.0"
+      },
+      "attribution": {
+        "creator": "2DSketcher experiment",
+        "source": "experiments/phase03/results/projects/single/textures/01-closed.png",
+        "usage": "Development structural fixture only",
+        "status": "unverified"
+      }
+    },
+    {
+      "id": "asset-4d71eaaf5320cf58176ee49a",
+      "kind": "part-texture",
+      "origin": "auto-preparation",
+      "parentAssetIds": [
+        "asset-6d899a13c74655275918c3e5"
+      ],
+      "storage": {
+        "path": "resources/4d71eaaf5320cf58176ee49ab829a543b65aa5670cae72c1976802f142d974c5.png"
+      },
+      "fingerprint": {
+        "sha256": "4d71eaaf5320cf58176ee49ab829a543b65aa5670cae72c1976802f142d974c5",
+        "bytes": 293
+      },
+      "version": 1,
+      "mediaType": "image/png",
+      "dimensions": {
+        "width": 59,
+        "height": 21
+      },
+      "sourceRegion": {
+        "x": 0,
+        "y": 0,
+        "width": 59,
+        "height": 21
+      },
+      "sourceToEdited": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "colorSpace": "srgb",
+      "alphaMode": "straight",
+      "producer": {
+        "name": "frozen-prepared-model-import",
+        "version": "1.0.0"
+      },
+      "attribution": {
+        "creator": "2DSketcher experiment",
+        "source": "experiments/phase03/results/projects/single/textures/03-closed.png",
+        "usage": "Development structural fixture only",
+        "status": "unverified"
+      }
+    },
+    {
+      "id": "asset-2240c14c584bf9360c4a7f47",
+      "kind": "part-texture",
+      "origin": "auto-preparation",
+      "parentAssetIds": [
+        "asset-6d899a13c74655275918c3e5"
+      ],
+      "storage": {
+        "path": "resources/2240c14c584bf9360c4a7f47772cf6239903a56a1ee017a47a0d7ac08565de98.png"
+      },
+      "fingerprint": {
+        "sha256": "2240c14c584bf9360c4a7f47772cf6239903a56a1ee017a47a0d7ac08565de98",
+        "bytes": 923
+      },
+      "version": 1,
+      "mediaType": "image/png",
+      "dimensions": {
+        "width": 59,
+        "height": 21
+      },
+      "sourceRegion": {
+        "x": 0,
+        "y": 0,
+        "width": 59,
+        "height": 21
+      },
+      "sourceToEdited": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "colorSpace": "srgb",
+      "alphaMode": "straight",
+      "producer": {
+        "name": "frozen-prepared-model-import",
+        "version": "1.0.0"
+      },
+      "attribution": {
+        "creator": "2DSketcher experiment",
+        "source": "experiments/phase03/results/projects/single/textures/03-open.png",
+        "usage": "Development structural fixture only",
+        "status": "unverified"
+      }
+    }
+  ],
+  "parts": [
+    {
+      "id": "part-base",
+      "displayName": "base",
+      "role": "base",
+      "side": "center",
+      "parentId": null,
+      "groupId": "group-character",
+      "textures": [
+        {
+          "state": "base",
+          "assetId": "asset-367231ba35a1cfd902e54657",
+          "assetVersion": 1,
+          "assetToLocal": [
+            1,
+            0,
+            0,
+            1,
+            0,
+            0
+          ]
+        }
+      ],
+      "localTransform": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "drawOrder": 0,
+      "visible": true,
+      "opacity": 1.0,
+      "correctionOrigin": "automatic",
+      "limitations": []
+    },
+    {
+      "id": "part-eye_right",
+      "displayName": "eye_right",
+      "role": "eye",
+      "side": "character-right",
+      "parentId": null,
+      "groupId": "group-character",
+      "textures": [
+        {
+          "state": "open",
+          "assetId": "asset-0b6b129bf656e0233bdddc36",
+          "assetVersion": 1,
+          "assetToLocal": [
+            1,
+            0,
+            0,
+            1,
+            0,
+            0
+          ]
+        },
+        {
+          "state": "closed",
+          "assetId": "asset-e23d23c9738ae80ae6bd0d57",
+          "assetVersion": 1,
+          "assetToLocal": [
+            1,
+            0,
+            0,
+            1,
+            0,
+            0
+          ]
+        }
+      ],
+      "localTransform": [
+        1,
+        0,
+        0,
+        1,
+        184,
+        173
+      ],
+      "drawOrder": 10,
+      "visible": true,
+      "opacity": 1.0,
+      "correctionOrigin": "automatic",
+      "limitations": []
+    },
+    {
+      "id": "part-eye_left",
+      "displayName": "eye_left",
+      "role": "eye",
+      "side": "character-left",
+      "parentId": null,
+      "groupId": "group-character",
+      "textures": [
+        {
+          "state": "open",
+          "assetId": "asset-0b6b129bf656e0233bdddc36",
+          "assetVersion": 1,
+          "assetToLocal": [
+            1,
+            0,
+            0,
+            1,
+            0,
+            0
+          ]
+        },
+        {
+          "state": "closed",
+          "assetId": "asset-e23d23c9738ae80ae6bd0d57",
+          "assetVersion": 1,
+          "assetToLocal": [
+            1,
+            0,
+            0,
+            1,
+            0,
+            0
+          ]
+        }
+      ],
+      "localTransform": [
+        1,
+        0,
+        0,
+        1,
+        284,
+        173
+      ],
+      "drawOrder": 10,
+      "visible": true,
+      "opacity": 1.0,
+      "correctionOrigin": "automatic",
+      "limitations": []
+    },
+    {
+      "id": "part-mouth",
+      "displayName": "mouth",
+      "role": "mouth",
+      "side": "center",
+      "parentId": null,
+      "groupId": "group-character",
+      "textures": [
+        {
+          "state": "closed",
+          "assetId": "asset-4d71eaaf5320cf58176ee49a",
+          "assetVersion": 1,
+          "assetToLocal": [
+            1,
+            0,
+            0,
+            1,
+            0,
+            0
+          ]
+        },
+        {
+          "state": "open",
+          "assetId": "asset-2240c14c584bf9360c4a7f47",
+          "assetVersion": 1,
+          "assetToLocal": [
+            1,
+            0,
+            0,
+            1,
+            0,
+            0
+          ]
+        }
+      ],
+      "localTransform": [
+        1,
+        0,
+        0,
+        1,
+        227,
+        250
+      ],
+      "drawOrder": 10,
+      "visible": true,
+      "opacity": 1.0,
+      "correctionOrigin": "automatic",
+      "limitations": []
+    }
+  ],
+  "groups": [
+    {
+      "id": "group-character",
+      "displayName": "Character",
+      "parentGroupId": null,
+      "visible": true
+    }
+  ],
+  "parameters": [
+    {
+      "id": "parameter-eye_left",
+      "displayName": "eye_left",
+      "semantic": "eye-left",
+      "unit": "ratio",
+      "min": 0,
+      "neutral": 1.0,
+      "max": 1,
+      "previewKey": "eye_left"
+    },
+    {
+      "id": "parameter-eye_right",
+      "displayName": "eye_right",
+      "semantic": "eye-right",
+      "unit": "ratio",
+      "min": 0,
+      "neutral": 1.0,
+      "max": 1,
+      "previewKey": "eye_right"
+    },
+    {
+      "id": "parameter-mouth",
+      "displayName": "mouth",
+      "semantic": "mouth",
+      "unit": "ratio",
+      "min": 0,
+      "neutral": 0.0,
+      "max": 1,
+      "previewKey": "mouth"
+    },
+    {
+      "id": "parameter-head_yaw",
+      "displayName": "head_yaw",
+      "semantic": "head-yaw",
+      "unit": "ratio",
+      "min": -1,
+      "neutral": 0.0,
+      "max": 1,
+      "previewKey": "head_yaw"
+    },
+    {
+      "id": "parameter-head_roll",
+      "displayName": "head_roll",
+      "semantic": "head-roll",
+      "unit": "ratio",
+      "min": -1,
+      "neutral": 0.0,
+      "max": 1,
+      "previewKey": "head_roll"
+    }
+  ],
+  "partBindings": [
+    {
+      "id": "binding-eye_right",
+      "parameterId": "parameter-eye_right",
+      "partId": "part-eye_right",
+      "kind": "state-blend",
+      "mapping": {
+        "minimumState": "closed",
+        "maximumState": "open"
+      }
+    },
+    {
+      "id": "binding-eye_left",
+      "parameterId": "parameter-eye_left",
+      "partId": "part-eye_left",
+      "kind": "state-blend",
+      "mapping": {
+        "minimumState": "closed",
+        "maximumState": "open"
+      }
+    },
+    {
+      "id": "binding-mouth",
+      "parameterId": "parameter-mouth",
+      "partId": "part-mouth",
+      "kind": "state-blend",
+      "mapping": {
+        "minimumState": "closed",
+        "maximumState": "open"
+      }
+    }
+  ],
+  "inputBindings": [
+    {
+      "id": "input-eye_left",
+      "source": "face",
+      "channel": "eye_left",
+      "parameterId": "parameter-eye_left",
+      "inputRange": [
+        0,
+        1
+      ],
+      "invert": false,
+      "gain": 1,
+      "offset": 0,
+      "smoothingMs": 80,
+      "fallback": {
+        "mode": "neutral",
+        "value": 1.0,
+        "returnMs": 250
+      }
+    },
+    {
+      "id": "input-eye_right",
+      "source": "face",
+      "channel": "eye_right",
+      "parameterId": "parameter-eye_right",
+      "inputRange": [
+        0,
+        1
+      ],
+      "invert": false,
+      "gain": 1,
+      "offset": 0,
+      "smoothingMs": 80,
+      "fallback": {
+        "mode": "neutral",
+        "value": 1.0,
+        "returnMs": 250
+      }
+    },
+    {
+      "id": "input-mouth",
+      "source": "face",
+      "channel": "mouth",
+      "parameterId": "parameter-mouth",
+      "inputRange": [
+        0,
+        1
+      ],
+      "invert": false,
+      "gain": 1,
+      "offset": 0,
+      "smoothingMs": 80,
+      "fallback": {
+        "mode": "neutral",
+        "value": 0.0,
+        "returnMs": 250
+      }
+    },
+    {
+      "id": "input-head_yaw",
+      "source": "face",
+      "channel": "head_yaw",
+      "parameterId": "parameter-head_yaw",
+      "inputRange": [
+        -1,
+        1
+      ],
+      "invert": false,
+      "gain": 1,
+      "offset": 0,
+      "smoothingMs": 80,
+      "fallback": {
+        "mode": "neutral",
+        "value": 0.0,
+        "returnMs": 250
+      }
+    },
+    {
+      "id": "input-head_roll",
+      "source": "face",
+      "channel": "head_roll",
+      "parameterId": "parameter-head_roll",
+      "inputRange": [
+        -1,
+        1
+      ],
+      "invert": false,
+      "gain": 1,
+      "offset": 0,
+      "smoothingMs": 80,
+      "fallback": {
+        "mode": "neutral",
+        "value": 0.0,
+        "returnMs": 250
+      }
+    }
+  ],
+  "expressions": [
+    {
+      "id": "expression-blink",
+      "displayName": "Blink",
+      "values": [
+        {
+          "parameterId": "parameter-eye_left",
+          "value": 0,
+          "locked": true
+        },
+        {
+          "parameterId": "parameter-eye_right",
+          "value": 0,
+          "locked": true
+        }
+      ],
+      "transitionMs": 100,
+      "release": "live-input"
+    }
+  ],
+  "runtimeProfile": {
+    "id": "runtime-default",
+    "revision": 0,
+    "mode": "idle",
+    "mirror": false,
+    "fallbackExpressionId": "expression-blink"
+  },
+  "broadcastProfiles": [
+    {
+      "id": "broadcast-default",
+      "revision": 0,
+      "displayName": "OBS transparent",
+      "width": 1920,
+      "height": 1080,
+      "fps": 30,
+      "transparent": true,
+      "region": {
+        "x": 0,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "fit": "contain"
+    }
+  ],
+  "exportProfiles": [
+    {
+      "id": "export-inp",
+      "revision": 0,
+      "displayName": "INP compatibility target",
+      "target": "inochi2d",
+      "targetVersion": "0.8.7",
+      "format": "inp",
+      "converterVersion": "0.1.0",
+      "parameterMap": [
+        {
+          "parameterId": "parameter-eye_left",
+          "targetName": "eye_left"
+        },
+        {
+          "parameterId": "parameter-eye_right",
+          "targetName": "eye_right"
+        },
+        {
+          "parameterId": "parameter-mouth",
+          "targetName": "mouth"
+        },
+        {
+          "parameterId": "parameter-head_yaw",
+          "targetName": "head_yaw"
+        },
+        {
+          "parameterId": "parameter-head_roll",
+          "targetName": "head_roll"
+        }
+      ]
+    }
+  ],
+  "provenance": {
+    "preparation": "Converted frozen prepared result; not a newly executed preparation pipeline",
+    "limitations": [
+      "Development structural fixture; not premium art"
+    ]
+  },
+  "derivedProjects": []
+}

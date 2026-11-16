@@ -29,14 +29,14 @@ jobs:
       - name: Build Windows runtime package
         run: tools/dev.cmd run make
       - name: Isolated packaged startup and shutdown
-        run: tools/dev.cmd run package:check
+        run: tools/dev.cmd run package:check -- --evidence-dir=evidence/phase07
       - name: Retain verification evidence
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: foundation-evidence
           path: |
-            evidence/phase06/packaged-run-*.json
-            evidence/phase06/package-audit.json
-            evidence/phase06/release-studio.png
+            evidence/phase07/packaged-run-*.json
+            evidence/phase07/package-audit.json
+            evidence/phase07/release-studio.png
           retention-days: 7
           if-no-files-found: error

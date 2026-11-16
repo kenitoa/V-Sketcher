@@ -18,5 +18,6 @@ def run():
         if not file.is_relative_to(assets.resolve()) or sha(file)!=item['sha256']:raise ValueError('E_ASSET_HASH')
         destination=output/item['path'];destination.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(file,destination)
     shutil.copyfile(assets/'preview-scene.json',output/'preview-scene.json')
+    shutil.copyfile(assets/'preview-project.json',output/'preview-project.json')
     print('Model and',len(manifest['assets']),'premium assets verified')
 if __name__=='__main__':run()

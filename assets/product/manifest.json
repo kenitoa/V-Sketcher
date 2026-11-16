@@ -51,6 +51,20 @@
       "bytes": 9775,
       "source": "experiments/phase04/assets/premium/project/textures/03-open.png",
       "use": "bundled-premium-preview-only"
+    },
+    {
+      "path": "preview/955e597230d4cdd15cd64c09ecf8f48686bbd5702f32e429109d581d68d6f442.png",
+      "sha256": "955e597230d4cdd15cd64c09ecf8f48686bbd5702f32e429109d581d68d6f442",
+      "bytes": 2103970,
+      "source": "experiments/phase04/assets/premium/neutral.png",
+      "use": "bundled-preview-source"
+    },
+    {
+      "path": "preview/e78602d341961d5562555fc95caf5f7538c9e00c1f281d26e71657f04e78132a.png",
+      "sha256": "e78602d341961d5562555fc95caf5f7538c9e00c1f281d26e71657f04e78132a",
+      "bytes": 1991436,
+      "source": "experiments/phase04/assets/premium/blink-speaking.png",
+      "use": "bundled-preview-source"
     }
   ]
 }

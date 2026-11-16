@@ -63,24 +63,29 @@ app.whenReady().then(async () => {
   await window.loadURL('sketcher://app/index.html');
   if (reportPath) {
     let passed = false;
+    let stage = 'worker';
     try {
       await workerReady;
       const health = await worker.request('validate-runtime');
+      stage = 'renderer-ready';
       await window.webContents.executeJavaScript(`new Promise((resolve,reject)=>{const start=Date.now();const timer=setInterval(()=>{if(typeof window.foundationSelfCheck==='function'){clearInterval(timer);resolve(true)}else if(Date.now()-start>30000){clearInterval(timer);reject(new Error('E_RENDER_TIMEOUT'))}},50)})`);
+      stage = 'renderer-check';
       const renderer = await window.webContents.executeJavaScript('window.foundationSelfCheck()') as Record<string, unknown>;
+      stage = 'capture';
       const screenshotPath = argument('screenshot');
       if (screenshotPath) { await mkdir(resolve(screenshotPath, '..'), { recursive: true }); await writeFile(screenshotPath, (await window.webContents.capturePage()).toPNG()); }
       await worker.stop(); worker = undefined;
-      passed = renderer.webgl2 === true && Number(renderer.visiblePixels) > 1000 && Number(renderer.transparentPixels) > 1000 && renderer.glError === 0 && renderer.nodeExposed === false && renderer.shellExposed === false && renderer.appInfoDialog === true && health.modelLoaded === true && (!app.isPackaged || health.dependencyFilesInsideBundle === true);
+      passed = renderer.webgl2 === true && Number(renderer.visiblePixels) > 1000 && Number(renderer.transparentPixels) > 1000 && renderer.glError === 0 && renderer.nodeExposed === false && renderer.shellExposed === false && renderer.appInfoDialog === true && (renderer.modelPixels as { passed?:boolean } | undefined)?.passed === true && health.modelLoaded === true && (!app.isPackaged || health.dependencyFilesInsideBundle === true);
       const report = { passed, packaged: app.isPackaged, channel: build.channel, appVersion: build.version,
         electron: process.versions.electron, node: process.versions.node, worker: health, workerStopped: true, renderer,
         protections: { sandbox: true, contextIsolation: true, nodeIntegration: false, externalNetworkBlocked: true },
         gpuFeatureStatus: app.getGPUFeatureStatus(), devicesOpened: false,
         scope: 'Foundation startup/render/bundled worker/shutdown only; no creation, live tracking, clean-OS or M0 performance claim' };
       await mkdir(resolve(reportPath, '..'), { recursive: true }); await writeFile(reportPath, JSON.stringify(report, null, 2) + '\n');
-    } catch {
+    } catch (error) {
       if (worker) { await worker.stop(); worker = undefined; }
-      await mkdir(resolve(reportPath, '..'), { recursive: true }); await writeFile(reportPath, JSON.stringify({ passed: false, code: 'E_FOUNDATION_CHECK', packaged: app.isPackaged }) + '\n');
+      const detail = error instanceof Error ? error.message.match(/\bE_[A-Z_]{1,48}\b/)?.[0] : undefined;
+      await mkdir(resolve(reportPath, '..'), { recursive: true }); await writeFile(reportPath, JSON.stringify({ passed: false, code: 'E_FOUNDATION_CHECK', stage, detail, packaged: app.isPackaged }) + '\n');
     }
     log.write('app-stop'); quitting = true; app.exit(passed ? 0 : 1);
   }

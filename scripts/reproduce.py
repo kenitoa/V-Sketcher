@@ -30,7 +30,7 @@ def run():
     report={'passed':True,'date':datetime.datetime.now(datetime.timezone.utc).isoformat(),'scope':'Fresh project directory and fresh developer installations on the same Windows PC',
             'sourceFilesCopied':count,'freshNode':True,'freshVenv':True,'npmCi':True,'hashedPipInstall':True,
             'requiredChecks':True,'appSmoke':app,'elapsedSeconds':round(time.monotonic()-started,2),'cleanWindowsOS':False}
-    (ROOT/'evidence/phase06/reproducibility.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
+    (ROOT/'.local/repro/reproducibility.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
     print('Fresh Node/venv/npm environment and app smoke passed; same-PC scope.')
 
 if __name__=='__main__':run()

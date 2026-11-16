@@ -1,0 +1,86 @@
+{
+  "passed": true,
+  "packaged": true,
+  "channel": "release",
+  "appVersion": "0.2.0",
+  "electron": "45.3.3",
+  "node": "24.22.3",
+  "worker": {
+    "workerVersion": "0.1.0",
+    "python": "3.14.10",
+    "frozen": true,
+    "dependencyFilesInsideBundle": true,
+    "modelSha256": "64184e229b263107bc2b804c6625db1341ff2bb731874b0bcc2fe6544e0bc9ff",
+    "modelLoaded": true,
+    "cameraOpened": false,
+    "microphoneOpened": false,
+    "dependencies": {
+      "numpy": "2.5.5",
+      "opencv": "5.0.0",
+      "mediapipe": "1.2.3",
+      "sounddevice": "0.5.6",
+      "pillow": "13.0.0"
+    }
+  },
+  "workerStopped": true,
+  "renderer": {
+    "webgl2": true,
+    "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+    "renderer": "WebKit WebGL",
+    "textureCount": 7,
+    "layers": 4,
+    "submittedFrames": 9,
+    "projectModel": {
+      "projectId": "example-premium",
+      "revision": 1,
+      "sourceType": "single-image",
+      "schemaVersion": "1.0"
+    },
+    "visiblePixels": 335614,
+    "transparentPixels": 464386,
+    "glError": 0,
+    "scope": "Static/limited planar premium preview; not complete character rigging, live tracking or performance gate",
+    "modelPixels": {
+      "passed": true,
+      "translationPixels": 18,
+      "translationMismatches": 0,
+      "cropMismatches": 0,
+      "tolerance": 3,
+      "frameSize": [
+        180,
+        180
+      ],
+      "scope": "Actual GPU model translation/crop pixels; not full rigging, tracking or performance"
+    },
+    "workerReady": true,
+    "nodeExposed": false,
+    "shellExposed": false,
+    "appInfoDialog": true,
+    "diagnosticsVisible": false,
+    "creationControlsDisabled": true
+  },
+  "protections": {
+    "sandbox": true,
+    "contextIsolation": true,
+    "nodeIntegration": false,
+    "externalNetworkBlocked": true
+  },
+  "gpuFeatureStatus": {
+    "2d_canvas": "enabled",
+    "direct_rendering_display_compositor": "disabled_off_ok",
+    "gpu_compositing": "enabled",
+    "multiple_raster_threads": "enabled_on",
+    "opengl": "enabled_on",
+    "rasterization": "enabled",
+    "raw_draw": "disabled_off_ok",
+    "skia_graphite": "disabled_off",
+    "trees_in_viz": "disabled_off",
+    "video_decode": "enabled",
+    "video_encode": "enabled",
+    "webgl": "enabled",
+    "webgpu": "enabled",
+    "webnn": "disabled_off"
+  },
+  "devicesOpened": false,
+  "scope": "Foundation startup/render/bundled worker/shutdown only; no creation, live tracking, clean-OS or M0 performance claim"
+}

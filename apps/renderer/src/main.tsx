@@ -1,7 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { AvatarRenderer } from '../../../packages/avatar-renderer';
-import type { PreviewScene } from '../../../packages/scene-core';
+import { readProject } from '../../../packages/project-model';
+import { projectToPreview } from '../../../packages/project-model/preview';
+import { checkModelPixels } from './model-self-check';
+import type { Project } from '../../../packages/project-model';
 import type { StudioInfo } from '../../../packages/contracts';
 import './studio.css';
 
@@ -11,6 +14,7 @@ function Icon({ kind }: { kind: 'home' | 'layers' | 'image' | 'parts' | 'arrow' 
 }
 function Studio() {
   const canvas = useRef<HTMLCanvasElement>(null); const renderer = useRef<AvatarRenderer | null>(null);
+  const project = useRef<Project | null>(null);
   const [info, setInfo] = useState<StudioInfo | null>(null); const [about, setAbout] = useState(false);
   const [previewReady, setPreviewReady] = useState(false); const [error, setError] = useState(false);
   useEffect(() => { void window.studio.info().then(setInfo); }, []);
@@ -18,7 +22,10 @@ function Studio() {
   useEffect(() => {
     let frame = 0; let disposed = false;
     void (async () => {
-      const scene = await (await fetch(new URL('assets/preview-scene.json', document.baseURI))).json() as PreviewScene;
+      const opened = readProject(await (await fetch(new URL('assets/preview-project.json', document.baseURI))).json());
+      if (opened.mode !== 'read-write') throw new Error('E_SCHEMA_READ_ONLY');
+      project.current = opened.project;
+      const scene = projectToPreview(opened.project);
       if (!canvas.current || disposed) return;
       const render = new AvatarRenderer(canvas.current, scene); renderer.current = render; await render.load(document.baseURI); if (disposed) { render.dispose(); return; }
       setPreviewReady(true);
@@ -40,7 +47,8 @@ function Studio() {
       document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
       await new Promise(resolve => setTimeout(resolve, 80));
       const globals = window as unknown as Record<string, unknown>;
-      return { ...renderer.current!.report(), workerReady: health.ready, nodeExposed: typeof globals.require !== 'undefined',
+      const modelPixels = await checkModelPixels(project.current!);
+      return { ...renderer.current!.report(), modelPixels, workerReady: health.ready, nodeExposed: typeof globals.require !== 'undefined',
         shellExposed: typeof (window.studio as unknown as Record<string, unknown>).shell !== 'undefined',
         appInfoDialog: dialog && document.querySelector('[role="dialog"]') === null,
         diagnosticsVisible: document.querySelector('[data-development]') !== null,

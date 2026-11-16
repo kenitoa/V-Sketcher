@@ -1,7 +1,8 @@
 export const NEUTRAL = { eye_left: 1, eye_right: 1, mouth: 0, head_yaw: 0, head_roll: 0 };
 export type Parameters = typeof NEUTRAL;
-export interface PreviewLayer { id: string; z: number; origin: [number, number]; opacity: number; bind: keyof Parameters | null; states: Record<string, string>; }
-export interface PreviewScene { version: 1; name: string; canvas: [number, number]; layers: PreviewLayer[]; }
+import { inverse, validRect, type Affine, type Rect } from '../coordinates';
+export interface PreviewLayer { id: string; z: number; origin: [number, number]; opacity: number; bind: keyof Parameters | null; states: Record<string, string>; geometry?: Record<string,{ matrix:Affine; crop:Rect }>; }
+export interface PreviewScene { version: 1; name: string; canvas: [number, number]; layers: PreviewLayer[]; model?: { projectId:string; revision:number; sourceType:string; schemaVersion:string }; }
 export function parameters(input: Partial<Parameters>): Parameters {
   const result = { ...NEUTRAL };
   for (const key of Object.keys(input) as (keyof Parameters)[]) {
@@ -18,7 +19,11 @@ export function validateScene(scene: PreviewScene): void {
   for (const layer of scene.layers) {
     if (ids.has(layer.id) || !layer.id || layer.origin.some(v => !Number.isFinite(v)) || !Number.isFinite(layer.z) || !Number.isFinite(layer.opacity) || layer.opacity < 0 || layer.opacity > 1) throw new Error('E_SCENE_REFERENCE');
     if (layer.bind !== null && !(layer.bind in NEUTRAL)) throw new Error('E_SCENE_BINDING');
-    if (Object.values(layer.states).some(v => !/^assets\/[a-zA-Z0-9./_-]+\.png$/.test(v) || v.includes('..'))) throw new Error('E_ASSET_REFERENCE');
+    if (Object.values(layer.states).some(v => !/^assets\/[a-zA-Z0-9./_-]+\.(png|jpe?g)$/.test(v) || v.includes('..'))) throw new Error('E_ASSET_REFERENCE');
+    if (layer.geometry) for (const [path,geometry] of Object.entries(layer.geometry)) {
+      if (!Object.values(layer.states).includes(path) || !validRect(geometry.crop) || geometry.crop.x < 0 || geometry.crop.y < 0) throw new Error('E_ASSET_GEOMETRY');
+      inverse(geometry.matrix);
+    }
     ids.add(layer.id);
   }
 }

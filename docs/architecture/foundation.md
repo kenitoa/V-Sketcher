@@ -1,5 +1,7 @@
 # 제품 개발 기반과 모듈 경계
 
+07에서 [공통 프로젝트/좌표/참조 모델](project-model.md)과 호스트 파일 검사 API를 추가했습니다. 아래 표는 06의 기반 범위이며, 현재 앱과 출력 진입점은 공통 모델을 검증해 preview adapter로 렌더링합니다. 제작·저장 UI와 장치/OBS 실행은 여전히 후속입니다.
+
 실행 경로는 sandbox renderer → 제한된 preload → Electron main → 전용 stdio Python worker입니다. renderer에는 Node·shell·파일시스템·임의 작업 실행 권한이 없습니다. 사용자 자산을 추가하는 기능은 아직 없으며, main은 고정된 번들 리소스와 자체 프로필만 사용합니다. WebGL2 렌더러는 앱과 별도 투명 출력 HTML이 공유하지만, 출력 HTML을 OBS에 전달하는 서버/연결은 후속 작업입니다.
 
 | 책임 | 현재 코드/계약 | 06의 검증 범위 |

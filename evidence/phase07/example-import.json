@@ -1,0 +1,88 @@
+{
+  "scope": "Frozen prepared data imported into common model, not new preparation or art validation",
+  "examples": [
+    {
+      "route": "parts",
+      "parts": 8,
+      "assets": 11,
+      "sourceProject": "experiments/phase03/results/projects/parts/project.json",
+      "sourceProjectSha256": "1fbf8a2dc40b9c8cf34aa4392e9665d25d9f330e24fc0d3e88fde1f85ede1705",
+      "resources": {
+        "experiments/phase03/results/projects/parts/textures/00-base.png": "dbb4626676ef82c76acd4216f9d88e7f6c0878cabf136d9a9f2a0c48c6b5d651",
+        "experiments/phase03/results/projects/parts/textures/01-base.png": "d21741b5a8e4ff803886b48d46388c91b7efad5bfe3df23d286b4bb6e3927d52",
+        "experiments/phase03/results/projects/parts/textures/02-base.png": "974ba22a99aaa1f155e1b4fb6eb1a41373561c3c46c28bbdee1c187c07f022b3",
+        "experiments/phase03/results/projects/parts/textures/03-open.png": "4c5f3dfe29c21d0c2b9c761faba01ab49a079e5520409cdbbd88036241500f14",
+        "experiments/phase03/results/projects/parts/textures/03-closed.png": "d036b99c3faba243036dd9fb17bcac3c2f982167d25c76b216f834a131f7b4f5",
+        "experiments/phase03/results/projects/parts/textures/04-open.png": "35f2039add1a401af7d9e87a5ee599e49b1a337da4ed501471a0b77b645d2808",
+        "experiments/phase03/results/projects/parts/textures/04-closed.png": "8f79ef1938d18b4b79cc5c7b5dac5953e14895369a5d6eecc19dcc854a917cbd",
+        "experiments/phase03/results/projects/parts/textures/05-closed.png": "abdbb4d37875a05dafd07413554cf49d4359fbf0bbe14ae5d1a106acf61fbe54",
+        "experiments/phase03/results/projects/parts/textures/05-open.png": "801e353b0bdf71d72894558be04faf9b380642e48dcabadb5b7bbfce4c4d6787",
+        "experiments/phase03/results/projects/parts/textures/06-base.png": "1a3b5e3f552546460f1590a1097f2e8ea2fd6c82c3ef01fb4cca65cb9fd0ccea",
+        "experiments/phase03/results/projects/parts/textures/07-base.png": "e19a3ac5102de5b0d170513b2765adc2820028a715efff94357f92a57bb3b7ab"
+      },
+      "legacySideCorrections": []
+    },
+    {
+      "route": "single-image",
+      "parts": 4,
+      "assets": 6,
+      "sourceProject": "experiments/phase03/results/projects/single/project.json",
+      "sourceProjectSha256": "553a8e84b4625d39182d0ce9972fc48ee8023c7a6c026871e25967e5c0e26227",
+      "resources": {
+        "experiments/phase03/results/projects/single/source.png": "6d899a13c74655275918c3e51019edf045217a635c51b11b9e736b6392e77e95",
+        "experiments/phase03/results/projects/single/textures/00-base.png": "367231ba35a1cfd902e546578e21b1e36447ef2ac58c4a01afa510b21e8841e7",
+        "experiments/phase03/results/projects/single/textures/01-open.png": "0b6b129bf656e0233bdddc367c1e7f0b403e29d1be80fb7b0f785988912e06e9",
+        "experiments/phase03/results/projects/single/textures/01-closed.png": "e23d23c9738ae80ae6bd0d57a7a3fcfc5dbb7748b721deef35e6256dd2cf9c14",
+        "experiments/phase03/results/projects/single/textures/03-closed.png": "4d71eaaf5320cf58176ee49ab829a543b65aa5670cae72c1976802f142d974c5",
+        "experiments/phase03/results/projects/single/textures/03-open.png": "2240c14c584bf9360c4a7f47772cf6239903a56a1ee017a47a0d7ac08565de98"
+      },
+      "legacySideCorrections": []
+    },
+    {
+      "route": "split-image",
+      "parts": 8,
+      "assets": 11,
+      "sourceProject": "experiments/phase03/results/projects/split/project.json",
+      "sourceProjectSha256": "44b7e32057a105871537268a0e222458ab222020421e7de902fd6552211dca9b",
+      "resources": {
+        "experiments/phase02/assets/parts/hair_back.png": "dbb4626676ef82c76acd4216f9d88e7f6c0878cabf136d9a9f2a0c48c6b5d651",
+        "experiments/phase02/assets/parts/body.png": "d21741b5a8e4ff803886b48d46388c91b7efad5bfe3df23d286b4bb6e3927d52",
+        "experiments/phase02/assets/parts/head.png": "974ba22a99aaa1f155e1b4fb6eb1a41373561c3c46c28bbdee1c187c07f022b3",
+        "experiments/phase02/assets/parts/eye_right_open.png": "4c5f3dfe29c21d0c2b9c761faba01ab49a079e5520409cdbbd88036241500f14",
+        "experiments/phase02/assets/parts/eye_left_open.png": "35f2039add1a401af7d9e87a5ee599e49b1a337da4ed501471a0b77b645d2808",
+        "experiments/phase02/assets/parts/mouth_closed.png": "abdbb4d37875a05dafd07413554cf49d4359fbf0bbe14ae5d1a106acf61fbe54",
+        "experiments/phase02/assets/parts/hair_front.png": "1a3b5e3f552546460f1590a1097f2e8ea2fd6c82c3ef01fb4cca65cb9fd0ccea",
+        "experiments/phase02/assets/parts/accessory.png": "e19a3ac5102de5b0d170513b2765adc2820028a715efff94357f92a57bb3b7ab",
+        "experiments/phase03/results/projects/split/textures/03-closed.png": "93d7dceed7fa1b43d3a51f59ab42bcb6431c0475505e0b097b8e2980e3b2fff1",
+        "experiments/phase03/results/projects/split/textures/04-closed.png": "29b60a395db92f74b4b4e639f7b0d54d2054302deead4d690bf01650f01b91cb",
+        "experiments/phase03/results/projects/split/textures/05-open.png": "82053a0fa9ff8fce89ccf2f7b01d935272f073b37a2421e93ba0eccf108e3104"
+      },
+      "legacySideCorrections": []
+    },
+    {
+      "route": "single-image",
+      "parts": 4,
+      "assets": 9,
+      "sourceProject": "experiments/phase04/assets/premium/project/project.json",
+      "sourceProjectSha256": "e19479cac63f6a4e8566416a5486a8ad5923c87adb866274061b8c21050d9776",
+      "resources": {
+        "experiments/phase04/assets/premium/neutral.png": "955e597230d4cdd15cd64c09ecf8f48686bbd5702f32e429109d581d68d6f442",
+        "experiments/phase04/assets/premium/blink-speaking.png": "e78602d341961d5562555fc95caf5f7538c9e00c1f281d26e71657f04e78132a",
+        "experiments/phase04/assets/premium/project/textures/00-base.png": "1599b359b246e226fee73fa9c644972f58b727b158e8e47fdc87bf4c976d9121",
+        "experiments/phase04/assets/premium/project/textures/01-open.png": "b39a598b59775823efab0224203483c629b207a2de7f5666d13c01dd5125f12e",
+        "experiments/phase04/assets/premium/project/textures/01-closed.png": "b52e002d4325ce9c2aa228deda4735f89e58c5abd356afbacb3198581669b29a",
+        "experiments/phase04/assets/premium/project/textures/02-open.png": "8c6bf06622b67105d5c11e2064eb2292590262a3f6362529734af62163816172",
+        "experiments/phase04/assets/premium/project/textures/02-closed.png": "e3d22c95fb4a4da724806ed682e27578f9a8e8ccc9813475cf0a463f2e1f0c01",
+        "experiments/phase04/assets/premium/project/textures/03-closed.png": "3fe2220caee156e9bfc47e5f0e170fc7bd2ac28b890fb8995498fb9f5c8f13ca",
+        "experiments/phase04/assets/premium/project/textures/03-open.png": "1821b8eaaa6c828c66396e04e7f115c93787e3fa154f26529c88585c3f61ec98"
+      },
+      "legacySideCorrections": [
+        {
+          "partId": "mouth",
+          "from": "mouth",
+          "to": "center"
+        }
+      ]
+    }
+  ]
+}

@@ -1,4 +1,5 @@
 import { NEUTRAL, parameters, validateScene, type PreviewScene, type Parameters } from '../scene-core';
+import { transform } from '../coordinates';
 
 const vertex = `#version 300 es
 in vec2 position; in vec2 uv; out vec2 texCoord;
@@ -39,6 +40,10 @@ export class AvatarRenderer {
   async load(base: string): Promise<void> {
     for (const path of new Set(this.scene.layers.flatMap(layer => Object.values(layer.states)))) {
       const image = new Image(); image.src = new URL(path, base).href; await image.decode();
+      for (const layer of this.scene.layers) {
+        const crop = layer.geometry?.[path]?.crop;
+        if (crop && (crop.x+crop.width > image.naturalWidth || crop.y+crop.height > image.naturalHeight)) throw new Error('E_ASSET_GEOMETRY');
+      }
       const texture = this.gl.createTexture(); if (!texture) throw new Error('E_TEXTURE_CREATE');
       this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
       this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR);
@@ -57,7 +62,7 @@ export class AvatarRenderer {
     gl.uniform2f(gl.getUniformLocation(this.program, 'fit'), scale * width / this.canvas.width, scale * height / this.canvas.height);
     gl.uniform1f(gl.getUniformLocation(this.program, 'angle'), this.current.head_roll * Math.PI / 180 * 3);
     gl.uniform1f(gl.getUniformLocation(this.program, 'shift'), this.current.head_yaw * width * .012);
-    for (const layer of [...this.scene.layers].sort((a, b) => a.z - b.z || a.id.localeCompare(b.id))) {
+    for (const layer of [...this.scene.layers].sort((a, b) => a.z - b.z || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))) {
       let paths: [string, number][];
       if (layer.bind && layer.states.open && layer.states.closed) {
         const t = layer.bind.startsWith('eye') ? Number(this.current[layer.bind] > .55) : this.current[layer.bind];
@@ -65,8 +70,13 @@ export class AvatarRenderer {
       } else paths = [[Object.values(layer.states)[0]!, 1]];
       for (const [path, opacity] of paths) {
         if (opacity <= 0) continue; const tex = this.textures.get(path); if (!tex) throw new Error('E_TEXTURE_MISSING');
-        const [x, y] = layer.origin; const x1 = x + tex.width; const y1 = y + tex.height;
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([x,y,0,0,x1,y,1,0,x1,y1,1,1,x,y,0,0,x1,y1,1,1,x,y1,0,1]), gl.DYNAMIC_DRAW);
+        const geometry = layer.geometry?.[path];
+        const crop = geometry?.crop ?? { x:0,y:0,width:tex.width,height:tex.height };
+        const matrix = geometry?.matrix ?? [1,0,0,1,...layer.origin] as [number,number,number,number,number,number];
+        const corners = [[crop.x,crop.y],[crop.x+crop.width,crop.y],[crop.x+crop.width,crop.y+crop.height],[crop.x,crop.y+crop.height]].map(([x,y]) => {
+          const p = transform(matrix,{ x:x!,y:y! }); return [p.x,p.y,x!/tex.width,y!/tex.height];
+        });
+        gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([0,1,2,0,2,3].flatMap(index => corners[index]!)),gl.DYNAMIC_DRAW);
         gl.bindTexture(gl.TEXTURE_2D, tex.texture); gl.uniform1f(gl.getUniformLocation(this.program, 'opacity'), opacity * layer.opacity); gl.drawArrays(gl.TRIANGLES, 0, 6);
       }
     }
@@ -77,7 +87,7 @@ export class AvatarRenderer {
     const pixels = new Uint8Array(this.canvas.width * this.canvas.height * 4); this.gl.readPixels(0, 0, this.canvas.width, this.canvas.height, this.gl.RGBA, this.gl.UNSIGNED_BYTE, pixels);
     let visible = 0; let transparent = 0; for (let i = 3; i < pixels.length; i += 4) { if (pixels[i]! > 0) visible++; else transparent++; }
     return { webgl2: true, version: this.gl.getParameter(this.gl.VERSION), renderer: this.gl.getParameter(this.gl.RENDERER),
-      textureCount: this.textures.size, layers: this.scene.layers.length, submittedFrames: this.frameCount,
+      textureCount: this.textures.size, layers: this.scene.layers.length, submittedFrames: this.frameCount, projectModel:this.scene.model ?? null,
       visiblePixels: visible, transparentPixels: transparent, glError: this.gl.getError(),
       scope: 'Static/limited planar premium preview; not complete character rigging, live tracking or performance gate' };
   }

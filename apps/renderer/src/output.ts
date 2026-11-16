@@ -1,8 +1,11 @@
 import { AvatarRenderer } from '../../../packages/avatar-renderer';
-import type { PreviewScene } from '../../../packages/scene-core';
+import { readProject } from '../../../packages/project-model';
+import { projectToPreview } from '../../../packages/project-model/preview';
 import './output.css';
 async function start() {
-  const scene = await (await fetch(new URL('assets/preview-scene.json', document.baseURI))).json() as PreviewScene;
+  const opened = readProject(await (await fetch(new URL('assets/preview-project.json', document.baseURI))).json());
+  if (opened.mode !== 'read-write') throw new Error('E_SCHEMA_READ_ONLY');
+  const scene = projectToPreview(opened.project);
   const renderer = new AvatarRenderer(document.querySelector<HTMLCanvasElement>('canvas')!, scene); await renderer.load(document.baseURI); renderer.draw();
 }
 void start();

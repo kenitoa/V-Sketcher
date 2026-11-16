@@ -1,0 +1,22 @@
+{
+  "passed": true,
+  "errors": [],
+  "created": "2026-11-16T14:10:57.088209+00:00",
+  "scope": "Task/document/requirement identity/provenance audit, not additional behavior tests",
+  "tasks": 410,
+  "completedTasks": 70,
+  "functionIDs": 52,
+  "productDirectionIDs": 12,
+  "acceptanceIDs": 15,
+  "functionalGroups": 25,
+  "preparedRouteExamples": 3,
+  "premiumCommonModel": true,
+  "affineStressCases": 400,
+  "packagedRuns": 2,
+  "gpuTranslationAndCrop": true,
+  "m0State": "HOLD",
+  "openM0Returns": 5,
+  "historical02to06Preserved": true,
+  "hostedCIRun": false,
+  "cleanWindowsOS": false
+}
