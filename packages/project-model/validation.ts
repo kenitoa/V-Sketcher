@@ -26,6 +26,8 @@ export function validateProject(value: unknown): ValidationIssue[] {
     const inside=(r:{ x:number;y:number;width:number;height:number }) => r.x+r.width<=i.probe.size.width && r.y+r.height<=i.probe.size.height;
     if (![i.selection.rect,i.analysis.crop,...i.selection.masks.map(m=>m.rect),...i.probe.candidates.map(c=>c.rect)].every(inside) || i.analysis.faces.length>1) issue('E_INPUT_REGION','/inputPreparation');
   }
+  if (p.assembly && (p.schemaVersion.minor<3 || p.assembly.choices.length!==6 || new Set(p.assembly.choices.map(c=>c.slot)).size!==6 || new Set(p.assembly.adjustments.map(a=>a.key)).size!==p.assembly.adjustments.length))issue('E_PARTS_MODEL','/assembly');
+  if(p.parts.some(v=>(v.library||v.color)&&p.schemaVersion.minor<3))issue('E_PARTS_VERSION','/parts');
   const parameters = unique(p.parameters,'/parameters'); unique(p.partBindings,'/partBindings'); unique(p.inputBindings,'/inputBindings');
   const expressions = unique(p.expressions,'/expressions'); unique([p.runtimeProfile],'/runtimeProfile'); unique(p.broadcastProfiles,'/broadcastProfiles'); unique(p.exportProfiles,'/exportProfiles');
   const matrix = (m: Affine, location: string): void => { try { inverse(m); } catch { issue('E_TRANSFORM_INVALID',location); } };
@@ -81,6 +83,7 @@ export function validateProject(value: unknown): ValidationIssue[] {
     if (binding.kind === 'transform' && !Number.isFinite(binding.mapping.outputRange[1]-binding.mapping.outputRange[0])) issue('E_MOTION_RANGE',`/partBindings/${i}`);
     if (binding.kind === 'state-blend') {
       const states = new Set(parts.get(binding.partId)?.textures.map(t => t.state));
+      if (binding.mapping.middleState && (!states.has(binding.mapping.middleState) || [binding.mapping.minimumState,binding.mapping.maximumState].includes(binding.mapping.middleState))) issue('E_BINDING_STATES',`/partBindings/${i}`);
       if (!states.has(binding.mapping.minimumState) || !states.has(binding.mapping.maximumState) || binding.mapping.minimumState === binding.mapping.maximumState) issue('E_BINDING_STATES',`/partBindings/${i}`);
     }
     const key = binding.partId+'/'+binding.kind+(binding.kind === 'transform' ? '/'+binding.mapping.component : '');

@@ -9,8 +9,10 @@ void main(){vec2 p=(dynamic*vec3(position,1.)).xy;float angle=roll*weight;float 
 float t=abs(yaw);t=mix(t,t*t*(3.-2.*t),smoothCurve);p+=mix(maximumDelta,minimumDelta,step(yaw,-.0000001))*t;
 gl_Position=vec4((p-canvasSize*.5)/canvasSize*vec2(2.,-2.)*fit,0.,1.);texCoord=uv;}`;
 const fragment = `#version 300 es
-precision highp float;in vec2 texCoord;uniform sampler2D artwork;uniform float opacity;uniform vec4 crop;out vec4 color;
-void main(){if(texCoord.x<crop.x||texCoord.y<crop.y||texCoord.x>=crop.z||texCoord.y>=crop.w)discard;color=texture(artwork,texCoord)*opacity;}`;
+precision highp float;in vec2 texCoord;uniform sampler2D artwork;uniform float opacity;uniform vec4 crop;uniform vec4 tint;out vec4 color;
+vec3 hsv(vec3 c){float hi=max(c.r,max(c.g,c.b)),lo=min(c.r,min(c.g,c.b)),d=hi-lo,h=0.;if(d>.00001){if(hi==c.r)h=(c.g-c.b)/d;else if(hi==c.g)h=2.+(c.b-c.r)/d;else h=4.+(c.r-c.g)/d;}return vec3(fract(h/6.+1.),hi>.00001?d/hi:0.,hi);}
+vec3 rgb(vec3 c){vec3 p=abs(fract(vec3(c.x)+vec3(0.,2./3.,1./3.))*6.-3.);return c.z*mix(vec3(1.),clamp(p-1.,0.,1.),c.y);}
+void main(){if(texCoord.x<crop.x||texCoord.y<crop.y||texCoord.x>=crop.z||texCoord.y>=crop.w)discard;vec4 c=texture(artwork,texCoord);if(c.a>.00001&&abs(tint.x)>.00001){vec3 v=hsv(c.rgb/c.a);bool inside=tint.y<=tint.z?(v.x>=tint.y&&v.x<=tint.z):(v.x>=tint.y||v.x<=tint.z);if(inside&&v.y>=tint.w){v.x=fract(v.x+tint.x/360.+1.);c.rgb=rgb(v)*c.a;}}color=c*opacity;}`;
 interface Texture { texture:WebGLTexture;width:number;height:number;image:HTMLImageElement; }
 interface Batch { buffer:WebGLBuffer;data:Float32Array;count:number;crop:[number,number,number,number]; }
 export class AvatarRenderer {
@@ -25,6 +27,7 @@ export class AvatarRenderer {
   async load(base:string):Promise<void> {
     const gl = this.gl;
     for (const path of new Set(this.scene.layers.flatMap(l => Object.values(l.states)))) {
+      const same=[...this.textures.entries()].find(([key])=>key.split('?')[0]===path.split('?')[0])?.[1];if(same){this.textures.set(path,same);continue;}
       const image = new Image(); image.src = new URL(path,base).href; await image.decode(); if (this.disposed) return;
       const texture = gl.createTexture(); if (!texture) throw new Error('E_TEXTURE_CREATE'); gl.bindTexture(gl.TEXTURE_2D,texture);
       gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE); gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,image);
@@ -44,6 +47,7 @@ export class AvatarRenderer {
     this.current = parameters({ ...(this.scene.defaults ?? NEUTRAL),...input }); const gl = this.gl; const [width,height] = this.scene.canvas; gl.viewport(0,0,this.canvas.width,this.canvas.height); gl.clearColor(0,0,0,0); gl.clear(gl.COLOR_BUFFER_BIT); gl.useProgram(this.program);
     const fit = Math.min(this.canvas.width/width,this.canvas.height/height); gl.uniform2f(gl.getUniformLocation(this.program,'canvasSize'),width,height); gl.uniform2f(gl.getUniformLocation(this.program,'fit'),fit*width/this.canvas.width,fit*height/this.canvas.height);
     for (const layer of this.ordered()) {
+      const color=layer.color;gl.uniform4f(gl.getUniformLocation(this.program,'tint'),color?.hueDegrees??0,color?.minimumHue??0,color?.maximumHue??1,color?.minimumSaturation??1);
       const m = layer.mesh; const dynamic = dynamicMatrix(layer,this.current); gl.uniformMatrix3fv(gl.getUniformLocation(this.program,'dynamic'),false,new Float32Array([dynamic[0],dynamic[1],0,dynamic[2],dynamic[3],0,dynamic[4],dynamic[5],1]));
       gl.uniform2f(gl.getUniformLocation(this.program,'pivot'),m?.pivot[0] ?? 0,m?.pivot[1] ?? 0); gl.uniform1f(gl.getUniformLocation(this.program,'yaw'),m?.yaw ? this.current.head_yaw : 0); gl.uniform1f(gl.getUniformLocation(this.program,'roll'),m?.roll ? this.current.head_roll*m.maxRollDegrees*Math.PI/180 : 0); gl.uniform1f(gl.getUniformLocation(this.program,'smoothCurve'),m?.curve === 'smoothstep' ? 1 : 0);
       for (const [path,opacity] of activeTextures(layer,this.current)) { if (opacity<=0) continue; const tex = this.textures.get(path); const batch = this.batches.get(layer.id+'|'+path); if (!tex || !batch) throw new Error('E_TEXTURE_MISSING');
@@ -64,7 +68,7 @@ export class AvatarRenderer {
     } return null;
   }
   report():Record<string,unknown> { this.draw(this.current); const gl = this.gl; gl.finish(); const pixels = new Uint8Array(this.canvas.width*this.canvas.height*4); gl.readPixels(0,0,this.canvas.width,this.canvas.height,gl.RGBA,gl.UNSIGNED_BYTE,pixels); let visible = 0; let digest = 2166136261; for (let i=0;i<pixels.length;i++) { digest = Math.imul(digest^pixels[i]!,16777619); if (i%4===3 && pixels[i]!>0) visible++; }
-    return { webgl2:true,version:gl.getParameter(gl.VERSION),renderer:gl.getParameter(gl.RENDERER),textureCount:this.textures.size,layers:this.scene.layers.length,submittedFrames:this.frameCount,projectModel:this.scene.model ?? null,visiblePixels:visible,transparentPixels:this.canvas.width*this.canvas.height-visible,glError:gl.getError(),pixelHash:(digest>>>0).toString(16),meshLayers:this.scene.layers.filter(l => l.mesh).length,staticBufferUploads:this.uploads,scope:'Shared GPU triangle deformation and authored state blend; not automatic rigging, live tracking or M0 performance approval' };
+    return { webgl2:true,version:gl.getParameter(gl.VERSION),renderer:gl.getParameter(gl.RENDERER),textureCount:new Set(this.textures.values()).size,layers:this.scene.layers.length,submittedFrames:this.frameCount,projectModel:this.scene.model ?? null,visiblePixels:visible,transparentPixels:this.canvas.width*this.canvas.height-visible,glError:gl.getError(),pixelHash:(digest>>>0).toString(16),meshLayers:this.scene.layers.filter(l => l.mesh).length,staticBufferUploads:this.uploads,scope:'Shared GPU triangle deformation and authored state blend; not automatic rigging, live tracking or M0 performance approval' };
   }
-  dispose():void { if (this.disposed) return; this.disposed = true; for (const tex of this.textures.values()) this.gl.deleteTexture(tex.texture); for (const batch of this.batches.values()) this.gl.deleteBuffer(batch.buffer); this.textures.clear(); this.batches.clear(); this.gl.deleteProgram(this.program); }
+  dispose():void { if (this.disposed) return; this.disposed = true; for (const tex of new Set(this.textures.values())) this.gl.deleteTexture(tex.texture); for (const batch of this.batches.values()) this.gl.deleteBuffer(batch.buffer); this.textures.clear(); this.batches.clear(); this.gl.deleteProgram(this.program); }
 }

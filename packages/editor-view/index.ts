@@ -12,7 +12,7 @@ export function zoomAt(state:ViewportState,factor:number,anchor:Point,size:Point
 }
 export function activeTextures(layer:PreviewLayer,input:Partial<Parameters> = {}):[string,number][] {
   const values = { ...NEUTRAL,...input };
-  if (layer.bind && layer.states.open && layer.states.closed) { const raw = Math.max(0,Math.min(1,values[layer.bind])); const t = raw*raw*(3-2*raw); return [[layer.states.closed,1-t],[layer.states.open,t]]; }
+  if (layer.bind && layer.states.open && layer.states.closed) { const raw = Math.max(0,Math.min(1,values[layer.bind])); if(layer.states.middle){const q=raw<=.5?raw*2:(raw-.5)*2;const t=q*q*(3-2*q);return raw<=.5?[[layer.states.closed,1-t],[layer.states.middle,t]]:[[layer.states.middle,1-t],[layer.states.open,t]];} const t = raw*raw*(3-2*raw); return [[layer.states.closed,1-t],[layer.states.open,t]]; }
   return Object.values(layer.states).slice(0,1).map(path => [path,1]);
 }
 export function layerCorners(layer:PreviewLayer):Point[] { return Object.values(layer.geometry ?? {}).flatMap(({ matrix,crop }) => [[crop.x,crop.y],[crop.x+crop.width,crop.y],[crop.x+crop.width,crop.y+crop.height],[crop.x,crop.y+crop.height]].map(([x,y]) => transform(matrix,{ x:x!,y:y! }))); }

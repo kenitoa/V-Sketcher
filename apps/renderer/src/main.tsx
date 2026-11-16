@@ -81,7 +81,7 @@ function Studio() {
   return <div className={`studio ${sessionView?.mode === 'editable' ? 'is-editing' : ''}`}><a className="skip-link" href="#main-content">본문으로 건너뛰기</a>
     <aside className="sidebar"><div className="brand"><span className="brand-mark">S<span/></span><div>2D<span>SKETCHER</span></div></div>
       <div className="nav-caption">YOUR STUDIO</div><nav aria-label="주 메뉴"><button className="nav active" aria-current="page" onClick={() => window.dispatchEvent(new Event('studio:home'))}><Icon kind="home"/>작업실</button>
-        <button className="nav" onClick={() => window.dispatchEvent(new Event('studio:recent'))}><Icon kind="layers"/>내 프로젝트</button><button className="nav" disabled><Icon kind="parts"/>파츠 보관함</button></nav>
+        <button className="nav" onClick={() => window.dispatchEvent(new Event('studio:recent'))}><Icon kind="layers"/>내 프로젝트</button><button className="nav" onClick={()=>window.dispatchEvent(new Event('studio:parts'))}><Icon kind="parts"/>파츠 보관함</button></nav>
       <div className="sidebar-bottom"><div className="local-dot"/>내 기기에서, 나의 작업실<div className="sidebar-sub">당신만의 캐릭터를 위한 공간</div><button data-about onClick={() => setAbout(true)} className="nav settings"><Icon kind="settings"/>앱 정보</button></div>
     </aside>
     <main id="main-content" tabIndex={-1}><header className="topbar"><span>작업실 <span className="crumb">/</span> <strong>{sessionView?.project ? '캐릭터 편집' : '시작하기'}</strong></span><div><span className="version">EARLY PREVIEW</span><span className="avatar-letter">S</span></div></header>

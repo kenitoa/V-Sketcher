@@ -12,6 +12,8 @@ export interface Asset {
 }
 export interface PartTexture { state: string; assetId: string; assetVersion: number; assetToLocal: Affine; }
 export interface CharacterPart {
+  library?:import('../parts-library/types').PartSource;
+  color?:import('../parts-library/types').ColorAdjustment;
   id: string; displayName: string; role: 'base' | 'body' | 'head' | 'hair-front' | 'hair-back' | 'eye' | 'mouth' | 'accessory' | 'custom';
   side: 'character-left' | 'character-right' | 'center' | 'none'; parentId: string | null; groupId: string | null;
   textures: PartTexture[]; localTransform: Affine; drawOrder: number; visible: boolean; opacity: number;
@@ -22,7 +24,7 @@ export type PreviewKey = 'eye_left' | 'eye_right' | 'mouth' | 'head_yaw' | 'head
 export interface Parameter { id: string; displayName: string; semantic: string; unit: 'ratio' | 'degrees' | 'custom'; min: number; neutral: number; max: number; previewKey: PreviewKey | null; }
 interface BindingIdentity { id: string; parameterId: string; partId: string; }
 export type PartBinding = BindingIdentity & (
-  { kind:'state-blend'; mapping:{ minimumState:string; maximumState:string } } |
+  { kind:'state-blend'; mapping:{ minimumState:string; maximumState:string;middleState?:string } } |
   { kind:'transform'; mapping:{ component:'rotate-degrees' | 'translate-x' | 'translate-y' | 'scale-x' | 'scale-y'; outputRange:[number,number] } }
 );
 export interface InputBinding {
@@ -37,6 +39,7 @@ export interface ExportProfile { id: string; revision: number; displayName: stri
 export interface MotionMesh { partId:string; pivot:[number,number]; vertices:{ position:[number,number]; weight:number; minimum:[number,number]; maximum:[number,number] }[]; triangles:number[]; yawParameterId:string | null; rollParameterId:string | null; curve:'linear' | 'smoothstep'; }
 export interface MotionRig { version:1; meshes:MotionMesh[]; faceWidth:number; maxRollDegrees:number; settings:{ strength:number; smoothingMs:number; pose:{ parameterId:string; value:number }[] }; secondary:'disabled'; }
 export interface Project {
+  assembly?:import('../parts-library/types').Assembly;
   inputPreparation?:import('../image-input/types').InputPreparation;
   motion?:MotionRig;
   projectId: string; schemaVersion: { major: number; minor: number }; displayName: string; sourceType: SourceType;

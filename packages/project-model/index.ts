@@ -3,7 +3,7 @@ export * from './validation';
 export { PROJECT_SCHEMA, MACHINE_SCHEMA } from './schema';
 import { assertProject, assertMachineSettings } from './validation';
 import type { Project, SourceType, MachineSettings } from './types';
-export const SCHEMA_VERSION = { major:1,minor:2 } as const;
+export const SCHEMA_VERSION = { major:1,minor:3 } as const;
 const MAX_DOCUMENT_BYTES = 16*1024*1024;
 export function createProject(displayName: string, sourceType: SourceType, now = new Date(), id = crypto.randomUUID()): Project {
   const timestamp = now.toISOString();

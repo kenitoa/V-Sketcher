@@ -1,3 +1,4 @@
+import {assertCatalog,startAssembly,selectItem,removeSlot,adjustPart,linkEyes,resetAdjustment,type Catalog} from '../parts-library';
 import { InputSession } from '../image-input/session';
 import type { InputProcessor } from '../image-input/types';
 import { readFile, mkdir } from 'node:fs/promises';
@@ -17,7 +18,7 @@ import { contentKey, duplicateProject, EditHistory } from './history';
 import { parseSessionCommand, type SessionView, type SessionCommand, type SessionReply, type RecoveryComparison } from './contracts';
 export type LeaveDecision = 'save' | 'discard' | 'cancel';
 export interface ProjectDialogs { chooseImage?():Promise<string | null>; openProject():Promise<string | null>; saveProject(suggested:string):Promise<string | null>; relinkImage():Promise<string | null>; unsaved(name:string):Promise<LeaveDecision>; }
-export interface SessionOptions { inputProcessor?:InputProcessor; dataDir:string; dialogs:ProjectDialogs; bundled:Project; bundledBytes:ReadonlyMap<string,Buffer>; now?:()=>number; autoTimers?:boolean; saveFault?:AtomicOptions['fault']; }
+export interface SessionOptions { parts?:{catalog:Catalog;bytes:ReadonlyMap<string,Buffer>}; inputProcessor?:InputProcessor; dataDir:string; dialogs:ProjectDialogs; bundled:Project; bundledBytes:ReadonlyMap<string,Buffer>; now?:()=>number; autoTimers?:boolean; saveFault?:AtomicOptions['fault']; }
 interface Document { input?:InputSession; loadedMinor:number;upgradeSource:string | null;id:string; flow:Workflow; history:EditHistory; target:string | null; expectedHash:string | null; savedKey:string | null; label:string; mode:'editable'; available:Set<string>; unresolved:Set<string>; lastRecoveryAt:string | null; recoveryKey:string | null; }
 export class ProjectSession {
   private viewSequence = 0;
@@ -27,7 +28,7 @@ export class ProjectSession {
   private autoPromise:Promise<void> | null = null; private timer:ReturnType<typeof setTimeout> | null = null; private lastEdit = 0; private lastAuto = 0;
   private retryAutoAt = 0;
   private readonly now:()=>number; private grants = new Map<string,Map<string,Project['assets'][number]>>(); private transitioning = false; private stopped = false;
-  constructor(private options:SessionOptions) { this.now = options.now ?? Date.now; this.cache = new ResourceCache(join(options.dataDir,'cache')); this.catalog = new ProjectCatalog(join(options.dataDir,'projects')); }
+  constructor(private options:SessionOptions) { if(options.parts)assertCatalog(options.parts.catalog); this.now = options.now ?? Date.now; this.cache = new ResourceCache(join(options.dataDir,'cache')); this.catalog = new ProjectCatalog(join(options.dataDir,'projects')); }
   async init():Promise<void> { await mkdir(this.options.dataDir,{ recursive:true }); await this.catalog.init(); }
   subscribe(listener:()=>void):()=>void { this.listeners.add(listener); return () => this.listeners.delete(listener); }
   private emit():void { for (const listener of this.listeners) { try { listener(); } catch { /* UI observer does not own document state */ } } }
@@ -37,14 +38,14 @@ export class ProjectSession {
     const copy = structuredClone(project); for (const part of copy.parts) if (part.textures.some(t => !available.has(t.assetId))) part.visible = false;
     const allowed = new Map<string,Project['assets'][number]>(); for (const asset of project.assets) if (available.has(asset.id)) allowed.set(`${asset.fingerprint.sha256}.${asset.mediaType === 'image/png' ? 'png' : 'jpg'}`,asset);
     this.grants.set(token,allowed);
-    try { const result = projectToPreview(copy,asset => `assets/session/${token}/${asset.fingerprint.sha256}.${asset.mediaType === 'image/png' ? 'png' : 'jpg'}`); return result.layers.length ? result : null; } catch { return null; }
+    try { const result = projectToPreview(copy,asset => `assets/session/${token}/${asset.fingerprint.sha256}.${asset.mediaType === 'image/png' ? 'png' : 'jpg'}${asset.producer.name.startsWith('atelier-luna') ? '?asset='+asset.id : ''}`); return result.layers.length ? result : null; } catch { return null; }
   }
   async resource(token:string,name:string):Promise<Buffer | null> { const asset = this.grants.get(token)?.get(name); return asset ? this.cache.read(asset) : this.document?.input?.resource(token,name) ?? null; }
   view():SessionView {
     const d = this.document; const p = d?.flow.project() ?? null; const scene = d && p ? this.scene(p,d.available,d.id) : null;
     const renderKey = scene ? sha256(Buffer.from(JSON.stringify({ canvas:scene.canvas,layers:scene.layers }))) : 'empty';
     const original = p?.assets.find(a => a.id === (p.inputPreparation?.normalizedAssetId ?? p.inputAssetIds[0]) && d?.available.has(a.id));
-    return { input:d?.input?.view() ?? null,sequence:++this.viewSequence,sessionId:d?.id ?? null,mode:this.readOnly ? 'read-only' : d ? 'editable' : 'empty',project:p,label:d?.label ?? this.readOnlyLabel,dirty:this.dirty(),saving:this.saving !== null,canUndo:!this.saving && !!d?.history.canUndo,canRedo:!this.saving && !!d?.history.canRedo,
+    return { partsCatalog:this.options.parts?.catalog??null,input:d?.input?.view() ?? null,sequence:++this.viewSequence,sessionId:d?.id ?? null,mode:this.readOnly ? 'read-only' : d ? 'editable' : 'empty',project:p,label:d?.label ?? this.readOnlyLabel,dirty:this.dirty(),saving:this.saving !== null,canUndo:!this.saving && !!d?.history.canUndo,canRedo:!this.saving && !!d?.history.canRedo,
       scene,originalScene:original && p && d ? originalScene([p.canvas.width,p.canvas.height],{ x:original.dimensions.width,y:original.dimensions.height },`assets/session/${d.id}/${original.fingerprint.sha256}.${original.mediaType === 'image/png' ? 'png' : 'jpg'}`) : null,jobs:d?.flow.view().jobs ?? [],renderKey,issues:d && p ? p.assets.filter(a => !d.available.has(a.id) || d.unresolved.has(a.id)).map(a => ({ assetId:a.id,code:'E_RESOURCE_MISSING' })) : [],errorCode:this.lastError,lastRecoveryAt:d?.lastRecoveryAt ?? null,
       recent:this.catalog.recent().map(({ id,displayName,openedAt,sourceType }) => ({ id,displayName,openedAt,sourceType })),
       recoveries:this.catalog.recoveries().slice(0,30).map(r => ({ id:r.id,displayName:r.displayName,revision:r.revision,createdAt:r.createdAt,kind:r.kind,reason:r.reason,originalLabel:r.sourcePath ? basename(r.sourcePath) : null,pending:r.pending })),
@@ -122,7 +123,7 @@ export class ProjectSession {
   private changed():void { this.lastEdit = this.now(); const d = this.document; if (d && d.target && d.loadedMinor<d.flow.project().schemaVersion.minor) { d.upgradeSource = d.target; d.target = null; d.expectedHash = null; d.label = '이전 프로젝트의 변환본 · 새 파일로 저장'; } if (d) d.flow.setAxis('save',this.dirty(d) ? 'DIRTY' : 'CLEAN'); this.lastError = null; this.scheduleAuto(); this.emit(); }
   private async checkpoint(reason:string):Promise<void> { const d = this.editable(); const p = d.flow.project(); const record = await this.catalog.record(p,await this.cache.bytes(p),'checkpoint',d.target,reason); d.lastRecoveryAt = record.createdAt; d.recoveryKey = contentKey(p); this.emit(); }
   private async edit(command:Extract<SessionCommand,{ type:'edit' }>):Promise<void> {
-    const d = this.editable(); if (command.groupId === null && d.flow.project().revision !== command.expectedRevision) throw new Error('E_EDIT_STALE');
+    const d = this.editable();if(command.target==='part-translate-x'&&d.flow.project().parts.find(v=>v.id===command.id)?.library)throw new Error('E_PARTS_RANGE'); if (command.groupId === null && d.flow.project().revision !== command.expectedRevision) throw new Error('E_EDIT_STALE');
     if (command.target === 'part-role') { await this.checkpoint('부위 역할 변경 전'); if (d.flow.project().revision !== command.expectedRevision) throw new Error('E_EDIT_STALE'); }
     d.history.change('프로젝트 편집',p => {
       if (command.target === 'project-name') { if (typeof command.value !== 'string') throw new Error('E_EDIT_VALUE'); p.displayName = command.value.trim() || '새 프로젝트'; return; }
@@ -139,7 +140,7 @@ export class ProjectSession {
     const d = this.editable(); const revision = d.flow.project().revision; await this.checkpoint('예제 캐릭터 삽입 전'); const source = this.options.bundled;
     for (const asset of source.assets) { const data = this.options.bundledBytes.get(asset.id); if (!data) throw new Error('E_SAMPLE_RESOURCE'); await this.cache.put(asset,data); }
     if (this.document !== d || d.flow.project().revision !== revision) throw new Error('E_EDIT_STALE');
-    d.history.change('고급 예제 캐릭터',draft => { for (const field of ['canvas','assets','parts','groups','parameters','partBindings','inputBindings','expressions','runtimeProfile','broadcastProfiles','exportProfiles','inputAssetIds'] as const) (draft as unknown as Record<string,unknown>)[field] = structuredClone(source[field]); if (source.motion) { draft.schemaVersion.minor = Math.max(draft.schemaVersion.minor,source.schemaVersion.minor); draft.motion = structuredClone(source.motion); } else delete draft.motion; delete draft.inputPreparation;draft.provenance = { preparation:'Bundled authored example; not route-specific automatic preparation',limitations:source.provenance.limitations }; });
+    d.history.change('고급 예제 캐릭터',draft => { for (const field of ['canvas','assets','parts','groups','parameters','partBindings','inputBindings','expressions','runtimeProfile','broadcastProfiles','exportProfiles','inputAssetIds'] as const) (draft as unknown as Record<string,unknown>)[field] = structuredClone(source[field]); if (source.motion) { draft.schemaVersion.minor = Math.max(draft.schemaVersion.minor,source.schemaVersion.minor); draft.motion = structuredClone(source.motion); } else delete draft.motion; delete draft.inputPreparation;delete draft.assembly;draft.provenance = { preparation:'Bundled authored example; not route-specific automatic preparation',limitations:source.provenance.limitations }; });
     d.available = await this.cache.available(d.flow.project()); d.unresolved.clear(); this.changed();
   }
   private async relink(assetId:string):Promise<void> {
@@ -165,7 +166,8 @@ export class ProjectSession {
   async dispatch(input:unknown):Promise<SessionReply> {
     try {
       const command = parseSessionCommand(input); let value:string | undefined; let preview:RecoveryComparison | undefined;
-      if (['import-image','input-cancel','input-retry','input-apply'].includes(command.type)) { const input=this.editable().input;if(!input)throw new Error('E_INPUT_UNAVAILABLE');if(command.type==='import-image')await input.choose();else if(command.type==='input-cancel')input.cancel();else if(command.type==='input-retry')input.retry();else if(command.type==='input-apply')await input.apply(command.draftId,command.selection); }
+      if(command.type==='parts-start'||command.type==='parts-select'||command.type==='parts-remove'||command.type==='parts-adjust'||command.type==='parts-link'||command.type==='parts-reset'){const d=this.editable();const source=this.options.parts;if(!source)throw new Error('E_PARTS_UNAVAILABLE');const c=source.catalog;if(d.flow.project().revision!==command.expectedRevision)throw new Error('E_EDIT_STALE');if(['parts-start','parts-select','parts-remove'].includes(command.type))await this.checkpoint('파츠 변경 전');if(command.type==='parts-start')for(const a of c.assets){const bytes=source.bytes.get(a.id);if(!bytes)throw new Error('E_PARTS_RESOURCE');await this.cache.put(a,bytes);}if(this.document!==d||d.flow.project().revision!==command.expectedRevision)throw new Error('E_EDIT_STALE');d.history.change('파츠 조합',p=>{if(command.type==='parts-start')startAssembly(p,c);else if(command.type==='parts-select')selectItem(p,c,command.itemId);else if(command.type==='parts-remove')removeSlot(p,c,command.slot);else if(command.type==='parts-adjust')adjustPart(p,c,command.value);else if(command.type==='parts-link')linkEyes(p,c,command.linked,command.anchor);else resetAdjustment(p,c,command.key);});d.available=await this.cache.available(d.flow.project());this.changed();}
+      else if (['import-image','input-cancel','input-retry','input-apply'].includes(command.type)) { const input=this.editable().input;if(!input)throw new Error('E_INPUT_UNAVAILABLE');if(command.type==='import-image')await input.choose();else if(command.type==='input-cancel')input.cancel();else if(command.type==='input-retry')input.retry();else if(command.type==='input-apply')await input.apply(command.draftId,command.selection); }
       else if (command.type === 'new') await this.newProject(command.name,command.sourceType);
       else if (command.type === 'open') { const file = await this.options.dialogs.openProject(); if (file) await this.openFile(file); }
       else if (command.type === 'recent') { const entry = this.catalog.recent().find(r => r.id === command.id); if (!entry) throw new Error('E_RECENT_UNKNOWN'); await this.openFile(entry.path); }

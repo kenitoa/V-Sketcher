@@ -1,0 +1,2136 @@
+{
+  "id": "atelier-luna",
+  "version": "1.0.0",
+  "family": "atelier-bust-v1",
+  "canvas": {
+    "width": 1024,
+    "height": 1280
+  },
+  "assets": [
+    {
+      "id": "part-asset-face-a",
+      "kind": "part-texture",
+      "origin": "bundled",
+      "parentAssetIds": [],
+      "storage": {
+        "path": "resources/6891f6971c5f4ec07148a9d7180009607d7345937156fa6b81da74901c0425c4.png"
+      },
+      "fingerprint": {
+        "sha256": "6891f6971c5f4ec07148a9d7180009607d7345937156fa6b81da74901c0425c4",
+        "bytes": 471604
+      },
+      "version": 1,
+      "mediaType": "image/png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sourceRegion": {
+        "x": 348,
+        "y": 174,
+        "width": 552,
+        "height": 842
+      },
+      "sourceToEdited": [
+        0.6231884057971014,
+        0,
+        0,
+        0.6235154394299287,
+        123.13043478260869,
+        21.5083135391924
+      ],
+      "colorSpace": "srgb",
+      "alphaMode": "straight",
+      "producer": {
+        "name": "atelier-luna/face-a",
+        "version": "1.0.0"
+      },
+      "attribution": {
+        "creator": "2DSketcher project · OpenAI ImageGen",
+        "source": "parts/generation-record.json#face-a",
+        "usage": "Project-generated modular artwork; see parts/USAGE.md. No exclusivity/copyright warranty. Public product release remains gated.",
+        "status": "verified"
+      }
+    },
+    {
+      "id": "part-asset-face-b",
+      "kind": "part-texture",
+      "origin": "bundled",
+      "parentAssetIds": [],
+      "storage": {
+        "path": "resources/d9be1c41a70e9dfc2d48f9dc26be2ccb87c034571e7204b58959eb450eb961d7.png"
+      },
+      "fingerprint": {
+        "sha256": "d9be1c41a70e9dfc2d48f9dc26be2ccb87c034571e7204b58959eb450eb961d7",
+        "bytes": 488930
+      },
+      "version": 1,
+      "mediaType": "image/png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sourceRegion": {
+        "x": 348,
+        "y": 174,
+        "width": 552,
+        "height": 842
+      },
+      "sourceToEdited": [
+        0.6231884057971014,
+        0,
+        0,
+        0.6235154394299287,
+        123.13043478260869,
+        21.5083135391924
+      ],
+      "colorSpace": "srgb",
+      "alphaMode": "straight",
+      "producer": {
+        "name": "atelier-luna/face-b",
+        "version": "1.0.0"
+      },
+      "attribution": {
+        "creator": "2DSketcher project · OpenAI ImageGen",
+        "source": "parts/generation-record.json#face-b",
+        "usage": "Project-generated modular artwork; see parts/USAGE.md. No exclusivity/copyright warranty. Public product release remains gated.",
+        "status": "verified"
+      }
+    },
+    {
+      "id": "part-asset-hair-a-back",
+      "kind": "part-texture",
+      "origin": "bundled",
+      "parentAssetIds": [],
+      "storage": {
+        "path": "resources/a4da80250030a919da27504ec22712147c43e6077554ecb57b52775674fc71c2.png"
+      },
+      "fingerprint": {
+        "sha256": "a4da80250030a919da27504ec22712147c43e6077554ecb57b52775674fc71c2",
+        "bytes": 2068360
+      },
+      "version": 1,
+      "mediaType": "image/png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sourceRegion": {
+        "x": 92,
+        "y": 18,
+        "width": 1071,
+        "height": 1227
+      },
+      "sourceToEdited": [
+        0.6760037348272643,
+        0,
+        0,
+        0.9616951915240424,
+        87.80765639589168,
+        52.68948655256724
+      ],
+      "colorSpace": "srgb",
+      "alphaMode": "straight",
+      "producer": {
+        "name": "atelier-luna/hair-a-back",
+        "version": "1.0.0"
+      },
+      "attribution": {
+        "creator": "2DSketcher project · OpenAI ImageGen",
+        "source": "parts/generation-record.json#hair-a-back",
+        "usage": "Project-generated modular artwork; see parts/USAGE.md. No exclusivity/copyright warranty. Public product release remains gated.",
+        "status": "verified"
+      }
+    },
+    {
+      "id": "part-asset-hair-a-front",
+      "kind": "part-texture",
+      "origin": "bundled",
+      "parentAssetIds": [],
+      "storage": {
+        "path": "resources/a78922f88eaf7b97c64724d0e1430c6c62623ec30e47d1e14501e0d9d02c8dfd.png"
+      },
+      "fingerprint": {
+        "sha256": "a78922f88eaf7b97c64724d0e1430c6c62623ec30e47d1e14501e0d9d02c8dfd",
+        "bytes": 1098581
+      },
+      "version": 1,
+      "mediaType": "image/png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sourceRegion": {
+        "x": 269,
+        "y": 22,
+        "width": 721,
+        "height": 1208
+      },
+      "sourceToEdited": [
+        0.9015256588072122,
+        0,
+        0,
+        0.6125827814569537,
+        -55.510402219140104,
+        56.52317880794702
+      ],
+      "colorSpace": "srgb",
+      "alphaMode": "straight",
+      "producer": {
+        "name": "atelier-luna/hair-a-front-v2",
+        "version": "1.0.0"
+      },
+      "attribution": {
+        "creator": "2DSketcher project · OpenAI ImageGen",
+        "source": "parts/generation-record.json#hair-a-front-v2",
+        "usage": "Project-generated modular artwork; see parts/USAGE.md. No exclusivity/copyright warranty. Public product release remains gated.",
+        "status": "verified"
+      }
+    },
+    {
+      "id": "part-asset-hair-b-back",
+      "kind": "part-texture",
+      "origin": "bundled",
+      "parentAssetIds": [],
+      "storage": {
+        "path": "resources/8f6cc816d03983bac2c4a2122315ada1d2601cbb8a2837b168b4dec2c275ef49.png"
+      },
+      "fingerprint": {
+        "sha256": "8f6cc816d03983bac2c4a2122315ada1d2601cbb8a2837b168b4dec2c275ef49",
+        "bytes": 1376130
+      },
+      "version": 1,
+      "mediaType": "image/png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sourceRegion": {
+        "x": 171,
+        "y": 12,
+        "width": 913,
+        "height": 1239
+      },
+      "sourceToEdited": [
+        0.7929901423877328,
+        0,
+        0,
+        0.9523809523809523,
+        14.39868565169769,
+        58.57142857142857
+      ],
+      "colorSpace": "srgb",
+      "alphaMode": "straight",
+      "producer": {
+        "name": "atelier-luna/hair-b-back",
+        "version": "1.0.0"
+      },
+      "attribution": {
+        "creator": "2DSketcher project · OpenAI ImageGen",
+        "source": "parts/generation-record.json#hair-b-back",
+        "usage": "Project-generated modular artwork; see parts/USAGE.md. No exclusivity/copyright warranty. Public product release remains gated.",
+        "status": "verified"
+      }
+    },
+    {
+      "id": "part-asset-hair-b-front",
+      "kind": "part-texture",
+      "origin": "bundled",
+      "parentAssetIds": [],
+      "storage": {
+        "path": "resources/923c69fa9bf7018e6bd69ba583b862cb6d619befd6a8a8ca70b669564fc8487f.png"
+      },
+      "fingerprint": {
+        "sha256": "923c69fa9bf7018e6bd69ba583b862cb6d619befd6a8a8ca70b669564fc8487f",
+        "bytes": 902824
+      },
+      "version": 1,
+      "mediaType": "image/png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sourceRegion": {
+        "x": 234,
+        "y": 6,
+        "width": 751,
+        "height": 1174
+      },
+      "sourceToEdited": [
+        0.8655126498002663,
+        0,
+        0,
+        0.6303236797274276,
+        -15.529960053262329,
+        66.21805792163543
+      ],
+      "colorSpace": "srgb",
+      "alphaMode": "straight",
+      "producer": {
+        "name": "atelier-luna/hair-b-front-v2",
+        "version": "1.0.0"
+      },
+      "attribution": {
+        "creator": "2DSketcher project · OpenAI ImageGen",
+        "source": "parts/generation-record.json#hair-b-front-v2",
+        "usage": "Project-generated modular artwork; see parts/USAGE.md. No exclusivity/copyright warranty. Public product release remains gated.",
+        "status": "verified"
+      }
+    },
+    {
+      "id": "part-asset-eyes-a-eye-right-open",
+      "kind": "part-texture",
+      "origin": "bundled",
+      "parentAssetIds": [],
+      "storage": {
+        "path": "resources/252bc12ddc88d5f628d6f4c604cea67b800df8723809c3faea391e7be3e1fa8c.png"
+      },
+      "fingerprint": {
+        "sha256": "252bc12ddc88d5f628d6f4c604cea67b800df8723809c3faea391e7be3e1fa8c",
+        "bytes": 1620331
+      },
+      "version": 1,
+      "mediaType": "image/png",
+      "dimensions": {
+        "width": 1024,
+        "height": 1536
+      },
+      "sourceRegion": {
+        "x": 74,
+        "y": 211,
+        "width": 358,
+        "height": 242
+      },
+      "sourceToEdited": [
+        0.3463687150837989,
+        0,
+        0,
+        0.3463687150837989,
+        333.00871508379885,
+        231.91620111731845
+      ],
+      "colorSpace": "srgb",
+      "alphaMode": "straight",
+      "producer": {
+        "name": "atelier-luna/eyes-a-clean",
+        "version": "1.0.0"
+      },
+      "attribution": {
+        "creator": "2DSketcher project · OpenAI ImageGen",
+        "source": "parts/generation-record.json#eyes-a-clean",
+        "usage": "Project-generated modular artwork; see parts/USAGE.md. No exclusivity/copyright warranty. Public product release remains gated.",
+        "status": "verified"
+      }
+    },
+    {
+      "id": "part-asset-eyes-a-eye-right-half",
+      "kind": "part-texture",
+      "origin": "bundled",
+      "parentAssetIds": [],
+      "storage": {
+        "path": "resources/252bc12ddc88d5f628d6f4c604cea67b800df8723809c3faea391e7be3e1fa8c.png"
+      },
+      "fingerprint": {
+        "sha256": "252bc12ddc88d5f628d6f4c604cea67b800df8723809c3faea391e7be3e1fa8c",
+        "bytes": 1620331
+      },
+      "version": 1,
+      "mediaType": "image/png",
+      "dimensions": {
+        "width": 1024,
+        "height": 1536
+      },
+      "sourceRegion": {
+        "x": 74,
+        "y": 643,
+        "width": 362,
+        "height": 230
+      },
+      "sourceToEdited": [
+        0.3463687150837989,
+        0,
+        0,
+        0.3463687150837989,
+        332.1220111731843,
+        82.28491620111731
+      ],
+      "colorSpace": "srgb",
+      "alphaMode": "straight",
+      "producer": {
+        "name": "atelier-luna/eyes-a-clean",
+        "version": "1.0.0"
+      },
+      "attribution": {
+        "creator": "2DSketcher project · OpenAI ImageGen",
+        "source": "parts/generation-record.json#eyes-a-clean",
+        "usage": "Project-generated modular artwork; see parts/USAGE.md. No exclusivity/copyright warranty. Public product release remains gated.",
+        "status": "verified"
+      }
+    },
+    {
+      "id": "part-asset-eyes-a-eye-right-closed",
+      "kind": "part-texture",
+      "origin": "bundled",
+      "parentAssetIds": [],
+      "storage": {
+        "path": "resources/252bc12ddc88d5f628d6f4c604cea67b800df8723809c3faea391e7be3e1fa8c.png"
+      },
+      "fingerprint": {
+        "sha256": "252bc12ddc88d5f628d6f4c604cea67b800df8723809c3faea391e7be3e1fa8c",
+        "bytes": 1620331
+      },
+      "version": 1,
+      "mediaType": "image/png",
+      "dimensions": {
+        "width": 1024,
+        "height": 1536
+      },
+      "sourceRegion": {
+        "x": 96,
+        "y": 1080,
+        "width": 339,
+        "height": 227
+      },
+      "sourceToEdited": [
+        0.3463687150837989,
+        0,
+        0,
+        0.3463687150837989,
+        329.60044692737426,
+        -69.07821229050279
+      ],
+      "colorSpace": "srgb",
+      "alphaMode": "straight",
+      "producer": {
+        "name": "atelier-luna/eyes-a-clean",
+        "version": "1.0.0"
+      },
+      "attribution": {
+        "creator": "2DSketcher project · OpenAI ImageGen",
+        "source": "parts/generation-record.json#eyes-a-clean",
+        "usage": "Project-generated modular artwork; see parts/USAGE.md. No exclusivity/copyright warranty. Public product release remains gated.",
+        "status": "verified"
+      }
+    },
+    {
+      "id": "part-asset-eyes-a-eye-left-open",
+      "kind": "part-texture",
+      "origin": "bundled",
+      "parentAssetIds": [],
+      "storage": {
+        "path": "resources/252bc12ddc88d5f628d6f4c604cea67b800df8723809c3faea391e7be3e1fa8c.png"
+      },
+      "fingerprint": {
+        "sha256": "252bc12ddc88d5f628d6f4c604cea67b800df8723809c3faea391e7be3e1fa8c",
+        "bytes": 1620331
+      },
+      "version": 1,
+      "mediaType": "image/png",
+      "dimensions": {
+        "width": 1024,
+        "height": 1536
+      },
+      "sourceRegion": {
+        "x": 592,
+        "y": 212,
+        "width": 359,
+        "height": 243
+      },
+      "sourceToEdited": [
+        0.34540389972144847,
+        0,
+        0,
+        0.34540389972144847,
+        336.8808913649025,
+        231.77437325905294
+      ],
+      "colorSpace": "srgb",
+      "alphaMode": "straight",
+      "producer": {
+        "name": "atelier-luna/eyes-a-clean",
+        "version": "1.0.0"
+      },
+      "attribution": {
+        "creator": "2DSketcher project · OpenAI ImageGen",
+        "source": "parts/generation-record.json#eyes-a-clean",
+        "usage": "Project-generated modular artwork; see parts/USAGE.md. No exclusivity/copyright warranty. Public product release remains gated.",
+        "status": "verified"
+      }
+    },
+    {
+      "id": "part-asset-eyes-a-eye-left-half",
+      "kind": "part-texture",
+      "origin": "bundled",
+      "parentAssetIds": [],
+      "storage": {
+        "path": "resources/252bc12ddc88d5f628d6f4c604cea67b800df8723809c3faea391e7be3e1fa8c.png"
+      },
+      "fingerprint": {
+        "sha256": "252bc12ddc88d5f628d6f4c604cea67b800df8723809c3faea391e7be3e1fa8c",
+        "bytes": 1620331
+      },
+      "version": 1,
+      "mediaType": "image/png",
+      "dimensions": {
+        "width": 1024,
+        "height": 1536
+      },
+      "sourceRegion": {
+        "x": 589,
+        "y": 643,
+        "width": 364,
+        "height": 230
+      },
+      "sourceToEdited": [
+        0.34540389972144847,
+        0,
+        0,
+        0.34540389972144847,
+        337.29537604456823,
+        82.90529247910862
+      ],
+      "colorSpace": "srgb",
+      "alphaMode": "straight",
+      "producer": {
+        "name": "atelier-luna/eyes-a-clean",
+        "version": "1.0.0"
+      },
+      "attribution": {
+        "creator": "2DSketcher project · OpenAI ImageGen",
+        "source": "parts/generation-record.json#eyes-a-clean",
+        "usage": "Project-generated modular artwork; see parts/USAGE.md. No exclusivity/copyright warranty. Public product release remains gated.",
+        "status": "verified"
+      }
+    },
+    {
+      "id": "part-asset-eyes-a-eye-left-closed",
+      "kind": "part-texture",
+      "origin": "bundled",
+      "parentAssetIds": [],
+      "storage": {
+        "path": "resources/252bc12ddc88d5f628d6f4c604cea67b800df8723809c3faea391e7be3e1fa8c.png"
+      },
+      "fingerprint": {
+        "sha256": "252bc12ddc88d5f628d6f4c604cea67b800df8723809c3faea391e7be3e1fa8c",
+        "bytes": 1620331
+      },
+      "version": 1,
+      "mediaType": "image/png",
+      "dimensions": {
+        "width": 1024,
+        "height": 1536
+      },
+      "sourceRegion": {
+        "x": 588,
+        "y": 1080,
+        "width": 342,
+        "height": 227
+      },
+      "sourceToEdited": [
+        0.34540389972144847,
+        0,
+        0,
+        0.34540389972144847,
+        340.3763788300836,
+        -68.03621169916437
+      ],
+      "colorSpace": "srgb",
+      "alphaMode": "straight",
+      "producer": {
+        "name": "atelier-luna/eyes-a-clean",
+        "version": "1.0.0"
+      },
+      "attribution": {
+        "creator": "2DSketcher project · OpenAI ImageGen",
+        "source": "parts/generation-record.json#eyes-a-clean",
+        "usage": "Project-generated modular artwork; see parts/USAGE.md. No exclusivity/copyright warranty. Public product release remains gated.",
+        "status": "verified"
+      }
+    },
+    {
+      "id": "part-asset-eyes-b-eye-right-open",
+      "kind": "part-texture",
+      "origin": "bundled",
+      "parentAssetIds": [],
+      "storage": {
+        "path": "resources/0ccab24e82009f6973ad23ba7402c968ebf6813fb62af4b599119889bf4960f3.png"
+      },
+      "fingerprint": {
+        "sha256": "0ccab24e82009f6973ad23ba7402c968ebf6813fb62af4b599119889bf4960f3",
+        "bytes": 1685354
+      },
+      "version": 1,
+      "mediaType": "image/png",
+      "dimensions": {
+        "width": 1024,
+        "height": 1536
+      },
+      "sourceRegion": {
+        "x": 67,
+        "y": 198,
+        "width": 381,
+        "height": 241
+      },
+      "sourceToEdited": [
+        0.32545931758530183,
+        0,
+        0,
+        0.32545931758530183,
+        336.8342257217848,
+        240.55905511811022
+      ],
+      "colorSpace": "srgb",
+      "alphaMode": "straight",
+      "producer": {
+        "name": "atelier-luna/eyes-b-clean",
+        "version": "1.0.0"
+      },
+      "attribution": {
+        "creator": "2DSketcher project · OpenAI ImageGen",
+        "source": "parts/generation-record.json#eyes-b-clean",
+        "usage": "Project-generated modular artwork; see parts/USAGE.md. No exclusivity/copyright warranty. Public product release remains gated.",
+        "status": "verified"
+      }
+    },
+    {
+      "id": "part-asset-eyes-b-eye-right-half",
+      "kind": "part-texture",
+      "origin": "bundled",
+      "parentAssetIds": [],
+      "storage": {
+        "path": "resources/0ccab24e82009f6973ad23ba7402c968ebf6813fb62af4b599119889bf4960f3.png"
+      },
+      "fingerprint": {
+        "sha256": "0ccab24e82009f6973ad23ba7402c968ebf6813fb62af4b599119889bf4960f3",
+        "bytes": 1685354
+      },
+      "version": 1,
+      "mediaType": "image/png",
+      "dimensions": {
+        "width": 1024,
+        "height": 1536
+      },
+      "sourceRegion": {
+        "x": 78,
+        "y": 646,
+        "width": 370,
+        "height": 234
+      },
+      "sourceToEdited": [
+        0.32545931758530183,
+        0,
+        0,
+        0.32545931758530183,
+        335.545406824147,
+        94.75328083989501
+      ],
+      "colorSpace": "srgb",
+      "alphaMode": "straight",
+      "producer": {
+        "name": "atelier-luna/eyes-b-clean",
+        "version": "1.0.0"
+      },
+      "attribution": {
+        "creator": "2DSketcher project · OpenAI ImageGen",
+        "source": "parts/generation-record.json#eyes-b-clean",
+        "usage": "Project-generated modular artwork; see parts/USAGE.md. No exclusivity/copyright warranty. Public product release remains gated.",
+        "status": "verified"
+      }
+    },
+    {
+      "id": "part-asset-eyes-b-eye-right-closed",
+      "kind": "part-texture",
+      "origin": "bundled",
+      "parentAssetIds": [],
+      "storage": {
+        "path": "resources/0ccab24e82009f6973ad23ba7402c968ebf6813fb62af4b599119889bf4960f3.png"
+      },
+      "fingerprint": {
+        "sha256": "0ccab24e82009f6973ad23ba7402c968ebf6813fb62af4b599119889bf4960f3",
+        "bytes": 1685354
+      },
+      "version": 1,
+      "mediaType": "image/png",
+      "dimensions": {
+        "width": 1024,
+        "height": 1536
+      },
+      "sourceRegion": {
+        "x": 86,
+        "y": 1092,
+        "width": 361,
+        "height": 233
+      },
+      "sourceToEdited": [
+        0.32545931758530183,
+        0,
+        0,
+        0.32545931758530183,
+        334.81637795275594,
+        -50.40157480314963
+      ],
+      "colorSpace": "srgb",
+      "alphaMode": "straight",
+      "producer": {
+        "name": "atelier-luna/eyes-b-clean",
+        "version": "1.0.0"
+      },
+      "attribution": {
+        "creator": "2DSketcher project · OpenAI ImageGen",
+        "source": "parts/generation-record.json#eyes-b-clean",
+        "usage": "Project-generated modular artwork; see parts/USAGE.md. No exclusivity/copyright warranty. Public product release remains gated.",
+        "status": "verified"
+      }
+    },
+    {
+      "id": "part-asset-eyes-b-eye-left-open",
+      "kind": "part-texture",
+      "origin": "bundled",
+      "parentAssetIds": [],
+      "storage": {
+        "path": "resources/0ccab24e82009f6973ad23ba7402c968ebf6813fb62af4b599119889bf4960f3.png"
+      },
+      "fingerprint": {
+        "sha256": "0ccab24e82009f6973ad23ba7402c968ebf6813fb62af4b599119889bf4960f3",
+        "bytes": 1685354
+      },
+      "version": 1,
+      "mediaType": "image/png",
+      "dimensions": {
+        "width": 1024,
+        "height": 1536
+      },
+      "sourceRegion": {
+        "x": 578,
+        "y": 198,
+        "width": 379,
+        "height": 240
+      },
+      "sourceToEdited": [
+        0.32717678100263853,
+        0,
+        0,
+        0.32717678100263853,
+        352.25182058047494,
+        240.2189973614776
+      ],
+      "colorSpace": "srgb",
+      "alphaMode": "straight",
+      "producer": {
+        "name": "atelier-luna/eyes-b-clean",
+        "version": "1.0.0"
+      },
+      "attribution": {
+        "creator": "2DSketcher project · OpenAI ImageGen",
+        "source": "parts/generation-record.json#eyes-b-clean",
+        "usage": "Project-generated modular artwork; see parts/USAGE.md. No exclusivity/copyright warranty. Public product release remains gated.",
+        "status": "verified"
+      }
+    },
+    {
+      "id": "part-asset-eyes-b-eye-left-half",
+      "kind": "part-texture",
+      "origin": "bundled",
+      "parentAssetIds": [],
+      "storage": {
+        "path": "resources/0ccab24e82009f6973ad23ba7402c968ebf6813fb62af4b599119889bf4960f3.png"
+      },
+      "fingerprint": {
+        "sha256": "0ccab24e82009f6973ad23ba7402c968ebf6813fb62af4b599119889bf4960f3",
+        "bytes": 1685354
+      },
+      "version": 1,
+      "mediaType": "image/png",
+      "dimensions": {
+        "width": 1024,
+        "height": 1536
+      },
+      "sourceRegion": {
+        "x": 578,
+        "y": 645,
+        "width": 369,
+        "height": 234
+      },
+      "sourceToEdited": [
+        0.32717678100263853,
+        0,
+        0,
+        0.32717678100263853,
+        353.42965699208446,
+        93.97097625329815
+      ],
+      "colorSpace": "srgb",
+      "alphaMode": "straight",
+      "producer": {
+        "name": "atelier-luna/eyes-b-clean",
+        "version": "1.0.0"
+      },
+      "attribution": {
+        "creator": "2DSketcher project · OpenAI ImageGen",
+        "source": "parts/generation-record.json#eyes-b-clean",
+        "usage": "Project-generated modular artwork; see parts/USAGE.md. No exclusivity/copyright warranty. Public product release remains gated.",
+        "status": "verified"
+      }
+    },
+    {
+      "id": "part-asset-eyes-b-eye-left-closed",
+      "kind": "part-texture",
+      "origin": "bundled",
+      "parentAssetIds": [],
+      "storage": {
+        "path": "resources/0ccab24e82009f6973ad23ba7402c968ebf6813fb62af4b599119889bf4960f3.png"
+      },
+      "fingerprint": {
+        "sha256": "0ccab24e82009f6973ad23ba7402c968ebf6813fb62af4b599119889bf4960f3",
+        "bytes": 1685354
+      },
+      "version": 1,
+      "mediaType": "image/png",
+      "dimensions": {
+        "width": 1024,
+        "height": 1536
+      },
+      "sourceRegion": {
+        "x": 578,
+        "y": 1092,
+        "width": 362,
+        "height": 233
+      },
+      "sourceToEdited": [
+        0.32717678100263853,
+        0,
+        0,
+        0.32717678100263853,
+        354.2541424802111,
+        -52.2770448548813
+      ],
+      "colorSpace": "srgb",
+      "alphaMode": "straight",
+      "producer": {
+        "name": "atelier-luna/eyes-b-clean",
+        "version": "1.0.0"
+      },
+      "attribution": {
+        "creator": "2DSketcher project · OpenAI ImageGen",
+        "source": "parts/generation-record.json#eyes-b-clean",
+        "usage": "Project-generated modular artwork; see parts/USAGE.md. No exclusivity/copyright warranty. Public product release remains gated.",
+        "status": "verified"
+      }
+    },
+    {
+      "id": "part-asset-mouth-a-closed",
+      "kind": "part-texture",
+      "origin": "bundled",
+      "parentAssetIds": [],
+      "storage": {
+        "path": "resources/52ca10e0471ea24e5c25a0502eea8b32f72fa74c633d49e66a17c6809283b164.png"
+      },
+      "fingerprint": {
+        "sha256": "52ca10e0471ea24e5c25a0502eea8b32f72fa74c633d49e66a17c6809283b164",
+        "bytes": 1043589
+      },
+      "version": 1,
+      "mediaType": "image/png",
+      "dimensions": {
+        "width": 1024,
+        "height": 1536
+      },
+      "sourceRegion": {
+        "x": 345,
+        "y": 283,
+        "width": 334,
+        "height": 98
+      },
+      "sourceToEdited": [
+        0.2275449101796407,
+        0,
+        0,
+        0.2275449101796407,
+        395.49700598802394,
+        409.60479041916165
+      ],
+      "colorSpace": "srgb",
+      "alphaMode": "straight",
+      "producer": {
+        "name": "atelier-luna/mouth-a-clean",
+        "version": "1.0.0"
+      },
+      "attribution": {
+        "creator": "2DSketcher project · OpenAI ImageGen",
+        "source": "parts/generation-record.json#mouth-a-clean",
+        "usage": "Project-generated modular artwork; see parts/USAGE.md. No exclusivity/copyright warranty. Public product release remains gated.",
+        "status": "verified"
+      }
+    },
+    {
+      "id": "part-asset-mouth-a-smile",
+      "kind": "part-texture",
+      "origin": "bundled",
+      "parentAssetIds": [],
+      "storage": {
+        "path": "resources/52ca10e0471ea24e5c25a0502eea8b32f72fa74c633d49e66a17c6809283b164.png"
+      },
+      "fingerprint": {
+        "sha256": "52ca10e0471ea24e5c25a0502eea8b32f72fa74c633d49e66a17c6809283b164",
+        "bytes": 1043589
+      },
+      "version": 1,
+      "mediaType": "image/png",
+      "dimensions": {
+        "width": 1024,
+        "height": 1536
+      },
+      "sourceRegion": {
+        "x": 326,
+        "y": 739,
+        "width": 373,
+        "height": 98
+      },
+      "sourceToEdited": [
+        0.2275449101796407,
+        0,
+        0,
+        0.2275449101796407,
+        395.3832335329341,
+        305.8443113772455
+      ],
+      "colorSpace": "srgb",
+      "alphaMode": "straight",
+      "producer": {
+        "name": "atelier-luna/mouth-a-clean",
+        "version": "1.0.0"
+      },
+      "attribution": {
+        "creator": "2DSketcher project · OpenAI ImageGen",
+        "source": "parts/generation-record.json#mouth-a-clean",
+        "usage": "Project-generated modular artwork; see parts/USAGE.md. No exclusivity/copyright warranty. Public product release remains gated.",
+        "status": "verified"
+      }
+    },
+    {
+      "id": "part-asset-mouth-a-open",
+      "kind": "part-texture",
+      "origin": "bundled",
+      "parentAssetIds": [],
+      "storage": {
+        "path": "resources/52ca10e0471ea24e5c25a0502eea8b32f72fa74c633d49e66a17c6809283b164.png"
+      },
+      "fingerprint": {
+        "sha256": "52ca10e0471ea24e5c25a0502eea8b32f72fa74c633d49e66a17c6809283b164",
+        "bytes": 1043589
+      },
+      "version": 1,
+      "mediaType": "image/png",
+      "dimensions": {
+        "width": 1024,
+        "height": 1536
+      },
+      "sourceRegion": {
+        "x": 341,
+        "y": 1202,
+        "width": 342,
+        "height": 175
+      },
+      "sourceToEdited": [
+        0.2275449101796407,
+        0,
+        0,
+        0.2275449101796407,
+        395.49700598802394,
+        200.4910179640719
+      ],
+      "colorSpace": "srgb",
+      "alphaMode": "straight",
+      "producer": {
+        "name": "atelier-luna/mouth-a-clean",
+        "version": "1.0.0"
+      },
+      "attribution": {
+        "creator": "2DSketcher project · OpenAI ImageGen",
+        "source": "parts/generation-record.json#mouth-a-clean",
+        "usage": "Project-generated modular artwork; see parts/USAGE.md. No exclusivity/copyright warranty. Public product release remains gated.",
+        "status": "verified"
+      }
+    },
+    {
+      "id": "part-asset-mouth-b-closed",
+      "kind": "part-texture",
+      "origin": "bundled",
+      "parentAssetIds": [],
+      "storage": {
+        "path": "resources/1b7ac1a2a7ec6333579afc306c9a35cea33a96d0525a7436796eb16b0ff81d17.png"
+      },
+      "fingerprint": {
+        "sha256": "1b7ac1a2a7ec6333579afc306c9a35cea33a96d0525a7436796eb16b0ff81d17",
+        "bytes": 1125634
+      },
+      "version": 1,
+      "mediaType": "image/png",
+      "dimensions": {
+        "width": 1024,
+        "height": 1536
+      },
+      "sourceRegion": {
+        "x": 333,
+        "y": 271,
+        "width": 358,
+        "height": 123
+      },
+      "sourceToEdited": [
+        0.2122905027932961,
+        0,
+        0,
+        0.2122905027932961,
+        403.3072625698324,
+        416.46927374301674
+      ],
+      "colorSpace": "srgb",
+      "alphaMode": "straight",
+      "producer": {
+        "name": "atelier-luna/mouth-b-clean",
+        "version": "1.0.0"
+      },
+      "attribution": {
+        "creator": "2DSketcher project · OpenAI ImageGen",
+        "source": "parts/generation-record.json#mouth-b-clean",
+        "usage": "Project-generated modular artwork; see parts/USAGE.md. No exclusivity/copyright warranty. Public product release remains gated.",
+        "status": "verified"
+      }
+    },
+    {
+      "id": "part-asset-mouth-b-smile",
+      "kind": "part-texture",
+      "origin": "bundled",
+      "parentAssetIds": [],
+      "storage": {
+        "path": "resources/1b7ac1a2a7ec6333579afc306c9a35cea33a96d0525a7436796eb16b0ff81d17.png"
+      },
+      "fingerprint": {
+        "sha256": "1b7ac1a2a7ec6333579afc306c9a35cea33a96d0525a7436796eb16b0ff81d17",
+        "bytes": 1125634
+      },
+      "version": 1,
+      "mediaType": "image/png",
+      "dimensions": {
+        "width": 1024,
+        "height": 1536
+      },
+      "sourceRegion": {
+        "x": 322,
+        "y": 729,
+        "width": 379,
+        "height": 117
+      },
+      "sourceToEdited": [
+        0.2122905027932961,
+        0,
+        0,
+        0.2122905027932961,
+        403.41340782122904,
+        319.24022346368713
+      ],
+      "colorSpace": "srgb",
+      "alphaMode": "straight",
+      "producer": {
+        "name": "atelier-luna/mouth-b-clean",
+        "version": "1.0.0"
+      },
+      "attribution": {
+        "creator": "2DSketcher project · OpenAI ImageGen",
+        "source": "parts/generation-record.json#mouth-b-clean",
+        "usage": "Project-generated modular artwork; see parts/USAGE.md. No exclusivity/copyright warranty. Public product release remains gated.",
+        "status": "verified"
+      }
+    },
+    {
+      "id": "part-asset-mouth-b-open",
+      "kind": "part-texture",
+      "origin": "bundled",
+      "parentAssetIds": [],
+      "storage": {
+        "path": "resources/1b7ac1a2a7ec6333579afc306c9a35cea33a96d0525a7436796eb16b0ff81d17.png"
+      },
+      "fingerprint": {
+        "sha256": "1b7ac1a2a7ec6333579afc306c9a35cea33a96d0525a7436796eb16b0ff81d17",
+        "bytes": 1125634
+      },
+      "version": 1,
+      "mediaType": "image/png",
+      "dimensions": {
+        "width": 1024,
+        "height": 1536
+      },
+      "sourceRegion": {
+        "x": 325,
+        "y": 1192,
+        "width": 373,
+        "height": 202
+      },
+      "sourceToEdited": [
+        0.2122905027932961,
+        0,
+        0,
+        0.2122905027932961,
+        403.41340782122904,
+        220.94972067039106
+      ],
+      "colorSpace": "srgb",
+      "alphaMode": "straight",
+      "producer": {
+        "name": "atelier-luna/mouth-b-clean",
+        "version": "1.0.0"
+      },
+      "attribution": {
+        "creator": "2DSketcher project · OpenAI ImageGen",
+        "source": "parts/generation-record.json#mouth-b-clean",
+        "usage": "Project-generated modular artwork; see parts/USAGE.md. No exclusivity/copyright warranty. Public product release remains gated.",
+        "status": "verified"
+      }
+    },
+    {
+      "id": "part-asset-outfit-a",
+      "kind": "part-texture",
+      "origin": "bundled",
+      "parentAssetIds": [],
+      "storage": {
+        "path": "resources/9c99ce47dc816756e8d587064b96c415dad58cb21cdee0c5b0e07d655fb06731.png"
+      },
+      "fingerprint": {
+        "sha256": "9c99ce47dc816756e8d587064b96c415dad58cb21cdee0c5b0e07d655fb06731",
+        "bytes": 2308585
+      },
+      "version": 1,
+      "mediaType": "image/png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sourceRegion": {
+        "x": 66,
+        "y": 109,
+        "width": 1123,
+        "height": 1120
+      },
+      "sourceToEdited": [
+        0.680320569902048,
+        0,
+        0,
+        0.5848214285714286,
+        85.09884238646484,
+        531.2544642857143
+      ],
+      "colorSpace": "srgb",
+      "alphaMode": "straight",
+      "producer": {
+        "name": "atelier-luna/outfit-a",
+        "version": "1.0.0"
+      },
+      "attribution": {
+        "creator": "2DSketcher project · OpenAI ImageGen",
+        "source": "parts/generation-record.json#outfit-a",
+        "usage": "Project-generated modular artwork; see parts/USAGE.md. No exclusivity/copyright warranty. Public product release remains gated.",
+        "status": "verified"
+      }
+    },
+    {
+      "id": "part-asset-outfit-b",
+      "kind": "part-texture",
+      "origin": "bundled",
+      "parentAssetIds": [],
+      "storage": {
+        "path": "resources/9a0c1e93020a0fb22301cb4e5192e38e059ca27095abd729158b1285ca93921b.png"
+      },
+      "fingerprint": {
+        "sha256": "9a0c1e93020a0fb22301cb4e5192e38e059ca27095abd729158b1285ca93921b",
+        "bytes": 1887268
+      },
+      "version": 1,
+      "mediaType": "image/png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sourceRegion": {
+        "x": 33,
+        "y": 133,
+        "width": 1187,
+        "height": 1084
+      },
+      "sourceToEdited": [
+        0.6436394271272114,
+        0,
+        0,
+        0.6042435424354243,
+        108.75989890480201,
+        514.6356088560885
+      ],
+      "colorSpace": "srgb",
+      "alphaMode": "straight",
+      "producer": {
+        "name": "atelier-luna/outfit-b",
+        "version": "1.0.0"
+      },
+      "attribution": {
+        "creator": "2DSketcher project · OpenAI ImageGen",
+        "source": "parts/generation-record.json#outfit-b",
+        "usage": "Project-generated modular artwork; see parts/USAGE.md. No exclusivity/copyright warranty. Public product release remains gated.",
+        "status": "verified"
+      }
+    },
+    {
+      "id": "part-asset-accessory-on",
+      "kind": "part-texture",
+      "origin": "bundled",
+      "parentAssetIds": [],
+      "storage": {
+        "path": "resources/918c8134202d0ca9a8f8cea799f3f3cbc4b72aa43fa5cd2d531f033dca603fa4.png"
+      },
+      "fingerprint": {
+        "sha256": "918c8134202d0ca9a8f8cea799f3f3cbc4b72aa43fa5cd2d531f033dca603fa4",
+        "bytes": 773603
+      },
+      "version": 1,
+      "mediaType": "image/png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sourceRegion": {
+        "x": 292,
+        "y": 50,
+        "width": 646,
+        "height": 1103
+      },
+      "sourceToEdited": [
+        0.1393188854489164,
+        0,
+        0,
+        0.13961922030825022,
+        633.3188854489164,
+        173.0190389845875
+      ],
+      "colorSpace": "srgb",
+      "alphaMode": "straight",
+      "producer": {
+        "name": "atelier-luna/accessory-on",
+        "version": "1.0.0"
+      },
+      "attribution": {
+        "creator": "2DSketcher project · OpenAI ImageGen",
+        "source": "parts/generation-record.json#accessory-on",
+        "usage": "Project-generated modular artwork; see parts/USAGE.md. No exclusivity/copyright warranty. Public product release remains gated.",
+        "status": "verified"
+      }
+    }
+  ],
+  "files": {
+    "6891f6971c5f4ec07148a9d7180009607d7345937156fa6b81da74901c0425c4": "parts/face-a.png",
+    "d9be1c41a70e9dfc2d48f9dc26be2ccb87c034571e7204b58959eb450eb961d7": "parts/face-b.png",
+    "a4da80250030a919da27504ec22712147c43e6077554ecb57b52775674fc71c2": "parts/hair-a-back.png",
+    "a78922f88eaf7b97c64724d0e1430c6c62623ec30e47d1e14501e0d9d02c8dfd": "parts/hair-a-front-v2.png",
+    "8f6cc816d03983bac2c4a2122315ada1d2601cbb8a2837b168b4dec2c275ef49": "parts/hair-b-back.png",
+    "923c69fa9bf7018e6bd69ba583b862cb6d619befd6a8a8ca70b669564fc8487f": "parts/hair-b-front-v2.png",
+    "252bc12ddc88d5f628d6f4c604cea67b800df8723809c3faea391e7be3e1fa8c": "parts/eyes-a-clean.png",
+    "0ccab24e82009f6973ad23ba7402c968ebf6813fb62af4b599119889bf4960f3": "parts/eyes-b-clean.png",
+    "52ca10e0471ea24e5c25a0502eea8b32f72fa74c633d49e66a17c6809283b164": "parts/mouth-a-clean.png",
+    "1b7ac1a2a7ec6333579afc306c9a35cea33a96d0525a7436796eb16b0ff81d17": "parts/mouth-b-clean.png",
+    "9c99ce47dc816756e8d587064b96c415dad58cb21cdee0c5b0e07d655fb06731": "parts/outfit-a.png",
+    "9a0c1e93020a0fb22301cb4e5192e38e059ca27095abd729158b1285ca93921b": "parts/outfit-b.png",
+    "918c8134202d0ca9a8f8cea799f3f3cbc4b72aa43fa5cd2d531f033dca603fa4": "parts/accessory-on.png"
+  },
+  "items": [
+    {
+      "id": "face-a",
+      "version": "1.0.0",
+      "slot": "face",
+      "label": "피치 · 부드러운 타원",
+      "family": "atelier-bust-v1",
+      "templates": [
+        {
+          "key": "face",
+          "role": "head",
+          "side": "center",
+          "order": 10,
+          "anchor": [
+            512,
+            400
+          ],
+          "tint": [
+            0,
+            1,
+            1
+          ],
+          "textures": [
+            {
+              "state": "default",
+              "assetId": "part-asset-face-a",
+              "assetVersion": 1,
+              "assetToLocal": [
+                1,
+                0,
+                0,
+                1,
+                0,
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "thumbnail": {
+        "assetId": "part-asset-face-a",
+        "region": {
+          "x": 348,
+          "y": 174,
+          "width": 552,
+          "height": 842
+        }
+      },
+      "limits": {
+        "position": 2,
+        "scale": 0.01,
+        "rotation": 0.5,
+        "hue": 0
+      }
+    },
+    {
+      "id": "face-b",
+      "version": "1.0.0",
+      "slot": "face",
+      "label": "허니 · 하트 윤곽",
+      "family": "atelier-bust-v1",
+      "templates": [
+        {
+          "key": "face",
+          "role": "head",
+          "side": "center",
+          "order": 10,
+          "anchor": [
+            512,
+            400
+          ],
+          "tint": [
+            0,
+            1,
+            1
+          ],
+          "textures": [
+            {
+              "state": "default",
+              "assetId": "part-asset-face-b",
+              "assetVersion": 1,
+              "assetToLocal": [
+                1,
+                0,
+                0,
+                1,
+                0,
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "thumbnail": {
+        "assetId": "part-asset-face-b",
+        "region": {
+          "x": 348,
+          "y": 174,
+          "width": 552,
+          "height": 842
+        }
+      },
+      "limits": {
+        "position": 2,
+        "scale": 0.01,
+        "rotation": 0.5,
+        "hue": 0
+      }
+    },
+    {
+      "id": "hair-a",
+      "version": "1.0.0",
+      "slot": "hair",
+      "label": "라일락 · 웨이브",
+      "family": "atelier-bust-v1",
+      "templates": [
+        {
+          "key": "hair-back",
+          "role": "hair-back",
+          "side": "center",
+          "order": 0,
+          "anchor": [
+            512,
+            360
+          ],
+          "tint": [
+            0.45,
+            0.9,
+            0.18
+          ],
+          "textures": [
+            {
+              "state": "default",
+              "assetId": "part-asset-hair-a-back",
+              "assetVersion": 1,
+              "assetToLocal": [
+                1,
+                0,
+                0,
+                1,
+                0,
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "key": "hair-front",
+          "role": "hair-front",
+          "side": "center",
+          "order": 50,
+          "anchor": [
+            512,
+            360
+          ],
+          "tint": [
+            0.45,
+            0.9,
+            0.18
+          ],
+          "textures": [
+            {
+              "state": "default",
+              "assetId": "part-asset-hair-a-front",
+              "assetVersion": 1,
+              "assetToLocal": [
+                1,
+                0,
+                0,
+                1,
+                0,
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "thumbnail": {
+        "assetId": "part-asset-hair-a-front",
+        "region": {
+          "x": 269,
+          "y": 22,
+          "width": 721,
+          "height": 1208
+        }
+      },
+      "limits": {
+        "position": 3,
+        "scale": 0.01,
+        "rotation": 0.5,
+        "hue": 12
+      }
+    },
+    {
+      "id": "hair-b",
+      "version": "1.0.0",
+      "slot": "hair",
+      "label": "미드나이트 · 실키",
+      "family": "atelier-bust-v1",
+      "templates": [
+        {
+          "key": "hair-back",
+          "role": "hair-back",
+          "side": "center",
+          "order": 0,
+          "anchor": [
+            512,
+            360
+          ],
+          "tint": [
+            0.45,
+            0.9,
+            0.18
+          ],
+          "textures": [
+            {
+              "state": "default",
+              "assetId": "part-asset-hair-b-back",
+              "assetVersion": 1,
+              "assetToLocal": [
+                1,
+                0,
+                0,
+                1,
+                0,
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "key": "hair-front",
+          "role": "hair-front",
+          "side": "center",
+          "order": 50,
+          "anchor": [
+            512,
+            360
+          ],
+          "tint": [
+            0.45,
+            0.9,
+            0.18
+          ],
+          "textures": [
+            {
+              "state": "default",
+              "assetId": "part-asset-hair-b-front",
+              "assetVersion": 1,
+              "assetToLocal": [
+                1,
+                0,
+                0,
+                1,
+                0,
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "thumbnail": {
+        "assetId": "part-asset-hair-b-front",
+        "region": {
+          "x": 234,
+          "y": 6,
+          "width": 751,
+          "height": 1174
+        }
+      },
+      "limits": {
+        "position": 3,
+        "scale": 0.01,
+        "rotation": 0.5,
+        "hue": 12
+      }
+    },
+    {
+      "id": "eyes-a",
+      "version": "1.0.0",
+      "slot": "eyes",
+      "label": "자수정 · 라운드",
+      "family": "atelier-bust-v1",
+      "templates": [
+        {
+          "key": "eye-right",
+          "role": "eye",
+          "side": "character-right",
+          "order": 30,
+          "anchor": [
+            438,
+            360
+          ],
+          "tint": [
+            0.25,
+            0.9,
+            0.25
+          ],
+          "textures": [
+            {
+              "state": "open",
+              "assetId": "part-asset-eyes-a-eye-right-open",
+              "assetVersion": 1,
+              "assetToLocal": [
+                1,
+                0,
+                0,
+                1,
+                0,
+                0
+              ]
+            },
+            {
+              "state": "half",
+              "assetId": "part-asset-eyes-a-eye-right-half",
+              "assetVersion": 1,
+              "assetToLocal": [
+                1,
+                0,
+                0,
+                1,
+                0,
+                0
+              ]
+            },
+            {
+              "state": "closed",
+              "assetId": "part-asset-eyes-a-eye-right-closed",
+              "assetVersion": 1,
+              "assetToLocal": [
+                1,
+                0,
+                0,
+                1,
+                0,
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "key": "eye-left",
+          "role": "eye",
+          "side": "character-left",
+          "order": 30,
+          "anchor": [
+            586,
+            360
+          ],
+          "tint": [
+            0.25,
+            0.9,
+            0.25
+          ],
+          "textures": [
+            {
+              "state": "open",
+              "assetId": "part-asset-eyes-a-eye-left-open",
+              "assetVersion": 1,
+              "assetToLocal": [
+                1,
+                0,
+                0,
+                1,
+                0,
+                0
+              ]
+            },
+            {
+              "state": "half",
+              "assetId": "part-asset-eyes-a-eye-left-half",
+              "assetVersion": 1,
+              "assetToLocal": [
+                1,
+                0,
+                0,
+                1,
+                0,
+                0
+              ]
+            },
+            {
+              "state": "closed",
+              "assetId": "part-asset-eyes-a-eye-left-closed",
+              "assetVersion": 1,
+              "assetToLocal": [
+                1,
+                0,
+                0,
+                1,
+                0,
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "thumbnail": {
+        "assetId": "part-asset-eyes-a-eye-left-open",
+        "region": {
+          "x": 0,
+          "y": 0,
+          "width": 1024,
+          "height": 512.0
+        }
+      },
+      "limits": {
+        "position": 2,
+        "scale": 0.03,
+        "rotation": 1,
+        "hue": 18
+      }
+    },
+    {
+      "id": "eyes-b",
+      "version": "1.0.0",
+      "slot": "eyes",
+      "label": "에메랄드 · 캣아이",
+      "family": "atelier-bust-v1",
+      "templates": [
+        {
+          "key": "eye-right",
+          "role": "eye",
+          "side": "character-right",
+          "order": 30,
+          "anchor": [
+            438,
+            360
+          ],
+          "tint": [
+            0.25,
+            0.9,
+            0.25
+          ],
+          "textures": [
+            {
+              "state": "open",
+              "assetId": "part-asset-eyes-b-eye-right-open",
+              "assetVersion": 1,
+              "assetToLocal": [
+                1,
+                0,
+                0,
+                1,
+                0,
+                0
+              ]
+            },
+            {
+              "state": "half",
+              "assetId": "part-asset-eyes-b-eye-right-half",
+              "assetVersion": 1,
+              "assetToLocal": [
+                1,
+                0,
+                0,
+                1,
+                0,
+                0
+              ]
+            },
+            {
+              "state": "closed",
+              "assetId": "part-asset-eyes-b-eye-right-closed",
+              "assetVersion": 1,
+              "assetToLocal": [
+                1,
+                0,
+                0,
+                1,
+                0,
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "key": "eye-left",
+          "role": "eye",
+          "side": "character-left",
+          "order": 30,
+          "anchor": [
+            586,
+            360
+          ],
+          "tint": [
+            0.25,
+            0.9,
+            0.25
+          ],
+          "textures": [
+            {
+              "state": "open",
+              "assetId": "part-asset-eyes-b-eye-left-open",
+              "assetVersion": 1,
+              "assetToLocal": [
+                1,
+                0,
+                0,
+                1,
+                0,
+                0
+              ]
+            },
+            {
+              "state": "half",
+              "assetId": "part-asset-eyes-b-eye-left-half",
+              "assetVersion": 1,
+              "assetToLocal": [
+                1,
+                0,
+                0,
+                1,
+                0,
+                0
+              ]
+            },
+            {
+              "state": "closed",
+              "assetId": "part-asset-eyes-b-eye-left-closed",
+              "assetVersion": 1,
+              "assetToLocal": [
+                1,
+                0,
+                0,
+                1,
+                0,
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "thumbnail": {
+        "assetId": "part-asset-eyes-b-eye-left-open",
+        "region": {
+          "x": 0,
+          "y": 0,
+          "width": 1024,
+          "height": 512.0
+        }
+      },
+      "limits": {
+        "position": 2,
+        "scale": 0.03,
+        "rotation": 1,
+        "hue": 18
+      }
+    },
+    {
+      "id": "mouth-a",
+      "version": "1.0.0",
+      "slot": "mouth",
+      "label": "로즈 · 내추럴",
+      "family": "atelier-bust-v1",
+      "templates": [
+        {
+          "key": "mouth",
+          "role": "mouth",
+          "side": "center",
+          "order": 40,
+          "anchor": [
+            512,
+            480
+          ],
+          "tint": [
+            0.9,
+            0.1,
+            0.3
+          ],
+          "textures": [
+            {
+              "state": "closed",
+              "assetId": "part-asset-mouth-a-closed",
+              "assetVersion": 1,
+              "assetToLocal": [
+                1,
+                0,
+                0,
+                1,
+                0,
+                0
+              ]
+            },
+            {
+              "state": "smile",
+              "assetId": "part-asset-mouth-a-smile",
+              "assetVersion": 1,
+              "assetToLocal": [
+                1,
+                0,
+                0,
+                1,
+                0,
+                0
+              ]
+            },
+            {
+              "state": "open",
+              "assetId": "part-asset-mouth-a-open",
+              "assetVersion": 1,
+              "assetToLocal": [
+                1,
+                0,
+                0,
+                1,
+                0,
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "thumbnail": {
+        "assetId": "part-asset-mouth-a-closed",
+        "region": {
+          "x": 345,
+          "y": 283,
+          "width": 334,
+          "height": 98
+        }
+      },
+      "limits": {
+        "position": 2,
+        "scale": 0.03,
+        "rotation": 1,
+        "hue": 6
+      }
+    },
+    {
+      "id": "mouth-b",
+      "version": "1.0.0",
+      "slot": "mouth",
+      "label": "베리 · 큐피드",
+      "family": "atelier-bust-v1",
+      "templates": [
+        {
+          "key": "mouth",
+          "role": "mouth",
+          "side": "center",
+          "order": 40,
+          "anchor": [
+            512,
+            480
+          ],
+          "tint": [
+            0.9,
+            0.1,
+            0.3
+          ],
+          "textures": [
+            {
+              "state": "closed",
+              "assetId": "part-asset-mouth-b-closed",
+              "assetVersion": 1,
+              "assetToLocal": [
+                1,
+                0,
+                0,
+                1,
+                0,
+                0
+              ]
+            },
+            {
+              "state": "smile",
+              "assetId": "part-asset-mouth-b-smile",
+              "assetVersion": 1,
+              "assetToLocal": [
+                1,
+                0,
+                0,
+                1,
+                0,
+                0
+              ]
+            },
+            {
+              "state": "open",
+              "assetId": "part-asset-mouth-b-open",
+              "assetVersion": 1,
+              "assetToLocal": [
+                1,
+                0,
+                0,
+                1,
+                0,
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "thumbnail": {
+        "assetId": "part-asset-mouth-b-closed",
+        "region": {
+          "x": 333,
+          "y": 271,
+          "width": 358,
+          "height": 123
+        }
+      },
+      "limits": {
+        "position": 2,
+        "scale": 0.03,
+        "rotation": 1,
+        "hue": 6
+      }
+    },
+    {
+      "id": "outfit-a",
+      "version": "1.0.0",
+      "slot": "outfit",
+      "label": "바이올렛 · 코르셋",
+      "family": "atelier-bust-v1",
+      "templates": [
+        {
+          "key": "outfit",
+          "role": "body",
+          "side": "center",
+          "order": 20,
+          "anchor": [
+            512,
+            750
+          ],
+          "tint": [
+            0.45,
+            0.9,
+            0.18
+          ],
+          "textures": [
+            {
+              "state": "default",
+              "assetId": "part-asset-outfit-a",
+              "assetVersion": 1,
+              "assetToLocal": [
+                1,
+                0,
+                0,
+                1,
+                0,
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "thumbnail": {
+        "assetId": "part-asset-outfit-a",
+        "region": {
+          "x": 66,
+          "y": 109,
+          "width": 1123,
+          "height": 1120
+        }
+      },
+      "limits": {
+        "position": 4,
+        "scale": 0.02,
+        "rotation": 0.5,
+        "hue": 12
+      }
+    },
+    {
+      "id": "outfit-b",
+      "version": "1.0.0",
+      "slot": "outfit",
+      "label": "틸 · 케이프 블라우스",
+      "family": "atelier-bust-v1",
+      "templates": [
+        {
+          "key": "outfit",
+          "role": "body",
+          "side": "center",
+          "order": 20,
+          "anchor": [
+            512,
+            750
+          ],
+          "tint": [
+            0.45,
+            0.9,
+            0.18
+          ],
+          "textures": [
+            {
+              "state": "default",
+              "assetId": "part-asset-outfit-b",
+              "assetVersion": 1,
+              "assetToLocal": [
+                1,
+                0,
+                0,
+                1,
+                0,
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "thumbnail": {
+        "assetId": "part-asset-outfit-b",
+        "region": {
+          "x": 33,
+          "y": 133,
+          "width": 1187,
+          "height": 1084
+        }
+      },
+      "limits": {
+        "position": 4,
+        "scale": 0.02,
+        "rotation": 0.5,
+        "hue": 12
+      }
+    },
+    {
+      "id": "accessory-off",
+      "version": "1.0.0",
+      "slot": "accessory",
+      "label": "장식 없음",
+      "family": "atelier-bust-v1",
+      "templates": [],
+      "thumbnail": null,
+      "limits": {
+        "position": 0,
+        "scale": 0,
+        "rotation": 0,
+        "hue": 0
+      }
+    },
+    {
+      "id": "accessory-on",
+      "version": "1.0.0",
+      "slot": "accessory",
+      "label": "달빛 · 브로치",
+      "family": "atelier-bust-v1",
+      "templates": [
+        {
+          "key": "accessory",
+          "role": "accessory",
+          "side": "center",
+          "order": 60,
+          "anchor": [
+            719,
+            250
+          ],
+          "tint": [
+            0.6,
+            0.9,
+            0.25
+          ],
+          "textures": [
+            {
+              "state": "default",
+              "assetId": "part-asset-accessory-on",
+              "assetVersion": 1,
+              "assetToLocal": [
+                1,
+                0,
+                0,
+                1,
+                0,
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "thumbnail": {
+        "assetId": "part-asset-accessory-on",
+        "region": {
+          "x": 292,
+          "y": 50,
+          "width": 646,
+          "height": 1103
+        }
+      },
+      "limits": {
+        "position": 6,
+        "scale": 0.05,
+        "rotation": 2,
+        "hue": 10
+      }
+    }
+  ],
+  "defaults": {
+    "face": "face-a",
+    "hair": "hair-a",
+    "eyes": "eyes-a",
+    "mouth": "mouth-a",
+    "outfit": "outfit-a",
+    "accessory": "accessory-on"
+  }
+}

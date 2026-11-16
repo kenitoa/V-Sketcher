@@ -27,8 +27,9 @@ for (const item of assetManifest.assets) {
   assert.equal(createHash('sha256').update(bytes).digest('hex'), item.sha256, 'Bundled preview asset changed');
 }
 const model = JSON.parse(extractFile(archive, join('dist','renderer','assets','preview-project.json')).toString());
-assert.equal(model.schemaVersion.major, 1); assert.equal(model.schemaVersion.minor, 2);
+assert.equal(model.schemaVersion.major, 1); assert.equal(model.schemaVersion.minor, 3);
 for (const asset of model.assets) assert.ok(assetManifest.assets.some(item => item.sha256 === asset.fingerprint.sha256), 'Undeclared model resource');
+const partsCatalog=JSON.parse(extractFile(archive,join('dist','renderer','assets','parts','catalog.json')).toString());assert.equal(Object.keys(partsCatalog.files).length,13);const partsEntries=entries.filter(p=>p.startsWith('/dist/renderer/assets/parts/')&&p.endsWith('.png'));assert.equal(partsEntries.length,13);for(const [digest,path] of Object.entries(partsCatalog.files)){assert.equal(createHash('sha256').update(extractFile(archive,join('dist','renderer','assets',path))).digest('hex'),digest);}
 const system = process.env.SystemRoot ?? 'C:\\Windows';
 const env = Object.fromEntries(Object.entries(process.env).filter(([key]) => !/^(PYTHON|NODE|NPM|ELECTRON|VIRTUAL_ENV|CONDA|VSCODE)/i.test(key)));
 env.PATH = join(system, 'System32');
@@ -47,9 +48,9 @@ assert.equal(imageRun.status,0,'Frozen image processor exited');const imageProbe
 for (const attempt of [1, 2]) {
   const reportPath = join(target, `report-${attempt}.json`);
   const args = [`--profile-dir=${join(target, `profile-${attempt}`)}`, `--self-check-report=${reportPath}`];
-  if (attempt === 2) args.push('--compact-editor=true',`--editor-screenshot=${join(evidence,'release-editor-compact.png')}`,`--motion-screenshot=${join(evidence,'release-motion-compact.png')}`,`--input-screenshot=${join(evidence,'release-input-compact.png')}`);
-  if (attempt === 1) args.push(`--screenshot=${join(evidence, 'release-studio.png')}`,`--project-screenshot=${join(evidence,'release-project.png')}`,`--editor-screenshot=${join(evidence,'release-editor.png')}`,`--motion-screenshot=${join(evidence,'release-motion.png')}`,`--input-screenshot=${join(evidence,'release-input.png')}`);
-  const result = spawnSync(join(bundle, '2DSketcher.exe'), args, { cwd: target, env, windowsHide: true, encoding: 'utf8', timeout: 120000 });
+  if (attempt === 2) args.push('--compact-editor=true',`--editor-screenshot=${join(evidence,'release-editor-compact.png')}`,`--motion-screenshot=${join(evidence,'release-motion-compact.png')}`,`--input-screenshot=${join(evidence,'release-input-compact.png')}`,`--parts-screenshot=${join(evidence,'release-parts-compact.png')}`);
+  if (attempt === 1) args.push(`--screenshot=${join(evidence, 'release-studio.png')}`,`--project-screenshot=${join(evidence,'release-project.png')}`,`--editor-screenshot=${join(evidence,'release-editor.png')}`,`--motion-screenshot=${join(evidence,'release-motion.png')}`,`--input-screenshot=${join(evidence,'release-input.png')}`,`--parts-screenshot=${join(evidence,'release-parts.png')}`,`--parts-contact=${join(evidence,'release-parts-contact.png')}`,`--parts-extremes=${join(evidence,'release-parts-extremes.png')}`);
+  const result = spawnSync(join(bundle, '2DSketcher.exe'), args, { cwd: target, env, windowsHide: true, encoding: 'utf8', timeout: 240000 });
   writeFileSync(join(target, `launch-${attempt}.log`), (result.stdout ?? '') + (result.stderr ?? ''));
   if (result.error) throw result.error;
   const report = JSON.parse(readFileSync(reportPath, 'utf8'));
@@ -60,8 +61,8 @@ for (const attempt of [1, 2]) {
   assert.equal(report.workerStopped, true); assert.equal(report.renderer.workerReady, true);
   assert.equal(report.renderer.diagnosticsVisible, false); assert.equal(report.renderer.projectRoutesEnabled, true); assert.equal(report.projects?.passed,true);
   assert.equal(report.projects?.recoveryToNewFile,true); assert.equal(report.projects?.recoveryComparison,true);
-  assert.equal(report.input?.passed,true); assert.equal(report.input?.keyboardMask,true); assert.equal(report.input?.pointerCrop,true); assert.equal(report.motion?.passed,true); assert.equal(report.renderer.motionPixels?.passed,true); assert.equal(report.editor?.passed,true); assert.equal(report.editor?.contrast?.passed,true);
-  assert.equal(report.renderer.projectModel?.schemaVersion, '1.2');
+  assert.equal(report.parts?.passed,true);assert.equal(report.parts?.invalidRestores,true);assert.equal(report.renderer.partsPixels?.passed,true);assert.equal(report.renderer.partsPixels?.combinations,64);assert.equal(report.renderer.partsPixels?.frames,1472);assert.equal(report.input?.passed,true); assert.equal(report.input?.keyboardMask,true); assert.equal(report.input?.pointerCrop,true); assert.equal(report.motion?.passed,true); assert.equal(report.renderer.motionPixels?.passed,true); assert.equal(report.editor?.passed,true); assert.equal(report.editor?.contrast?.passed,true);
+  assert.equal(report.renderer.projectModel?.schemaVersion, '1.3');
   assert.equal(report.renderer.projectModel?.projectId, model.projectId);
   assert.equal(report.renderer.modelPixels?.passed, true);
   assert.equal(report.renderer.workflowCore?.passed, true); assert.equal(report.renderer.sampleRuntimeFrozen, true);
@@ -78,9 +79,9 @@ function walk(directory) {
 }
 walk(source);
 const summary = { passed: true, platform: process.platform, architecture: process.arch, userApprovedScope: 'Same PC isolated runtime; no separate PC or VM available', cleanWindowsOS: false,
-  frozenImageInput:{passed:true,detectorAvailable:imageProbe.report.detectorAvailable,normalizedSize:imageProbe.report.size,originalSize:imageProbe.report.originalSize},
+  modularParts:{selectedPngs:13,states:27,items:12,combinations:64},frozenImageInput:{passed:true,detectorAvailable:imageProbe.report.detectorAvailable,normalizedSize:imageProbe.report.size,originalSize:imageProbe.report.originalSize},
   isolation: { developerToolsOnPath: false, externalNodeOrPythonRequired: false, freshProfiles: 2, unicodeAndSpacePath: true, rendererExternalNetworkBlocked: true, systemNetworkDisabled: false },
   reports, archiveEntries: entries.length, forbiddenDevelopmentContent: false, packageBytes: inventory.reduce((total, item) => total + item.bytes, 0),
-  commonProjectSchema: '1.2', limitations: ['Same Windows installation, drivers and system DLLs retained', 'No clean-OS claim', 'No camera/microphone, OBS, creation, full rigging or M0 performance test'], files: inventory };
+  commonProjectSchema: '1.3', limitations: ['Same Windows installation, drivers and system DLLs retained', 'No clean-OS claim', 'No camera/microphone, OBS, creation, full rigging or M0 performance test'], files: inventory };
 writeFileSync(join(evidence, 'package-audit.json'), JSON.stringify(summary, null, 2) + '\n');
 console.log(`Packaged release passed twice: ${inventory.length} files, ${summary.packageBytes} bytes; no developer tools on PATH. Same-PC scope.`);

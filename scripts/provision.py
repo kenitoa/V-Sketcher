@@ -17,6 +17,17 @@ def run():
         file=(assets/item['path']).resolve()
         if not file.is_relative_to(assets.resolve()) or sha(file)!=item['sha256']:raise ValueError('E_ASSET_HASH')
         destination=output/item['path'];destination.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(file,destination)
+    catalog=json.loads((assets/'parts/catalog.json').read_text(encoding='utf-8'))
+    parts_output=output/'parts';parts_output.mkdir(parents=True,exist_ok=True)
+    if not parts_output.resolve().is_relative_to(ROOT.resolve()):raise ValueError('E_PARTS_STAGE_PATH')
+    allowed={Path(name).name for name in catalog['files'].values()}
+    for stale in parts_output.glob('*.png'):
+        if stale.name not in allowed:stale.unlink()
+    for digest,name in catalog['files'].items():
+        path=(assets/name).resolve()
+        if not path.is_relative_to((assets/'parts').resolve()) or sha(path)!=digest:raise ValueError('E_PARTS_ASSET_HASH')
+        destination=output/name;destination.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(path,destination)
+    shutil.copyfile(assets/'parts/catalog.json',output/'parts/catalog.json')
     shutil.copyfile(assets/'preview-scene.json',output/'preview-scene.json')
     shutil.copyfile(assets/'preview-project.json',output/'preview-project.json')
     print('Model and',len(manifest['assets']),'premium assets verified')

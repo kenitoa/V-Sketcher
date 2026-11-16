@@ -9,6 +9,8 @@ def run():
     registry=json.loads((ROOT/'assets/product/manifest.json').read_text(encoding='utf-8'))
     (out/'asset-provenance.json').write_text(json.dumps(registry,indent=2)+'\n',encoding='utf-8')
     shutil.copyfile(ROOT/'experiments/phase04/assets/premium/generation-prompts.md',out/'preview-generation-record.md')
+    for name in ['catalog.json','generation-record.json','USAGE.md']:
+        shutil.copyfile(ROOT/'assets/product/parts'/name,out/('parts-'+name))
     python=[]
     for dist in meta.distributions():
         name=dist.metadata['Name'];item={'name':name,'version':dist.version,'license':dist.metadata.get('License-Expression') or dist.metadata.get('License'),'scope':'installed build environment; bundled use verified separately'}

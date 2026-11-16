@@ -1,0 +1,158 @@
+{
+  "version": 1,
+  "scope": "13 selected modular PNGs; six earlier drafts not packaged",
+  "images": [
+    {
+      "id": "face-a",
+      "path": "parts/face-a.png",
+      "selected": true,
+      "tool": "built-in image_gen",
+      "prompt": "Create ONE production-ready modular 2D VTuber FACE AND NECK sprite, premium richly painted anime game portrait quality matching the reference's elegant rendering, fine linework, soft skin and nose shading. Reference is STYLE ONLY, do not retain its hair, eyes, eyebrows, mouth, jewelry or clothing. Isolated softly rounded oval feminine adult head, both ears, slender neck ending with a smooth concealed base. Perfectly frontal, no tilt. Blank clean skin where eyes and mouth will be composited later, retain only small refined nose, subtle cheek blush. NO eyeballs, lashes, brows, lips, hair, earrings or torso. Canvas 1024x1024, head oval occupies x=320..704,y=170..510, ears at y=360, nose at (512,407), future eyes at (425,355),(599,355), future mouth at (512,455), neck x=460..564 down to y=635. Symmetric anatomy. Soft fair peach skin. Intricate premium painterly shading rather than flat clip art. Truly transparent background and clean antialiased edges. No labels, grid or shadows outside sprite. All other pixels transparent.",
+      "reference": "Project premium 955e597230d4cdd15cd64c09ecf8f48686bbd5702f32e429109d581d68d6f442 / generated same-family part"
+    },
+    {
+      "id": "face-b",
+      "path": "parts/face-b.png",
+      "selected": true,
+      "tool": "built-in image_gen",
+      "prompt": "Edit this faceless head sprite into the SECOND distinctly different adult face/skin option for the SAME modular character rig. Preserve exactly its canvas, head/ear/neck alignment and size, background transparency, nose location. Make a refined heart-shaped face with slightly wider cheekbones and a narrower elegant jaw/chin, warm honey-beige skin, subtle natural blush and a more defined softly shaded nose. Rich painted anime game portrait quality. NO hair, eyes, eyebrows, lips, clothing or accessories; the skin areas remain blank for composited facial features. Not merely a hue-shift: visibly different cheek/jaw shape while fitting the same hairstyle.",
+      "reference": "Project premium 955e597230d4cdd15cd64c09ecf8f48686bbd5702f32e429109d581d68d6f442 / generated same-family part"
+    },
+    {
+      "id": "hair-a-back",
+      "path": "parts/hair-a-back.png",
+      "selected": true,
+      "tool": "built-in image_gen",
+      "prompt": "ONE isolated transparent game-ready modular VTuber sprite. Extremely detailed premium anime illustration matching the reference's polished fine linework, elaborate highlights and subtle materials. True transparent alpha, no backdrop, checkerboard drawing, labels, mannequin, face, eyes, mouth, skin or text. Perfectly front-facing, symmetrical lighting, no tilt. A square canvas with generous transparent padding. Reference is visual style only. BACK HAIR ONLY, a continuous solid full silhouette of long cascading silver-lilac wavy hair, richly shaded individual flowing strands, falling in large elegant waves down to a waist-height arc. It is the BEHIND-THE-HEAD layer, so include full uninterrupted hair behind where a head/neck will later cover the center. No face-shaped hole. Hair crown near top center, widest around shoulders, tapered decorative curls at bottom. No front bangs, jewelry, flowers, ribbons, skin or clothing. Keep the center covered in hair; face is layered over it. At 1024 coordinate scale the complete hair silhouette is x=170..854,y=70..1010. Canvas otherwise transparent.",
+      "reference": "Project premium 955e597230d4cdd15cd64c09ecf8f48686bbd5702f32e429109d581d68d6f442 / generated same-family part"
+    },
+    {
+      "id": "hair-b-back",
+      "path": "parts/hair-b-back.png",
+      "selected": true,
+      "tool": "built-in image_gen",
+      "prompt": "ONE isolated transparent game-ready modular VTuber sprite. Extremely detailed premium anime illustration matching the reference's polished fine linework, elaborate highlights and subtle materials. True transparent alpha, no backdrop, checkerboard drawing, labels, mannequin, face, eyes, mouth, skin or text. Perfectly front-facing, symmetrical lighting, no tilt. A square canvas with generous transparent padding. Reference is visual style only. BACK HAIR ONLY for alternate hairstyle, lustrous deep midnight-teal long straight hair with softly curled tapered ends, symmetrical smooth flowing outer silhouette and fine silky painted strands. A continuous solid BEHIND-THE-HEAD layer including full uninterrupted hair across the center behind the future face, no face-shaped hole. No bangs, face, skin, costume, ornaments or braids. At 1024 coordinate scale silhouette x=185..839,y=70..1010; narrow crown and graceful shoulder-length widening. Truly transparent outside hair.",
+      "reference": "Project premium 955e597230d4cdd15cd64c09ecf8f48686bbd5702f32e429109d581d68d6f442 / generated same-family part"
+    },
+    {
+      "id": "hair-a-front",
+      "path": null,
+      "selected": false,
+      "tool": "built-in image_gen",
+      "prompt": "ONE isolated premium richly rendered anime VTuber modular sprite on truly transparent alpha. Fine detailed game character illustration, sophisticated highlights, no text, labels, mannequin or backdrop. Perfect frontal view. Create ONLY the FRONT HAIR layer matching the first reference's silver-lilac wavy hair exactly in color, painted strand density and highlights. It must be a hollow front wig: beautiful parted layered bangs at the top, two long slender face-framing wavy locks along the sides down to the upper bust. The entire face/neck opening and area between the locks is transparent. No back hair mass or opaque center: this is composited in front of a separate face and separate back hair. NO face, skin, ears, eyes, clothing, jewelry or flowers. Crown around x512,y80 on a 1024 square canvas. Bangs can extend to y300 but leave both eye areas around x432 and592,y345 unobstructed. Clear central opening approximately x350..674,y300..570. Long side locks to y900 near x300 and724. Transparent elsewhere. Do not include a head silhouette or white fill.",
+      "reference": "Project premium 955e597230d4cdd15cd64c09ecf8f48686bbd5702f32e429109d581d68d6f442 / generated same-family part"
+    },
+    {
+      "id": "hair-b-front",
+      "path": null,
+      "selected": false,
+      "tool": "built-in image_gen",
+      "prompt": "ONE isolated premium richly rendered anime VTuber modular sprite on truly transparent alpha. Fine detailed game character illustration, sophisticated highlights, no text, labels, mannequin or backdrop. Perfect frontal view. Create ONLY a hollow FRONT HAIR layer matching the first reference's lustrous midnight-teal straight hair. Sleek asymmetric side-parted bangs, delicate fine flyaway strands, two sleek long cheek-framing side locks with curled ends. Preserve the deep blue-green glossy material. No back hair mass; central face and neck opening are genuinely transparent, not black or white fill. Crown x512,y80 on 1024 square canvas, bangs down to y290 leaving eyes around x432 and592,y345 unobscured. Face opening roughly x350..674,y300..570. Side locks thin at x300/724 down to y900. NO skin, face, eyes, ears, clothing, jewelry, mannequin or text.",
+      "reference": "Project premium 955e597230d4cdd15cd64c09ecf8f48686bbd5702f32e429109d581d68d6f442 / generated same-family part"
+    },
+    {
+      "id": "outfit-a",
+      "path": "parts/outfit-a.png",
+      "selected": true,
+      "tool": "built-in image_gen",
+      "prompt": "ONE isolated premium richly rendered anime VTuber modular sprite on truly transparent alpha. Fine detailed game character illustration, sophisticated highlights, no text, labels, mannequin or backdrop. Perfect frontal view. Create ONLY an elaborate royal-violet and warm-gold Victorian fantasy blouse/corset BUST garment, from collar to a finished waist hem. Rich brocade fabric, fine gold embroidery, white ruffled opaque long sleeves, elegant fitted corset and high ornate collar. Sleeves fully cover shoulders and arms; no bare skin anywhere, no head, hair, neck, hands or jewelry above collar. The neck opening inside the collar is transparent so a separate neck sprite can fit into it. On a 1024 square canvas, garment shoulder span x165..859, top of neck collar at y575, collar hole centered x512 around y580..650 with opening width90; shoulders at y650, sleeves to finished hem at y1010. Complete clean hem with transparent margin below and outside. No legs or hands. Fine rich materials matching reference; make a coherent clothing item, not a crop from a person.",
+      "reference": "Project premium 955e597230d4cdd15cd64c09ecf8f48686bbd5702f32e429109d581d68d6f442 / generated same-family part"
+    },
+    {
+      "id": "eyes-a",
+      "path": null,
+      "selected": false,
+      "tool": "built-in image_gen",
+      "prompt": "A single production sprite atlas for a premium modular 2D anime VTuber. Exceptionally fine detailed professional game illustration, clean true transparent background, no white rectangles, labels, text, grid or skin patches. Portrait 1024x1536 canvas with exactly THREE evenly spaced horizontal rows centered at y=256,768,1280. Each row contains THE SAME matching pair of gentle rounded almond AMETHYST PURPLE, luminous gem-like irises with delicate pink-violet gradients and graceful dark lashes eyes AND thin eyebrows. Front-facing symmetric pair, correct mirrored character anatomy. Row1 FULLY OPEN, row2 HALF-LIDDED, row3 FULLY CLOSED gently curved eyelids. Both eyes in each row occupy x=120..440 and584..904, exactly same scale, centers and eyebrow alignment across rows. Eyebrows remain stationary above all three states; blinking changes lids only. Include rich iris details, lashes, whites and small highlights in open/half states. Closed eyes have no iris/whites. NO face, nose, skin-colored background or surrounding hair. Isolated individual eye+eyebrow graphics only. Three state rows are separate reusable sprites, never connected. All remaining pixels fully transparent.",
+      "reference": "Project premium 955e597230d4cdd15cd64c09ecf8f48686bbd5702f32e429109d581d68d6f442 / generated same-family part"
+    },
+    {
+      "id": "eyes-b",
+      "path": null,
+      "selected": false,
+      "tool": "built-in image_gen",
+      "prompt": "A single production sprite atlas for a premium modular 2D anime VTuber. Exceptionally fine detailed professional game illustration, clean true transparent background, no white rectangles, labels, text, grid or skin patches. Portrait 1024x1536 canvas with exactly THREE evenly spaced horizontal rows centered at y=256,768,1280. Each row contains THE SAME matching pair of sharper elegant slightly upturned EMERALD GREEN catlike almond, gold-flecked jade irises and longer outer black lashes eyes AND thin eyebrows. Front-facing symmetric pair, correct mirrored character anatomy. Row1 FULLY OPEN, row2 HALF-LIDDED, row3 FULLY CLOSED gently curved eyelids. Both eyes in each row occupy x=120..440 and584..904, exactly same scale, centers and eyebrow alignment across rows. Eyebrows remain stationary above all three states; blinking changes lids only. Include rich iris details, lashes, whites and small highlights in open/half states. Closed eyes have no iris/whites. NO face, nose, skin-colored background or surrounding hair. Isolated individual eye+eyebrow graphics only. Three state rows are separate reusable sprites, never connected. All remaining pixels fully transparent.",
+      "reference": "Project premium 955e597230d4cdd15cd64c09ecf8f48686bbd5702f32e429109d581d68d6f442 / generated same-family part"
+    },
+    {
+      "id": "outfit-b",
+      "path": "parts/outfit-b.png",
+      "selected": true,
+      "tool": "built-in image_gen",
+      "prompt": "ONE isolated transparent modular VTuber clothing sprite, premium intricately painted anime fantasy game costume. A distinctly different midnight-teal and ivory formal capelet blouse, slim high standing collar, pearl buttons, silver scrolling embroidery, satin bow at sternum, elegant fitted bodice and covered long bell sleeves with small lace details. Full garment from neck opening down to complete waist hem, no legs/hands. Front view, symmetric. NO head, hair, skin, arms, mannequin or neck; sleeves cover shoulders completely and neckline opening is truly transparent. Luxurious materials, restrained silver filigree and embroidered teal fabric. Match reference's detailed art finish but not its garment silhouette: use a short shoulder capelet and clean vertical tailored bodice rather than a laced corset. Whole clothing centered on transparent square canvas, generous margin around all edges. No labels or text.",
+      "reference": "Project premium 955e597230d4cdd15cd64c09ecf8f48686bbd5702f32e429109d581d68d6f442 / generated same-family part"
+    },
+    {
+      "id": "mouth-a",
+      "path": null,
+      "selected": false,
+      "tool": "built-in image_gen",
+      "prompt": "ONE transparent production sprite atlas for a premium painted anime VTuber: soft natural rose-pink thin graceful lips, understated cupid's bow, elegant subtle expression. Portrait 1024x1536 canvas, exactly 3 distinct evenly spaced rows at y=256,768,1280. Each row is the SAME mouth, matching width/position/style. Row1 relaxed CLOSED lips, row2 gentle closed-lip SMILE with slightly wider corners, row3 speaking OPEN mouth with subtle top teeth and shaded tongue, not a black cartoon oval. Each mouth is centered x512, occupies about x330..694, with a stable upper-lip baseline at 240/752/1264; open state grows downward from that baseline. Rich delicate fine linework and lip shading, refined small mouth appropriate to the reference face. Mouth graphics ONLY, no skin, nose, chin, face or colored rectangular patch. True transparent alpha everywhere outside mouth. No text, labels, grid or frame. Generous empty transparent margins between rows.",
+      "reference": "Project premium 955e597230d4cdd15cd64c09ecf8f48686bbd5702f32e429109d581d68d6f442 / generated same-family part"
+    },
+    {
+      "id": "mouth-b",
+      "path": null,
+      "selected": false,
+      "tool": "built-in image_gen",
+      "prompt": "ONE transparent production sprite atlas for a premium painted anime VTuber: distinct refined warm berry lips with a more defined cupid's bow and slightly fuller lower lip, gently lifted corners. Portrait 1024x1536 canvas, exactly 3 distinct evenly spaced rows at y=256,768,1280. Each row is the SAME mouth, matching width/position/style. Row1 relaxed CLOSED lips, row2 gentle closed-lip SMILE with slightly wider corners, row3 speaking OPEN mouth with subtle top teeth and shaded tongue, not a black cartoon oval. Each mouth is centered x512, occupies about x330..694, with a stable upper-lip baseline at 240/752/1264; open state grows downward from that baseline. Rich delicate fine linework and lip shading, refined small mouth appropriate to the reference face. Mouth graphics ONLY, no skin, nose, chin, face or colored rectangular patch. True transparent alpha everywhere outside mouth. No text, labels, grid or frame. Generous empty transparent margins between rows.",
+      "reference": "Project premium 955e597230d4cdd15cd64c09ecf8f48686bbd5702f32e429109d581d68d6f442 / generated same-family part"
+    },
+    {
+      "id": "accessory-on",
+      "path": "parts/accessory-on.png",
+      "selected": true,
+      "tool": "built-in image_gen",
+      "prompt": "ONE isolated intricate gold crescent moon hair brooch with a central amethyst gem and three tiny pearly dangling stars, designed as a tasteful temple hair ornament for a premium anime VTuber. Beautiful metal filigree, luminous purple gemstone facets and small pearls, polished fine painterly game illustration matching the reference finish. No flower or ribbon, no head, hair, face, clothing or hand. Small compact vertical ornament on a genuinely transparent square canvas, complete silhouette with generous transparent padding. No text, shadow/backdrop or labels. Front view suitable for compositing above either lilac or midnight-teal hair.",
+      "reference": "Project premium 955e597230d4cdd15cd64c09ecf8f48686bbd5702f32e429109d581d68d6f442 / generated same-family part"
+    },
+    {
+      "id": "eyes-a-clean",
+      "path": "parts/eyes-a-clean.png",
+      "selected": true,
+      "tool": "built-in image_gen",
+      "prompt": "Edit this exact transparent modular eye sprite atlas for production compositing. Preserve the canvas size and exact three-row alignment, feature scale, refined painted lines, iris/lash/brow details and the three open/half/closed eye states. REMOVE ALL surrounding diffuse skin-colored/pink/purple haze, airbrushed skin glows, shadows, face/background pixels and gradients. Outside the actual feature strokes/fills there must be truly zero alpha, not a cloud or feathered skin patch. Keep only eyebrows, lash strokes, thin lid crease strokes, eye whites and irises; no skin between the eyebrows and eyelids. Closed eyes only brows and fine lid/lash strokes. Antialias only the immediate 1-2 pixel silhouette boundary. Do not add anything, move rows, add labels, grid, white/black rectangles or replace with cartoon symbols. Transparent alpha background is essential.",
+      "reference": "Project premium 955e597230d4cdd15cd64c09ecf8f48686bbd5702f32e429109d581d68d6f442 / generated same-family part"
+    },
+    {
+      "id": "eyes-b-clean",
+      "path": "parts/eyes-b-clean.png",
+      "selected": true,
+      "tool": "built-in image_gen",
+      "prompt": "Edit this exact transparent modular eye sprite atlas for production compositing. Preserve the canvas size and exact three-row alignment, feature scale, refined painted lines, iris/lash/brow details and the three open/half/closed eye states. REMOVE ALL surrounding diffuse skin-colored/pink/purple haze, airbrushed skin glows, shadows, face/background pixels and gradients. Outside the actual feature strokes/fills there must be truly zero alpha, not a cloud or feathered skin patch. Keep only eyebrows, lash strokes, thin lid crease strokes, eye whites and irises; no skin between the eyebrows and eyelids. Closed eyes only brows and fine lid/lash strokes. Antialias only the immediate 1-2 pixel silhouette boundary. Do not add anything, move rows, add labels, grid, white/black rectangles or replace with cartoon symbols. Transparent alpha background is essential.",
+      "reference": "Project premium 955e597230d4cdd15cd64c09ecf8f48686bbd5702f32e429109d581d68d6f442 / generated same-family part"
+    },
+    {
+      "id": "mouth-a-clean",
+      "path": "parts/mouth-a-clean.png",
+      "selected": true,
+      "tool": "built-in image_gen",
+      "prompt": "Edit this exact transparent modular mouth sprite atlas for production compositing. Preserve the canvas size and exact three-row alignment, feature scale, refined painted lines, lip details and closed/smile/open states; additionally make the MIDDLE row a visibly gentle closed-lip smile with slightly wider lifted corners. REMOVE ALL surrounding diffuse skin-colored/pink/purple haze, airbrushed skin glows, shadows, face/background pixels and gradients. Outside the actual feature strokes/fills there must be truly zero alpha, not a cloud or feathered skin patch. Keep only lips, mouth opening, teeth/tongue inside it and tiny connected lip highlights; absolutely no skin or glow around lips. Antialias only the immediate 1-2 pixel silhouette boundary. Do not add anything, move rows, add labels, grid, white/black rectangles or replace with cartoon symbols. Transparent alpha background is essential.",
+      "reference": "Project premium 955e597230d4cdd15cd64c09ecf8f48686bbd5702f32e429109d581d68d6f442 / generated same-family part"
+    },
+    {
+      "id": "mouth-b-clean",
+      "path": "parts/mouth-b-clean.png",
+      "selected": true,
+      "tool": "built-in image_gen",
+      "prompt": "Edit this exact transparent modular mouth sprite atlas for production compositing. Preserve the canvas size and exact three-row alignment, feature scale, refined painted lines, lip details and closed/smile/open states; additionally make the MIDDLE row a visibly gentle closed-lip smile with slightly wider lifted corners. REMOVE ALL surrounding diffuse skin-colored/pink/purple haze, airbrushed skin glows, shadows, face/background pixels and gradients. Outside the actual feature strokes/fills there must be truly zero alpha, not a cloud or feathered skin patch. Keep only lips, mouth opening, teeth/tongue inside it and tiny connected lip highlights; absolutely no skin or glow around lips. Antialias only the immediate 1-2 pixel silhouette boundary. Do not add anything, move rows, add labels, grid, white/black rectangles or replace with cartoon symbols. Transparent alpha background is essential.",
+      "reference": "Project premium 955e597230d4cdd15cd64c09ecf8f48686bbd5702f32e429109d581d68d6f442 / generated same-family part"
+    },
+    {
+      "id": "hair-a-front-v2",
+      "path": "parts/hair-a-front-v2.png",
+      "selected": true,
+      "tool": "built-in image_gen",
+      "prompt": "Make ONE precise production correction to this exact transparent modular front-hair sprite. Keep its canvas dimensions, full outer silhouette, color, highlights, every side lock and the large transparent FACE/NECK opening below the bangs unchanged. There is an unwanted SMALL ENCLOSED VERTICAL OVAL transparent keyhole near the crown/center part, above the eyebrows (roughly x615..665,y235..350 on this 1254 square image). FILL ONLY this enclosed forehead keyhole with continuous natural matching silver-lilac hair strands and shading, seamlessly joining the surrounding bangs. The front hair should have no isolated transparent oval within the crown. This is not the big face opening: leave the entire face opening and all space under/around side locks truly transparent. Do not add a face, skin, labels, background, accessories or another object. Preserve the original asset's painterly detail and alpha antialiasing.",
+      "reference": "Project premium 955e597230d4cdd15cd64c09ecf8f48686bbd5702f32e429109d581d68d6f442 / generated same-family part"
+    },
+    {
+      "id": "hair-b-front-v2",
+      "path": "parts/hair-b-front-v2.png",
+      "selected": true,
+      "tool": "built-in image_gen",
+      "prompt": "Make ONE precise production correction to this exact transparent modular front-hair sprite. Keep its canvas dimensions, full outer silhouette, color, highlights, every side lock and the large transparent FACE/NECK opening below the bangs unchanged. There is an unwanted SMALL ENCLOSED VERTICAL OVAL transparent keyhole near the crown/center part, above the eyebrows (roughly x650..720,y240..400 on this 1254 square image). FILL ONLY this enclosed forehead keyhole with continuous natural matching midnight-teal hair strands and shading, seamlessly joining the surrounding bangs. The front hair should have no isolated transparent oval within the crown. This is not the big face opening: leave the entire face opening and all space under/around side locks truly transparent. Do not add a face, skin, labels, background, accessories or another object. Preserve the original asset's painterly detail and alpha antialiasing.",
+      "reference": "Project premium 955e597230d4cdd15cd64c09ecf8f48686bbd5702f32e429109d581d68d6f442 / generated same-family part"
+    }
+  ]
+}

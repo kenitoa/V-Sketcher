@@ -6,6 +6,11 @@ declare global {
     studio: { info: () => Promise<StudioInfo>; health: () => Promise<{ ready: boolean }>; projects:{ dropImage:(file:File)=>Promise<SessionReply>;view:()=>Promise<SessionView>; command:(command:SessionCommand)=>Promise<SessionReply>; subscribe:(listener:(view:SessionView)=>void)=>()=>void } };
     projectSelfCheck?:()=>Promise<Record<string,unknown>>;
     projectSelfCheckCapture?:()=>Promise<void>;
+    partsSelfCheck?:()=>Promise<Record<string,unknown>>;
+    partsPixels?:(scenes:import('../../../packages/scene-core').PreviewScene[])=>Promise<Record<string,unknown>>;
+    partsContactData?:string;
+    partsExtremeData?:string;
+    partsCapture?:()=>Promise<void>;
     inputSelfCheck?:()=>Promise<Record<string,unknown>>;
     inputCapture?:()=>Promise<void>;
     motionSelfCheck?:()=>Promise<Record<string,unknown>>;

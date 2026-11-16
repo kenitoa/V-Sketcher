@@ -27,6 +27,9 @@ const part = object({ id,displayName:string(),role:choice('base','body','head','
   textures:array(object({ state:{ ...string(32),pattern:'^[a-z][a-z0-9_-]*$' },assetId:id,assetVersion:{ ...integer(),minimum:1 },assetToLocal:matrix }),32),
   localTransform:matrix,drawOrder:{ type:'integer',minimum:-100000,maximum:100000 },visible:boolean,opacity:{ type:'number',minimum:0,maximum:1 },
   correctionOrigin:choice('automatic','user-confirmed','manual'),limitations:array(string(512),64) });
+(part.properties as Record<string,Schema>).library=object({catalogId:id,itemId:id,version:semver,key:id});
+(part.properties as Record<string,Schema>).color=object({hueDegrees:{type:'number',minimum:-18,maximum:18},minimumHue:{type:'number',minimum:0,maximum:1},maximumHue:{type:'number',minimum:0,maximum:1},minimumSaturation:{type:'number',minimum:0,maximum:1}});
+const stateMapping=object({minimumState:string(32),maximumState:string(32)});(stateMapping.properties as Record<string,Schema>).middleState=string(32);
 const parameter = object({ id,displayName:string(),semantic:{ ...string(64),pattern:'^[a-z][a-z0-9_-]*$' },unit:choice('ratio','degrees','custom'),min:number,neutral:number,max:number,
   previewKey:nullable(choice('eye_left','eye_right','mouth','head_yaw','head_roll')) });
 const inputBinding = object({ id,source:choice('face','microphone','manual'),channel:{ ...string(64),pattern:'^[a-z][a-z0-9_-]*$' },parameterId:id,inputRange:pair,
@@ -36,12 +39,12 @@ const motion = object({ version:{ const:1 },faceWidth:positive,maxRollDegrees:{ 
   settings:object({ strength:{ type:'number',minimum:0,maximum:1 },smoothingMs:integer(1000),pose:array(object({ parameterId:id,value:number }),128) }),
   meshes:array(object({ partId:id,pivot:pair,yawParameterId:nullable(id),rollParameterId:nullable(id),curve:choice('linear','smoothstep'),
     vertices:{ ...array(object({ position:pair,weight:{ type:'number',minimum:0,maximum:1 },minimum:pair,maximum:pair }),1024),minItems:3 },triangles:{ ...array(integer(1023),6144),minItems:3 } }),64) });
-export const PROJECT_SCHEMA = { $schema:'https://json-schema.org/draft/2020-12/schema', $id:'https://2dsketcher.local/schema/project-1.2',
-  ...object({ projectId:id,schemaVersion:object({ major:{ const:1 },minor:{ enum:[0,1,2] } }),displayName:string(),sourceType:choice('parts','single-image','split-image'),
+export const PROJECT_SCHEMA = { $schema:'https://json-schema.org/draft/2020-12/schema', $id:'https://2dsketcher.local/schema/project-1.3',
+  ...object({ projectId:id,schemaVersion:object({ major:{ const:1 },minor:{ enum:[0,1,2,3] } }),displayName:string(),sourceType:choice('parts','single-image','split-image'),
     createdAt:{ ...string(24),pattern:'^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$' },modifiedAt:{ ...string(24),pattern:'^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$' },
     revision,savedRevision:nullable(revision),canvas:size,inputAssetIds:{ ...array(id),uniqueItems:true },assets:array(asset),parts:array(part,64),
     groups:array(object({ id,displayName:string(),parentGroupId:nullable(id),visible:boolean }),128),parameters:array(parameter,128),
-    partBindings:array({ oneOf:[object({ id,parameterId:id,partId:id,kind:{ const:'state-blend' },mapping:object({ minimumState:string(32),maximumState:string(32) }) }),
+    partBindings:array({ oneOf:[object({ id,parameterId:id,partId:id,kind:{ const:'state-blend' },mapping:stateMapping }),
       object({ id,parameterId:id,partId:id,kind:{ const:'transform' },mapping:object({ component:choice('rotate-degrees','translate-x','translate-y','scale-x','scale-y'),outputRange:pair }) })] },256),inputBindings:array(inputBinding,128),
     expressions:array(object({ id,displayName:string(),values:array(object({ parameterId:id,value:number,locked:boolean }),128),transitionMs:integer(10000),release:choice('live-input','neutral') }),64),
     runtimeProfile:object({ id,revision,mode:choice('idle','camera','microphone','camera-microphone'),mirror:boolean,fallbackExpressionId:nullable(id) }),
@@ -65,5 +68,6 @@ const INPUT_SCHEMA=object({ version:{ const:1 },originalAssetId:id,normalizedAss
 return INPUT_SCHEMA;
 })();
 ((PROJECT_SCHEMA as Record<string,unknown>).properties as Record<string,unknown>).inputPreparation = INPUT_SCHEMA;
+((PROJECT_SCHEMA as Record<string,unknown>).properties as Record<string,Schema>).assembly=object({catalogId:id,version:semver,linkedEyes:boolean,choices:array(object({slot:choice('face','hair','eyes','mouth','outfit','accessory'),itemId:nullable(id),version:semver}),6),adjustments:array(object({key:id,x:{type:'number',minimum:-6,maximum:6},y:{type:'number',minimum:-6,maximum:6},scale:{type:'number',minimum:.95,maximum:1.05},rotation:{type:'number',minimum:-2,maximum:2},hue:{type:'number',minimum:-18,maximum:18}}),16),warnings:array(string(512),16)});
 export const MACHINE_SCHEMA = { $schema:'https://json-schema.org/draft/2020-12/schema', ...object({ schemaVersion:{ const:1 },projectId:id,
   cameraId:nullable(string(512)),microphoneId:nullable(string(512)),calibrations:array(object({ bindingId:id,inputRange:pair }),128) }) };
