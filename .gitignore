@@ -11,3 +11,14 @@ experiments/phase04/tools/*
 experiments/phase04/reference/
 experiments/phase04/.local/
 experiments/phase05/.local/
+.local/
+.venv-product/
+node_modules/
+dist/
+out/
+coverage/
+.ruff_cache/
+*.log
+.env
+.env.*
+!.env.example

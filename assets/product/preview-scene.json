@@ -1,0 +1,65 @@
+{
+  "version": 1,
+  "name": "PREMIUM-003",
+  "canvas": [
+    1254,
+    1254
+  ],
+  "layers": [
+    {
+      "id": "premium-illustration",
+      "z": 0,
+      "origin": [
+        0,
+        0
+      ],
+      "opacity": 1.0,
+      "bind": null,
+      "states": {
+        "base": "assets/preview/1599b359b246e226fee73fa9c644972f58b727b158e8e47fdc87bf4c976d9121.png"
+      }
+    },
+    {
+      "id": "eye_right",
+      "z": 1,
+      "origin": [
+        510,
+        250
+      ],
+      "opacity": 1.0,
+      "bind": "eye_right",
+      "states": {
+        "open": "assets/preview/b39a598b59775823efab0224203483c629b207a2de7f5666d13c01dd5125f12e.png",
+        "closed": "assets/preview/b52e002d4325ce9c2aa228deda4735f89e58c5abd356afbacb3198581669b29a.png"
+      }
+    },
+    {
+      "id": "eye_left",
+      "z": 2,
+      "origin": [
+        635,
+        250
+      ],
+      "opacity": 1.0,
+      "bind": "eye_left",
+      "states": {
+        "open": "assets/preview/8c6bf06622b67105d5c11e2064eb2292590262a3f6362529734af62163816172.png",
+        "closed": "assets/preview/e3d22c95fb4a4da724806ed682e27578f9a8e8ccc9813475cf0a463f2e1f0c01.png"
+      }
+    },
+    {
+      "id": "mouth",
+      "z": 3,
+      "origin": [
+        580,
+        360
+      ],
+      "opacity": 1.0,
+      "bind": "mouth",
+      "states": {
+        "closed": "assets/preview/3fe2220caee156e9bfc47e5f0e170fc7bd2ac28b890fb8995498fb9f5c8f13ca.png",
+        "open": "assets/preview/1821b8eaaa6c828c66396e04e7f115c93787e3fa154f26529c88585c3f61ec98.png"
+      }
+    }
+  ]
+}

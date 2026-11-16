@@ -1,0 +1,56 @@
+{
+  "version": 1,
+  "scope": "Premium foundation preview, not a finished parts library or automatic rig",
+  "source_record": "experiments/phase04/assets/premium/generation-prompts.md",
+  "assets": [
+    {
+      "path": "preview/1599b359b246e226fee73fa9c644972f58b727b158e8e47fdc87bf4c976d9121.png",
+      "sha256": "1599b359b246e226fee73fa9c644972f58b727b158e8e47fdc87bf4c976d9121",
+      "bytes": 1997359,
+      "source": "experiments/phase04/assets/premium/project/textures/00-base.png",
+      "use": "bundled-premium-preview-only"
+    },
+    {
+      "path": "preview/b39a598b59775823efab0224203483c629b207a2de7f5666d13c01dd5125f12e.png",
+      "sha256": "b39a598b59775823efab0224203483c629b207a2de7f5666d13c01dd5125f12e",
+      "bytes": 18706,
+      "source": "experiments/phase04/assets/premium/project/textures/01-open.png",
+      "use": "bundled-premium-preview-only"
+    },
+    {
+      "path": "preview/b52e002d4325ce9c2aa228deda4735f89e58c5abd356afbacb3198581669b29a.png",
+      "sha256": "b52e002d4325ce9c2aa228deda4735f89e58c5abd356afbacb3198581669b29a",
+      "bytes": 16777,
+      "source": "experiments/phase04/assets/premium/project/textures/01-closed.png",
+      "use": "bundled-premium-preview-only"
+    },
+    {
+      "path": "preview/8c6bf06622b67105d5c11e2064eb2292590262a3f6362529734af62163816172.png",
+      "sha256": "8c6bf06622b67105d5c11e2064eb2292590262a3f6362529734af62163816172",
+      "bytes": 18583,
+      "source": "experiments/phase04/assets/premium/project/textures/02-open.png",
+      "use": "bundled-premium-preview-only"
+    },
+    {
+      "path": "preview/e3d22c95fb4a4da724806ed682e27578f9a8e8ccc9813475cf0a463f2e1f0c01.png",
+      "sha256": "e3d22c95fb4a4da724806ed682e27578f9a8e8ccc9813475cf0a463f2e1f0c01",
+      "bytes": 16212,
+      "source": "experiments/phase04/assets/premium/project/textures/02-closed.png",
+      "use": "bundled-premium-preview-only"
+    },
+    {
+      "path": "preview/3fe2220caee156e9bfc47e5f0e170fc7bd2ac28b890fb8995498fb9f5c8f13ca.png",
+      "sha256": "3fe2220caee156e9bfc47e5f0e170fc7bd2ac28b890fb8995498fb9f5c8f13ca",
+      "bytes": 9004,
+      "source": "experiments/phase04/assets/premium/project/textures/03-closed.png",
+      "use": "bundled-premium-preview-only"
+    },
+    {
+      "path": "preview/1821b8eaaa6c828c66396e04e7f115c93787e3fa154f26529c88585c3f61ec98.png",
+      "sha256": "1821b8eaaa6c828c66396e04e7f115c93787e3fa154f26529c88585c3f61ec98",
+      "bytes": 9775,
+      "source": "experiments/phase04/assets/premium/project/textures/03-open.png",
+      "use": "bundled-premium-preview-only"
+    }
+  ]
+}

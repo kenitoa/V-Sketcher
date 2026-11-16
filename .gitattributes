@@ -1,7 +1,7 @@
 * text=auto eol=lf
 # Frozen evidence is byte-addressed; never normalize its line endings.
-/experiments/** -text
-/evidence/** -text
+/experiments/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/evidence/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 *.png -text
 *.jpg -text
 *.jpeg -text

@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "errors": [],
+  "date": "2026-11-16T13:36:53.496318+00:00",
+  "scope": "Task, requirement ID, link, artifact and historical provenance audit; not additional functional tests",
+  "tasks": 410,
+  "completedTasks": 60,
+  "functionIDs": 52,
+  "productDirectionIDs": 12,
+  "acceptanceIDs": 15,
+  "nodeTestGroups": 8,
+  "pythonTestGroups": 3,
+  "packagedRuns": 2,
+  "m0State": "HOLD",
+  "openM0Returns": 5,
+  "historical02to05Preserved": true,
+  "hostedCIRun": false,
+  "cleanWindowsOS": false
+}
