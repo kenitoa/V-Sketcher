@@ -147,7 +147,7 @@ test('T069: unsafe, case-colliding and nonportable resource paths are rejected b
 });
 
 test('T069: future minor preserves unknown fields read-only; new major, malformed and oversized documents fail', () => {
-  const p = load(); const future = { ...p,schemaVersion:{ major:1,minor:1 },future:{ originalData:[1,2,3] } };
+  const p = load(); const future = { ...p,schemaVersion:{ major:1,minor:2 },future:{ originalData:[1,2,3] } };
   const original = JSON.stringify(future); const result = readProject(original); assert.equal(result.mode,'read-only');
   if (result.mode === 'read-only') { assert.deepEqual(result.raw,future); assert.equal('project' in result,false); }
   assert.equal(JSON.stringify(future),original); assert.throws(() => serializeProject(future as Project));

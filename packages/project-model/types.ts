@@ -34,7 +34,10 @@ export interface Expression { id: string; displayName: string; values: { paramet
 export interface RuntimeProfile { id: string; revision: number; mode: 'idle' | 'camera' | 'microphone' | 'camera-microphone'; mirror: boolean; fallbackExpressionId: string | null; }
 export interface BroadcastProfile { id: string; revision: number; displayName: string; width: number; height: number; fps: number; transparent: boolean; region: Rect; fit: 'contain' | 'cover'; }
 export interface ExportProfile { id: string; revision: number; displayName: string; target: 'inochi2d'; targetVersion: string; format: 'inp'; converterVersion: string; parameterMap: { parameterId: string; targetName: string }[]; }
+export interface MotionMesh { partId:string; pivot:[number,number]; vertices:{ position:[number,number]; weight:number; minimum:[number,number]; maximum:[number,number] }[]; triangles:number[]; yawParameterId:string | null; rollParameterId:string | null; curve:'linear' | 'smoothstep'; }
+export interface MotionRig { version:1; meshes:MotionMesh[]; faceWidth:number; maxRollDegrees:number; settings:{ strength:number; smoothingMs:number; pose:{ parameterId:string; value:number }[] }; secondary:'disabled'; }
 export interface Project {
+  motion?:MotionRig;
   projectId: string; schemaVersion: { major: number; minor: number }; displayName: string; sourceType: SourceType;
   createdAt: string; modifiedAt: string; revision: number; savedRevision: number | null;
   canvas: { width: number; height: number }; inputAssetIds: string[];

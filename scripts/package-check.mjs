@@ -27,7 +27,7 @@ for (const item of assetManifest.assets) {
   assert.equal(createHash('sha256').update(bytes).digest('hex'), item.sha256, 'Bundled preview asset changed');
 }
 const model = JSON.parse(extractFile(archive, join('dist','renderer','assets','preview-project.json')).toString());
-assert.equal(model.schemaVersion.major, 1); assert.equal(model.schemaVersion.minor, 0);
+assert.equal(model.schemaVersion.major, 1); assert.equal(model.schemaVersion.minor, 1);
 for (const asset of model.assets) assert.ok(assetManifest.assets.some(item => item.sha256 === asset.fingerprint.sha256), 'Undeclared model resource');
 const system = process.env.SystemRoot ?? 'C:\\Windows';
 const env = Object.fromEntries(Object.entries(process.env).filter(([key]) => !/^(PYTHON|NODE|NPM|ELECTRON|VIRTUAL_ENV|CONDA|VSCODE)/i.test(key)));
@@ -40,8 +40,8 @@ const reports = [];
 for (const attempt of [1, 2]) {
   const reportPath = join(target, `report-${attempt}.json`);
   const args = [`--profile-dir=${join(target, `profile-${attempt}`)}`, `--self-check-report=${reportPath}`];
-  if (attempt === 2) args.push('--compact-editor=true',`--editor-screenshot=${join(evidence,'release-editor-compact.png')}`);
-  if (attempt === 1) args.push(`--screenshot=${join(evidence, 'release-studio.png')}`,`--project-screenshot=${join(evidence,'release-project.png')}`,`--editor-screenshot=${join(evidence,'release-editor.png')}`);
+  if (attempt === 2) args.push('--compact-editor=true',`--editor-screenshot=${join(evidence,'release-editor-compact.png')}`,`--motion-screenshot=${join(evidence,'release-motion-compact.png')}`);
+  if (attempt === 1) args.push(`--screenshot=${join(evidence, 'release-studio.png')}`,`--project-screenshot=${join(evidence,'release-project.png')}`,`--editor-screenshot=${join(evidence,'release-editor.png')}`,`--motion-screenshot=${join(evidence,'release-motion.png')}`);
   const result = spawnSync(join(bundle, '2DSketcher.exe'), args, { cwd: target, env, windowsHide: true, encoding: 'utf8', timeout: 120000 });
   writeFileSync(join(target, `launch-${attempt}.log`), (result.stdout ?? '') + (result.stderr ?? ''));
   if (result.error) throw result.error;
@@ -53,8 +53,8 @@ for (const attempt of [1, 2]) {
   assert.equal(report.workerStopped, true); assert.equal(report.renderer.workerReady, true);
   assert.equal(report.renderer.diagnosticsVisible, false); assert.equal(report.renderer.projectRoutesEnabled, true); assert.equal(report.projects?.passed,true);
   assert.equal(report.projects?.recoveryToNewFile,true); assert.equal(report.projects?.recoveryComparison,true);
-  assert.equal(report.editor?.passed,true); assert.equal(report.editor?.contrast?.passed,true);
-  assert.equal(report.renderer.projectModel?.schemaVersion, '1.0');
+  assert.equal(report.motion?.passed,true); assert.equal(report.renderer.motionPixels?.passed,true); assert.equal(report.editor?.passed,true); assert.equal(report.editor?.contrast?.passed,true);
+  assert.equal(report.renderer.projectModel?.schemaVersion, '1.1');
   assert.equal(report.renderer.projectModel?.projectId, model.projectId);
   assert.equal(report.renderer.modelPixels?.passed, true);
   assert.equal(report.renderer.workflowCore?.passed, true); assert.equal(report.renderer.sampleRuntimeFrozen, true);
@@ -73,6 +73,6 @@ walk(source);
 const summary = { passed: true, platform: process.platform, architecture: process.arch, userApprovedScope: 'Same PC isolated runtime; no separate PC or VM available', cleanWindowsOS: false,
   isolation: { developerToolsOnPath: false, externalNodeOrPythonRequired: false, freshProfiles: 2, unicodeAndSpacePath: true, rendererExternalNetworkBlocked: true, systemNetworkDisabled: false },
   reports, archiveEntries: entries.length, forbiddenDevelopmentContent: false, packageBytes: inventory.reduce((total, item) => total + item.bytes, 0),
-  commonProjectSchema: '1.0', limitations: ['Same Windows installation, drivers and system DLLs retained', 'No clean-OS claim', 'No camera/microphone, OBS, creation, full rigging or M0 performance test'], files: inventory };
+  commonProjectSchema: '1.1', limitations: ['Same Windows installation, drivers and system DLLs retained', 'No clean-OS claim', 'No camera/microphone, OBS, creation, full rigging or M0 performance test'], files: inventory };
 writeFileSync(join(evidence, 'package-audit.json'), JSON.stringify(summary, null, 2) + '\n');
 console.log(`Packaged release passed twice: ${inventory.length} files, ${summary.packageBytes} bytes; no developer tools on PATH. Same-PC scope.`);

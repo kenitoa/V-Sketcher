@@ -3,7 +3,7 @@ export * from './validation';
 export { PROJECT_SCHEMA, MACHINE_SCHEMA } from './schema';
 import { assertProject, assertMachineSettings } from './validation';
 import type { Project, SourceType, MachineSettings } from './types';
-export const SCHEMA_VERSION = { major:1,minor:0 } as const;
+export const SCHEMA_VERSION = { major:1,minor:1 } as const;
 const MAX_DOCUMENT_BYTES = 16*1024*1024;
 export function createProject(displayName: string, sourceType: SourceType, now = new Date(), id = crypto.randomUUID()): Project {
   const timestamp = now.toISOString();
@@ -17,7 +17,7 @@ export function createProject(displayName: string, sourceType: SourceType, now =
 export function editProject(project: Project, edit: (draft: Project) => void, now = new Date()): Project {
   assertProject(project); const draft = structuredClone(project); edit(draft);
   for (const key of ['projectId','sourceType','createdAt','revision','savedRevision'] as const) if (draft[key] !== project[key]) throw new Error('E_PROJECT_IDENTITY_EDIT');
-  if (draft.schemaVersion.major !== project.schemaVersion.major || draft.schemaVersion.minor !== project.schemaVersion.minor) throw new Error('E_PROJECT_IDENTITY_EDIT');
+  if (draft.schemaVersion.major !== project.schemaVersion.major || draft.schemaVersion.minor !== project.schemaVersion.minor && !(project.schemaVersion.minor === 0 && draft.schemaVersion.minor === 1)) throw new Error('E_PROJECT_IDENTITY_EDIT');
   draft.revision = project.revision+1;
   draft.modifiedAt = new Date(Math.max(now.getTime(),Date.parse(project.modifiedAt))).toISOString();
   assertProject(draft); return draft;

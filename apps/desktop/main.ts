@@ -85,6 +85,7 @@ app.whenReady().then(async () => {
   ipcMain.handle('projects:command',async (event,command:unknown) => { trusted(event); return projectSession!.dispatch(command); });
   if (!reportPath) window.once('ready-to-show', () => window.show());
   await window.loadURL('sketcher://app/index.html');
+  if (reportPath) window.showInactive();
   if (reportPath) {
     let passed = false;
     let stage = 'worker';
@@ -100,6 +101,7 @@ app.whenReady().then(async () => {
       stage = 'editor-ui';
       if (argument('compact-editor') === 'true') { window.setSize(1080,720); await window.webContents.executeJavaScript('new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))'); }
       const editor = await window.webContents.executeJavaScript('window.editorSelfCheck()') as Record<string,unknown>;
+      stage = 'motion-ui'; const motion = await window.webContents.executeJavaScript('window.motionSelfCheck()') as Record<string,unknown>;
       await projectSession.dispatch({ type:'new',name:'Exit guard check',sourceType:'parts' }); const guardedId = projectSession.view().project?.projectId;
       window.close(); await new Promise(resolve => setTimeout(resolve,100));
       projects.windowCloseCancelled = !window.isDestroyed() && projectSession.view().project?.projectId === guardedId;
@@ -110,6 +112,9 @@ app.whenReady().then(async () => {
       if (projectScreenshot) { await window.webContents.executeJavaScript('window.projectSelfCheckCapture()'); await window.webContents.executeJavaScript('new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))'); await mkdir(resolve(projectScreenshot,'..'),{ recursive:true }); await writeFile(projectScreenshot,(await window.webContents.capturePage()).toPNG()); await window.webContents.executeJavaScript("window.studio.projects.command({type:'close'})"); }
       const editorScreenshot = argument('editor-screenshot');
       if (editorScreenshot) { await window.webContents.executeJavaScript('window.editorCapture()'); await window.webContents.executeJavaScript('new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))'); await mkdir(resolve(editorScreenshot,'..'),{ recursive:true }); await writeFile(editorScreenshot,(await window.webContents.capturePage()).toPNG()); await window.webContents.executeJavaScript("window.studio.projects.command({type:'close'})"); }
+      await window.webContents.executeJavaScript('new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))');
+      const motionScreenshot = argument('motion-screenshot');
+      if (motionScreenshot) { await window.webContents.executeJavaScript('window.motionCapture()'); await window.webContents.executeJavaScript('new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))'); await mkdir(resolve(motionScreenshot,'..'),{ recursive:true }); await writeFile(motionScreenshot,(await window.webContents.capturePage()).toPNG()); await window.webContents.executeJavaScript("window.studio.projects.command({type:'close'})"); }
       await window.webContents.executeJavaScript('new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))');
       stage = 'capture';
       const screenshotPath = argument('screenshot');
@@ -123,8 +128,8 @@ app.whenReady().then(async () => {
       }
       await projectSession.shutdown(); await worker.stop(); worker = undefined;
       passed = renderer.webgl2 === true && Number(renderer.visiblePixels) > 1000 && Number(renderer.transparentPixels) > 1000 && renderer.glError === 0 && renderer.nodeExposed === false && renderer.shellExposed === false && renderer.appInfoDialog === true && (renderer.modelPixels as { passed?:boolean } | undefined)?.passed === true && (renderer.workflowCore as { passed?:boolean } | undefined)?.passed === true && (renderer.workflowUI as { passed?:boolean } | undefined)?.passed === true && renderer.sampleRuntimeFrozen === true && health.modelLoaded === true && (!app.isPackaged || health.dependencyFilesInsideBundle === true);
-      passed = passed && projects.passed === true && editor.passed === true;
-      const report = { passed, projects, editor, packaged: app.isPackaged, channel: build.channel, appVersion: build.version,
+      passed = passed && projects.passed === true && editor.passed === true && motion.passed === true && (renderer.motionPixels as { passed?:boolean } | undefined)?.passed === true;
+      const report = { passed, projects, editor, motion, packaged: app.isPackaged, channel: build.channel, appVersion: build.version,
         electron: process.versions.electron, node: process.versions.node, worker: health, workerStopped: true, renderer,
         protections: { sandbox: true, contextIsolation: true, nodeIntegration: false, externalNetworkBlocked: true },
         gpuFeatureStatus: app.getGPUFeatureStatus(), devicesOpened: false,

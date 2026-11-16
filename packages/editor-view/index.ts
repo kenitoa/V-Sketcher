@@ -12,7 +12,7 @@ export function zoomAt(state:ViewportState,factor:number,anchor:Point,size:Point
 }
 export function activeTextures(layer:PreviewLayer,input:Partial<Parameters> = {}):[string,number][] {
   const values = { ...NEUTRAL,...input };
-  if (layer.bind && layer.states.open && layer.states.closed) { const raw = values[layer.bind]; const t = layer.bind.startsWith('eye') ? Number(raw > .55) : Math.max(0,Math.min(1,raw)); return [[layer.states.closed,1-t],[layer.states.open,t]]; }
+  if (layer.bind && layer.states.open && layer.states.closed) { const raw = Math.max(0,Math.min(1,values[layer.bind])); const t = raw*raw*(3-2*raw); return [[layer.states.closed,1-t],[layer.states.open,t]]; }
   return Object.values(layer.states).slice(0,1).map(path => [path,1]);
 }
 export function layerCorners(layer:PreviewLayer):Point[] { return Object.values(layer.geometry ?? {}).flatMap(({ matrix,crop }) => [[crop.x,crop.y],[crop.x+crop.width,crop.y],[crop.x+crop.width,crop.y+crop.height],[crop.x,crop.y+crop.height]].map(([x,y]) => transform(matrix,{ x:x!,y:y! }))); }
@@ -20,7 +20,7 @@ export function layerCorners(layer:PreviewLayer):Point[] { return Object.values(
 export function hitPart(scene:PreviewScene,point:Point,alpha:(path:string,x:number,y:number)=>number,input:Partial<Parameters> = {}):string | null {
   for (const layer of [...scene.layers].sort((a,b) => b.z-a.z || (a.id < b.id ? 1 : a.id > b.id ? -1 : 0))) {
     if (layer.opacity <= .01) continue;
-    for (const [path,weight] of activeTextures(layer,input)) { if (weight <= .01) continue; const geometry = layer.geometry?.[path]; if (!geometry) continue;
+    for (const [path,weight] of activeTextures(layer,{ ...(scene.defaults ?? NEUTRAL),...input })) { if (weight <= .01) continue; const geometry = layer.geometry?.[path]; if (!geometry) continue;
       const p = transform(inverse(geometry.matrix),point); const c = geometry.crop;
       if (p.x >= c.x && p.y >= c.y && p.x < c.x+c.width && p.y < c.y+c.height && alpha(path,Math.floor(p.x),Math.floor(p.y))*weight*layer.opacity > 8) return layer.id;
     }

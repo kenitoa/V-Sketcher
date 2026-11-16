@@ -6,7 +6,7 @@ export interface Change { key:string; collection:Collection | 'project'; entityI
 export interface Transaction { projectId:string; baseRevision:number; label:string; changes:Change[]; }
 export interface Comparison { key:string; status:'safe' | 'conflict' | 'already'; current:Slot; before:Slot; after:Slot; }
 const collections: Collection[] = ['assets','parts','groups','parameters','partBindings','inputBindings','expressions','broadcastProfiles','exportProfiles'];
-const projectFields = new Set(['displayName','canvas','inputAssetIds','runtimeProfile','provenance','derivedProjects']);
+const projectFields = new Set(['displayName','canvas','inputAssetIds','runtimeProfile','provenance','derivedProjects','motion','schemaVersion']);
 const forbidden = new Set(['id','__proto__','constructor','prototype']);
 export function freeze<T>(value:T): T { if (value && typeof value === 'object') { for (const child of Object.values(value)) freeze(child); Object.freeze(value); } return value; }
 export function json(value:unknown, depth = 0): Json {
@@ -31,10 +31,10 @@ const slot = (exists:boolean,value:unknown): Slot => ({ exists,value:exists ? st
 export function transaction(before:Project, after:Project, label:string): Transaction {
   assertProject(before); assertProject(after);
   for (const field of ['projectId','sourceType','createdAt','savedRevision'] as const) if (!equal(before[field],after[field])) throw new Error('E_TRANSACTION_IDENTITY');
-  if (!equal(before.schemaVersion,after.schemaVersion)) throw new Error('E_TRANSACTION_IDENTITY');
+  if (!equal(before.schemaVersion,after.schemaVersion) && !(before.schemaVersion.major===1 && after.schemaVersion.major===1 && before.schemaVersion.minor===0 && after.schemaVersion.minor===1)) throw new Error('E_TRANSACTION_IDENTITY');
   if (!label.trim() || label.length > 120) throw new Error('E_TRANSACTION_LABEL');
   const changes: Change[] = [];
-  for (const field of projectFields) if (!equal(before[field as keyof Project],after[field as keyof Project])) changes.push({ key:'project/'+field,collection:'project',entityId:null,field,before:slot(true,before[field as keyof Project]),after:slot(true,after[field as keyof Project]) });
+  for (const field of projectFields) if (!equal(before[field as keyof Project],after[field as keyof Project])) changes.push({ key:'project/'+field,collection:'project',entityId:null,field,before:slot(Object.hasOwn(before,field),before[field as keyof Project]),after:slot(Object.hasOwn(after,field),after[field as keyof Project]) });
   for (const collection of collections) {
     const a = new Map(before[collection].map(v => [v.id,v as unknown as Record<string,unknown>]));
     const b = new Map(after[collection].map(v => [v.id,v as unknown as Record<string,unknown>]));
@@ -50,7 +50,7 @@ export function transaction(before:Project, after:Project, label:string): Transa
   return freeze({ projectId:before.projectId,baseRevision:before.revision,label:label.trim(),changes });
 }
 function currentSlot(project:Project,change:Change): Slot {
-  if (change.collection === 'project') return slot(true,project[change.field as keyof Project]);
+  if (change.collection === 'project') return slot(change.field !== null && Object.hasOwn(project,change.field),project[change.field as keyof Project]);
   const entity = project[change.collection].find(v => v.id === change.entityId) as unknown as Record<string,unknown> | undefined;
   return change.field === null ? slot(!!entity,entity) : slot(!!entity && Object.hasOwn(entity,change.field),entity?.[change.field]);
 }
@@ -73,7 +73,8 @@ export function applyTransaction(project:Project,tx:Transaction,expectedRevision
     for (const change of chosen) {
       if (seen.has(change.key)) throw new Error('E_TRANSACTION_DUPLICATE'); seen.add(change.key);
       if (change.collection === 'project') {
-        if (!change.field || !projectFields.has(change.field) || change.entityId !== null || !change.after.exists) throw new Error('E_TRANSACTION_FIELD');
+        if (!change.field || !projectFields.has(change.field) || change.entityId !== null || !change.after.exists && change.field !== 'motion') throw new Error('E_TRANSACTION_FIELD');
+        if (!change.after.exists) { delete draft.motion; continue; }
         (draft as unknown as Record<string,unknown>)[change.field] = structuredClone(change.after.value); continue;
       }
       if (!collections.includes(change.collection) || !change.entityId) throw new Error('E_TRANSACTION_FIELD');

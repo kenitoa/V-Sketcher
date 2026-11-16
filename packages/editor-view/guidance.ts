@@ -1,6 +1,7 @@
 export interface Guidance { severity:'안내' | '경고' | '작업 차단'; title:string; impact:string; preserved:string; action:'resources' | 'save-as' | 'open' | 'parts' | 'retry'; actionLabel:string; }
 export function guidance(code:string):Guidance {
   const base = { severity:'작업 차단' as const,preserved:'현재 프로젝트의 편집 내용은 유지됩니다.' };
+  if (code === 'E_SAVE_MIGRATION_TARGET') return { ...base,title:'원본과 다른 이름으로 저장해 주세요',impact:'이전 형식의 원본을 유지하기 위해 변환본은 다른 파일로 저장합니다.',action:'save-as',actionLabel:'다른 이름으로 저장' };
   if (['E_RESOURCE_MISSING','E_RESOURCE_CHANGED'].includes(code)) return { ...base,title:'필요한 그림을 읽을 수 없어요',impact:'이 그림을 사용하는 부위와 저장을 확인해야 해요. 표시 가능한 다른 부위는 계속 편집할 수 있어요.',action:'resources',actionLabel:'그림 다시 연결하기' };
   if (['E_SAVE_SPACE','E_SAVE_PERMISSION','E_SAVE_PATH','E_SAVE_CONFLICT'].includes(code)) return { ...base,title:code === 'E_SAVE_SPACE' ? '저장 공간이 부족해요' : code === 'E_SAVE_CONFLICT' ? '저장 파일이 다른 곳에서 바뀌었어요' : code === 'E_SAVE_PERMISSION' ? '이 위치에 저장할 수 없어요' : '파일 위치를 확인해 주세요',impact:'이번 변경을 이 위치에 저장하지 못했어요. 다른 위치에 저장하거나 공간과 권한을 확인해 주세요.',action:'save-as',actionLabel:'다른 이름으로 저장' };
   if (['E_SCHEMA_MAJOR','E_SCHEMA_VERSION','E_FILE_VERSION'].includes(code)) return { ...base,title:'지원하지 않는 프로젝트 형식이에요',impact:'이 파일을 편집할 수 없어요. 호환되는 앱이나 다른 사본을 사용해 주세요.',action:'open',actionLabel:'다른 프로젝트 열기' };

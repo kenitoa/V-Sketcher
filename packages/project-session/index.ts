@@ -4,6 +4,7 @@ import { randomUUID } from 'node:crypto';
 import { Workflow } from '../workflow';
 import { createProject, assertProject, type Project, type SourceType } from '../project-model';
 import { projectToPreview } from '../project-model/preview';
+import { authorRig } from '../motion';
 import { originalScene } from '../editor-view';
 import type { PreviewScene } from '../scene-core';
 import { ResourceCache } from '../project-storage/cache';
@@ -15,7 +16,7 @@ import { parseSessionCommand, type SessionView, type SessionCommand, type Sessio
 export type LeaveDecision = 'save' | 'discard' | 'cancel';
 export interface ProjectDialogs { openProject():Promise<string | null>; saveProject(suggested:string):Promise<string | null>; relinkImage():Promise<string | null>; unsaved(name:string):Promise<LeaveDecision>; }
 export interface SessionOptions { dataDir:string; dialogs:ProjectDialogs; bundled:Project; bundledBytes:ReadonlyMap<string,Buffer>; now?:()=>number; autoTimers?:boolean; saveFault?:AtomicOptions['fault']; }
-interface Document { id:string; flow:Workflow; history:EditHistory; target:string | null; expectedHash:string | null; savedKey:string | null; label:string; mode:'editable'; available:Set<string>; unresolved:Set<string>; lastRecoveryAt:string | null; recoveryKey:string | null; }
+interface Document { loadedMinor:number;upgradeSource:string | null;id:string; flow:Workflow; history:EditHistory; target:string | null; expectedHash:string | null; savedKey:string | null; label:string; mode:'editable'; available:Set<string>; unresolved:Set<string>; lastRecoveryAt:string | null; recoveryKey:string | null; }
 export class ProjectSession {
   private viewSequence = 0;
   readonly cache:ResourceCache; readonly catalog:ProjectCatalog;
@@ -71,7 +72,7 @@ export class ProjectSession {
       else if (project) {
         const flow = new Workflow(project); const complete = available.size === project.assets.length && !bundle?.issues.length;
         flow.subscribe(() => this.emit());
-        this.document = { id:randomUUID(),flow,history:new EditHistory(flow),target:!restored && complete ? target : null,expectedHash:!restored && complete ? bundle?.fileHash ?? null : null,
+        this.document = { loadedMinor:project.schemaVersion.minor,upgradeSource:null,id:randomUUID(),flow,history:new EditHistory(flow),target:!restored && complete ? target : null,expectedHash:!restored && complete ? bundle?.fileHash ?? null : null,
           savedKey:target && !restored && complete ? contentKey(project) : null,label:restored ? '복구본 · 새 파일로 저장' : target ? basename(target) : '저장 위치 없음',mode:'editable',available,unresolved:new Set(bundle?.issues.map(issue => issue.assetId) ?? []),lastRecoveryAt:null,recoveryKey:null };
         if (target && !restored) { try { await this.catalog.addRecent(target,project); } catch { /* opening is independent from recent-list persistence */ } }
       }
@@ -85,7 +86,7 @@ export class ProjectSession {
     const operation = async ():Promise<boolean> => {
       let target = !saveAs ? d.target : null;
       if (!target) { target = await this.options.dialogs.saveProject(d.flow.project().displayName+'.2dsketch'); if (!target) return false; }
-      target = resolve(target); if (!target.toLowerCase().endsWith('.2dsketch') || target.startsWith('\\\\')) throw new Error('E_SAVE_PATH');
+      target = resolve(target); if (d.upgradeSource && target.toLowerCase()===d.upgradeSource.toLowerCase()) throw new Error('E_SAVE_MIGRATION_TARGET'); if (!target.toLowerCase().endsWith('.2dsketch') || target.startsWith('\\\\')) throw new Error('E_SAVE_PATH');
       const snapshot = d.flow.project(); const resources = await this.cache.bytes(snapshot);
       const sameTarget = d.target !== null && target.toLowerCase() === d.target.toLowerCase(); let expected = sameTarget ? d.expectedHash : null;
       if (!sameTarget) { try { expected = sha256(await readFile(target)); } catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; } }
@@ -93,7 +94,7 @@ export class ProjectSession {
       const receipt = await atomicBundle(target,bytes,{ expectedHash:expected,...(this.options.saveFault ? { fault:this.options.saveFault } : {}),backup:async original => {
         const old = await decodeBundle(original,false); if (!old.project) throw new Error('E_SAVE_ORIGINAL_VERSION'); await this.catalog.record(old.project,old.resources,'manual',target,'이전 정상 저장본',original);
       } });
-      d.flow.acknowledgeSaved(snapshot.revision); d.target = target; d.expectedHash = receipt.hash; d.savedKey = contentKey(snapshot); d.unresolved.clear(); d.label = basename(target);
+      d.loadedMinor = snapshot.schemaVersion.minor; d.upgradeSource = null; d.flow.acknowledgeSaved(snapshot.revision); d.target = target; d.expectedHash = receipt.hash; d.savedKey = contentKey(snapshot); d.unresolved.clear(); d.label = basename(target);
       this.lastError = receipt.warning;
       try { await this.catalog.addRecent(target,snapshot); if (!this.dirty(d)) await this.catalog.acknowledge(snapshot.projectId); } catch { this.lastError = 'E_CATALOG_WRITE'; }
       return true;
@@ -114,7 +115,7 @@ export class ProjectSession {
     this.autoPromise = (async () => { const resources = await this.cache.bytes(snapshot); const record = await this.catalog.record(snapshot,resources,'autosave',d.target,'자동 복구본'); if (this.document === d) { d.lastRecoveryAt = record.createdAt; d.recoveryKey = contentKey(snapshot); } this.lastAuto = this.now(); })().finally(() => { this.autoPromise = null; this.scheduleAuto(); this.emit(); });
     return this.autoPromise;
   }
-  private changed():void { this.lastEdit = this.now(); const d = this.document; if (d) d.flow.setAxis('save',this.dirty(d) ? 'DIRTY' : 'CLEAN'); this.lastError = null; this.scheduleAuto(); this.emit(); }
+  private changed():void { this.lastEdit = this.now(); const d = this.document; if (d && d.target && d.loadedMinor<d.flow.project().schemaVersion.minor) { d.upgradeSource = d.target; d.target = null; d.expectedHash = null; d.label = '이전 프로젝트의 변환본 · 새 파일로 저장'; } if (d) d.flow.setAxis('save',this.dirty(d) ? 'DIRTY' : 'CLEAN'); this.lastError = null; this.scheduleAuto(); this.emit(); }
   private async checkpoint(reason:string):Promise<void> { const d = this.editable(); const p = d.flow.project(); const record = await this.catalog.record(p,await this.cache.bytes(p),'checkpoint',d.target,reason); d.lastRecoveryAt = record.createdAt; d.recoveryKey = contentKey(p); this.emit(); }
   private async edit(command:Extract<SessionCommand,{ type:'edit' }>):Promise<void> {
     const d = this.editable(); if (command.groupId === null && d.flow.project().revision !== command.expectedRevision) throw new Error('E_EDIT_STALE');
@@ -134,7 +135,7 @@ export class ProjectSession {
     const d = this.editable(); const revision = d.flow.project().revision; await this.checkpoint('예제 캐릭터 삽입 전'); const source = this.options.bundled;
     for (const asset of source.assets) { const data = this.options.bundledBytes.get(asset.id); if (!data) throw new Error('E_SAMPLE_RESOURCE'); await this.cache.put(asset,data); }
     if (this.document !== d || d.flow.project().revision !== revision) throw new Error('E_EDIT_STALE');
-    d.history.change('고급 예제 캐릭터',draft => { for (const field of ['canvas','assets','parts','groups','parameters','partBindings','inputBindings','expressions','runtimeProfile','broadcastProfiles','exportProfiles','inputAssetIds'] as const) (draft as unknown as Record<string,unknown>)[field] = structuredClone(source[field]); draft.provenance = { preparation:'Bundled authored example; not route-specific automatic preparation',limitations:source.provenance.limitations }; });
+    d.history.change('고급 예제 캐릭터',draft => { for (const field of ['canvas','assets','parts','groups','parameters','partBindings','inputBindings','expressions','runtimeProfile','broadcastProfiles','exportProfiles','inputAssetIds'] as const) (draft as unknown as Record<string,unknown>)[field] = structuredClone(source[field]); if (source.motion) { draft.schemaVersion.minor = 1; draft.motion = structuredClone(source.motion); } else delete draft.motion; draft.provenance = { preparation:'Bundled authored example; not route-specific automatic preparation',limitations:source.provenance.limitations }; });
     d.available = await this.cache.available(d.flow.project()); d.unresolved.clear(); this.changed();
   }
   private async relink(assetId:string):Promise<void> {
@@ -171,6 +172,18 @@ export class ProjectSession {
       else if (command.type === 'edit') await this.edit(command);
       else if (command.type === 'undo' || command.type === 'redo') { const d = this.editable(); if (command.type === 'undo') d.history.undo(); else d.history.redo(); this.changed(); }
       else if (command.type === 'sample') await this.sample();
+      else if (['prepare-motion','motion-settings','motion-parameter'].includes(command.type)) {
+        if (command.type !== 'prepare-motion' && command.type !== 'motion-settings' && command.type !== 'motion-parameter') throw new Error('E_SESSION_COMMAND');
+        const d = this.editable(); if (command.expectedRevision !== d.flow.project().revision) throw new Error('E_EDIT_STALE');
+        if (command.type === 'prepare-motion') { await this.checkpoint('움직임 연결 준비 전'); if (command.expectedRevision !== d.flow.project().revision) throw new Error('E_EDIT_STALE'); }
+        d.history.change('움직임 설정',p => {
+          if (command.type === 'prepare-motion') { p.schemaVersion.minor = 1; p.motion = authorRig(p); }
+          else if (command.type === 'motion-settings') { if (!p.motion) throw new Error('E_MOTION_UNSUPPORTED'); p.motion.settings = { strength:command.strength,smoothingMs:command.smoothingMs,pose:structuredClone(command.pose) }; }
+          else { const param = p.parameters.find(v => v.id === command.id); if (!param) throw new Error('E_REFERENCE_MISSING'); Object.assign(param,{ min:command.min,neutral:command.neutral,max:command.max }); if (!(param.min<param.max && param.min<=param.neutral && param.neutral<=param.max)) throw new Error('E_PARAMETER_RANGE');
+            const clamp = (v:number) => Math.max(param.min,Math.min(param.max,v)); for (const e of p.expressions) for (const v of e.values) if (v.parameterId===param.id) v.value = clamp(v.value); for (const b of p.inputBindings) if (b.parameterId===param.id) b.fallback.value = clamp(b.fallback.value); for (const v of p.motion?.settings.pose ?? []) if (v.parameterId===param.id) v.value = clamp(v.value);
+          }
+        }); this.changed();
+      }
       else if (command.type === 'check-resources') this.checkResources();
       else if (command.type === 'cancel-task') this.editable().flow.cancel(command.id);
       else if (command.type === 'retry-task') { const d = this.editable(); const job = d.flow.retry(command.id); this.lastError = null; this.watchCheck(d,job.jobId); }
@@ -181,7 +194,7 @@ export class ProjectSession {
       else if (command.type === 'recover') { const record = this.record(command.id); const bundle = await readBundle(this.catalog.file(record.id),false); if (!bundle.project) throw new Error('E_RECOVERY_VERSION'); const permit = await this.permission(); if (permit) await this.activate(bundle.project,bundle,null,permit,true); }
       else if (command.type === 'duplicate') {
         const permit = await this.permission(); if (permit) { const d = this.editable(); const clone = duplicateProject(d.flow.project()); const target = await this.options.dialogs.saveProject(clone.displayName+'.2dsketch');
-          if (target) { if (!target.toLowerCase().endsWith('.2dsketch') || target.startsWith('\\\\')) throw new Error('E_SAVE_PATH'); const bytes = await encodeBundle(clone,await this.cache.bytes(clone),'manual'); let expected:string | null = null; try { expected = sha256(await readFile(target)); } catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; }
+          if (target) { if (d.upgradeSource && resolve(target).toLowerCase()===d.upgradeSource.toLowerCase()) throw new Error('E_SAVE_MIGRATION_TARGET'); if (!target.toLowerCase().endsWith('.2dsketch') || target.startsWith('\\\\')) throw new Error('E_SAVE_PATH'); const bytes = await encodeBundle(clone,await this.cache.bytes(clone),'manual'); let expected:string | null = null; try { expected = sha256(await readFile(target)); } catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; }
             await atomicBundle(target,bytes,{ expectedHash:expected,backup:async old => { const b = await decodeBundle(old,false); if (!b.project) throw new Error('E_SAVE_ORIGINAL_VERSION'); await this.catalog.record(b.project,b.resources,'manual',target,'복제 전 정상본',old); } }); await this.activate((await decodeBundle(bytes,false)).project,await decodeBundle(bytes,false),resolve(target),permit); }
         }
       }

@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { AvatarRenderer } from '../../../packages/avatar-renderer';
 import { readProject } from '../../../packages/project-model';
 import { projectToPreview } from '../../../packages/project-model/preview';
+import { checkMotionPixels } from './motion-self-check';
 import { checkModelPixels } from './model-self-check';
 import { Workflow } from '../../../packages/workflow';
 import { WorkflowLab } from './workflow-lab';
@@ -60,7 +61,7 @@ function Studio() {
       document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
       await new Promise(resolve => setTimeout(resolve, 80));
       const globals = window as unknown as Record<string, unknown>;
-      const modelPixels = await checkModelPixels(project.current!);
+      const modelPixels = await checkModelPixels(project.current!); const motionPixels = await checkMotionPixels(project.current!);
       const workflowCore = await checkWorkflow(project.current!);
       let workflowUI:Record<string,unknown> = { passed:true,developmentOnly:true,visible:false };
       if (info.channel !== 'release') {
@@ -69,7 +70,7 @@ function Studio() {
         workflowUI = await window.workflowLabCheck();
         await new Promise(resolve => setTimeout(resolve,50));
       }
-      return { ...renderer.current!.report(), modelPixels,workflowCore,workflowUI,sampleRuntimeFrozen:workflow.current?.runtimeSnapshot() !== null,workflowLabVisible:document.querySelector('[data-workflow-lab]') !== null, workerReady: health.ready, nodeExposed: typeof globals.require !== 'undefined',
+      return { ...renderer.current!.report(), modelPixels,motionPixels,workflowCore,workflowUI,sampleRuntimeFrozen:workflow.current?.runtimeSnapshot() !== null,workflowLabVisible:document.querySelector('[data-workflow-lab]') !== null, workerReady: health.ready, nodeExposed: typeof globals.require !== 'undefined',
         shellExposed: typeof (window.studio as unknown as Record<string, unknown>).shell !== 'undefined',
         appInfoDialog: dialog && document.querySelector('[role="dialog"]') === null,
         diagnosticsVisible: document.querySelector('[data-development]') !== null,

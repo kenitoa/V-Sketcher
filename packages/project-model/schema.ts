@@ -32,8 +32,12 @@ const parameter = object({ id,displayName:string(),semantic:{ ...string(64),patt
 const inputBinding = object({ id,source:choice('face','microphone','manual'),channel:{ ...string(64),pattern:'^[a-z][a-z0-9_-]*$' },parameterId:id,inputRange:pair,
   invert:boolean,gain:{ type:'number',minimum:0,maximum:10 },offset:number,smoothingMs:integer(10000),
   fallback:object({ mode:choice('neutral','hold','constant'),value:number,returnMs:integer(10000) }) });
-export const PROJECT_SCHEMA = { $schema:'https://json-schema.org/draft/2020-12/schema', $id:'https://2dsketcher.local/schema/project-1.0',
-  ...object({ projectId:id,schemaVersion:object({ major:{ const:1 },minor:{ const:0 } }),displayName:string(),sourceType:choice('parts','single-image','split-image'),
+const motion = object({ version:{ const:1 },faceWidth:positive,maxRollDegrees:{ type:'number',minimum:0,maximum:6 },secondary:{ const:'disabled' },
+  settings:object({ strength:{ type:'number',minimum:0,maximum:1 },smoothingMs:integer(1000),pose:array(object({ parameterId:id,value:number }),128) }),
+  meshes:array(object({ partId:id,pivot:pair,yawParameterId:nullable(id),rollParameterId:nullable(id),curve:choice('linear','smoothstep'),
+    vertices:{ ...array(object({ position:pair,weight:{ type:'number',minimum:0,maximum:1 },minimum:pair,maximum:pair }),1024),minItems:3 },triangles:{ ...array(integer(1023),6144),minItems:3 } }),64) });
+export const PROJECT_SCHEMA = { $schema:'https://json-schema.org/draft/2020-12/schema', $id:'https://2dsketcher.local/schema/project-1.1',
+  ...object({ projectId:id,schemaVersion:object({ major:{ const:1 },minor:{ enum:[0,1] } }),displayName:string(),sourceType:choice('parts','single-image','split-image'),
     createdAt:{ ...string(24),pattern:'^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$' },modifiedAt:{ ...string(24),pattern:'^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$' },
     revision,savedRevision:nullable(revision),canvas:size,inputAssetIds:{ ...array(id),uniqueItems:true },assets:array(asset),parts:array(part,64),
     groups:array(object({ id,displayName:string(),parentGroupId:nullable(id),visible:boolean }),128),parameters:array(parameter,128),
@@ -45,5 +49,7 @@ export const PROJECT_SCHEMA = { $schema:'https://json-schema.org/draft/2020-12/s
     exportProfiles:array(object({ id,revision,displayName:string(),target:choice('inochi2d'),targetVersion:semver,format:choice('inp'),converterVersion:semver,
       parameterMap:array(object({ parameterId:id,targetName:{ ...string(64),pattern:'^[a-zA-Z][a-zA-Z0-9_]*$' } }),128) }),16),
     provenance:object({ preparation:string(512),limitations:array(string(512),128) }),derivedProjects:array(object({ projectId:id,relation:choice('3d','generated-variant') }),32) }) };
+// The optional motion extension is written only with minor 1; legacy 1.0 remains readable.
+((PROJECT_SCHEMA as Record<string,unknown>).properties as Record<string,Schema>).motion = motion;
 export const MACHINE_SCHEMA = { $schema:'https://json-schema.org/draft/2020-12/schema', ...object({ schemaVersion:{ const:1 },projectId:id,
   cameraId:nullable(string(512)),microphoneId:nullable(string(512)),calibrations:array(object({ bindingId:id,inputRange:pair }),128) }) };

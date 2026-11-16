@@ -1,7 +1,9 @@
 import type { ValidateFunction } from 'ajv';
-import { inverse, type Affine } from '../coordinates';
+import { inverse,multiply,transform, type Affine } from '../coordinates';
 import { projectStructure, machineStructure } from './structure.generated';
 import type { Project, MachineSettings, ValidationIssue } from './types';
+import { deformPoint } from '../motion/geometry';
+import { NEUTRAL } from '../scene-core';
 const check = projectStructure as ValidateFunction<Project>; const checkMachine = machineStructure as ValidateFunction<MachineSettings>;
 export function portableResourcePath(value: string): boolean {
   return value.length <= 240 && value.normalize('NFC') === value && value.startsWith('resources/') && !/[\\:\x00-\x1f%<>"|?*]/.test(value) &&
@@ -62,12 +64,13 @@ export function validateProject(value: unknown): ValidationIssue[] {
   });
   const previewKeys = new Set<string>();
   p.parameters.forEach((parameter,i) => {
-    if (!(parameter.min < parameter.max && parameter.min <= parameter.neutral && parameter.neutral <= parameter.max)) issue('E_PARAMETER_RANGE',`/parameters/${i}`);
+    if (!(Number.isFinite(parameter.max-parameter.min) && parameter.min < parameter.max && parameter.min <= parameter.neutral && parameter.neutral <= parameter.max)) issue('E_PARAMETER_RANGE',`/parameters/${i}`);
     if (parameter.previewKey) { if (previewKeys.has(parameter.previewKey)) issue('E_PARAMETER_SEMANTIC',`/parameters/${i}`); previewKeys.add(parameter.previewKey); }
   });
   const boundParts = new Set<string>();
   p.partBindings.forEach((binding,i) => {
     if (!parts.has(binding.partId) || !parameters.has(binding.parameterId)) issue('E_REFERENCE_MISSING',`/partBindings/${i}`);
+    if (binding.kind === 'transform' && !Number.isFinite(binding.mapping.outputRange[1]-binding.mapping.outputRange[0])) issue('E_MOTION_RANGE',`/partBindings/${i}`);
     if (binding.kind === 'state-blend') {
       const states = new Set(parts.get(binding.partId)?.textures.map(t => t.state));
       if (!states.has(binding.mapping.minimumState) || !states.has(binding.mapping.maximumState) || binding.mapping.minimumState === binding.mapping.maximumState) issue('E_BINDING_STATES',`/partBindings/${i}`);
@@ -102,6 +105,28 @@ export function validateProject(value: unknown): ValidationIssue[] {
     }
   }
   if (p.derivedProjects.some(v => v.projectId === p.projectId) || new Set(p.derivedProjects.map(v => v.projectId)).size !== p.derivedProjects.length) issue('E_DERIVED_PROJECT_REFERENCE','/derivedProjects');
+  if (p.motion) {
+    if (p.schemaVersion.minor < 1 || p.motion.faceWidth > p.canvas.width) issue('E_MOTION_VERSION','/motion');
+    const seen = new Set<string>(); const world = (id:string,depth = 0):Affine => { const part = parts.get(id); if (!part || depth>64) return [1,0,0,1,0,0]; return part.parentId ? multiply(world(part.parentId,depth+1),part.localTransform) : part.localTransform; };
+    for (const m of p.motion.meshes) {
+      if (seen.has(m.partId) || !parts.has(m.partId)) issue('E_MOTION_REFERENCE','/motion/meshes'); seen.add(m.partId);
+      if (m.yawParameterId && parameters.get(m.yawParameterId)?.previewKey !== 'head_yaw' || m.rollParameterId && parameters.get(m.rollParameterId)?.previewKey !== 'head_roll') issue('E_MOTION_REFERENCE','/motion/meshes');
+      if (m.triangles.length%3 || m.triangles.some(i => i>=m.vertices.length)) issue('E_MOTION_TRIANGLE','/motion/meshes');
+      for (let i=0;i<m.triangles.length;i+=3) { const a = m.vertices[m.triangles[i]!]!; const b = m.vertices[m.triangles[i+1]!]!; const c = m.vertices[m.triangles[i+2]!]!; if (!a || !b || !c) continue; const area = (b.position[0]-a.position[0])*(c.position[1]-a.position[1])-(b.position[1]-a.position[1])*(c.position[0]-a.position[0]); if (area<=1e-8) issue('E_MOTION_TRIANGLE','/motion/meshes'); }
+      const mtx = world(m.partId); const deltaLength = (v:[number,number]):number => Math.hypot(mtx[0]*v[0]+mtx[2]*v[1],mtx[1]*v[0]+mtx[3]*v[1]);
+      for (const v of m.vertices) if (![...v.position,...m.pivot].every(n => Math.abs(n)<=1e7) || deltaLength(v.minimum)>p.motion.faceWidth*.045+1e-6 || deltaLength(v.maximum)>p.motion.faceWidth*.045+1e-6) issue('E_MOTION_RANGE','/motion/meshes');
+      if (!issues.length) {
+        const pivot = transform(mtx,{ x:m.pivot[0],y:m.pivot[1] }); const zero = transform(mtx,{ x:0,y:0 });
+        const vectors = m.vertices.map(v => { const position = transform(mtx,{ x:v.position[0],y:v.position[1] }); const min = transform(mtx,{ x:v.minimum[0],y:v.minimum[1] }); const max = transform(mtx,{ x:v.maximum[0],y:v.maximum[1] }); return { position,weight:v.weight,min:{ x:min.x-zero.x,y:min.y-zero.y },max:{ x:max.x-zero.x,y:max.y-zero.y } }; });
+        const layer = { id:m.partId,z:0,origin:[0,0] as [number,number],opacity:1,bind:null,states:{},mesh:{ pivot:[pivot.x,pivot.y] as [number,number],vertices:[],triangles:[],yaw:m.yawParameterId!==null,roll:m.rollParameterId!==null,maxRollDegrees:p.motion.maxRollDegrees,curve:m.curve } };
+        const area = (a:{ x:number;y:number },b:{ x:number;y:number },c:{ x:number;y:number }):number => (b.x-a.x)*(c.y-a.y)-(b.y-a.y)*(c.x-a.x);
+        for (const head_yaw of [-1,0,1]) for (const head_roll of [-1,0,1]) { const points = vectors.map(v => deformPoint(layer,v.position,v.weight,v.min,v.max,{ ...NEUTRAL,head_yaw,head_roll }));
+          for (let i=0;i<m.triangles.length;i+=3) { const [a,b,c] = m.triangles.slice(i,i+3) as [number,number,number]; const before = area(vectors[a]!.position,vectors[b]!.position,vectors[c]!.position); const after = area(points[a]!,points[b]!,points[c]!); if (!Number.isFinite(after) || after*before<=0 || Math.abs(after)<Math.abs(before)*.01) { issue('E_MOTION_FOLD','/motion/meshes'); break; } }
+        }
+      }
+    }
+    const pose = new Set<string>(); for (const v of p.motion.settings.pose) { const param = parameters.get(v.parameterId); if (!param || pose.has(v.parameterId)) issue('E_MOTION_REFERENCE','/motion/settings/pose'); else if (v.value<param.min || v.value>param.max) issue('E_PARAMETER_RANGE','/motion/settings/pose'); pose.add(v.parameterId); }
+  }
   return issues;
 }
 export function assertProject(value: unknown): asserts value is Project {

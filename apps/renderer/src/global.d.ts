@@ -6,6 +6,8 @@ declare global {
     studio: { info: () => Promise<StudioInfo>; health: () => Promise<{ ready: boolean }>; projects:{ view:()=>Promise<SessionView>; command:(command:SessionCommand)=>Promise<SessionReply>; subscribe:(listener:(view:SessionView)=>void)=>()=>void } };
     projectSelfCheck?:()=>Promise<Record<string,unknown>>;
     projectSelfCheckCapture?:()=>Promise<void>;
+    motionSelfCheck?:()=>Promise<Record<string,unknown>>;
+    motionCapture?:()=>Promise<void>;
     editorSelfCheck?:()=>Promise<Record<string,unknown>>;
     editorCapture?:()=>Promise<void>;
     editorFailureState?:Record<string,unknown>;

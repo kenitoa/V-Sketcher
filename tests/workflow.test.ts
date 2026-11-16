@@ -21,7 +21,7 @@ test('T071: storage, microphone and output failures leave independent actions an
   w.setAxis('save','SAVE_FAILED'); w.deviceChanged('microphone','DENIED'); w.deviceChanged('camera','AVAILABLE'); w.setAxis('output','FAILED');
   assert.equal(w.can('camera'),true); assert.equal(w.can('microphone'),false); assert.equal(w.can('image'),true); assert.equal(w.can('export'),true);
   assert.equal(w.runtimeSnapshot(),last); assert.equal(w.view().axes.runtime,'RUNNING'); assert.equal(w.view().axes.save,'SAVE_FAILED'); await w.close();
-  const prepared = project(); const draft = structuredClone(prepared); draft.parts = []; draft.partBindings = [];
+  const prepared = project(); const draft = structuredClone(prepared); draft.parts = []; draft.partBindings = []; delete draft.motion;
   const creating = new Workflow(draft); assert.equal(creating.view().axes.project,'DRAFT'); creating.edit('prepared',p => { p.parts = structuredClone(prepared.parts); p.partBindings = structuredClone(prepared.partBindings); });
   assert.equal(creating.view().axes.project,'READY'); await creating.close();
 });

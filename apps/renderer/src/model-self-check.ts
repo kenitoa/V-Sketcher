@@ -25,7 +25,7 @@ export async function checkModelPixels(project: Project): Promise<Record<string,
     }
     const base = structuredClone(project); const root = base.parts.find(part => part.role === 'base' || part.role === 'body');
     if (!root) throw new Error('E_MODEL_GPU_FIXTURE');
-    base.parts = [root]; base.partBindings = []; root.parentId = null; root.localTransform = [...IDENTITY];
+    base.parts = [root]; delete base.motion; base.partBindings = []; root.parentId = null; root.localTransform = [...IDENTITY];
     const asset = base.assets.find(a => a.id === root.textures[0]!.assetId)!; root.textures[0]!.assetToLocal = [...IDENTITY]; asset.sourceToEdited = [...IDENTITY];
     const full = await render(base); asset.sourceRegion.width /= 2; const cropped = await render(base); let cropMismatches = 0;
     for (let y=0;y<size;y++) for (let x=0;x<size;x++) for (let c=0;c<4;c++) {
