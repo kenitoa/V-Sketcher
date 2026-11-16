@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "run_id": "example-HQ001-not-run",
+  "task_ids": [
+    "T-025",
+    "T-026",
+    "T-027",
+    "T-028"
+  ],
+  "status": "not_run",
+  "input_ids": [
+    "HQ-001"
+  ],
+  "input_sha256": {
+    "HQ-001": "c28ec8ff0da80361e61d0c6c3a242fb204feff491887b9ab304c54c015fec961"
+  },
+  "config_id": "phase02-fixtures-v1",
+  "config_sha256": "1f74f3a4390dc576ddf64bbeefed6d1c6af8c96b3ce83316fe01fb36fc68df19",
+  "generator_sha256": "c28055d7a80b8010258e1d6203429edbadc6b357e5afc1735f4ca57b3d8cb55a",
+  "candidate": {
+    "name": null,
+    "version_or_commit": null,
+    "model_sha256": null,
+    "license_evidence": null
+  },
+  "environment": {
+    "id": "ENV-WIN-001",
+    "inventory_file": "results/environment-current.json",
+    "inventory_sha256": "2c02bfcc00230c8bffde496aa25d236b69783cb1b396da7537dabd586f602e57",
+    "camera_mode": null,
+    "microphone_mode": null,
+    "broadcast_app_version": null,
+    "external_target_version": null
+  },
+  "procedure": [
+    "Verify the HQ-001 original hash and authorized purpose",
+    "Pin the analysis candidate version and model hash before execution",
+    "Run automatic structure preparation and compare original/neutral/minimum/maximum states",
+    "Record active corrections, wait time, quality scores, evidence and limitations"
+  ],
+  "expected_results": [
+    "Preserve facial impression and detailed linework, hair and costume",
+    "Show uncertainty and required corrections without claiming invisible regions as known",
+    "Do not require prior manual part separation to see the first supported motion"
+  ],
+  "actual_results": [],
+  "warmup_runs": 1,
+  "measurement_runs": 3,
+  "metrics": {
+    "original_impression_score_0_3": null,
+    "boundary_overlap_score_0_3": null,
+    "eye_motion_score_0_3": null,
+    "mouth_motion_score_0_3": null,
+    "head_motion_score_0_3": null,
+    "corrected_part_count": null,
+    "correction_action_count": null,
+    "active_seconds": null,
+    "wait_seconds": null,
+    "processing_ms_per_run": [],
+    "frame_ms_samples_file": null,
+    "latency_segment": null,
+    "latency_ms_samples_file": null,
+    "cpu_ram_gpu_measurement_method": null
+  },
+  "evidence_files": [],
+  "failures_and_limits": [],
+  "support_classification": "undecided",
+  "retest_task_ids": [],
+  "started_at": null,
+  "finished_at": null,
+  "reviewer": null
+}

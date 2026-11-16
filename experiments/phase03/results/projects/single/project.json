@@ -1,0 +1,190 @@
+{
+  "schema_version": 1,
+  "name": "S-001",
+  "route": "single",
+  "canvas": [
+    512,
+    512
+  ],
+  "parts": [
+    {
+      "id": "base",
+      "role": "base",
+      "side": "center",
+      "z": 0,
+      "origin": [
+        0,
+        0
+      ],
+      "opacity": 1.0,
+      "bind": null,
+      "estimated": false,
+      "states": {
+        "base": {
+          "path": "textures/00-base.png",
+          "sha256": "367231ba35a1cfd902e546578e21b1e36447ef2ac58c4a01afa510b21e8841e7"
+        }
+      }
+    },
+    {
+      "id": "eye_right",
+      "role": "eye_right",
+      "side": "right",
+      "z": 10,
+      "origin": [
+        184,
+        173
+      ],
+      "opacity": 1.0,
+      "bind": "eye_right",
+      "estimated": true,
+      "states": {
+        "open": {
+          "path": "textures/01-open.png",
+          "sha256": "0b6b129bf656e0233bdddc367c1e7f0b403e29d1be80fb7b0f785988912e06e9"
+        },
+        "closed": {
+          "path": "textures/01-closed.png",
+          "sha256": "e23d23c9738ae80ae6bd0d57a7a3fcfc5dbb7748b721deef35e6256dd2cf9c14"
+        }
+      }
+    },
+    {
+      "id": "eye_left",
+      "role": "eye_left",
+      "side": "left",
+      "z": 10,
+      "origin": [
+        284,
+        173
+      ],
+      "opacity": 1.0,
+      "bind": "eye_left",
+      "estimated": true,
+      "states": {
+        "open": {
+          "path": "textures/02-open.png",
+          "sha256": "0b6b129bf656e0233bdddc367c1e7f0b403e29d1be80fb7b0f785988912e06e9"
+        },
+        "closed": {
+          "path": "textures/02-closed.png",
+          "sha256": "e23d23c9738ae80ae6bd0d57a7a3fcfc5dbb7748b721deef35e6256dd2cf9c14"
+        }
+      }
+    },
+    {
+      "id": "mouth",
+      "role": "mouth",
+      "side": "center",
+      "z": 10,
+      "origin": [
+        227,
+        250
+      ],
+      "opacity": 1.0,
+      "bind": "mouth",
+      "estimated": true,
+      "states": {
+        "closed": {
+          "path": "textures/03-closed.png",
+          "sha256": "4d71eaaf5320cf58176ee49ab829a543b65aa5670cae72c1976802f142d974c5"
+        },
+        "open": {
+          "path": "textures/03-open.png",
+          "sha256": "2240c14c584bf9360c4a7f47772cf6239903a56a1ee017a47a0d7ac08565de98"
+        }
+      }
+    }
+  ],
+  "face": [
+    160,
+    123,
+    360,
+    334
+  ],
+  "regions": {
+    "eye_right": [
+      184,
+      173,
+      229,
+      221
+    ],
+    "eye_left": [
+      284,
+      173,
+      329,
+      221
+    ],
+    "mouth": [
+      227,
+      250,
+      286,
+      271
+    ]
+  },
+  "source": "source.png",
+  "prepared": "prepared.png",
+  "analysis": {
+    "method": "mediapipe",
+    "model_face_count": 1,
+    "target": null,
+    "face": [
+      160,
+      123,
+      360,
+      334
+    ],
+    "regions": {
+      "eye_right": [
+        184,
+        173,
+        229,
+        221
+      ],
+      "eye_left": [
+        284,
+        173,
+        329,
+        221
+      ],
+      "mouth": [
+        227,
+        250,
+        286,
+        271
+      ]
+    },
+    "observed": {
+      "eye_right": true,
+      "eye_left": true,
+      "mouth": true
+    },
+    "warnings": [],
+    "status": "success",
+    "completion": "restrict",
+    "estimated_regions": [
+      "eye_right",
+      "eye_left",
+      "mouth"
+    ],
+    "hidden_estimates": [],
+    "fill_only_regions": []
+  },
+  "warnings": [],
+  "params": {
+    "eye_left": 1.0,
+    "eye_right": 1.0,
+    "mouth": 0.0,
+    "head_yaw": 0.0,
+    "head_roll": 0.0
+  },
+  "limits": {
+    "head": 1.0,
+    "mouth": 0.65
+  },
+  "corrections": [],
+  "provenance": {
+    "input_sha256": "6d899a13c74655275918c3e51019edf045217a635c51b11b9e736b6392e77e95",
+    "adapter": "single-v1"
+  }
+}

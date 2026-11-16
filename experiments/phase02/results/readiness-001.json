@@ -1,0 +1,651 @@
+{
+  "schema_version": 1,
+  "run_id": "readiness-001",
+  "task_ids": [
+    "T-011",
+    "T-012",
+    "T-013",
+    "T-014",
+    "T-016",
+    "T-020"
+  ],
+  "timestamp_utc": "2026-11-16T06:29:54.657603+00:00",
+  "config_id": "phase02-fixtures-v1",
+  "python": "3.14.10",
+  "dependencies": {
+    "Pillow": "13.0.0"
+  },
+  "manifest_sha256": "c5bbc9fb9bf4d88b0185525bb7c8d69c2e0a03748e5da6cbf34977db2760f71f",
+  "config_sha256": "1f74f3a4390dc576ddf64bbeefed6d1c6af8c96b3ce83316fe01fb36fc68df19",
+  "generator_sha256": "c28055d7a80b8010258e1d6203429edbadc6b357e5afc1735f4ca57b3d8cb55a",
+  "integrity": [
+    {
+      "path": "parts/accessory.png",
+      "matches": true
+    },
+    {
+      "path": "parts/body.png",
+      "matches": true
+    },
+    {
+      "path": "parts/cropped_accessory.png",
+      "matches": true
+    },
+    {
+      "path": "parts/cropped_body.png",
+      "matches": true
+    },
+    {
+      "path": "parts/cropped_eye_left_open.png",
+      "matches": true
+    },
+    {
+      "path": "parts/cropped_eye_right_open.png",
+      "matches": true
+    },
+    {
+      "path": "parts/cropped_hair_back.png",
+      "matches": true
+    },
+    {
+      "path": "parts/cropped_hair_front.png",
+      "matches": true
+    },
+    {
+      "path": "parts/cropped_head.png",
+      "matches": true
+    },
+    {
+      "path": "parts/cropped_mouth_closed.png",
+      "matches": true
+    },
+    {
+      "path": "parts/empty_accessory.png",
+      "matches": true
+    },
+    {
+      "path": "parts/eye_left_closed.png",
+      "matches": true
+    },
+    {
+      "path": "parts/eye_left_open.png",
+      "matches": true
+    },
+    {
+      "path": "parts/eye_right_closed.png",
+      "matches": true
+    },
+    {
+      "path": "parts/eye_right_open.png",
+      "matches": true
+    },
+    {
+      "path": "parts/hair_back.png",
+      "matches": true
+    },
+    {
+      "path": "parts/hair_front.png",
+      "matches": true
+    },
+    {
+      "path": "parts/head.png",
+      "matches": true
+    },
+    {
+      "path": "parts/library.json",
+      "matches": true
+    },
+    {
+      "path": "parts/mouth_closed.png",
+      "matches": true
+    },
+    {
+      "path": "parts/mouth_open.png",
+      "matches": true
+    },
+    {
+      "path": "premium/catalog.json",
+      "matches": true
+    },
+    {
+      "path": "premium/HQ-001-premium-portrait.png",
+      "matches": true
+    },
+    {
+      "path": "premium/HQ-002-alpha-edge-stress.png",
+      "matches": true
+    },
+    {
+      "path": "single/S-001.png",
+      "matches": true
+    },
+    {
+      "path": "single/S-002.png",
+      "matches": true
+    },
+    {
+      "path": "single/S-003.png",
+      "matches": true
+    },
+    {
+      "path": "single/S-004.png",
+      "matches": true
+    },
+    {
+      "path": "single/S-005.png",
+      "matches": true
+    },
+    {
+      "path": "single/S-006.png",
+      "matches": true
+    },
+    {
+      "path": "single/S-007.png",
+      "matches": true
+    },
+    {
+      "path": "single/S-008.png",
+      "matches": true
+    },
+    {
+      "path": "single/S-009.png",
+      "matches": true
+    },
+    {
+      "path": "single/S-010.png",
+      "matches": true
+    },
+    {
+      "path": "single/S-011.png",
+      "matches": true
+    },
+    {
+      "path": "single/S-012.png",
+      "matches": true
+    },
+    {
+      "path": "single/S-013.png",
+      "matches": true
+    },
+    {
+      "path": "single/S-014.jpg",
+      "matches": true
+    },
+    {
+      "path": "single/S-015.png",
+      "matches": true
+    },
+    {
+      "path": "single/S-016.png",
+      "matches": true
+    },
+    {
+      "path": "split/L-001.json",
+      "matches": true
+    },
+    {
+      "path": "split/L-002.json",
+      "matches": true
+    },
+    {
+      "path": "split/L-003.json",
+      "matches": true
+    },
+    {
+      "path": "split/L-004.json",
+      "matches": true
+    },
+    {
+      "path": "split/L-005.json",
+      "matches": true
+    },
+    {
+      "path": "split/L-006.json",
+      "matches": true
+    },
+    {
+      "path": "split/L-007.json",
+      "matches": true
+    },
+    {
+      "path": "split/L-008.json",
+      "matches": true
+    },
+    {
+      "path": "split/L-009.json",
+      "matches": true
+    },
+    {
+      "path": "split/L-010.json",
+      "matches": true
+    }
+  ],
+  "checks": [
+    {
+      "input_id": "PARTS-001",
+      "expected": {
+        "errors": [],
+        "warnings": []
+      },
+      "actual": {
+        "errors": [],
+        "warnings": []
+      },
+      "passed": true,
+      "preflight_wall_ms": 52.692
+    },
+    {
+      "input_id": "S-001",
+      "expected": {
+        "errors": [],
+        "warnings": []
+      },
+      "actual": {
+        "errors": [],
+        "warnings": []
+      },
+      "passed": true,
+      "preflight_wall_ms": 3.35
+    },
+    {
+      "input_id": "S-002",
+      "expected": {
+        "errors": [],
+        "warnings": []
+      },
+      "actual": {
+        "errors": [],
+        "warnings": []
+      },
+      "passed": true,
+      "preflight_wall_ms": 2.516
+    },
+    {
+      "input_id": "S-003",
+      "expected": {
+        "errors": [],
+        "warnings": []
+      },
+      "actual": {
+        "errors": [],
+        "warnings": []
+      },
+      "passed": true,
+      "preflight_wall_ms": 3.55
+    },
+    {
+      "input_id": "S-004",
+      "expected": {
+        "errors": [],
+        "warnings": []
+      },
+      "actual": {
+        "errors": [],
+        "warnings": []
+      },
+      "passed": true,
+      "preflight_wall_ms": 2.66
+    },
+    {
+      "input_id": "S-005",
+      "expected": {
+        "errors": [],
+        "warnings": []
+      },
+      "actual": {
+        "errors": [],
+        "warnings": []
+      },
+      "passed": true,
+      "preflight_wall_ms": 2.107
+    },
+    {
+      "input_id": "S-006",
+      "expected": {
+        "errors": [],
+        "warnings": []
+      },
+      "actual": {
+        "errors": [],
+        "warnings": []
+      },
+      "passed": true,
+      "preflight_wall_ms": 0.611
+    },
+    {
+      "input_id": "S-007",
+      "expected": {
+        "errors": [],
+        "warnings": []
+      },
+      "actual": {
+        "errors": [],
+        "warnings": []
+      },
+      "passed": true,
+      "preflight_wall_ms": 2.812
+    },
+    {
+      "input_id": "S-008",
+      "expected": {
+        "errors": [],
+        "warnings": []
+      },
+      "actual": {
+        "errors": [],
+        "warnings": []
+      },
+      "passed": true,
+      "preflight_wall_ms": 2.196
+    },
+    {
+      "input_id": "S-009",
+      "expected": {
+        "errors": [],
+        "warnings": []
+      },
+      "actual": {
+        "errors": [],
+        "warnings": []
+      },
+      "passed": true,
+      "preflight_wall_ms": 1.908
+    },
+    {
+      "input_id": "S-010",
+      "expected": {
+        "errors": [],
+        "warnings": []
+      },
+      "actual": {
+        "errors": [],
+        "warnings": []
+      },
+      "passed": true,
+      "preflight_wall_ms": 0.54
+    },
+    {
+      "input_id": "S-011",
+      "expected": {
+        "errors": [],
+        "warnings": []
+      },
+      "actual": {
+        "errors": [],
+        "warnings": []
+      },
+      "passed": true,
+      "preflight_wall_ms": 2.984
+    },
+    {
+      "input_id": "S-012",
+      "expected": {
+        "errors": [
+          "empty_image"
+        ],
+        "warnings": []
+      },
+      "actual": {
+        "errors": [
+          "empty_image"
+        ],
+        "warnings": []
+      },
+      "passed": true,
+      "preflight_wall_ms": 3.163
+    },
+    {
+      "input_id": "S-013",
+      "expected": {
+        "errors": [
+          "image_unreadable"
+        ],
+        "warnings": []
+      },
+      "actual": {
+        "errors": [
+          "image_unreadable"
+        ],
+        "warnings": []
+      },
+      "passed": true,
+      "preflight_wall_ms": 122.053
+    },
+    {
+      "input_id": "S-014",
+      "expected": {
+        "errors": [],
+        "warnings": []
+      },
+      "actual": {
+        "errors": [],
+        "warnings": []
+      },
+      "passed": true,
+      "preflight_wall_ms": 3.053
+    },
+    {
+      "input_id": "S-015",
+      "expected": {
+        "errors": [],
+        "warnings": []
+      },
+      "actual": {
+        "errors": [],
+        "warnings": []
+      },
+      "passed": true,
+      "preflight_wall_ms": 28.474
+    },
+    {
+      "input_id": "S-016",
+      "expected": {
+        "errors": [],
+        "warnings": []
+      },
+      "actual": {
+        "errors": [],
+        "warnings": []
+      },
+      "passed": true,
+      "preflight_wall_ms": 1.904
+    },
+    {
+      "input_id": "L-001",
+      "expected": {
+        "errors": [],
+        "warnings": []
+      },
+      "actual": {
+        "errors": [],
+        "warnings": []
+      },
+      "passed": true,
+      "preflight_wall_ms": 21.943
+    },
+    {
+      "input_id": "L-002",
+      "expected": {
+        "errors": [],
+        "warnings": [
+          "role_unassigned"
+        ]
+      },
+      "actual": {
+        "errors": [],
+        "warnings": [
+          "role_unassigned"
+        ]
+      },
+      "passed": true,
+      "preflight_wall_ms": 19.253
+    },
+    {
+      "input_id": "L-003",
+      "expected": {
+        "errors": [
+          "coordinates_missing"
+        ],
+        "warnings": []
+      },
+      "actual": {
+        "errors": [
+          "coordinates_missing"
+        ],
+        "warnings": []
+      },
+      "passed": true,
+      "preflight_wall_ms": 16.959
+    },
+    {
+      "input_id": "L-004",
+      "expected": {
+        "errors": [],
+        "warnings": [
+          "empty_layer"
+        ]
+      },
+      "actual": {
+        "errors": [],
+        "warnings": [
+          "empty_layer"
+        ]
+      },
+      "passed": true,
+      "preflight_wall_ms": 19.11
+    },
+    {
+      "input_id": "L-005",
+      "expected": {
+        "errors": [
+          "duplicate_id"
+        ],
+        "warnings": []
+      },
+      "actual": {
+        "errors": [
+          "duplicate_id"
+        ],
+        "warnings": []
+      },
+      "passed": true,
+      "preflight_wall_ms": 15.017
+    },
+    {
+      "input_id": "L-006",
+      "expected": {
+        "errors": [],
+        "warnings": [
+          "missing_role:mouth"
+        ]
+      },
+      "actual": {
+        "errors": [],
+        "warnings": [
+          "missing_role:mouth"
+        ]
+      },
+      "passed": true,
+      "preflight_wall_ms": 16.626
+    },
+    {
+      "input_id": "L-007",
+      "expected": {
+        "errors": [
+          "resource_missing"
+        ],
+        "warnings": []
+      },
+      "actual": {
+        "errors": [
+          "resource_missing"
+        ],
+        "warnings": []
+      },
+      "passed": true,
+      "preflight_wall_ms": 15.966
+    },
+    {
+      "input_id": "L-008",
+      "expected": {
+        "errors": [],
+        "warnings": [
+          "side_conflict"
+        ]
+      },
+      "actual": {
+        "errors": [],
+        "warnings": [
+          "side_conflict"
+        ]
+      },
+      "passed": true,
+      "preflight_wall_ms": 22.547
+    },
+    {
+      "input_id": "L-009",
+      "expected": {
+        "errors": [],
+        "warnings": []
+      },
+      "actual": {
+        "errors": [],
+        "warnings": []
+      },
+      "passed": true,
+      "preflight_wall_ms": 42.073
+    },
+    {
+      "input_id": "L-010",
+      "expected": {
+        "errors": [],
+        "warnings": []
+      },
+      "actual": {
+        "errors": [],
+        "warnings": []
+      },
+      "passed": true,
+      "preflight_wall_ms": 63.682
+    },
+    {
+      "input_id": "HQ-001",
+      "expected": {
+        "errors": [],
+        "warnings": []
+      },
+      "actual": {
+        "errors": [],
+        "warnings": []
+      },
+      "passed": true,
+      "preflight_wall_ms": 48.764
+    },
+    {
+      "input_id": "HQ-002",
+      "expected": {
+        "errors": [],
+        "warnings": []
+      },
+      "actual": {
+        "errors": [],
+        "warnings": []
+      },
+      "passed": true,
+      "preflight_wall_ms": 38.455
+    }
+  ],
+  "environment": {
+    "id": "ENV-WIN-001",
+    "inventory_file": "environment-current.json",
+    "sha256": "2c02bfcc00230c8bffde496aa25d236b69783cb1b396da7537dabd586f602e57"
+  },
+  "coordinate_fixture_equivalence": true,
+  "semantic_limits": {
+    "S-016": "decodable-opaque-blank; no semantic detector run",
+    "L-010": "structural-pass-does-not-prove-correct-visual-order",
+    "HQ-002": "real-alpha-with-visible-preexisting-fringe; decoding-pass-is-not-visual-quality-pass"
+  },
+  "scope": "preparation preflight only; no automatic detection, rigging, tracking, OBS or external export tested",
+  "passed": true
+}

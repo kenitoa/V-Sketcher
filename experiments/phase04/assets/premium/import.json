@@ -1,0 +1,31 @@
+{
+  "regions": {
+    "eye_right": [
+      510,
+      250,
+      615,
+      325
+    ],
+    "eye_left": [
+      635,
+      250,
+      741,
+      325
+    ],
+    "mouth": [
+      580,
+      360,
+      685,
+      429
+    ]
+  },
+  "size": [
+    1254,
+    1254
+  ],
+  "provenance": {
+    "neutral_sha256": "955e597230d4cdd15cd64c09ecf8f48686bbd5702f32e429109d581d68d6f442",
+    "expression_sha256": "e78602d341961d5562555fc95caf5f7538c9e00c1f281d26e71657f04e78132a"
+  },
+  "quality": "Premium source/state drawings; thin magenta/white alpha fringe remains unresolved; not final art approval"
+}

@@ -1,0 +1,19 @@
+{
+  "created": "2026-11-16T21:50:10+0900",
+  "scope": "Decision/document identity/link/preservation audit; not product functional tests",
+  "pass": true,
+  "errors": [],
+  "missing_local_links": [],
+  "task_count": 410,
+  "completed_tasks": 50,
+  "function_ids": 52,
+  "product_direction_ids": 12,
+  "acceptance_ids": 15,
+  "decisions": 12,
+  "product_gates": 26,
+  "m0_state": "HOLD",
+  "open_m0_revalidation": 5,
+  "phase02_payloads_preserved": 50,
+  "phase04_files_preserved": 94,
+  "policy_experiments_passed": 31
+}

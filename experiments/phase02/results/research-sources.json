@@ -1,0 +1,143 @@
+{
+  "checked_date_local": "2026-11-16",
+  "collected_at_utc": "2026-11-16T06:16:32.294194+00:00",
+  "method": "official-source HTTP retrieval; only response hashes/metadata retained, not full copyrighted pages",
+  "sources": [
+    {
+      "id": "OBS-BROWSER",
+      "url": "https://obsproject.com/kb/browser-source",
+      "final_url": "https://obsproject.com/kb/browser-source",
+      "http_status": 200,
+      "body_sha256": "6d07b19c5252e6b1625ba79990539a0759c2f3276501e4fa38a87e80d98f9bbb",
+      "bytes": 21862
+    },
+    {
+      "id": "OBS-LICENSE",
+      "url": "https://raw.githubusercontent.com/obsproject/obs-studio/master/COPYING",
+      "final_url": "https://raw.githubusercontent.com/obsproject/obs-studio/master/COPYING",
+      "http_status": 200,
+      "body_sha256": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643",
+      "bytes": 18092
+    },
+    {
+      "id": "STREAMLABS",
+      "url": "https://github.com/streamlabs/desktop",
+      "final_url": "https://github.com/streamlabs/desktop",
+      "http_status": 200,
+      "body_sha256": "cbbd817b4bebfe6975ba10518f53709ba4db3a1cf68b70c744d94d4680a01ead",
+      "bytes": 354072
+    },
+    {
+      "id": "INOCHI-SPEC",
+      "url": "https://docs.inochi2d.com/ja/latest/spec/inp/",
+      "final_url": "https://docs.inochi2d.com/ja/latest/spec/inp/",
+      "http_status": 200,
+      "body_sha256": "a8579a029fd55ee4bdedf690bd779c6bfbf1d153cd53cb1bd5697a279cba4677",
+      "bytes": 25043
+    },
+    {
+      "id": "INOCHI-LEGAL",
+      "url": "https://github.com/Inochi2D/inochi2d/wiki/Legal-Info",
+      "final_url": "https://github.com/Inochi2D/inochi2d/wiki/Legal-Info",
+      "http_status": 200,
+      "body_sha256": "8e7d8c70ecdd049399c8bfe435a955fdd4ef037808270751f31981d4b0976f59",
+      "bytes": 175399
+    },
+    {
+      "id": "INOCHI-SESSION",
+      "url": "https://github.com/Inochi2D/inochi-session",
+      "final_url": "https://github.com/Inochi2D/inochi-session",
+      "http_status": 200,
+      "body_sha256": "505e5204464947bd915dbf7b5cad403f9b084c2cda8954532678581b4aa46b8e",
+      "bytes": 225091
+    },
+    {
+      "id": "VTS-IMPORT",
+      "url": "https://github.com/DenchiSoft/VTubeStudio/wiki/Loading-your-own-Models",
+      "final_url": "https://github.com/DenchiSoft/VTubeStudio/wiki/Loading-your-own-Models",
+      "http_status": 200,
+      "body_sha256": "edb58e6a1456e8458602424dea104a9480eb7461269f65ee8f43bf14a8f9f4f6",
+      "bytes": 346500
+    },
+    {
+      "id": "VTS-API",
+      "url": "https://github.com/DenchiSoft/VTubeStudio",
+      "final_url": "https://github.com/DenchiSoft/VTubeStudio",
+      "http_status": 200,
+      "body_sha256": "fc0f95199f72f7e726496e626ccafef107e3765b237670e5dfdab7d5aa097d28",
+      "bytes": 1074665
+    },
+    {
+      "id": "LIVE2D-LICENSE",
+      "url": "https://www.live2d.com/en/sdk/license/",
+      "final_url": "https://www.live2d.com/en/sdk/license/",
+      "http_status": 200,
+      "body_sha256": "34053c57688a44ba954bb22871f5f9d4c560db9d30058e9a871b7a3309064e66",
+      "bytes": 60620
+    },
+    {
+      "id": "MP-FACE",
+      "url": "https://developers.google.com/edge/mediapipe/solutions/vision/face_landmarker?tab=Python",
+      "final_url": "https://developers.google.com/edge/mediapipe/solutions/vision/face_landmarker?tab=Python",
+      "http_status": 200,
+      "body_sha256": "e999b2ff8c6a41e26f9aa188f5fc259f338ab454c42648b314ec7d13362d01d0",
+      "bytes": 410080
+    },
+    {
+      "id": "MP-SETUP",
+      "url": "https://developers.google.com/edge/mediapipe/solutions/setup_python",
+      "final_url": "https://developers.google.com/edge/mediapipe/solutions/setup_python",
+      "http_status": 200,
+      "body_sha256": "dd89ca3e148b7da60af2f27c6bbb2469d69e020857222a36920140ac7eefe1d2",
+      "bytes": 246796
+    },
+    {
+      "id": "MP-LICENSE",
+      "url": "https://raw.githubusercontent.com/google-ai-edge/mediapipe/master/LICENSE",
+      "final_url": "https://raw.githubusercontent.com/google-ai-edge/mediapipe/master/LICENSE",
+      "http_status": 200,
+      "body_sha256": "8707eef0533987efc5b155d64761eeb6e20793f50b9bd1a68dad1cf4719d0ed8",
+      "bytes": 12331
+    },
+    {
+      "id": "MP-MODEL-CARD",
+      "url": "https://storage.googleapis.com/mediapipe-assets/Model%20Card%20MediaPipe%20Face%20Mesh%20V2.pdf",
+      "final_url": "https://storage.googleapis.com/mediapipe-assets/Model%20Card%20MediaPipe%20Face%20Mesh%20V2.pdf",
+      "http_status": 200,
+      "body_sha256": "c6add060f4ebfb37b2690136b6c711c7e5fcb7038baa2649ae3338b83979565a",
+      "bytes": 3476420
+    },
+    {
+      "id": "SAM2",
+      "url": "https://github.com/facebookresearch/sam2",
+      "final_url": "https://github.com/facebookresearch/sam2",
+      "http_status": 200,
+      "body_sha256": "58940344d36a0003b948fc001f39686c253ead469383fe216f4ba3c03b41d4f7",
+      "bytes": 370621
+    },
+    {
+      "id": "OPENCV-LICENSE",
+      "url": "https://opencv.org/license/",
+      "final_url": "https://opencv.org/license/",
+      "http_status": 200,
+      "body_sha256": "edda281de0a8ff1d15a8f12d32b9c9f6f3c0d455a7954d9a5aacc89af1bcac74",
+      "bytes": 136123
+    },
+    {
+      "id": "OPENCV-TRANSFORM",
+      "url": "https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html",
+      "final_url": "https://docs.opencv.org/4.13.0/da/d54/group__imgproc__transform.html",
+      "http_status": 200,
+      "body_sha256": "25d594c9afd4a332f62100e89dc58257dcc3799f95841720872eb93c17772526",
+      "bytes": 108808
+    },
+    {
+      "id": "PILLOW-LICENSE",
+      "url": "https://pillow.readthedocs.io/en/stable/about.html#license",
+      "final_url": "https://pillow.readthedocs.io/en/stable/about.html#license",
+      "http_status": 200,
+      "body_sha256": "9de3349f61fa7fd8836c707c324e7fb8bfaf1dce43095b2e0f2c3c12210e5233",
+      "bytes": 38517
+    }
+  ]
+}

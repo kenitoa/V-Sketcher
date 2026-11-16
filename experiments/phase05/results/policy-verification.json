@@ -1,0 +1,134 @@
+{
+  "created": "2026-11-16T21:24:44+0900",
+  "scope": "Policy fixtures and injected failures only. Not product integration, power-loss, actual disk-full or global-hotkey verification.",
+  "passed": 31,
+  "total": 31,
+  "checks": [
+    {
+      "name": "valid bundle and original content hash roundtrip",
+      "pass": true
+    },
+    {
+      "name": "fault after_flush reported",
+      "pass": true
+    },
+    {
+      "name": "fault after_flush preserves previous normal project",
+      "pass": true
+    },
+    {
+      "name": "fault backup reported",
+      "pass": true
+    },
+    {
+      "name": "fault backup preserves previous normal project",
+      "pass": true
+    },
+    {
+      "name": "fault before_replace reported",
+      "pass": true
+    },
+    {
+      "name": "fault before_replace preserves previous normal project",
+      "pass": true
+    },
+    {
+      "name": "post-commit interruption reported",
+      "pass": true
+    },
+    {
+      "name": "post-commit normal project and previous backup remain valid",
+      "pass": true
+    },
+    {
+      "name": "corrupt normal file is rejected",
+      "pass": true
+    },
+    {
+      "name": "last normal backup can be selected explicitly",
+      "pass": true
+    },
+    {
+      "name": "traversal archive rejected before extraction",
+      "pass": true
+    },
+    {
+      "name": "windows_path archive rejected before extraction",
+      "pass": true
+    },
+    {
+      "name": "backslash archive rejected before extraction",
+      "pass": true
+    },
+    {
+      "name": "case insensitive duplicate resources rejected",
+      "pass": true
+    },
+    {
+      "name": "future major version blocked",
+      "pass": true
+    },
+    {
+      "name": "future minor version opens read-only with unknown metadata preserved",
+      "pass": true
+    },
+    {
+      "name": "future minor cannot overwrite project",
+      "pass": true
+    },
+    {
+      "name": "expanded byte budget enforced",
+      "pass": true
+    },
+    {
+      "name": "changed asset bytes rejected",
+      "pass": true
+    },
+    {
+      "name": "second writer cannot silently replace a locked project",
+      "pass": true
+    },
+    {
+      "name": "cross-project completion rejected",
+      "pass": true
+    },
+    {
+      "name": "stale revision completion rejected",
+      "pass": true
+    },
+    {
+      "name": "cancelled job late completion rejected",
+      "pass": true
+    },
+    {
+      "name": "matching result applies once and increments edit revision",
+      "pass": true
+    },
+    {
+      "name": "duplicate completion no longer matches revision",
+      "pass": true
+    },
+    {
+      "name": "structural edit does not replace running snapshot",
+      "pass": true
+    },
+    {
+      "name": "staged runtime change waits for frame boundary",
+      "pass": true
+    },
+    {
+      "name": "explicit frame boundary commits complete snapshot",
+      "pass": true
+    },
+    {
+      "name": "save finishing after new edit leaves document dirty",
+      "pass": true
+    },
+    {
+      "name": "export snapshot remains tied to its captured revision",
+      "pass": true
+    }
+  ],
+  "fixture_directory": ".local/policy-607e51d9447e4b3995468613009c526c",
+  "script_sha256": "01b3c77cebcdee68483e0bc23d0cf9da003040832498d8f19a1114d41dcd1bb6"
+}

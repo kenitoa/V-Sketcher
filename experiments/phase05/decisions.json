@@ -1,0 +1,457 @@
+{
+  "schema_version": 1,
+  "contract_version": "1.0",
+  "date": "2026-11-16",
+  "scope": "Decisions and review completed, not product implementation or release approval",
+  "todo_completed_in_phase": [
+    "T-041",
+    "T-042",
+    "T-043",
+    "T-044",
+    "T-045",
+    "T-046",
+    "T-047",
+    "T-048",
+    "T-049",
+    "T-050"
+  ],
+  "decisions": [
+    {
+      "id": "DEC-01",
+      "decision": "Windows 11 x64, self-contained portable ZIP/EXE",
+      "state": "ADOPTED_IMPLEMENTATION_POLICY",
+      "owner": "Codex",
+      "date": "2026-11-16",
+      "todo": "T-041",
+      "implementation_or_release_validation_complete": false,
+      "revalidation": [
+        "M0-R05"
+      ],
+      "document": "docs/planning/05-decisions.md"
+    },
+    {
+      "id": "DEC-02",
+      "decision": "PNG/JPEG; explicit supported composition and 4096px/16MP target",
+      "state": "ADOPTED_IMPLEMENTATION_POLICY",
+      "owner": "Codex",
+      "date": "2026-11-16",
+      "todo": "T-042",
+      "implementation_or_release_validation_complete": false,
+      "revalidation": [
+        "M0-R02",
+        "M0-R03"
+      ],
+      "document": "docs/planning/05-decisions.md"
+    },
+    {
+      "id": "DEC-03",
+      "decision": "Transparent PNG folder and 2dparts bundle, explicit origins and 64-part target",
+      "state": "ADOPTED_IMPLEMENTATION_POLICY",
+      "owner": "Codex",
+      "date": "2026-11-16",
+      "todo": "T-042",
+      "implementation_or_release_validation_complete": false,
+      "revalidation": [
+        "M0-R02",
+        "M0-R05"
+      ],
+      "document": "docs/planning/05-decisions.md"
+    },
+    {
+      "id": "DEC-04",
+      "decision": "One premium style family, 64 valid combinations as release asset target",
+      "state": "ADOPTED_IMPLEMENTATION_POLICY",
+      "owner": "Codex",
+      "date": "2026-11-16",
+      "todo": "T-043",
+      "implementation_or_release_validation_complete": false,
+      "revalidation": [
+        "M0-R02"
+      ],
+      "document": "docs/planning/05-decisions.md"
+    },
+    {
+      "id": "DEC-05",
+      "decision": "Five normalized controls, GPU mesh/curves, 6deg/4.5pct-face motion target",
+      "state": "ADOPTED_IMPLEMENTATION_POLICY",
+      "owner": "Codex",
+      "date": "2026-11-16",
+      "todo": "T-043",
+      "implementation_or_release_validation_complete": false,
+      "revalidation": [
+        "M0-R01",
+        "M0-R02",
+        "M0-R04"
+      ],
+      "document": "docs/planning/05-decisions.md"
+    },
+    {
+      "id": "DEC-06",
+      "decision": "OBS 33.0.1 Browser Source; shared local WebGL2 output",
+      "state": "ADOPTED_IMPLEMENTATION_POLICY",
+      "owner": "Codex",
+      "date": "2026-11-16",
+      "todo": "T-044",
+      "implementation_or_release_validation_complete": false,
+      "revalidation": [
+        "M0-R01",
+        "M0-R05"
+      ],
+      "document": "docs/planning/05-decisions.md"
+    },
+    {
+      "id": "DEC-07",
+      "decision": "INP, Inochi Session v0.8.7 / SDK v0.8.6 compatibility profile",
+      "state": "ADOPTED_IMPLEMENTATION_POLICY",
+      "owner": "Codex",
+      "date": "2026-11-16",
+      "todo": "T-044",
+      "implementation_or_release_validation_complete": false,
+      "revalidation": [
+        "M0-R04"
+      ],
+      "document": "docs/planning/05-decisions.md"
+    },
+    {
+      "id": "DEC-08",
+      "decision": "2dsketch ZIP, hashes, revision snapshots, validated backups and atomic replacement",
+      "state": "ADOPTED_IMPLEMENTATION_POLICY",
+      "owner": "Codex",
+      "date": "2026-11-16",
+      "todo": "T-045",
+      "implementation_or_release_validation_complete": false,
+      "revalidation": [
+        "M0-R05"
+      ],
+      "document": "docs/planning/05-decisions.md"
+    },
+    {
+      "id": "DEC-09",
+      "decision": "Project/revision/job/generation isolation; frame-boundary runtime snapshots",
+      "state": "ADOPTED_IMPLEMENTATION_POLICY",
+      "owner": "Codex",
+      "date": "2026-11-16",
+      "todo": "T-046",
+      "implementation_or_release_validation_complete": false,
+      "revalidation": [
+        "M0-R05"
+      ],
+      "document": "docs/planning/05-decisions.md"
+    },
+    {
+      "id": "DEC-10",
+      "decision": "Local 2D processing; no required server/account or raw media retention",
+      "state": "ADOPTED_IMPLEMENTATION_POLICY",
+      "owner": "Codex",
+      "date": "2026-11-16",
+      "todo": "T-046",
+      "implementation_or_release_validation_complete": false,
+      "revalidation": [
+        "M0-R05"
+      ],
+      "document": "docs/planning/05-decisions.md"
+    },
+    {
+      "id": "DEC-11",
+      "decision": "Fixed performance/art/usability/sample gates v1.0; unmeasured is not pass",
+      "state": "ADOPTED_IMPLEMENTATION_POLICY",
+      "owner": "Codex",
+      "date": "2026-11-16",
+      "todo": "T-047",
+      "implementation_or_release_validation_complete": false,
+      "revalidation": [
+        "M0-R01",
+        "M0-R02",
+        "M0-R03",
+        "M0-R04",
+        "M0-R05"
+      ],
+      "document": "docs/planning/05-decisions.md"
+    },
+    {
+      "id": "DEC-12",
+      "decision": "Local hotkeys default; opt-in global registration with explicit failure/fallback",
+      "state": "ADOPTED_IMPLEMENTATION_POLICY",
+      "owner": "Codex",
+      "date": "2026-11-16",
+      "todo": "T-046",
+      "implementation_or_release_validation_complete": false,
+      "revalidation": [
+        "M0-R05"
+      ],
+      "document": "docs/planning/05-decisions.md"
+    }
+  ],
+  "selected_top_level_versions": {
+    "electron": "45.3.3",
+    "typescript": "7.0.2",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "vite": "8.3.8",
+    "@electron-forge/cli": "8.0.1",
+    "@electron-forge/maker-zip": "8.0.1",
+    "ajv": "8.20.0",
+    "pyinstaller": "6.22.3",
+    "mediapipe": "1.2.3",
+    "pillow": "13.0.0",
+    "opencv-contrib-python": "5.0.0.93",
+    "sounddevice": "0.5.6",
+    "ws": "8.23.0",
+    "python": "3.14.10",
+    "node": "24.22.3",
+    "npm": "11.19.1"
+  },
+  "dependency_lockfile_or_packaged_product_created": false,
+  "m0": {
+    "review_completed": true,
+    "passed": false,
+    "state": "HOLD",
+    "open_revalidation": [
+      {
+        "id": "M0-R01",
+        "title": "Shared GPU renderer and real-time OBS performance",
+        "gates": [
+          "PERF-01",
+          "PERF-02",
+          "PERF-03",
+          "OUT-01"
+        ],
+        "required_evidence": "Actual Electron/OBS GPU runs, three routes, fixed scenes and repeated load/latency records",
+        "state": "OPEN",
+        "owner": "Codex",
+        "document": "docs/planning/05-m0-review.md"
+      },
+      {
+        "id": "M0-R02",
+        "title": "Premium parts, automatic preparation, correction and microphone response",
+        "gates": [
+          "ART-01",
+          "ART-03",
+          "RUN-04"
+        ],
+        "required_evidence": "Real separated premium combinations and single/split samples; independent art review; real sound trials",
+        "state": "OPEN",
+        "owner": "Codex",
+        "document": "docs/planning/05-m0-review.md"
+      },
+      {
+        "id": "M0-R03",
+        "title": "Real beginner flow",
+        "gates": [
+          "UX-M0"
+        ],
+        "required_evidence": "At least three actual beginners, one first route each; observed correction and first motion without operator takeover",
+        "state": "OPEN",
+        "owner": "Codex",
+        "document": "docs/planning/05-m0-review.md"
+      },
+      {
+        "id": "M0-R04",
+        "title": "External motion preservation and independent use",
+        "gates": [
+          "OUT-02",
+          "OUT-03"
+        ],
+        "required_evidence": "Matched internal/native-target poses and expressions; direct independent native use and device-binding walkthrough",
+        "state": "OPEN",
+        "owner": "Codex",
+        "document": "docs/planning/05-m0-review.md"
+      },
+      {
+        "id": "M0-R05",
+        "title": "Packaged worker, offline resources and integrated state/storage policy",
+        "gates": [
+          "DATA-01"
+        ],
+        "required_evidence": "Developer-tool-free Windows package run, Unicode paths, actual IPC cancellation/revision isolation and normal-file preservation",
+        "state": "OPEN",
+        "owner": "Codex",
+        "document": "docs/planning/05-m0-review.md"
+      }
+    ]
+  },
+  "gates": [
+    {
+      "id": "PERF-01",
+      "contract_version": "1.0",
+      "product_gate_state": "NOT_RUN",
+      "document": "docs/planning/05-release-gates.md",
+      "historical_cpu_path_state": "FAIL",
+      "measured_cpu_canvas": [
+        640,
+        640
+      ],
+      "measured_cpu_fps": 14.083744897401502
+    },
+    {
+      "id": "PERF-02",
+      "contract_version": "1.0",
+      "product_gate_state": "NOT_RUN",
+      "document": "docs/planning/05-release-gates.md"
+    },
+    {
+      "id": "PERF-03",
+      "contract_version": "1.0",
+      "product_gate_state": "NOT_RUN",
+      "document": "docs/planning/05-release-gates.md"
+    },
+    {
+      "id": "PERF-04",
+      "contract_version": "1.0",
+      "product_gate_state": "NOT_RUN",
+      "document": "docs/planning/05-release-gates.md"
+    },
+    {
+      "id": "PERF-05",
+      "contract_version": "1.0",
+      "product_gate_state": "NOT_RUN",
+      "document": "docs/planning/05-release-gates.md"
+    },
+    {
+      "id": "PERF-06",
+      "contract_version": "1.0",
+      "product_gate_state": "NOT_RUN",
+      "document": "docs/planning/05-release-gates.md"
+    },
+    {
+      "id": "PERF-07",
+      "contract_version": "1.0",
+      "product_gate_state": "NOT_RUN",
+      "document": "docs/planning/05-release-gates.md"
+    },
+    {
+      "id": "RUN-01",
+      "contract_version": "1.0",
+      "product_gate_state": "NOT_RUN",
+      "document": "docs/planning/05-release-gates.md"
+    },
+    {
+      "id": "RUN-02",
+      "contract_version": "1.0",
+      "product_gate_state": "NOT_RUN",
+      "document": "docs/planning/05-release-gates.md",
+      "historical_spike_evidence": "LIMITED_PASS_NOT_PRODUCT_GATE_PASS"
+    },
+    {
+      "id": "RUN-03",
+      "contract_version": "1.0",
+      "product_gate_state": "NOT_RUN",
+      "document": "docs/planning/05-release-gates.md"
+    },
+    {
+      "id": "RUN-04",
+      "contract_version": "1.0",
+      "product_gate_state": "NOT_RUN",
+      "document": "docs/planning/05-release-gates.md"
+    },
+    {
+      "id": "RUN-05",
+      "contract_version": "1.0",
+      "product_gate_state": "NOT_RUN",
+      "document": "docs/planning/05-release-gates.md"
+    },
+    {
+      "id": "DATA-01",
+      "contract_version": "1.0",
+      "product_gate_state": "NOT_RUN",
+      "document": "docs/planning/05-release-gates.md",
+      "historical_spike_evidence": "LIMITED_PASS_NOT_PRODUCT_GATE_PASS"
+    },
+    {
+      "id": "ART-01",
+      "contract_version": "1.0",
+      "product_gate_state": "NOT_RUN",
+      "document": "docs/planning/05-release-gates.md"
+    },
+    {
+      "id": "ART-02",
+      "contract_version": "1.0",
+      "product_gate_state": "NOT_RUN",
+      "document": "docs/planning/05-release-gates.md"
+    },
+    {
+      "id": "ART-03",
+      "contract_version": "1.0",
+      "product_gate_state": "NOT_RUN",
+      "document": "docs/planning/05-release-gates.md"
+    },
+    {
+      "id": "OUT-01",
+      "contract_version": "1.0",
+      "product_gate_state": "NOT_RUN",
+      "document": "docs/planning/05-release-gates.md",
+      "historical_spike_evidence": "LIMITED_PASS_NOT_PRODUCT_GATE_PASS"
+    },
+    {
+      "id": "OUT-02",
+      "contract_version": "1.0",
+      "product_gate_state": "NOT_RUN",
+      "document": "docs/planning/05-release-gates.md",
+      "historical_spike_evidence": "LIMITED_PASS_NOT_PRODUCT_GATE_PASS"
+    },
+    {
+      "id": "OUT-03",
+      "contract_version": "1.0",
+      "product_gate_state": "NOT_RUN",
+      "document": "docs/planning/05-release-gates.md"
+    },
+    {
+      "id": "UX-M0",
+      "contract_version": "1.0",
+      "product_gate_state": "NOT_RUN",
+      "document": "docs/planning/05-release-gates.md"
+    },
+    {
+      "id": "UX-01",
+      "contract_version": "1.0",
+      "product_gate_state": "NOT_RUN",
+      "document": "docs/planning/05-release-gates.md"
+    },
+    {
+      "id": "UX-02",
+      "contract_version": "1.0",
+      "product_gate_state": "NOT_RUN",
+      "document": "docs/planning/05-release-gates.md"
+    },
+    {
+      "id": "UX-03",
+      "contract_version": "1.0",
+      "product_gate_state": "NOT_RUN",
+      "document": "docs/planning/05-release-gates.md"
+    },
+    {
+      "id": "UX-04",
+      "contract_version": "1.0",
+      "product_gate_state": "NOT_RUN",
+      "document": "docs/planning/05-release-gates.md"
+    },
+    {
+      "id": "UX-05",
+      "contract_version": "1.0",
+      "product_gate_state": "NOT_RUN",
+      "document": "docs/planning/05-release-gates.md"
+    },
+    {
+      "id": "UX-06",
+      "contract_version": "1.0",
+      "product_gate_state": "NOT_RUN",
+      "document": "docs/planning/05-release-gates.md"
+    }
+  ],
+  "actual_beginner_release_participants": 0,
+  "current_premium_parts_library_complete": false,
+  "mandatory_scope_preserved": [
+    "parts",
+    "single-image",
+    "split-image",
+    "in-app-runtime",
+    "broadcast",
+    "independent-2d-export",
+    "future-3d",
+    "future-self-developed-generation-model"
+  ],
+  "evidence": {
+    "policy_test": "experiments/phase05/results/policy-verification.json",
+    "existing_tracking_broadcast_export": "docs/planning/04-tracking-broadcast-export.md"
+  }
+}

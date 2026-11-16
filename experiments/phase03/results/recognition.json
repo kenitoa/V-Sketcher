@@ -1,0 +1,1582 @@
+{
+  "evaluation_reference": "known procedural fixture boxes, evaluation only; HQ visual checks separate",
+  "records": [
+    {
+      "input_id": "S-001",
+      "input_sha256": "6d899a13c74655275918c3e51019edf045217a635c51b11b9e736b6392e77e95",
+      "source_id": "SRC-PROCEDURAL-001",
+      "candidates": {
+        "mediapipe": {
+          "classification": "success",
+          "analysis": {
+            "method": "mediapipe",
+            "model_face_count": 1,
+            "target": null,
+            "face": [
+              160,
+              123,
+              360,
+              334
+            ],
+            "regions": {
+              "eye_right": [
+                184,
+                173,
+                229,
+                221
+              ],
+              "eye_left": [
+                284,
+                173,
+                329,
+                221
+              ],
+              "mouth": [
+                227,
+                250,
+                286,
+                271
+              ]
+            },
+            "observed": {
+              "eye_right": true,
+              "eye_left": true,
+              "mouth": true
+            },
+            "warnings": [],
+            "status": "success"
+          },
+          "reference_center_checks": {
+            "eye_right": {
+              "center_in_reference": true,
+              "center_error_px": 0.0
+            },
+            "eye_left": {
+              "center_in_reference": true,
+              "center_error_px": 0.0
+            },
+            "mouth": {
+              "center_in_reference": true,
+              "center_error_px": 2.5
+            }
+          },
+          "wall_ms": 49.97
+        },
+        "geometry": {
+          "classification": "partial",
+          "analysis": {
+            "method": "color-geometry",
+            "model_face_count": 0,
+            "target": null,
+            "face": [
+              151,
+              107,
+              362,
+              339
+            ],
+            "regions": {
+              "eye_right": [
+                185,
+                181,
+                233,
+                239
+              ],
+              "eye_left": [
+                280,
+                181,
+                328,
+                239
+              ],
+              "mouth": [
+                214,
+                258,
+                299,
+                304
+              ]
+            },
+            "observed": {
+              "eye_right": false,
+              "eye_left": false,
+              "mouth": false
+            },
+            "warnings": [
+              "color_geometry_estimate_requires_confirmation",
+              "unobserved_or_low_contrast:eye_right",
+              "unobserved_or_low_contrast:eye_left",
+              "unobserved_or_low_contrast:mouth"
+            ],
+            "status": "partial"
+          },
+          "reference_center_checks": {
+            "eye_right": {
+              "center_in_reference": true,
+              "center_error_px": 13.238
+            },
+            "eye_left": {
+              "center_in_reference": true,
+              "center_error_px": 13.238
+            },
+            "mouth": {
+              "center_in_reference": false,
+              "center_error_px": 23.0
+            }
+          },
+          "wall_ms": 8.558
+        }
+      }
+    },
+    {
+      "input_id": "S-002",
+      "input_sha256": "499bd40aae451435611225aec710fd98746b44fc18e7cead749e2b1d0512b841",
+      "source_id": "SRC-PROCEDURAL-001",
+      "candidates": {
+        "mediapipe": {
+          "classification": "success",
+          "analysis": {
+            "method": "mediapipe",
+            "model_face_count": 1,
+            "target": null,
+            "face": [
+              163,
+              125,
+              357,
+              331
+            ],
+            "regions": {
+              "eye_right": [
+                184,
+                173,
+                229,
+                221
+              ],
+              "eye_left": [
+                284,
+                173,
+                329,
+                221
+              ],
+              "mouth": [
+                227,
+                250,
+                286,
+                271
+              ]
+            },
+            "observed": {
+              "eye_right": true,
+              "eye_left": true,
+              "mouth": true
+            },
+            "warnings": [],
+            "status": "success"
+          },
+          "reference_center_checks": {
+            "eye_right": {
+              "center_in_reference": true,
+              "center_error_px": 0.0
+            },
+            "eye_left": {
+              "center_in_reference": true,
+              "center_error_px": 0.0
+            },
+            "mouth": {
+              "center_in_reference": true,
+              "center_error_px": 2.5
+            }
+          },
+          "wall_ms": 38.726
+        },
+        "geometry": {
+          "classification": "partial",
+          "analysis": {
+            "method": "color-geometry",
+            "model_face_count": 0,
+            "target": null,
+            "face": [
+              151,
+              107,
+              362,
+              339
+            ],
+            "regions": {
+              "eye_right": [
+                185,
+                181,
+                233,
+                239
+              ],
+              "eye_left": [
+                280,
+                181,
+                328,
+                239
+              ],
+              "mouth": [
+                214,
+                258,
+                299,
+                304
+              ]
+            },
+            "observed": {
+              "eye_right": false,
+              "eye_left": false,
+              "mouth": false
+            },
+            "warnings": [
+              "color_geometry_estimate_requires_confirmation",
+              "unobserved_or_low_contrast:eye_right",
+              "unobserved_or_low_contrast:eye_left",
+              "unobserved_or_low_contrast:mouth"
+            ],
+            "status": "partial"
+          },
+          "reference_center_checks": {
+            "eye_right": {
+              "center_in_reference": true,
+              "center_error_px": 13.238
+            },
+            "eye_left": {
+              "center_in_reference": true,
+              "center_error_px": 13.238
+            },
+            "mouth": {
+              "center_in_reference": false,
+              "center_error_px": 23.0
+            }
+          },
+          "wall_ms": 17.469
+        }
+      }
+    },
+    {
+      "input_id": "S-003",
+      "input_sha256": "661194468d7569b6ec99f6cc62893b7a205e5cf1ac72f4a659a8c3c39f8ddba0",
+      "source_id": "SRC-PROCEDURAL-001",
+      "candidates": {
+        "mediapipe": {
+          "classification": "success",
+          "analysis": {
+            "method": "mediapipe",
+            "model_face_count": 1,
+            "target": null,
+            "face": [
+              142,
+              130,
+              341,
+              326
+            ],
+            "regions": {
+              "eye_right": [
+                169,
+                187,
+                217,
+                237
+              ],
+              "eye_left": [
+                267,
+                162,
+                312,
+                210
+              ],
+              "mouth": [
+                228,
+                244,
+                285,
+                272
+              ]
+            },
+            "observed": {
+              "eye_right": true,
+              "eye_left": true,
+              "mouth": true
+            },
+            "warnings": [],
+            "status": "success"
+          },
+          "reference_center_checks": {
+            "eye_right": {
+              "center_in_reference": true,
+              "center_error_px": 0.197
+            },
+            "eye_left": {
+              "center_in_reference": true,
+              "center_error_px": 0.061
+            },
+            "mouth": {
+              "center_in_reference": true,
+              "center_error_px": 0.538
+            }
+          },
+          "wall_ms": 45.515
+        },
+        "geometry": {
+          "classification": "partial",
+          "analysis": {
+            "method": "color-geometry",
+            "model_face_count": 0,
+            "target": null,
+            "face": [
+              136,
+              104,
+              349,
+              338
+            ],
+            "regions": {
+              "eye_right": [
+                170,
+                179,
+                219,
+                237
+              ],
+              "eye_left": [
+                266,
+                179,
+                315,
+                237
+              ],
+              "mouth": [
+                200,
+                256,
+                285,
+                303
+              ]
+            },
+            "observed": {
+              "eye_right": false,
+              "eye_left": false,
+              "mouth": false
+            },
+            "warnings": [
+              "color_geometry_estimate_requires_confirmation",
+              "unobserved_or_low_contrast:eye_right",
+              "unobserved_or_low_contrast:eye_left",
+              "unobserved_or_low_contrast:mouth"
+            ],
+            "status": "partial"
+          },
+          "reference_center_checks": {
+            "eye_right": {
+              "center_in_reference": true,
+              "center_error_px": 4.137
+            },
+            "eye_left": {
+              "center_in_reference": true,
+              "center_error_px": 22.082
+            },
+            "mouth": {
+              "center_in_reference": false,
+              "center_error_px": 26.097
+            }
+          },
+          "wall_ms": 10.937
+        }
+      }
+    },
+    {
+      "input_id": "S-004",
+      "input_sha256": "af6d13fd33f09f2281e1e0755e38e7a6697e5fd9c679e8907295b06b0fc7bb64",
+      "source_id": "SRC-PROCEDURAL-001",
+      "candidates": {
+        "mediapipe": {
+          "classification": "partial",
+          "analysis": {
+            "method": "color-geometry",
+            "model_face_count": 0,
+            "target": null,
+            "face": [
+              151,
+              124,
+              362,
+              356
+            ],
+            "regions": {
+              "eye_right": [
+                185,
+                198,
+                233,
+                256
+              ],
+              "eye_left": [
+                280,
+                198,
+                328,
+                256
+              ],
+              "mouth": [
+                214,
+                275,
+                299,
+                321
+              ]
+            },
+            "observed": {
+              "eye_right": false,
+              "eye_left": false,
+              "mouth": false
+            },
+            "warnings": [
+              "color_geometry_estimate_requires_confirmation",
+              "unobserved_or_low_contrast:eye_right",
+              "unobserved_or_low_contrast:eye_left",
+              "unobserved_or_low_contrast:mouth"
+            ],
+            "status": "partial"
+          },
+          "reference_center_checks": {
+            "eye_right": {
+              "center_in_reference": false,
+              "center_error_px": 30.104
+            },
+            "eye_left": {
+              "center_in_reference": false,
+              "center_error_px": 30.104
+            },
+            "mouth": {
+              "center_in_reference": false,
+              "center_error_px": 40.0
+            }
+          },
+          "wall_ms": 32.015
+        },
+        "geometry": {
+          "classification": "partial",
+          "analysis": {
+            "method": "color-geometry",
+            "model_face_count": 0,
+            "target": null,
+            "face": [
+              151,
+              124,
+              362,
+              356
+            ],
+            "regions": {
+              "eye_right": [
+                185,
+                198,
+                233,
+                256
+              ],
+              "eye_left": [
+                280,
+                198,
+                328,
+                256
+              ],
+              "mouth": [
+                214,
+                275,
+                299,
+                321
+              ]
+            },
+            "observed": {
+              "eye_right": false,
+              "eye_left": false,
+              "mouth": false
+            },
+            "warnings": [
+              "color_geometry_estimate_requires_confirmation",
+              "unobserved_or_low_contrast:eye_right",
+              "unobserved_or_low_contrast:eye_left",
+              "unobserved_or_low_contrast:mouth"
+            ],
+            "status": "partial"
+          },
+          "reference_center_checks": {
+            "eye_right": {
+              "center_in_reference": false,
+              "center_error_px": 30.104
+            },
+            "eye_left": {
+              "center_in_reference": false,
+              "center_error_px": 30.104
+            },
+            "mouth": {
+              "center_in_reference": false,
+              "center_error_px": 40.0
+            }
+          },
+          "wall_ms": 7.417
+        }
+      }
+    },
+    {
+      "input_id": "S-005",
+      "input_sha256": "c2ec4a446805220a5f6fddcb58c585c4ffbf0364a3541ea4dbd62d66aafe167b",
+      "source_id": "SRC-PROCEDURAL-001",
+      "candidates": {
+        "mediapipe": {
+          "classification": "partial",
+          "analysis": {
+            "method": "color-geometry",
+            "model_face_count": 0,
+            "target": null,
+            "face": [
+              151,
+              107,
+              362,
+              339
+            ],
+            "regions": {
+              "eye_right": [
+                185,
+                181,
+                233,
+                239
+              ],
+              "eye_left": [
+                280,
+                181,
+                328,
+                239
+              ],
+              "mouth": [
+                214,
+                258,
+                299,
+                304
+              ]
+            },
+            "observed": {
+              "eye_right": false,
+              "eye_left": false,
+              "mouth": false
+            },
+            "warnings": [
+              "color_geometry_estimate_requires_confirmation",
+              "unobserved_or_low_contrast:eye_right",
+              "unobserved_or_low_contrast:eye_left",
+              "unobserved_or_low_contrast:mouth"
+            ],
+            "status": "partial"
+          },
+          "reference_center_checks": {
+            "eye_right": {
+              "center_in_reference": true,
+              "center_error_px": 13.238
+            },
+            "eye_left": {
+              "center_in_reference": true,
+              "center_error_px": 13.238
+            },
+            "mouth": {
+              "center_in_reference": false,
+              "center_error_px": 23.0
+            }
+          },
+          "wall_ms": 26.689
+        },
+        "geometry": {
+          "classification": "partial",
+          "analysis": {
+            "method": "color-geometry",
+            "model_face_count": 0,
+            "target": null,
+            "face": [
+              151,
+              107,
+              362,
+              339
+            ],
+            "regions": {
+              "eye_right": [
+                185,
+                181,
+                233,
+                239
+              ],
+              "eye_left": [
+                280,
+                181,
+                328,
+                239
+              ],
+              "mouth": [
+                214,
+                258,
+                299,
+                304
+              ]
+            },
+            "observed": {
+              "eye_right": false,
+              "eye_left": false,
+              "mouth": false
+            },
+            "warnings": [
+              "color_geometry_estimate_requires_confirmation",
+              "unobserved_or_low_contrast:eye_right",
+              "unobserved_or_low_contrast:eye_left",
+              "unobserved_or_low_contrast:mouth"
+            ],
+            "status": "partial"
+          },
+          "reference_center_checks": {
+            "eye_right": {
+              "center_in_reference": true,
+              "center_error_px": 13.238
+            },
+            "eye_left": {
+              "center_in_reference": true,
+              "center_error_px": 13.238
+            },
+            "mouth": {
+              "center_in_reference": false,
+              "center_error_px": 23.0
+            }
+          },
+          "wall_ms": 28.109
+        }
+      }
+    },
+    {
+      "input_id": "S-006",
+      "input_sha256": "643fdd4640237520cb40813f286cecc06d022cf0c6acd479c63df1c89ac600fb",
+      "source_id": "SRC-PROCEDURAL-001",
+      "candidates": {
+        "mediapipe": {
+          "classification": "failed",
+          "reason": "character_or_face_not_found",
+          "wall_ms": 21.793
+        },
+        "geometry": {
+          "classification": "failed",
+          "reason": "character_or_face_not_found",
+          "wall_ms": 3.082
+        }
+      }
+    },
+    {
+      "input_id": "S-007",
+      "input_sha256": "48b8ef1ae674dac24483733c182a13ee85361048a7632a115a366b8cd4ec920b",
+      "source_id": "SRC-PROCEDURAL-001",
+      "candidates": {
+        "mediapipe": {
+          "classification": "partial",
+          "reason": "explicit_target_selection_required",
+          "face_boxes": [
+            [
+              154,
+              129,
+              358,
+              326
+            ],
+            [
+              547,
+              133,
+              741,
+              321
+            ]
+          ],
+          "wall_ms": 85.673
+        },
+        "geometry": {
+          "classification": "partial",
+          "analysis": {
+            "method": "color-geometry",
+            "model_face_count": 0,
+            "target": null,
+            "face": [
+              541,
+              107,
+              752,
+              339
+            ],
+            "regions": {
+              "eye_right": [
+                575,
+                181,
+                623,
+                239
+              ],
+              "eye_left": [
+                670,
+                181,
+                718,
+                239
+              ],
+              "mouth": [
+                604,
+                258,
+                689,
+                304
+              ]
+            },
+            "observed": {
+              "eye_right": false,
+              "eye_left": false,
+              "mouth": false
+            },
+            "warnings": [
+              "color_geometry_estimate_requires_confirmation",
+              "unobserved_or_low_contrast:eye_right",
+              "unobserved_or_low_contrast:eye_left",
+              "unobserved_or_low_contrast:mouth"
+            ],
+            "status": "partial"
+          },
+          "reference_center_checks": {},
+          "wall_ms": 18.529
+        }
+      }
+    },
+    {
+      "input_id": "S-008",
+      "input_sha256": "18f11970f06c12be2a3014d7d25148fa8e039eaa72758357c26eac6607fcd9b8",
+      "source_id": "SRC-PROCEDURAL-001",
+      "candidates": {
+        "mediapipe": {
+          "classification": "success",
+          "analysis": {
+            "method": "mediapipe",
+            "model_face_count": 1,
+            "target": null,
+            "face": [
+              157,
+              123,
+              355,
+              336
+            ],
+            "regions": {
+              "eye_right": [
+                184,
+                173,
+                229,
+                221
+              ],
+              "eye_left": [
+                284,
+                173,
+                329,
+                221
+              ],
+              "mouth": [
+                227,
+                250,
+                286,
+                271
+              ]
+            },
+            "observed": {
+              "eye_right": true,
+              "eye_left": true,
+              "mouth": true
+            },
+            "warnings": [],
+            "status": "success"
+          },
+          "reference_center_checks": {
+            "eye_right": {
+              "center_in_reference": true,
+              "center_error_px": 0.0
+            },
+            "eye_left": {
+              "center_in_reference": true,
+              "center_error_px": 0.0
+            },
+            "mouth": {
+              "center_in_reference": true,
+              "center_error_px": 2.5
+            }
+          },
+          "wall_ms": 38.058
+        },
+        "geometry": {
+          "classification": "failed",
+          "reason": "character_or_face_not_found",
+          "wall_ms": 7.88
+        }
+      }
+    },
+    {
+      "input_id": "S-009",
+      "input_sha256": "ea7660fdf46295dd6fa10891f3fd2c6ed25f6e76d6df88a23d4e8c90901aeff1",
+      "source_id": "SRC-PROCEDURAL-001",
+      "candidates": {
+        "mediapipe": {
+          "classification": "success",
+          "analysis": {
+            "method": "mediapipe",
+            "model_face_count": 1,
+            "target": null,
+            "face": [
+              159,
+              128,
+              360,
+              333
+            ],
+            "regions": {
+              "eye_right": [
+                184,
+                173,
+                229,
+                221
+              ],
+              "eye_left": [
+                284,
+                173,
+                329,
+                221
+              ],
+              "mouth": [
+                227,
+                250,
+                286,
+                271
+              ]
+            },
+            "observed": {
+              "eye_right": true,
+              "eye_left": true,
+              "mouth": true
+            },
+            "warnings": [],
+            "status": "success"
+          },
+          "reference_center_checks": {
+            "eye_right": {
+              "center_in_reference": true,
+              "center_error_px": 0.0
+            },
+            "eye_left": {
+              "center_in_reference": true,
+              "center_error_px": 0.0
+            },
+            "mouth": {
+              "center_in_reference": true,
+              "center_error_px": 2.5
+            }
+          },
+          "wall_ms": 37.308
+        },
+        "geometry": {
+          "classification": "partial",
+          "analysis": {
+            "method": "color-geometry",
+            "model_face_count": 0,
+            "target": null,
+            "face": [
+              151,
+              107,
+              362,
+              339
+            ],
+            "regions": {
+              "eye_right": [
+                185,
+                181,
+                233,
+                239
+              ],
+              "eye_left": [
+                280,
+                181,
+                328,
+                239
+              ],
+              "mouth": [
+                214,
+                258,
+                299,
+                304
+              ]
+            },
+            "observed": {
+              "eye_right": false,
+              "eye_left": false,
+              "mouth": false
+            },
+            "warnings": [
+              "color_geometry_estimate_requires_confirmation",
+              "unobserved_or_low_contrast:eye_right",
+              "unobserved_or_low_contrast:eye_left",
+              "unobserved_or_low_contrast:mouth"
+            ],
+            "status": "partial"
+          },
+          "reference_center_checks": {
+            "eye_right": {
+              "center_in_reference": true,
+              "center_error_px": 13.238
+            },
+            "eye_left": {
+              "center_in_reference": true,
+              "center_error_px": 13.238
+            },
+            "mouth": {
+              "center_in_reference": false,
+              "center_error_px": 23.0
+            }
+          },
+          "wall_ms": 8.453
+        }
+      }
+    },
+    {
+      "input_id": "S-010",
+      "input_sha256": "c2437508349ebe16959c9c682a3a4d2c0fb6e1fc6d1cf7304e5425935a1012f9",
+      "source_id": "SRC-PROCEDURAL-001",
+      "candidates": {
+        "mediapipe": {
+          "classification": "partial",
+          "analysis": {
+            "method": "mediapipe",
+            "model_face_count": 1,
+            "target": null,
+            "face": [
+              29,
+              24,
+              66,
+              61
+            ],
+            "regions": {
+              "eye_right": [
+                34,
+                32,
+                44,
+                40
+              ],
+              "eye_left": [
+                51,
+                35,
+                62,
+                43
+              ],
+              "mouth": [
+                38,
+                48,
+                54,
+                57
+              ]
+            },
+            "observed": {
+              "eye_right": true,
+              "eye_left": true,
+              "mouth": true
+            },
+            "warnings": [],
+            "status": "success"
+          },
+          "reference_center_checks": {
+            "eye_right": {
+              "center_in_reference": true,
+              "center_error_px": 0.979
+            },
+            "eye_left": {
+              "center_in_reference": true,
+              "center_error_px": 2.279
+            },
+            "mouth": {
+              "center_in_reference": false,
+              "center_error_px": 4.626
+            }
+          },
+          "wall_ms": 17.718
+        },
+        "geometry": {
+          "classification": "partial",
+          "analysis": {
+            "method": "color-geometry",
+            "model_face_count": 0,
+            "target": null,
+            "face": [
+              28,
+              21,
+              68,
+              65
+            ],
+            "regions": {
+              "eye_right": [
+                34,
+                35,
+                44,
+                46
+              ],
+              "eye_left": [
+                52,
+                35,
+                62,
+                46
+              ],
+              "mouth": [
+                40,
+                50,
+                56,
+                58
+              ]
+            },
+            "observed": {
+              "eye_right": false,
+              "eye_left": false,
+              "mouth": false
+            },
+            "warnings": [
+              "color_geometry_estimate_requires_confirmation",
+              "unobserved_or_low_contrast:eye_right",
+              "unobserved_or_low_contrast:eye_left",
+              "unobserved_or_low_contrast:mouth"
+            ],
+            "status": "partial"
+          },
+          "reference_center_checks": {
+            "eye_right": {
+              "center_in_reference": true,
+              "center_error_px": 3.574
+            },
+            "eye_left": {
+              "center_in_reference": true,
+              "center_error_px": 3.593
+            },
+            "mouth": {
+              "center_in_reference": false,
+              "center_error_px": 5.626
+            }
+          },
+          "wall_ms": 1.829
+        }
+      }
+    },
+    {
+      "input_id": "S-011",
+      "input_sha256": "f6ca130a67e5f4db902dddcbf15f06303a9f5ce406b878013c0e3f27fdfb711c",
+      "source_id": "SRC-PROCEDURAL-001",
+      "candidates": {
+        "mediapipe": {
+          "classification": "partial",
+          "analysis": {
+            "method": "color-geometry",
+            "model_face_count": 0,
+            "target": null,
+            "face": [
+              152,
+              112,
+              360,
+              352
+            ],
+            "regions": {
+              "eye_right": [
+                185,
+                189,
+                233,
+                249
+              ],
+              "eye_left": [
+                279,
+                189,
+                327,
+                249
+              ],
+              "mouth": [
+                214,
+                268,
+                298,
+                316
+              ]
+            },
+            "observed": {
+              "eye_right": false,
+              "eye_left": false,
+              "mouth": false
+            },
+            "warnings": [
+              "color_geometry_estimate_requires_confirmation",
+              "unobserved_or_low_contrast:eye_right",
+              "unobserved_or_low_contrast:eye_left",
+              "unobserved_or_low_contrast:mouth"
+            ],
+            "status": "partial"
+          },
+          "reference_center_checks": {
+            "eye_right": {
+              "center_in_reference": true,
+              "center_error_px": 22.142
+            },
+            "eye_left": {
+              "center_in_reference": true,
+              "center_error_px": 22.277
+            },
+            "mouth": {
+              "center_in_reference": false,
+              "center_error_px": 34.004
+            }
+          },
+          "wall_ms": 36.535
+        },
+        "geometry": {
+          "classification": "partial",
+          "analysis": {
+            "method": "color-geometry",
+            "model_face_count": 0,
+            "target": null,
+            "face": [
+              152,
+              112,
+              360,
+              352
+            ],
+            "regions": {
+              "eye_right": [
+                185,
+                189,
+                233,
+                249
+              ],
+              "eye_left": [
+                279,
+                189,
+                327,
+                249
+              ],
+              "mouth": [
+                214,
+                268,
+                298,
+                316
+              ]
+            },
+            "observed": {
+              "eye_right": false,
+              "eye_left": false,
+              "mouth": false
+            },
+            "warnings": [
+              "color_geometry_estimate_requires_confirmation",
+              "unobserved_or_low_contrast:eye_right",
+              "unobserved_or_low_contrast:eye_left",
+              "unobserved_or_low_contrast:mouth"
+            ],
+            "status": "partial"
+          },
+          "reference_center_checks": {
+            "eye_right": {
+              "center_in_reference": true,
+              "center_error_px": 22.142
+            },
+            "eye_left": {
+              "center_in_reference": true,
+              "center_error_px": 22.277
+            },
+            "mouth": {
+              "center_in_reference": false,
+              "center_error_px": 34.004
+            }
+          },
+          "wall_ms": 7.409
+        }
+      }
+    },
+    {
+      "input_id": "S-012",
+      "input_sha256": "b262bd68d44f93637b9949caf7ff7ce0b6b6ed839c3a2468681952b215ec4d95",
+      "source_id": "SRC-PROCEDURAL-001",
+      "candidates": {
+        "mediapipe": {
+          "classification": "failed",
+          "reason": "empty_image",
+          "wall_ms": 3.026
+        },
+        "geometry": {
+          "classification": "failed",
+          "reason": "empty_image",
+          "wall_ms": 2.617
+        }
+      }
+    },
+    {
+      "input_id": "S-013",
+      "input_sha256": "9e385de89a69638f8c3ebcc38468bb2aeb6ba67c317acd9ef49e1ab322b58bd5",
+      "source_id": "SRC-PROCEDURAL-001",
+      "candidates": {
+        "mediapipe": {
+          "classification": "failed",
+          "reason": "cannot identify image file 'C:\\\\Users\\\\abc20\\\\Desktop\\\\포트폴리오용\\\\개발중\\\\2DSketcher\\\\experiments\\\\phase02\\\\assets\\\\single\\\\S-013.png'",
+          "wall_ms": 111.257
+        },
+        "geometry": {
+          "classification": "failed",
+          "reason": "cannot identify image file 'C:\\\\Users\\\\abc20\\\\Desktop\\\\포트폴리오용\\\\개발중\\\\2DSketcher\\\\experiments\\\\phase02\\\\assets\\\\single\\\\S-013.png'",
+          "wall_ms": 0.473
+        }
+      }
+    },
+    {
+      "input_id": "S-014",
+      "input_sha256": "718e10f71a8d0a5f9085d2ded57b813e836223731d5f20482a3bab98862e7e9f",
+      "source_id": "SRC-PROCEDURAL-001",
+      "candidates": {
+        "mediapipe": {
+          "classification": "success",
+          "analysis": {
+            "method": "mediapipe",
+            "model_face_count": 1,
+            "target": null,
+            "face": [
+              162,
+              126,
+              359,
+              334
+            ],
+            "regions": {
+              "eye_right": [
+                184,
+                173,
+                229,
+                221
+              ],
+              "eye_left": [
+                284,
+                173,
+                329,
+                221
+              ],
+              "mouth": [
+                227,
+                252,
+                286,
+                271
+              ]
+            },
+            "observed": {
+              "eye_right": true,
+              "eye_left": true,
+              "mouth": true
+            },
+            "warnings": [],
+            "status": "success"
+          },
+          "reference_center_checks": {
+            "eye_right": {
+              "center_in_reference": true,
+              "center_error_px": 0.0
+            },
+            "eye_left": {
+              "center_in_reference": true,
+              "center_error_px": 0.0
+            },
+            "mouth": {
+              "center_in_reference": true,
+              "center_error_px": 3.5
+            }
+          },
+          "wall_ms": 41.957
+        },
+        "geometry": {
+          "classification": "partial",
+          "analysis": {
+            "method": "color-geometry",
+            "model_face_count": 0,
+            "target": null,
+            "face": [
+              151,
+              108,
+              362,
+              340
+            ],
+            "regions": {
+              "eye_right": [
+                185,
+                182,
+                233,
+                240
+              ],
+              "eye_left": [
+                280,
+                182,
+                328,
+                240
+              ],
+              "mouth": [
+                214,
+                259,
+                299,
+                305
+              ]
+            },
+            "observed": {
+              "eye_right": false,
+              "eye_left": false,
+              "mouth": false
+            },
+            "warnings": [
+              "color_geometry_estimate_requires_confirmation",
+              "unobserved_or_low_contrast:eye_right",
+              "unobserved_or_low_contrast:eye_left",
+              "unobserved_or_low_contrast:mouth"
+            ],
+            "status": "partial"
+          },
+          "reference_center_checks": {
+            "eye_right": {
+              "center_in_reference": true,
+              "center_error_px": 14.221
+            },
+            "eye_left": {
+              "center_in_reference": true,
+              "center_error_px": 14.221
+            },
+            "mouth": {
+              "center_in_reference": false,
+              "center_error_px": 24.0
+            }
+          },
+          "wall_ms": 11.463
+        }
+      }
+    },
+    {
+      "input_id": "S-015",
+      "input_sha256": "969bf9c4f2e1331b11c41647ffdd03b16fd2cca89cf69587504b032c59c56152",
+      "source_id": "SRC-PROCEDURAL-001",
+      "candidates": {
+        "mediapipe": {
+          "classification": "success",
+          "analysis": {
+            "method": "mediapipe",
+            "model_face_count": 1,
+            "target": null,
+            "face": [
+              472,
+              397,
+              1051,
+              975
+            ],
+            "regions": {
+              "eye_right": [
+                552,
+                519,
+                687,
+                664
+              ],
+              "eye_left": [
+                852,
+                519,
+                987,
+                664
+              ],
+              "mouth": [
+                679,
+                748,
+                860,
+                815
+              ]
+            },
+            "observed": {
+              "eye_right": true,
+              "eye_left": true,
+              "mouth": true
+            },
+            "warnings": [],
+            "status": "success"
+          },
+          "reference_center_checks": {
+            "eye_right": {
+              "center_in_reference": true,
+              "center_error_px": 0.5
+            },
+            "eye_left": {
+              "center_in_reference": true,
+              "center_error_px": 0.5
+            },
+            "mouth": {
+              "center_in_reference": true,
+              "center_error_px": 7.5
+            }
+          },
+          "wall_ms": 299.886
+        },
+        "geometry": {
+          "classification": "partial",
+          "analysis": {
+            "method": "color-geometry",
+            "model_face_count": 0,
+            "target": null,
+            "face": [
+              453,
+              321,
+              1086,
+              1017
+            ],
+            "regions": {
+              "eye_right": [
+                554,
+                544,
+                700,
+                718
+              ],
+              "eye_left": [
+                839,
+                544,
+                985,
+                718
+              ],
+              "mouth": [
+                643,
+                773,
+                896,
+                913
+              ]
+            },
+            "observed": {
+              "eye_right": false,
+              "eye_left": false,
+              "mouth": false
+            },
+            "warnings": [
+              "color_geometry_estimate_requires_confirmation",
+              "unobserved_or_low_contrast:eye_right",
+              "unobserved_or_low_contrast:eye_left",
+              "unobserved_or_low_contrast:mouth"
+            ],
+            "status": "partial"
+          },
+          "reference_center_checks": {
+            "eye_right": {
+              "center_in_reference": true,
+              "center_error_px": 40.697
+            },
+            "eye_left": {
+              "center_in_reference": true,
+              "center_error_px": 40.697
+            },
+            "mouth": {
+              "center_in_reference": false,
+              "center_error_px": 69.0
+            }
+          },
+          "wall_ms": 96.218
+        }
+      }
+    },
+    {
+      "input_id": "S-016",
+      "input_sha256": "ed46a97e495c041df6b11ef4b3508e39885ea5ebaeefde1d3e69817f908944eb",
+      "source_id": "SRC-PROCEDURAL-001",
+      "candidates": {
+        "mediapipe": {
+          "classification": "failed",
+          "reason": "character_or_face_not_found",
+          "wall_ms": 29.924
+        },
+        "geometry": {
+          "classification": "failed",
+          "reason": "character_or_face_not_found",
+          "wall_ms": 9.068
+        }
+      }
+    },
+    {
+      "input_id": "HQ-001",
+      "input_sha256": "c28ec8ff0da80361e61d0c6c3a242fb204feff491887b9ab304c54c015fec961",
+      "source_id": "SRC-IMAGEGEN-001",
+      "candidates": {
+        "mediapipe": {
+          "classification": "partial",
+          "analysis": {
+            "method": "mediapipe",
+            "model_face_count": 1,
+            "target": null,
+            "face": [
+              427,
+              317,
+              843,
+              731
+            ],
+            "regions": {
+              "eye_right": [
+                473,
+                423,
+                592,
+                506
+              ],
+              "eye_left": [
+                681,
+                419,
+                802,
+                502
+              ],
+              "mouth": [
+                572,
+                596,
+                717,
+                693
+              ]
+            },
+            "observed": {
+              "eye_right": true,
+              "eye_left": true,
+              "mouth": true
+            },
+            "warnings": [],
+            "status": "success"
+          },
+          "reference_center_checks": {},
+          "wall_ms": 205.549
+        },
+        "geometry": {
+          "classification": "failed",
+          "reason": "character_or_face_not_found",
+          "wall_ms": 159.582
+        }
+      },
+      "quality_gate": "partial: high-detail appearance and alpha/estimated-motion quality need further correction; detection is not quality approval"
+    },
+    {
+      "input_id": "HQ-002",
+      "input_sha256": "b6bbba73006094198dab988bdae5dfada8a50119f697373581c5d745b41f015b",
+      "source_id": "SRC-IMAGEGEN-001",
+      "candidates": {
+        "mediapipe": {
+          "classification": "partial",
+          "analysis": {
+            "method": "mediapipe",
+            "model_face_count": 1,
+            "target": null,
+            "face": [
+              507,
+              206,
+              746,
+              452
+            ],
+            "regions": {
+              "eye_right": [
+                534,
+                262,
+                606,
+                312
+              ],
+              "eye_left": [
+                657,
+                267,
+                725,
+                314
+              ],
+              "mouth": [
+                592,
+                379,
+                679,
+                435
+              ]
+            },
+            "observed": {
+              "eye_right": true,
+              "eye_left": true,
+              "mouth": true
+            },
+            "warnings": [],
+            "status": "success"
+          },
+          "reference_center_checks": {},
+          "wall_ms": 231.578
+        },
+        "geometry": {
+          "classification": "failed",
+          "reason": "character_or_face_not_found",
+          "wall_ms": 91.497
+        }
+      },
+      "quality_gate": "partial: high-detail appearance and alpha/estimated-motion quality need further correction; detection is not quality approval"
+    }
+  ]
+}

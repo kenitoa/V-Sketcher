@@ -1,0 +1,1917 @@
+{
+  "duration_s": 30.6136070000357,
+  "source_screenshot": "results/obs-encoded-load-source.png",
+  "conditions": {
+    "input": "live",
+    "renderer": "preview",
+    "avatar_canvas": [
+      640,
+      640
+    ],
+    "obs_video": {
+      "baseHeight": 1080,
+      "baseWidth": 1920,
+      "fpsDenominator": 1,
+      "fpsNumerator": 30,
+      "outputHeight": 720,
+      "outputWidth": 1280
+    },
+    "stream_started": false,
+    "recording_started": true,
+    "latency_definition": "PNG published to first browser decode acknowledgement; excludes camera exposure, display scanout and network stream"
+  },
+  "version": {
+    "obsVersion": "33.0.1",
+    "obsWebSocketVersion": "5.7.6",
+    "platform": "windows",
+    "platformDescription": "Windows 11 Version 26H2",
+    "rpcVersion": 1,
+    "supportedImageFormats": [
+      "bmp",
+      "cur",
+      "icns",
+      "ico",
+      "jfif",
+      "jpeg",
+      "jpg",
+      "pbm",
+      "pgm",
+      "png",
+      "ppm",
+      "tif",
+      "tiff",
+      "wbmp",
+      "webp",
+      "xbm",
+      "xpm"
+    ]
+  },
+  "summary": {
+    "avatar_unique_fps": 14.083744897401502,
+    "render_encode_ms": {
+      "min": 57.273700018413365,
+      "p50": 65.42649999028072,
+      "p95": 102.77350002434103,
+      "max": 209.97630001511425
+    },
+    "publish_to_browser_ack_ms": {
+      "min": 14.200600038748235,
+      "p50": 31.52945003239438,
+      "p95": 54.479774963692755,
+      "max": 129.05479996697977
+    },
+    "browser_unique_acks": 424,
+    "obs_skipped_delta": 0,
+    "obs_frames_delta": 904,
+    "source_alpha": {
+      "transparent_pixels": 198827,
+      "partial_pixels": 204409,
+      "opaque_pixels": 6364
+    }
+  },
+  "gpu_snapshot": "NVIDIA GeForce RTX 4050 Laptop GPU, 14, 317",
+  "rows": [
+    {
+      "t": 1.0020274000125937,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69305.96875,
+        "averageFrameRenderTime": 0.709941,
+        "cpuUsage": 4.290538732399992,
+        "memoryUsage": 712.36328125,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 39,
+        "renderSkippedFrames": 0,
+        "renderTotalFrames": 15569,
+        "webSocketSessionIncomingMessages": 21,
+        "webSocketSessionOutgoingMessages": 21
+      },
+      "processes": [
+        {
+          "pid": 11176,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 18.7,
+          "rss_mib": 34.328125
+        },
+        {
+          "pid": 18116,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 51.5,
+          "rss_mib": 712.36328125
+        },
+        {
+          "pid": 29544,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 14.0,
+          "rss_mib": 79.92578125
+        },
+        {
+          "pid": 30560,
+          "name": "obs-ffmpeg-mux.exe",
+          "cpu_one_core_percent": 3.1,
+          "rss_mib": 11.51953125
+        },
+        {
+          "pid": 35072,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 30.93359375
+        },
+        {
+          "pid": 37116,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.8046875
+        },
+        {
+          "pid": 45944,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 39.0,
+          "rss_mib": 64.6640625
+        }
+      ],
+      "system_cpu_percent": 66.1
+    },
+    {
+      "t": 2.003835500043351,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69305.90625,
+        "averageFrameRenderTime": 0.712706,
+        "cpuUsage": 2.987820782000182,
+        "memoryUsage": 759.796875,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 69,
+        "renderSkippedFrames": 0,
+        "renderTotalFrames": 15599,
+        "webSocketSessionIncomingMessages": 22,
+        "webSocketSessionOutgoingMessages": 22
+      },
+      "processes": [
+        {
+          "pid": 11176,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 23.4,
+          "rss_mib": 34.33203125
+        },
+        {
+          "pid": 18116,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 35.9,
+          "rss_mib": 759.796875
+        },
+        {
+          "pid": 29544,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 18.7,
+          "rss_mib": 79.9296875
+        },
+        {
+          "pid": 30560,
+          "name": "obs-ffmpeg-mux.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 11.5546875
+        },
+        {
+          "pid": 35072,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 30.93359375
+        },
+        {
+          "pid": 37116,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.8046875
+        },
+        {
+          "pid": 45944,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 25.0,
+          "rss_mib": 65.9140625
+        }
+      ],
+      "system_cpu_percent": 53.4
+    },
+    {
+      "t": 3.00597260001814,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69305.90625,
+        "averageFrameRenderTime": 0.715961,
+        "cpuUsage": 5.591426123202766,
+        "memoryUsage": 786.4140625,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 99,
+        "renderSkippedFrames": 0,
+        "renderTotalFrames": 15629,
+        "webSocketSessionIncomingMessages": 23,
+        "webSocketSessionOutgoingMessages": 23
+      },
+      "processes": [
+        {
+          "pid": 11176,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 14.0,
+          "rss_mib": 34.26171875
+        },
+        {
+          "pid": 18116,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 67.1,
+          "rss_mib": 786.4140625
+        },
+        {
+          "pid": 29544,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 6.2,
+          "rss_mib": 79.93359375
+        },
+        {
+          "pid": 30560,
+          "name": "obs-ffmpeg-mux.exe",
+          "cpu_one_core_percent": 1.6,
+          "rss_mib": 11.7109375
+        },
+        {
+          "pid": 35072,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 30.93359375
+        },
+        {
+          "pid": 37116,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.8046875
+        },
+        {
+          "pid": 45944,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 42.1,
+          "rss_mib": 67.09765625
+        }
+      ],
+      "system_cpu_percent": 50.4
+    },
+    {
+      "t": 4.007734899991192,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69305.90625,
+        "averageFrameRenderTime": 0.747612,
+        "cpuUsage": 3.8972796314722404,
+        "memoryUsage": 812.77734375,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 129,
+        "renderSkippedFrames": 0,
+        "renderTotalFrames": 15659,
+        "webSocketSessionIncomingMessages": 24,
+        "webSocketSessionOutgoingMessages": 24
+      },
+      "processes": [
+        {
+          "pid": 11176,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 14.0,
+          "rss_mib": 34.265625
+        },
+        {
+          "pid": 18116,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 46.8,
+          "rss_mib": 812.77734375
+        },
+        {
+          "pid": 29544,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 9.4,
+          "rss_mib": 79.9375
+        },
+        {
+          "pid": 30560,
+          "name": "obs-ffmpeg-mux.exe",
+          "cpu_one_core_percent": 1.6,
+          "rss_mib": 11.65625
+        },
+        {
+          "pid": 35072,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 30.93359375
+        },
+        {
+          "pid": 37116,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.8046875
+        },
+        {
+          "pid": 45944,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 40.6,
+          "rss_mib": 68.1953125
+        }
+      ],
+      "system_cpu_percent": 65.6
+    },
+    {
+      "t": 5.009582500031684,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69305.90625,
+        "averageFrameRenderTime": 0.773503,
+        "cpuUsage": 4.420460599263517,
+        "memoryUsage": 835.74609375,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 159,
+        "renderSkippedFrames": 0,
+        "renderTotalFrames": 15689,
+        "webSocketSessionIncomingMessages": 25,
+        "webSocketSessionOutgoingMessages": 25
+      },
+      "processes": [
+        {
+          "pid": 11176,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 17.2,
+          "rss_mib": 34.265625
+        },
+        {
+          "pid": 18116,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 53.0,
+          "rss_mib": 835.74609375
+        },
+        {
+          "pid": 29544,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 7.8,
+          "rss_mib": 79.9453125
+        },
+        {
+          "pid": 30560,
+          "name": "obs-ffmpeg-mux.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 11.69921875
+        },
+        {
+          "pid": 35072,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 30.93359375
+        },
+        {
+          "pid": 37116,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.8046875
+        },
+        {
+          "pid": 45944,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 35.9,
+          "rss_mib": 69.20703125
+        }
+      ],
+      "system_cpu_percent": 57.2
+    },
+    {
+      "t": 6.01162890001433,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69305.64453125,
+        "averageFrameRenderTime": 0.73357,
+        "cpuUsage": 5.586897896843417,
+        "memoryUsage": 858.63671875,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 189,
+        "renderSkippedFrames": 0,
+        "renderTotalFrames": 15719,
+        "webSocketSessionIncomingMessages": 26,
+        "webSocketSessionOutgoingMessages": 26
+      },
+      "processes": [
+        {
+          "pid": 11176,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 20.3,
+          "rss_mib": 34.27734375
+        },
+        {
+          "pid": 18116,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 67.0,
+          "rss_mib": 858.63671875
+        },
+        {
+          "pid": 29544,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 7.8,
+          "rss_mib": 79.97265625
+        },
+        {
+          "pid": 30560,
+          "name": "obs-ffmpeg-mux.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 12.390625
+        },
+        {
+          "pid": 35072,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 30.93359375
+        },
+        {
+          "pid": 37116,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.8046875
+        },
+        {
+          "pid": 45944,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 37.4,
+          "rss_mib": 70.13671875
+        }
+      ],
+      "system_cpu_percent": 55.0
+    },
+    {
+      "t": 7.013938800024334,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69305.640625,
+        "averageFrameRenderTime": 0.754725,
+        "cpuUsage": 4.545810766993547,
+        "memoryUsage": 881.5,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 219,
+        "renderSkippedFrames": 0,
+        "renderTotalFrames": 15749,
+        "webSocketSessionIncomingMessages": 27,
+        "webSocketSessionOutgoingMessages": 27
+      },
+      "processes": [
+        {
+          "pid": 11176,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 18.7,
+          "rss_mib": 34.27734375
+        },
+        {
+          "pid": 18116,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 54.6,
+          "rss_mib": 881.5
+        },
+        {
+          "pid": 29544,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 14.0,
+          "rss_mib": 79.96875
+        },
+        {
+          "pid": 30560,
+          "name": "obs-ffmpeg-mux.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 12.39453125
+        },
+        {
+          "pid": 35072,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 30.93359375
+        },
+        {
+          "pid": 37116,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.8046875
+        },
+        {
+          "pid": 45944,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 32.7,
+          "rss_mib": 71.15625
+        }
+      ],
+      "system_cpu_percent": 56.8
+    },
+    {
+      "t": 8.016214000002947,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69305.640625,
+        "averageFrameRenderTime": 0.726419,
+        "cpuUsage": 4.285133306227606,
+        "memoryUsage": 904.41796875,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 249,
+        "renderSkippedFrames": 0,
+        "renderTotalFrames": 15779,
+        "webSocketSessionIncomingMessages": 28,
+        "webSocketSessionOutgoingMessages": 28
+      },
+      "processes": [
+        {
+          "pid": 11176,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 20.3,
+          "rss_mib": 34.28125
+        },
+        {
+          "pid": 18116,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 51.4,
+          "rss_mib": 904.41796875
+        },
+        {
+          "pid": 29544,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 12.5,
+          "rss_mib": 79.97265625
+        },
+        {
+          "pid": 30560,
+          "name": "obs-ffmpeg-mux.exe",
+          "cpu_one_core_percent": 1.6,
+          "rss_mib": 12.39453125
+        },
+        {
+          "pid": 35072,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 30.93359375
+        },
+        {
+          "pid": 37116,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.8046875
+        },
+        {
+          "pid": 45944,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 26.5,
+          "rss_mib": 72.65625
+        }
+      ],
+      "system_cpu_percent": 48.1
+    },
+    {
+      "t": 9.018331300001591,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69305.640625,
+        "averageFrameRenderTime": 0.778164,
+        "cpuUsage": 4.0308554442658036,
+        "memoryUsage": 927.37890625,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 279,
+        "renderSkippedFrames": 0,
+        "renderTotalFrames": 15810,
+        "webSocketSessionIncomingMessages": 29,
+        "webSocketSessionOutgoingMessages": 29
+      },
+      "processes": [
+        {
+          "pid": 11176,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 21.8,
+          "rss_mib": 34.28515625
+        },
+        {
+          "pid": 18116,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 48.3,
+          "rss_mib": 927.37890625
+        },
+        {
+          "pid": 29544,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 7.8,
+          "rss_mib": 79.98046875
+        },
+        {
+          "pid": 30560,
+          "name": "obs-ffmpeg-mux.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 12.39453125
+        },
+        {
+          "pid": 35072,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 30.93359375
+        },
+        {
+          "pid": 37116,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.8046875
+        },
+        {
+          "pid": 45944,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 46.8,
+          "rss_mib": 73.9140625
+        }
+      ],
+      "system_cpu_percent": 61.7
+    },
+    {
+      "t": 10.021086700027809,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69305.3515625,
+        "averageFrameRenderTime": 0.710187,
+        "cpuUsage": 3.1179164057178497,
+        "memoryUsage": 950.62890625,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 310,
+        "renderSkippedFrames": 0,
+        "renderTotalFrames": 15840,
+        "webSocketSessionIncomingMessages": 30,
+        "webSocketSessionOutgoingMessages": 30
+      },
+      "processes": [
+        {
+          "pid": 11176,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 14.0,
+          "rss_mib": 34.5390625
+        },
+        {
+          "pid": 18116,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 29.6,
+          "rss_mib": 950.62890625
+        },
+        {
+          "pid": 29544,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 6.2,
+          "rss_mib": 79.984375
+        },
+        {
+          "pid": 30560,
+          "name": "obs-ffmpeg-mux.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 12.4765625
+        },
+        {
+          "pid": 35072,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 30.93359375
+        },
+        {
+          "pid": 37116,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.8046875
+        },
+        {
+          "pid": 45944,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 42.1,
+          "rss_mib": 74.9609375
+        }
+      ],
+      "system_cpu_percent": 48.0
+    },
+    {
+      "t": 11.023621200001799,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69305.3515625,
+        "averageFrameRenderTime": 0.714803,
+        "cpuUsage": 3.632063454365144,
+        "memoryUsage": 974.09765625,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 340,
+        "renderSkippedFrames": 0,
+        "renderTotalFrames": 15870,
+        "webSocketSessionIncomingMessages": 31,
+        "webSocketSessionOutgoingMessages": 31
+      },
+      "processes": [
+        {
+          "pid": 11176,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 17.1,
+          "rss_mib": 34.29296875
+        },
+        {
+          "pid": 18116,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 51.4,
+          "rss_mib": 974.09765625
+        },
+        {
+          "pid": 29544,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 12.5,
+          "rss_mib": 79.98828125
+        },
+        {
+          "pid": 30560,
+          "name": "obs-ffmpeg-mux.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 12.4765625
+        },
+        {
+          "pid": 35072,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 30.93359375
+        },
+        {
+          "pid": 37116,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.8046875
+        },
+        {
+          "pid": 45944,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 29.6,
+          "rss_mib": 76.9140625
+        }
+      ],
+      "system_cpu_percent": 56.5
+    },
+    {
+      "t": 12.026645500038285,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69305.3515625,
+        "averageFrameRenderTime": 0.680903,
+        "cpuUsage": 2.5968746426700493,
+        "memoryUsage": 996.8671875,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 370,
+        "renderSkippedFrames": 0,
+        "renderTotalFrames": 15900,
+        "webSocketSessionIncomingMessages": 32,
+        "webSocketSessionOutgoingMessages": 32
+      },
+      "processes": [
+        {
+          "pid": 11176,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 21.8,
+          "rss_mib": 34.859375
+        },
+        {
+          "pid": 18116,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 31.2,
+          "rss_mib": 996.86328125
+        },
+        {
+          "pid": 29544,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 10.9,
+          "rss_mib": 79.9921875
+        },
+        {
+          "pid": 30560,
+          "name": "obs-ffmpeg-mux.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 12.4765625
+        },
+        {
+          "pid": 35072,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 30.93359375
+        },
+        {
+          "pid": 37116,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.8046875
+        },
+        {
+          "pid": 45944,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 32.7,
+          "rss_mib": 77.00390625
+        }
+      ],
+      "system_cpu_percent": 52.2
+    },
+    {
+      "t": 13.02952219999861,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69305.3515625,
+        "averageFrameRenderTime": 0.732764,
+        "cpuUsage": 3.3759084206000467,
+        "memoryUsage": 1020.25,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 400,
+        "renderSkippedFrames": 0,
+        "renderTotalFrames": 15930,
+        "webSocketSessionIncomingMessages": 33,
+        "webSocketSessionOutgoingMessages": 33
+      },
+      "processes": [
+        {
+          "pid": 11176,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 24.9,
+          "rss_mib": 34.61328125
+        },
+        {
+          "pid": 18116,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 40.5,
+          "rss_mib": 1020.25
+        },
+        {
+          "pid": 29544,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 15.6,
+          "rss_mib": 79.99609375
+        },
+        {
+          "pid": 30560,
+          "name": "obs-ffmpeg-mux.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 12.4765625
+        },
+        {
+          "pid": 35072,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 30.93359375
+        },
+        {
+          "pid": 37116,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.8046875
+        },
+        {
+          "pid": 45944,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 37.4,
+          "rss_mib": 80.484375
+        }
+      ],
+      "system_cpu_percent": 63.6
+    },
+    {
+      "t": 14.031668500043452,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69305.3515625,
+        "averageFrameRenderTime": 0.730796,
+        "cpuUsage": 4.1582565927079145,
+        "memoryUsage": 1042.92578125,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 430,
+        "renderSkippedFrames": 0,
+        "renderTotalFrames": 15960,
+        "webSocketSessionIncomingMessages": 34,
+        "webSocketSessionOutgoingMessages": 34
+      },
+      "processes": [
+        {
+          "pid": 11176,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 20.3,
+          "rss_mib": 34.61328125
+        },
+        {
+          "pid": 18116,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 49.9,
+          "rss_mib": 1042.92578125
+        },
+        {
+          "pid": 29544,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 10.9,
+          "rss_mib": 80.00390625
+        },
+        {
+          "pid": 30560,
+          "name": "obs-ffmpeg-mux.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 12.4765625
+        },
+        {
+          "pid": 35072,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 30.93359375
+        },
+        {
+          "pid": 37116,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.8046875
+        },
+        {
+          "pid": 45944,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 34.3,
+          "rss_mib": 80.87109375
+        }
+      ],
+      "system_cpu_percent": 50.4
+    },
+    {
+      "t": 15.03421440004604,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69303.52734375,
+        "averageFrameRenderTime": 0.780061,
+        "cpuUsage": 4.418301076284004,
+        "memoryUsage": 1064.71484375,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 460,
+        "renderSkippedFrames": 0,
+        "renderTotalFrames": 15990,
+        "webSocketSessionIncomingMessages": 35,
+        "webSocketSessionOutgoingMessages": 35
+      },
+      "processes": [
+        {
+          "pid": 11176,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 14.0,
+          "rss_mib": 34.4453125
+        },
+        {
+          "pid": 18116,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 53.0,
+          "rss_mib": 1064.71484375
+        },
+        {
+          "pid": 29544,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 10.9,
+          "rss_mib": 80.0078125
+        },
+        {
+          "pid": 30560,
+          "name": "obs-ffmpeg-mux.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 12.48046875
+        },
+        {
+          "pid": 35072,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 30.93359375
+        },
+        {
+          "pid": 37116,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.8046875
+        },
+        {
+          "pid": 45944,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 39.0,
+          "rss_mib": 80.46875
+        }
+      ],
+      "system_cpu_percent": 62.4
+    },
+    {
+      "t": 16.036189700011164,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69303.52734375,
+        "averageFrameRenderTime": 0.736438,
+        "cpuUsage": 4.157266256208128,
+        "memoryUsage": 1087.80859375,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 490,
+        "renderSkippedFrames": 0,
+        "renderTotalFrames": 16020,
+        "webSocketSessionIncomingMessages": 36,
+        "webSocketSessionOutgoingMessages": 36
+      },
+      "processes": [
+        {
+          "pid": 11176,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 26.5,
+          "rss_mib": 34.44921875
+        },
+        {
+          "pid": 18116,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 49.9,
+          "rss_mib": 1087.80859375
+        },
+        {
+          "pid": 29544,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 12.5,
+          "rss_mib": 80.01171875
+        },
+        {
+          "pid": 30560,
+          "name": "obs-ffmpeg-mux.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 12.48046875
+        },
+        {
+          "pid": 35072,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 30.93359375
+        },
+        {
+          "pid": 37116,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.8046875
+        },
+        {
+          "pid": 45944,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 39.0,
+          "rss_mib": 81.48828125
+        }
+      ],
+      "system_cpu_percent": 49.7
+    },
+    {
+      "t": 17.03861660003895,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69303.52734375,
+        "averageFrameRenderTime": 0.86398,
+        "cpuUsage": 4.673012725947019,
+        "memoryUsage": 1109.98046875,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 520,
+        "renderSkippedFrames": 0,
+        "renderTotalFrames": 16050,
+        "webSocketSessionIncomingMessages": 37,
+        "webSocketSessionOutgoingMessages": 37
+      },
+      "processes": [
+        {
+          "pid": 11176,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 24.9,
+          "rss_mib": 34.453125
+        },
+        {
+          "pid": 18116,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 56.1,
+          "rss_mib": 1109.98046875
+        },
+        {
+          "pid": 29544,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 14.0,
+          "rss_mib": 80.015625
+        },
+        {
+          "pid": 30560,
+          "name": "obs-ffmpeg-mux.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 12.48046875
+        },
+        {
+          "pid": 35072,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 30.93359375
+        },
+        {
+          "pid": 37116,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.8046875
+        },
+        {
+          "pid": 45944,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 35.9,
+          "rss_mib": 82.17578125
+        }
+      ],
+      "system_cpu_percent": 59.7
+    },
+    {
+      "t": 18.040668300003745,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69303.46484375,
+        "averageFrameRenderTime": 0.694919,
+        "cpuUsage": 3.7691358559513923,
+        "memoryUsage": 1132.7578125,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 550,
+        "renderSkippedFrames": 0,
+        "renderTotalFrames": 16080,
+        "webSocketSessionIncomingMessages": 38,
+        "webSocketSessionOutgoingMessages": 38
+      },
+      "processes": [
+        {
+          "pid": 11176,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 14.0,
+          "rss_mib": 34.453125
+        },
+        {
+          "pid": 18116,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 45.2,
+          "rss_mib": 1132.7578125
+        },
+        {
+          "pid": 29544,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 15.6,
+          "rss_mib": 80.01953125
+        },
+        {
+          "pid": 30560,
+          "name": "obs-ffmpeg-mux.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 12.48046875
+        },
+        {
+          "pid": 35072,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 30.93359375
+        },
+        {
+          "pid": 37116,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.8046875
+        },
+        {
+          "pid": 45944,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 32.7,
+          "rss_mib": 83.57421875
+        }
+      ],
+      "system_cpu_percent": 45.8
+    },
+    {
+      "t": 19.042682600033004,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69303.4609375,
+        "averageFrameRenderTime": 0.733554,
+        "cpuUsage": 3.248889243754231,
+        "memoryUsage": 1155.70703125,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 580,
+        "renderSkippedFrames": 0,
+        "renderTotalFrames": 16110,
+        "webSocketSessionIncomingMessages": 39,
+        "webSocketSessionOutgoingMessages": 39
+      },
+      "processes": [
+        {
+          "pid": 11176,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 17.2,
+          "rss_mib": 34.45703125
+        },
+        {
+          "pid": 18116,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 39.0,
+          "rss_mib": 1155.70703125
+        },
+        {
+          "pid": 29544,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 10.9,
+          "rss_mib": 80.0234375
+        },
+        {
+          "pid": 30560,
+          "name": "obs-ffmpeg-mux.exe",
+          "cpu_one_core_percent": 1.6,
+          "rss_mib": 12.48046875
+        },
+        {
+          "pid": 35072,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 30.93359375
+        },
+        {
+          "pid": 37116,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.8046875
+        },
+        {
+          "pid": 45944,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 32.7,
+          "rss_mib": 84.62890625
+        }
+      ],
+      "system_cpu_percent": 57.2
+    },
+    {
+      "t": 20.044864299998153,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69303.4609375,
+        "averageFrameRenderTime": 0.708364,
+        "cpuUsage": 3.6368484991162666,
+        "memoryUsage": 1178.66015625,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 610,
+        "renderSkippedFrames": 0,
+        "renderTotalFrames": 16140,
+        "webSocketSessionIncomingMessages": 40,
+        "webSocketSessionOutgoingMessages": 40
+      },
+      "processes": [
+        {
+          "pid": 11176,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 23.4,
+          "rss_mib": 34.4609375
+        },
+        {
+          "pid": 18116,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 43.7,
+          "rss_mib": 1178.66015625
+        },
+        {
+          "pid": 29544,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 7.8,
+          "rss_mib": 80.03125
+        },
+        {
+          "pid": 30560,
+          "name": "obs-ffmpeg-mux.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 12.48046875
+        },
+        {
+          "pid": 35072,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 30.93359375
+        },
+        {
+          "pid": 37116,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.8046875
+        },
+        {
+          "pid": 45944,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 28.1,
+          "rss_mib": 85.578125
+        }
+      ],
+      "system_cpu_percent": 51.5
+    },
+    {
+      "t": 21.046624500013422,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69303.4609375,
+        "averageFrameRenderTime": 0.708364,
+        "cpuUsage": 3.900390053982896,
+        "memoryUsage": 1201.46484375,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 640,
+        "renderSkippedFrames": 0,
+        "renderTotalFrames": 16170,
+        "webSocketSessionIncomingMessages": 41,
+        "webSocketSessionOutgoingMessages": 41
+      },
+      "processes": [
+        {
+          "pid": 11176,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 10.9,
+          "rss_mib": 34.484375
+        },
+        {
+          "pid": 18116,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 46.8,
+          "rss_mib": 1201.46484375
+        },
+        {
+          "pid": 29544,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 4.7,
+          "rss_mib": 80.0703125
+        },
+        {
+          "pid": 30560,
+          "name": "obs-ffmpeg-mux.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 12.48046875
+        },
+        {
+          "pid": 35072,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 30.87109375
+        },
+        {
+          "pid": 37116,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.8046875
+        },
+        {
+          "pid": 45944,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 25.0,
+          "rss_mib": 86.73828125
+        }
+      ],
+      "system_cpu_percent": 59.1
+    },
+    {
+      "t": 22.048471799993422,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69303.4609375,
+        "averageFrameRenderTime": 0.745712,
+        "cpuUsage": 3.9012084682964208,
+        "memoryUsage": 1224.30859375,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 670,
+        "renderSkippedFrames": 0,
+        "renderTotalFrames": 16200,
+        "webSocketSessionIncomingMessages": 42,
+        "webSocketSessionOutgoingMessages": 42
+      },
+      "processes": [
+        {
+          "pid": 11176,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 17.2,
+          "rss_mib": 34.48828125
+        },
+        {
+          "pid": 18116,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 46.8,
+          "rss_mib": 1224.30859375
+        },
+        {
+          "pid": 29544,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 6.2,
+          "rss_mib": 80.07421875
+        },
+        {
+          "pid": 30560,
+          "name": "obs-ffmpeg-mux.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 12.48046875
+        },
+        {
+          "pid": 35072,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 30.87109375
+        },
+        {
+          "pid": 37116,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.8046875
+        },
+        {
+          "pid": 45944,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 37.4,
+          "rss_mib": 87.703125
+        }
+      ],
+      "system_cpu_percent": 51.6
+    },
+    {
+      "t": 23.051156600005925,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69303.45703125,
+        "averageFrameRenderTime": 0.705709,
+        "cpuUsage": 4.675086243497641,
+        "memoryUsage": 1245.67578125,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 700,
+        "renderSkippedFrames": 0,
+        "renderTotalFrames": 16231,
+        "webSocketSessionIncomingMessages": 43,
+        "webSocketSessionOutgoingMessages": 43
+      },
+      "processes": [
+        {
+          "pid": 11176,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 23.4,
+          "rss_mib": 34.48046875
+        },
+        {
+          "pid": 18116,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 56.1,
+          "rss_mib": 1245.67578125
+        },
+        {
+          "pid": 29544,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 18.7,
+          "rss_mib": 80.05859375
+        },
+        {
+          "pid": 30560,
+          "name": "obs-ffmpeg-mux.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 12.66796875
+        },
+        {
+          "pid": 35072,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 30.87109375
+        },
+        {
+          "pid": 37116,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.8046875
+        },
+        {
+          "pid": 45944,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 40.5,
+          "rss_mib": 91.0390625
+        }
+      ],
+      "system_cpu_percent": 68.7
+    },
+    {
+      "t": 24.053477000037674,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69303.45703125,
+        "averageFrameRenderTime": 0.781748,
+        "cpuUsage": 5.323528783145318,
+        "memoryUsage": 1268.96875,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 731,
+        "renderSkippedFrames": 0,
+        "renderTotalFrames": 16261,
+        "webSocketSessionIncomingMessages": 44,
+        "webSocketSessionOutgoingMessages": 44
+      },
+      "processes": [
+        {
+          "pid": 11176,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 14.0,
+          "rss_mib": 34.484375
+        },
+        {
+          "pid": 18116,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 63.9,
+          "rss_mib": 1268.59375
+        },
+        {
+          "pid": 29544,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 9.4,
+          "rss_mib": 80.0625
+        },
+        {
+          "pid": 30560,
+          "name": "obs-ffmpeg-mux.exe",
+          "cpu_one_core_percent": 1.6,
+          "rss_mib": 12.66796875
+        },
+        {
+          "pid": 35072,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 30.87109375
+        },
+        {
+          "pid": 37116,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.8046875
+        },
+        {
+          "pid": 45944,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 42.1,
+          "rss_mib": 89.78515625
+        }
+      ],
+      "system_cpu_percent": 61.8
+    },
+    {
+      "t": 25.055450899992138,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69303.45703125,
+        "averageFrameRenderTime": 0.751767,
+        "cpuUsage": 4.158081890794931,
+        "memoryUsage": 1292.3046875,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 761,
+        "renderSkippedFrames": 0,
+        "renderTotalFrames": 16291,
+        "webSocketSessionIncomingMessages": 45,
+        "webSocketSessionOutgoingMessages": 45
+      },
+      "processes": [
+        {
+          "pid": 11176,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 15.6,
+          "rss_mib": 34.4921875
+        },
+        {
+          "pid": 18116,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 49.9,
+          "rss_mib": 1292.76953125
+        },
+        {
+          "pid": 29544,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 12.5,
+          "rss_mib": 80.0703125
+        },
+        {
+          "pid": 30560,
+          "name": "obs-ffmpeg-mux.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 12.66796875
+        },
+        {
+          "pid": 35072,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 30.9140625
+        },
+        {
+          "pid": 37116,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.81640625
+        },
+        {
+          "pid": 45944,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 32.7,
+          "rss_mib": 91.20703125
+        }
+      ],
+      "system_cpu_percent": 65.4
+    },
+    {
+      "t": 26.057693400012795,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69303.45703125,
+        "averageFrameRenderTime": 0.748961,
+        "cpuUsage": 3.6371155311167995,
+        "memoryUsage": 1315.328125,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 791,
+        "renderSkippedFrames": 0,
+        "renderTotalFrames": 16321,
+        "webSocketSessionIncomingMessages": 46,
+        "webSocketSessionOutgoingMessages": 46
+      },
+      "processes": [
+        {
+          "pid": 11176,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 18.7,
+          "rss_mib": 34.4921875
+        },
+        {
+          "pid": 18116,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 43.7,
+          "rss_mib": 1315.328125
+        },
+        {
+          "pid": 29544,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 10.9,
+          "rss_mib": 80.078125
+        },
+        {
+          "pid": 30560,
+          "name": "obs-ffmpeg-mux.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 12.66796875
+        },
+        {
+          "pid": 35072,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 30.9140625
+        },
+        {
+          "pid": 37116,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.81640625
+        },
+        {
+          "pid": 45944,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 31.2,
+          "rss_mib": 93.43359375
+        }
+      ],
+      "system_cpu_percent": 43.8
+    },
+    {
+      "t": 27.059573800012004,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69303.2734375,
+        "averageFrameRenderTime": 0.68417,
+        "cpuUsage": 4.418294461989544,
+        "memoryUsage": 1338.2265625,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 821,
+        "renderSkippedFrames": 0,
+        "renderTotalFrames": 16351,
+        "webSocketSessionIncomingMessages": 47,
+        "webSocketSessionOutgoingMessages": 47
+      },
+      "processes": [
+        {
+          "pid": 11176,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 18.7,
+          "rss_mib": 34.5
+        },
+        {
+          "pid": 18116,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 53.0,
+          "rss_mib": 1338.2265625
+        },
+        {
+          "pid": 29544,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 4.7,
+          "rss_mib": 80.0859375
+        },
+        {
+          "pid": 30560,
+          "name": "obs-ffmpeg-mux.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 12.66796875
+        },
+        {
+          "pid": 35072,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 30.9140625
+        },
+        {
+          "pid": 37116,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.81640625
+        },
+        {
+          "pid": 45944,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 45.2,
+          "rss_mib": 95.9921875
+        }
+      ],
+      "system_cpu_percent": 54.9
+    },
+    {
+      "t": 28.061549100035336,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69303.2734375,
+        "averageFrameRenderTime": 0.735493,
+        "cpuUsage": 2.729611827361255,
+        "memoryUsage": 1361.08984375,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 851,
+        "renderSkippedFrames": 0,
+        "renderTotalFrames": 16381,
+        "webSocketSessionIncomingMessages": 48,
+        "webSocketSessionOutgoingMessages": 48
+      },
+      "processes": [
+        {
+          "pid": 11176,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 21.8,
+          "rss_mib": 34.5
+        },
+        {
+          "pid": 18116,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 32.7,
+          "rss_mib": 1361.08984375
+        },
+        {
+          "pid": 29544,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 4.7,
+          "rss_mib": 80.08984375
+        },
+        {
+          "pid": 30560,
+          "name": "obs-ffmpeg-mux.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 12.671875
+        },
+        {
+          "pid": 35072,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 30.9140625
+        },
+        {
+          "pid": 37116,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.81640625
+        },
+        {
+          "pid": 45944,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 32.7,
+          "rss_mib": 97.11328125
+        }
+      ],
+      "system_cpu_percent": 37.7
+    },
+    {
+      "t": 29.063776099996176,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69303.2734375,
+        "averageFrameRenderTime": 0.711216,
+        "cpuUsage": 4.806348049084517,
+        "memoryUsage": 521.20703125,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 881,
+        "renderSkippedFrames": 0,
+        "renderTotalFrames": 16411,
+        "webSocketSessionIncomingMessages": 49,
+        "webSocketSessionOutgoingMessages": 49
+      },
+      "processes": [
+        {
+          "pid": 11176,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 14.0,
+          "rss_mib": 34.6875
+        },
+        {
+          "pid": 18116,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 57.7,
+          "rss_mib": 521.14453125
+        },
+        {
+          "pid": 29544,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 7.8,
+          "rss_mib": 80.09375
+        },
+        {
+          "pid": 30560,
+          "name": "obs-ffmpeg-mux.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 12.671875
+        },
+        {
+          "pid": 35072,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 30.9140625
+        },
+        {
+          "pid": 37116,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.81640625
+        },
+        {
+          "pid": 45944,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 37.4,
+          "rss_mib": 68.9375
+        }
+      ],
+      "system_cpu_percent": 51.7
+    },
+    {
+      "t": 30.066370700020343,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69303.2734375,
+        "averageFrameRenderTime": 0.707819,
+        "cpuUsage": 4.155816660529356,
+        "memoryUsage": 542.3046875,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 911,
+        "renderSkippedFrames": 0,
+        "renderTotalFrames": 16441,
+        "webSocketSessionIncomingMessages": 50,
+        "webSocketSessionOutgoingMessages": 50
+      },
+      "processes": [
+        {
+          "pid": 11176,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 15.6,
+          "rss_mib": 34.50390625
+        },
+        {
+          "pid": 18116,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 49.9,
+          "rss_mib": 542.3046875
+        },
+        {
+          "pid": 29544,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 9.4,
+          "rss_mib": 80.1015625
+        },
+        {
+          "pid": 30560,
+          "name": "obs-ffmpeg-mux.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 12.6015625
+        },
+        {
+          "pid": 35072,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 30.9140625
+        },
+        {
+          "pid": 37116,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.81640625
+        },
+        {
+          "pid": 45944,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 49.9,
+          "rss_mib": 69.234375
+        }
+      ],
+      "system_cpu_percent": 49.8
+    }
+  ],
+  "input_errors": [],
+  "recording": {
+    "path": ".local/recordings/2026-11-16 21-06-20.mkv",
+    "bytes": 1804690,
+    "sha256": "489d75e82c9fe26e67ed4dc0c8494aa98a776a4029e2d6afd28492ec227eb502",
+    "output_duration_ms": 29699,
+    "output_bytes": 1705586,
+    "settings": "isolated SimpleOutput RecEncoder=x264 RecQuality=Small RecFormat2=mkv",
+    "content": "avatar only, all special desktop/microphone sources muted; no raw camera/audio source",
+    "finalization": "File hash/size refreshed after native muxer finished draining; original StopRecord response precedes final close"
+  },
+  "process_sampling_note": "This historical encoded run did not include demo.py Python in its process filter. Python resource evidence is obs-final-load.json; collector fixed afterward."
+}

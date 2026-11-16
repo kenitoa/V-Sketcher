@@ -1,0 +1,24 @@
+{
+  "scope": "phase03 completion evidence, preparation report counts distinguished from input quality outcomes",
+  "document_files_checked": 16,
+  "local_links_checked": 131,
+  "task_count": 410,
+  "completed_tasks": "T-001 through T-030 only",
+  "function_ids_preserved": 52,
+  "technical_checks_passed": 69,
+  "tk_integration_checks_passed": 17,
+  "cli_commands_passed": 6,
+  "phase02_payload_hashes_unchanged": 50,
+  "image_classification": {
+    "success": 7,
+    "partial": 7,
+    "failed": 4
+  },
+  "model_sha256": "64184e229b263107bc2b804c6625db1341ff2bb731874b0bcc2fe6544e0bc9ff",
+  "code_reports_current": true,
+  "isolated_environment": true,
+  "pip_check_exit_code_observed": 0,
+  "hash_locked_install_dry_run_exit_code_observed": 0,
+  "direct_os_mouse_validation": "not_run: Computer Use native pipe unavailable after recovery retries",
+  "quality_and_realtime_release_acceptance": "not_passed; see 03-feasibility.md"
+}

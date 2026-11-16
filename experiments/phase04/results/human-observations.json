@@ -1,0 +1,25 @@
+{
+  "date": "2026-11-16",
+  "source": "User replies in this task; no raw personal video or audio saved",
+  "observations": [
+    {
+      "applies_to": "results/live-input.json",
+      "answer": "표정·고개만 했고 음성 시험은 하지 않았음",
+      "interpretation": "Face/head movements are actual input. Timeline fields named speech/noise are requested stages only and MUST NOT be counted as actual speech/noise evidence."
+    },
+    {
+      "applies_to": "results/external-independent.json",
+      "answer": "창을 열어 두었고 움직임이 보임",
+      "interpretation": "User brought the premium Inochi Session window forward and observed motion. Subsequent actual window capture also changed while our runtime/server were stopped."
+    },
+    {
+      "applies_to": ["results/mic-quiet.json", "results/mic-speech.json", "results/mic-noise.json"],
+      "answer": "세 구간 모두 진행함",
+      "interpretation": "User confirmed performing the later separately announced eight-second quiet, speech and keyboard/clap noise stages. RMS is measured; voice/noise labels are participant procedure, not automatic speech classification."
+    },
+    {
+      "answer": "너무 낮은 퀄리티다.",
+      "interpretation": "User rejected the simple diagram fixture as visible quality. Phase04 default demo, actual OBS source and external export were replaced with PREMIUM-003. Structural fixtures remain regression-only. Final dynamic art quality still requires further assessment."
+    }
+  ]
+}

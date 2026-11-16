@@ -1,0 +1,63 @@
+{
+  "target": "Inochi Session v0.8.7 / SDK ~0.8.6",
+  "sha256": "b7b698ff9c618eb70831b68e52384e30e4429005b24b647c72ec7b3efc7200c5",
+  "texture_count": 7,
+  "mapping": [
+    {
+      "part": "premium-illustration",
+      "state": "base",
+      "uuid": 11,
+      "texture": 0,
+      "sha256": "a8f5dc2cfcb1fe5c1e08d902633811e50b9dcd4eb24064d0122970aa1af6d8ef"
+    },
+    {
+      "part": "eye_right",
+      "state": "open",
+      "uuid": 12,
+      "texture": 1,
+      "sha256": "26ca106cb0c4c7ce45ba83619a6029b82fd18b589c768c848005b61094f9baca"
+    },
+    {
+      "part": "eye_right",
+      "state": "closed",
+      "uuid": 13,
+      "texture": 2,
+      "sha256": "aeb85292c5802c1066a7bccb644de3abbb1d7f7c5a0e85d75e54f2f09ed014d8"
+    },
+    {
+      "part": "eye_left",
+      "state": "open",
+      "uuid": 14,
+      "texture": 3,
+      "sha256": "f891ff9dacb453183e61205bab587e00f606cd2b9cc1f9c9453d987fefb318f6"
+    },
+    {
+      "part": "eye_left",
+      "state": "closed",
+      "uuid": 15,
+      "texture": 4,
+      "sha256": "d808acee61041b38df764468d337261c1ac0f872ae957506aaef8c0f6dfa6cfa"
+    },
+    {
+      "part": "mouth",
+      "state": "closed",
+      "uuid": 16,
+      "texture": 5,
+      "sha256": "16ae69694fb3c5eeaef55ca3e9251bb1562adf935285ce3d3f72f335dca00041"
+    },
+    {
+      "part": "mouth",
+      "state": "open",
+      "uuid": 17,
+      "texture": 6,
+      "sha256": "02f5932d70e53109ebd28af8c37d5f0576e2fb261190cedc4fda3f2b7c5f3929"
+    }
+  ],
+  "embedded_alpha": "premultiplied RGB for SDK 0.8.6",
+  "losses": [
+    "Weighted per-pixel head warp converted to rigid whole-avatar translation/rotation",
+    "Continuous eye compression converted to opacity crossfade between embedded open/closed artwork",
+    "No hidden part reconstruction, physics, Live2D moc3 or target webcam binding promised"
+  ],
+  "independent_motion": "Embedded four-second keyframed demo triggered by target Load event; not live user tracking"
+}

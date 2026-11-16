@@ -1,0 +1,81 @@
+{
+  "method": "Actual OBS browser-source canvas retained after local replay; two real color source backgrounds",
+  "editor_or_raw_capture_source": false,
+  "checks": [
+    {
+      "background": "dark",
+      "expected_rgba": [
+        17,
+        34,
+        51,
+        255
+      ],
+      "outside_avatar_rgba": [
+        [
+          17,
+          34,
+          51,
+          255
+        ],
+        [
+          17,
+          34,
+          51,
+          255
+        ],
+        [
+          17,
+          34,
+          51,
+          255
+        ],
+        [
+          17,
+          34,
+          51,
+          255
+        ]
+      ],
+      "pass": true,
+      "screenshot": "results/alpha-dark-obs.png"
+    },
+    {
+      "background": "light",
+      "expected_rgba": [
+        234,
+        226,
+        238,
+        255
+      ],
+      "outside_avatar_rgba": [
+        [
+          234,
+          226,
+          238,
+          255
+        ],
+        [
+          234,
+          226,
+          238,
+          255
+        ],
+        [
+          234,
+          226,
+          238,
+          255
+        ],
+        [
+          234,
+          226,
+          238,
+          255
+        ]
+      ],
+      "pass": true,
+      "screenshot": "results/alpha-light-obs.png"
+    }
+  ],
+  "pass": true
+}

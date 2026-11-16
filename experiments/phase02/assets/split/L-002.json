@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "canvas": [
+    512,
+    512
+  ],
+  "coordinates": "top-left-pixels",
+  "layers": [
+    {
+      "id": "hair_back",
+      "name": "Layer 1",
+      "path": "../parts/hair_back.png",
+      "side": "center",
+      "origin": [
+        0,
+        0
+      ],
+      "z": 0
+    },
+    {
+      "id": "body",
+      "name": "Layer 2",
+      "path": "../parts/body.png",
+      "side": "center",
+      "origin": [
+        0,
+        0
+      ],
+      "z": 1
+    },
+    {
+      "id": "head",
+      "name": "Layer 3",
+      "path": "../parts/head.png",
+      "side": "center",
+      "origin": [
+        0,
+        0
+      ],
+      "z": 2
+    },
+    {
+      "id": "eye_right_open",
+      "name": "Layer 4",
+      "path": "../parts/eye_right_open.png",
+      "side": "right",
+      "origin": [
+        0,
+        0
+      ],
+      "z": 3
+    },
+    {
+      "id": "eye_left_open",
+      "name": "Layer 5",
+      "path": "../parts/eye_left_open.png",
+      "side": "left",
+      "origin": [
+        0,
+        0
+      ],
+      "z": 4
+    },
+    {
+      "id": "mouth_closed",
+      "name": "Layer 6",
+      "path": "../parts/mouth_closed.png",
+      "side": "center",
+      "origin": [
+        0,
+        0
+      ],
+      "z": 5
+    },
+    {
+      "id": "hair_front",
+      "name": "Layer 7",
+      "path": "../parts/hair_front.png",
+      "side": "center",
+      "origin": [
+        0,
+        0
+      ],
+      "z": 6
+    },
+    {
+      "id": "accessory",
+      "name": "Layer 8",
+      "path": "../parts/accessory.png",
+      "side": "center",
+      "origin": [
+        0,
+        0
+      ],
+      "z": 7
+    }
+  ]
+}

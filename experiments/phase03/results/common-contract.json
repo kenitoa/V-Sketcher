@@ -1,0 +1,41 @@
+[
+  {
+    "route": "parts",
+    "schema_version": 1,
+    "parameter_keys": [
+      "eye_left",
+      "eye_right",
+      "head_roll",
+      "head_yaw",
+      "mouth"
+    ],
+    "renderer": "engine.render",
+    "loaded_without_reanalysis": true
+  },
+  {
+    "route": "single",
+    "schema_version": 1,
+    "parameter_keys": [
+      "eye_left",
+      "eye_right",
+      "head_roll",
+      "head_yaw",
+      "mouth"
+    ],
+    "renderer": "engine.render",
+    "loaded_without_reanalysis": true
+  },
+  {
+    "route": "split",
+    "schema_version": 1,
+    "parameter_keys": [
+      "eye_left",
+      "eye_right",
+      "head_roll",
+      "head_yaw",
+      "mouth"
+    ],
+    "renderer": "engine.render",
+    "loaded_without_reanalysis": true
+  }
+]

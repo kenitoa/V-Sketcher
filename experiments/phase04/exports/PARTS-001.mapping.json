@@ -1,0 +1,90 @@
+{
+  "target": "Inochi Session v0.8.7 / SDK ~0.8.6",
+  "sha256": "4db13a9018573e2f41c9b113ab9b0fb1fea4563295e3982675b35835772530b1",
+  "texture_count": 11,
+  "mapping": [
+    {
+      "part": "hair_back",
+      "state": "base",
+      "uuid": 11,
+      "texture": 0,
+      "sha256": "dbb4626676ef82c76acd4216f9d88e7f6c0878cabf136d9a9f2a0c48c6b5d651"
+    },
+    {
+      "part": "body",
+      "state": "base",
+      "uuid": 12,
+      "texture": 1,
+      "sha256": "d21741b5a8e4ff803886b48d46388c91b7efad5bfe3df23d286b4bb6e3927d52"
+    },
+    {
+      "part": "head",
+      "state": "base",
+      "uuid": 13,
+      "texture": 2,
+      "sha256": "974ba22a99aaa1f155e1b4fb6eb1a41373561c3c46c28bbdee1c187c07f022b3"
+    },
+    {
+      "part": "eye_right_open",
+      "state": "open",
+      "uuid": 14,
+      "texture": 3,
+      "sha256": "4c5f3dfe29c21d0c2b9c761faba01ab49a079e5520409cdbbd88036241500f14"
+    },
+    {
+      "part": "eye_right_open",
+      "state": "closed",
+      "uuid": 15,
+      "texture": 4,
+      "sha256": "d036b99c3faba243036dd9fb17bcac3c2f982167d25c76b216f834a131f7b4f5"
+    },
+    {
+      "part": "eye_left_open",
+      "state": "open",
+      "uuid": 16,
+      "texture": 5,
+      "sha256": "35f2039add1a401af7d9e87a5ee599e49b1a337da4ed501471a0b77b645d2808"
+    },
+    {
+      "part": "eye_left_open",
+      "state": "closed",
+      "uuid": 17,
+      "texture": 6,
+      "sha256": "8f79ef1938d18b4b79cc5c7b5dac5953e14895369a5d6eecc19dcc854a917cbd"
+    },
+    {
+      "part": "mouth_closed",
+      "state": "closed",
+      "uuid": 18,
+      "texture": 7,
+      "sha256": "abdbb4d37875a05dafd07413554cf49d4359fbf0bbe14ae5d1a106acf61fbe54"
+    },
+    {
+      "part": "mouth_closed",
+      "state": "open",
+      "uuid": 19,
+      "texture": 8,
+      "sha256": "801e353b0bdf71d72894558be04faf9b380642e48dcabadb5b7bbfce4c4d6787"
+    },
+    {
+      "part": "hair_front",
+      "state": "base",
+      "uuid": 20,
+      "texture": 9,
+      "sha256": "1a3b5e3f552546460f1590a1097f2e8ea2fd6c82c3ef01fb4cca65cb9fd0ccea"
+    },
+    {
+      "part": "accessory",
+      "state": "base",
+      "uuid": 21,
+      "texture": 10,
+      "sha256": "e19a3ac5102de5b0d170513b2765adc2820028a715efff94357f92a57bb3b7ab"
+    }
+  ],
+  "losses": [
+    "Weighted per-pixel head warp converted to rigid whole-avatar translation/rotation",
+    "Continuous eye compression converted to opacity crossfade between embedded open/closed artwork",
+    "No hidden part reconstruction, physics, Live2D moc3 or target webcam binding promised"
+  ],
+  "independent_motion": "Embedded four-second keyframed demo triggered by target Load event; not live user tracking"
+}

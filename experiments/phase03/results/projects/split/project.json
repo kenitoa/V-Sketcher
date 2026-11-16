@@ -1,0 +1,255 @@
+{
+  "schema_version": 1,
+  "name": "L-001",
+  "route": "split",
+  "canvas": [
+    512,
+    512
+  ],
+  "parts": [
+    {
+      "id": "hair_back",
+      "role": "hair_back",
+      "side": "center",
+      "z": 0,
+      "origin": [
+        0,
+        0
+      ],
+      "opacity": 1.0,
+      "bind": null,
+      "estimated": false,
+      "states": {
+        "base": {
+          "path": "textures/00-base.png",
+          "sha256": "dbb4626676ef82c76acd4216f9d88e7f6c0878cabf136d9a9f2a0c48c6b5d651"
+        }
+      }
+    },
+    {
+      "id": "body",
+      "role": "body",
+      "side": "center",
+      "z": 1,
+      "origin": [
+        0,
+        0
+      ],
+      "opacity": 1.0,
+      "bind": null,
+      "estimated": false,
+      "states": {
+        "base": {
+          "path": "textures/01-base.png",
+          "sha256": "d21741b5a8e4ff803886b48d46388c91b7efad5bfe3df23d286b4bb6e3927d52"
+        }
+      }
+    },
+    {
+      "id": "head",
+      "role": "head",
+      "side": "center",
+      "z": 2,
+      "origin": [
+        0,
+        0
+      ],
+      "opacity": 1.0,
+      "bind": null,
+      "estimated": false,
+      "states": {
+        "base": {
+          "path": "textures/02-base.png",
+          "sha256": "974ba22a99aaa1f155e1b4fb6eb1a41373561c3c46c28bbdee1c187c07f022b3"
+        }
+      }
+    },
+    {
+      "id": "eye_right_open",
+      "role": "eye",
+      "side": "right",
+      "z": 3,
+      "origin": [
+        0,
+        0
+      ],
+      "opacity": 1.0,
+      "bind": "eye_right",
+      "estimated": false,
+      "states": {
+        "open": {
+          "path": "textures/03-open.png",
+          "sha256": "4c5f3dfe29c21d0c2b9c761faba01ab49a079e5520409cdbbd88036241500f14"
+        },
+        "closed": {
+          "path": "textures/03-closed.png",
+          "sha256": "93d7dceed7fa1b43d3a51f59ab42bcb6431c0475505e0b097b8e2980e3b2fff1"
+        }
+      }
+    },
+    {
+      "id": "eye_left_open",
+      "role": "eye",
+      "side": "left",
+      "z": 4,
+      "origin": [
+        0,
+        0
+      ],
+      "opacity": 1.0,
+      "bind": "eye_left",
+      "estimated": false,
+      "states": {
+        "open": {
+          "path": "textures/04-open.png",
+          "sha256": "35f2039add1a401af7d9e87a5ee599e49b1a337da4ed501471a0b77b645d2808"
+        },
+        "closed": {
+          "path": "textures/04-closed.png",
+          "sha256": "29b60a395db92f74b4b4e639f7b0d54d2054302deead4d690bf01650f01b91cb"
+        }
+      }
+    },
+    {
+      "id": "mouth_closed",
+      "role": "mouth",
+      "side": "center",
+      "z": 5,
+      "origin": [
+        0,
+        0
+      ],
+      "opacity": 1.0,
+      "bind": "mouth",
+      "estimated": true,
+      "states": {
+        "closed": {
+          "path": "textures/05-closed.png",
+          "sha256": "abdbb4d37875a05dafd07413554cf49d4359fbf0bbe14ae5d1a106acf61fbe54"
+        },
+        "open": {
+          "path": "textures/05-open.png",
+          "sha256": "82053a0fa9ff8fce89ccf2f7b01d935272f073b37a2421e93ba0eccf108e3104"
+        }
+      }
+    },
+    {
+      "id": "hair_front",
+      "role": "hair_front",
+      "side": "center",
+      "z": 6,
+      "origin": [
+        0,
+        0
+      ],
+      "opacity": 1.0,
+      "bind": null,
+      "estimated": false,
+      "states": {
+        "base": {
+          "path": "textures/06-base.png",
+          "sha256": "1a3b5e3f552546460f1590a1097f2e8ea2fd6c82c3ef01fb4cca65cb9fd0ccea"
+        }
+      }
+    },
+    {
+      "id": "accessory",
+      "role": "accessory",
+      "side": "center",
+      "z": 7,
+      "origin": [
+        0,
+        0
+      ],
+      "opacity": 1.0,
+      "bind": null,
+      "estimated": false,
+      "states": {
+        "base": {
+          "path": "textures/07-base.png",
+          "sha256": "e19a3ac5102de5b0d170513b2765adc2820028a715efff94357f92a57bb3b7ab"
+        }
+      }
+    }
+  ],
+  "face": [
+    146,
+    77,
+    367,
+    327
+  ],
+  "regions": {},
+  "source": null,
+  "prepared": null,
+  "analysis": {
+    "role_suggestions": [
+      {
+        "id": "hair_back",
+        "role": "hair_back",
+        "side": "center",
+        "reason": "explicit-role"
+      },
+      {
+        "id": "body",
+        "role": "body",
+        "side": "center",
+        "reason": "explicit-role"
+      },
+      {
+        "id": "head",
+        "role": "head",
+        "side": "center",
+        "reason": "explicit-role"
+      },
+      {
+        "id": "eye_right_open",
+        "role": "eye",
+        "side": "right",
+        "reason": "explicit-role"
+      },
+      {
+        "id": "eye_left_open",
+        "role": "eye",
+        "side": "left",
+        "reason": "explicit-role"
+      },
+      {
+        "id": "mouth_closed",
+        "role": "mouth",
+        "side": "center",
+        "reason": "explicit-role"
+      },
+      {
+        "id": "hair_front",
+        "role": "hair_front",
+        "side": "center",
+        "reason": "explicit-role"
+      },
+      {
+        "id": "accessory",
+        "role": "accessory",
+        "side": "center",
+        "reason": "explicit-role"
+      }
+    ],
+    "groups": [],
+    "group_transform_support": "opacity-only; transforms unsupported"
+  },
+  "warnings": [],
+  "params": {
+    "eye_left": 1.0,
+    "eye_right": 1.0,
+    "mouth": 0.0,
+    "head_yaw": 0.0,
+    "head_roll": 0.0
+  },
+  "limits": {
+    "head": 1.0,
+    "mouth": 1.0
+  },
+  "corrections": [],
+  "provenance": {
+    "input_sha256": "7d24f69063b95c371e181e0f6edb08713aa2d9ed4281f5b3a3b5daaadf5a97e1",
+    "adapter": "split-v1"
+  }
+}

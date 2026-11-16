@@ -1,0 +1,1441 @@
+{
+  "meta": {
+    "name": "2DSketcher PARTS-001 feasibility",
+    "version": "0.8.6",
+    "rigger": "2DSketcher phase04 prototype",
+    "artist": "Procedural phase02 fixture",
+    "copyright": "Project test fixture",
+    "preservePixels": false
+  },
+  "physics": {
+    "pixelsPerMeter": 1000,
+    "gravity": 9.8
+  },
+  "nodes": {
+    "uuid": 1,
+    "name": "2DSketcher export",
+    "type": "Node",
+    "enabled": true,
+    "zsort": 0,
+    "lockToRoot": false,
+    "transform": {
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1
+      ]
+    },
+    "children": [
+      {
+        "uuid": 2,
+        "name": "Limited planar head motion",
+        "type": "Node",
+        "enabled": true,
+        "zsort": 0,
+        "lockToRoot": false,
+        "transform": {
+          "translation": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1
+          ]
+        },
+        "children": [
+          {
+            "uuid": 11,
+            "name": "hair_back::base",
+            "type": "Part",
+            "enabled": true,
+            "zsort": 0,
+            "lockToRoot": false,
+            "transform": {
+              "translation": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": [
+                1,
+                1
+              ]
+            },
+            "children": [],
+            "mesh": {
+              "verts": [
+                -256.0,
+                -256.0,
+                256.0,
+                -256.0,
+                256.0,
+                256.0,
+                -256.0,
+                256.0
+              ],
+              "uvs": [
+                0,
+                0,
+                1,
+                0,
+                1,
+                1,
+                0,
+                1
+              ],
+              "indices": [
+                0,
+                1,
+                2,
+                0,
+                2,
+                3
+              ],
+              "origin": [
+                0,
+                0
+              ]
+            },
+            "textures": [
+              0,
+              4294967295,
+              4294967295
+            ],
+            "blend_mode": "Normal",
+            "tint": [
+              1,
+              1,
+              1
+            ],
+            "screenTint": [
+              0,
+              0,
+              0
+            ],
+            "masks": [],
+            "mask_threshold": 0.5,
+            "opacity": 1.0
+          },
+          {
+            "uuid": 12,
+            "name": "body::base",
+            "type": "Part",
+            "enabled": true,
+            "zsort": -1,
+            "lockToRoot": false,
+            "transform": {
+              "translation": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": [
+                1,
+                1
+              ]
+            },
+            "children": [],
+            "mesh": {
+              "verts": [
+                -256.0,
+                -256.0,
+                256.0,
+                -256.0,
+                256.0,
+                256.0,
+                -256.0,
+                256.0
+              ],
+              "uvs": [
+                0,
+                0,
+                1,
+                0,
+                1,
+                1,
+                0,
+                1
+              ],
+              "indices": [
+                0,
+                1,
+                2,
+                0,
+                2,
+                3
+              ],
+              "origin": [
+                0,
+                0
+              ]
+            },
+            "textures": [
+              1,
+              4294967295,
+              4294967295
+            ],
+            "blend_mode": "Normal",
+            "tint": [
+              1,
+              1,
+              1
+            ],
+            "screenTint": [
+              0,
+              0,
+              0
+            ],
+            "masks": [],
+            "mask_threshold": 0.5,
+            "opacity": 1.0
+          },
+          {
+            "uuid": 13,
+            "name": "head::base",
+            "type": "Part",
+            "enabled": true,
+            "zsort": -2,
+            "lockToRoot": false,
+            "transform": {
+              "translation": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": [
+                1,
+                1
+              ]
+            },
+            "children": [],
+            "mesh": {
+              "verts": [
+                -256.0,
+                -256.0,
+                256.0,
+                -256.0,
+                256.0,
+                256.0,
+                -256.0,
+                256.0
+              ],
+              "uvs": [
+                0,
+                0,
+                1,
+                0,
+                1,
+                1,
+                0,
+                1
+              ],
+              "indices": [
+                0,
+                1,
+                2,
+                0,
+                2,
+                3
+              ],
+              "origin": [
+                0,
+                0
+              ]
+            },
+            "textures": [
+              2,
+              4294967295,
+              4294967295
+            ],
+            "blend_mode": "Normal",
+            "tint": [
+              1,
+              1,
+              1
+            ],
+            "screenTint": [
+              0,
+              0,
+              0
+            ],
+            "masks": [],
+            "mask_threshold": 0.5,
+            "opacity": 1.0
+          },
+          {
+            "uuid": 14,
+            "name": "eye_right_open::open",
+            "type": "Part",
+            "enabled": true,
+            "zsort": -3,
+            "lockToRoot": false,
+            "transform": {
+              "translation": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": [
+                1,
+                1
+              ]
+            },
+            "children": [],
+            "mesh": {
+              "verts": [
+                -256.0,
+                -256.0,
+                256.0,
+                -256.0,
+                256.0,
+                256.0,
+                -256.0,
+                256.0
+              ],
+              "uvs": [
+                0,
+                0,
+                1,
+                0,
+                1,
+                1,
+                0,
+                1
+              ],
+              "indices": [
+                0,
+                1,
+                2,
+                0,
+                2,
+                3
+              ],
+              "origin": [
+                0,
+                0
+              ]
+            },
+            "textures": [
+              3,
+              4294967295,
+              4294967295
+            ],
+            "blend_mode": "Normal",
+            "tint": [
+              1,
+              1,
+              1
+            ],
+            "screenTint": [
+              0,
+              0,
+              0
+            ],
+            "masks": [],
+            "mask_threshold": 0.5,
+            "opacity": 1.0
+          },
+          {
+            "uuid": 15,
+            "name": "eye_right_open::closed",
+            "type": "Part",
+            "enabled": true,
+            "zsort": -3,
+            "lockToRoot": false,
+            "transform": {
+              "translation": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": [
+                1,
+                1
+              ]
+            },
+            "children": [],
+            "mesh": {
+              "verts": [
+                -256.0,
+                -256.0,
+                256.0,
+                -256.0,
+                256.0,
+                256.0,
+                -256.0,
+                256.0
+              ],
+              "uvs": [
+                0,
+                0,
+                1,
+                0,
+                1,
+                1,
+                0,
+                1
+              ],
+              "indices": [
+                0,
+                1,
+                2,
+                0,
+                2,
+                3
+              ],
+              "origin": [
+                0,
+                0
+              ]
+            },
+            "textures": [
+              4,
+              4294967295,
+              4294967295
+            ],
+            "blend_mode": "Normal",
+            "tint": [
+              1,
+              1,
+              1
+            ],
+            "screenTint": [
+              0,
+              0,
+              0
+            ],
+            "masks": [],
+            "mask_threshold": 0.5,
+            "opacity": 1.0
+          },
+          {
+            "uuid": 16,
+            "name": "eye_left_open::open",
+            "type": "Part",
+            "enabled": true,
+            "zsort": -4,
+            "lockToRoot": false,
+            "transform": {
+              "translation": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": [
+                1,
+                1
+              ]
+            },
+            "children": [],
+            "mesh": {
+              "verts": [
+                -256.0,
+                -256.0,
+                256.0,
+                -256.0,
+                256.0,
+                256.0,
+                -256.0,
+                256.0
+              ],
+              "uvs": [
+                0,
+                0,
+                1,
+                0,
+                1,
+                1,
+                0,
+                1
+              ],
+              "indices": [
+                0,
+                1,
+                2,
+                0,
+                2,
+                3
+              ],
+              "origin": [
+                0,
+                0
+              ]
+            },
+            "textures": [
+              5,
+              4294967295,
+              4294967295
+            ],
+            "blend_mode": "Normal",
+            "tint": [
+              1,
+              1,
+              1
+            ],
+            "screenTint": [
+              0,
+              0,
+              0
+            ],
+            "masks": [],
+            "mask_threshold": 0.5,
+            "opacity": 1.0
+          },
+          {
+            "uuid": 17,
+            "name": "eye_left_open::closed",
+            "type": "Part",
+            "enabled": true,
+            "zsort": -4,
+            "lockToRoot": false,
+            "transform": {
+              "translation": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": [
+                1,
+                1
+              ]
+            },
+            "children": [],
+            "mesh": {
+              "verts": [
+                -256.0,
+                -256.0,
+                256.0,
+                -256.0,
+                256.0,
+                256.0,
+                -256.0,
+                256.0
+              ],
+              "uvs": [
+                0,
+                0,
+                1,
+                0,
+                1,
+                1,
+                0,
+                1
+              ],
+              "indices": [
+                0,
+                1,
+                2,
+                0,
+                2,
+                3
+              ],
+              "origin": [
+                0,
+                0
+              ]
+            },
+            "textures": [
+              6,
+              4294967295,
+              4294967295
+            ],
+            "blend_mode": "Normal",
+            "tint": [
+              1,
+              1,
+              1
+            ],
+            "screenTint": [
+              0,
+              0,
+              0
+            ],
+            "masks": [],
+            "mask_threshold": 0.5,
+            "opacity": 1.0
+          },
+          {
+            "uuid": 18,
+            "name": "mouth_closed::closed",
+            "type": "Part",
+            "enabled": true,
+            "zsort": -5,
+            "lockToRoot": false,
+            "transform": {
+              "translation": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": [
+                1,
+                1
+              ]
+            },
+            "children": [],
+            "mesh": {
+              "verts": [
+                -256.0,
+                -256.0,
+                256.0,
+                -256.0,
+                256.0,
+                256.0,
+                -256.0,
+                256.0
+              ],
+              "uvs": [
+                0,
+                0,
+                1,
+                0,
+                1,
+                1,
+                0,
+                1
+              ],
+              "indices": [
+                0,
+                1,
+                2,
+                0,
+                2,
+                3
+              ],
+              "origin": [
+                0,
+                0
+              ]
+            },
+            "textures": [
+              7,
+              4294967295,
+              4294967295
+            ],
+            "blend_mode": "Normal",
+            "tint": [
+              1,
+              1,
+              1
+            ],
+            "screenTint": [
+              0,
+              0,
+              0
+            ],
+            "masks": [],
+            "mask_threshold": 0.5,
+            "opacity": 1.0
+          },
+          {
+            "uuid": 19,
+            "name": "mouth_closed::open",
+            "type": "Part",
+            "enabled": true,
+            "zsort": -5,
+            "lockToRoot": false,
+            "transform": {
+              "translation": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": [
+                1,
+                1
+              ]
+            },
+            "children": [],
+            "mesh": {
+              "verts": [
+                -256.0,
+                -256.0,
+                256.0,
+                -256.0,
+                256.0,
+                256.0,
+                -256.0,
+                256.0
+              ],
+              "uvs": [
+                0,
+                0,
+                1,
+                0,
+                1,
+                1,
+                0,
+                1
+              ],
+              "indices": [
+                0,
+                1,
+                2,
+                0,
+                2,
+                3
+              ],
+              "origin": [
+                0,
+                0
+              ]
+            },
+            "textures": [
+              8,
+              4294967295,
+              4294967295
+            ],
+            "blend_mode": "Normal",
+            "tint": [
+              1,
+              1,
+              1
+            ],
+            "screenTint": [
+              0,
+              0,
+              0
+            ],
+            "masks": [],
+            "mask_threshold": 0.5,
+            "opacity": 1.0
+          },
+          {
+            "uuid": 20,
+            "name": "hair_front::base",
+            "type": "Part",
+            "enabled": true,
+            "zsort": -6,
+            "lockToRoot": false,
+            "transform": {
+              "translation": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": [
+                1,
+                1
+              ]
+            },
+            "children": [],
+            "mesh": {
+              "verts": [
+                -256.0,
+                -256.0,
+                256.0,
+                -256.0,
+                256.0,
+                256.0,
+                -256.0,
+                256.0
+              ],
+              "uvs": [
+                0,
+                0,
+                1,
+                0,
+                1,
+                1,
+                0,
+                1
+              ],
+              "indices": [
+                0,
+                1,
+                2,
+                0,
+                2,
+                3
+              ],
+              "origin": [
+                0,
+                0
+              ]
+            },
+            "textures": [
+              9,
+              4294967295,
+              4294967295
+            ],
+            "blend_mode": "Normal",
+            "tint": [
+              1,
+              1,
+              1
+            ],
+            "screenTint": [
+              0,
+              0,
+              0
+            ],
+            "masks": [],
+            "mask_threshold": 0.5,
+            "opacity": 1.0
+          },
+          {
+            "uuid": 21,
+            "name": "accessory::base",
+            "type": "Part",
+            "enabled": true,
+            "zsort": -7,
+            "lockToRoot": false,
+            "transform": {
+              "translation": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": [
+                1,
+                1
+              ]
+            },
+            "children": [],
+            "mesh": {
+              "verts": [
+                -256.0,
+                -256.0,
+                256.0,
+                -256.0,
+                256.0,
+                256.0,
+                -256.0,
+                256.0
+              ],
+              "uvs": [
+                0,
+                0,
+                1,
+                0,
+                1,
+                1,
+                0,
+                1
+              ],
+              "indices": [
+                0,
+                1,
+                2,
+                0,
+                2,
+                3
+              ],
+              "origin": [
+                0,
+                0
+              ]
+            },
+            "textures": [
+              10,
+              4294967295,
+              4294967295
+            ],
+            "blend_mode": "Normal",
+            "tint": [
+              1,
+              1,
+              1
+            ],
+            "screenTint": [
+              0,
+              0,
+              0
+            ],
+            "masks": [],
+            "mask_threshold": 0.5,
+            "opacity": 1.0
+          }
+        ]
+      }
+    ]
+  },
+  "param": [
+    {
+      "uuid": 100,
+      "name": "eye_left",
+      "is_vec2": false,
+      "min": [
+        0,
+        0
+      ],
+      "max": [
+        1,
+        1
+      ],
+      "defaults": [
+        1.0,
+        0
+      ],
+      "axis_points": [
+        [
+          0,
+          1
+        ],
+        [
+          0
+        ]
+      ],
+      "merge_mode": "Forced",
+      "bindings": [
+        {
+          "node": 16,
+          "param_name": "opacity",
+          "values": [
+            [
+              0.0
+            ],
+            [
+              1.0
+            ]
+          ],
+          "isSet": [
+            [
+              true
+            ],
+            [
+              true
+            ]
+          ],
+          "interpolate_mode": "Linear"
+        },
+        {
+          "node": 17,
+          "param_name": "opacity",
+          "values": [
+            [
+              1.0
+            ],
+            [
+              0.0
+            ]
+          ],
+          "isSet": [
+            [
+              true
+            ],
+            [
+              true
+            ]
+          ],
+          "interpolate_mode": "Linear"
+        }
+      ]
+    },
+    {
+      "uuid": 101,
+      "name": "eye_right",
+      "is_vec2": false,
+      "min": [
+        0,
+        0
+      ],
+      "max": [
+        1,
+        1
+      ],
+      "defaults": [
+        1.0,
+        0
+      ],
+      "axis_points": [
+        [
+          0,
+          1
+        ],
+        [
+          0
+        ]
+      ],
+      "merge_mode": "Forced",
+      "bindings": [
+        {
+          "node": 14,
+          "param_name": "opacity",
+          "values": [
+            [
+              0.0
+            ],
+            [
+              1.0
+            ]
+          ],
+          "isSet": [
+            [
+              true
+            ],
+            [
+              true
+            ]
+          ],
+          "interpolate_mode": "Linear"
+        },
+        {
+          "node": 15,
+          "param_name": "opacity",
+          "values": [
+            [
+              1.0
+            ],
+            [
+              0.0
+            ]
+          ],
+          "isSet": [
+            [
+              true
+            ],
+            [
+              true
+            ]
+          ],
+          "interpolate_mode": "Linear"
+        }
+      ]
+    },
+    {
+      "uuid": 102,
+      "name": "mouth",
+      "is_vec2": false,
+      "min": [
+        0,
+        0
+      ],
+      "max": [
+        1,
+        1
+      ],
+      "defaults": [
+        0.0,
+        0
+      ],
+      "axis_points": [
+        [
+          0,
+          1
+        ],
+        [
+          0
+        ]
+      ],
+      "merge_mode": "Forced",
+      "bindings": [
+        {
+          "node": 18,
+          "param_name": "opacity",
+          "values": [
+            [
+              1.0
+            ],
+            [
+              0.0
+            ]
+          ],
+          "isSet": [
+            [
+              true
+            ],
+            [
+              true
+            ]
+          ],
+          "interpolate_mode": "Linear"
+        },
+        {
+          "node": 19,
+          "param_name": "opacity",
+          "values": [
+            [
+              0.0
+            ],
+            [
+              1.0
+            ]
+          ],
+          "isSet": [
+            [
+              true
+            ],
+            [
+              true
+            ]
+          ],
+          "interpolate_mode": "Linear"
+        }
+      ]
+    },
+    {
+      "uuid": 103,
+      "name": "head_yaw",
+      "is_vec2": false,
+      "min": [
+        -1,
+        0
+      ],
+      "max": [
+        1,
+        1
+      ],
+      "defaults": [
+        0.0,
+        0
+      ],
+      "axis_points": [
+        [
+          0,
+          0.5,
+          1
+        ],
+        [
+          0
+        ]
+      ],
+      "merge_mode": "Forced",
+      "bindings": [
+        {
+          "node": 2,
+          "param_name": "transform.t.x",
+          "values": [
+            [
+              -18.0
+            ],
+            [
+              0.0
+            ],
+            [
+              18.0
+            ]
+          ],
+          "isSet": [
+            [
+              true
+            ],
+            [
+              true
+            ],
+            [
+              true
+            ]
+          ],
+          "interpolate_mode": "Linear"
+        }
+      ]
+    },
+    {
+      "uuid": 104,
+      "name": "head_roll",
+      "is_vec2": false,
+      "min": [
+        -1,
+        0
+      ],
+      "max": [
+        1,
+        1
+      ],
+      "defaults": [
+        0.0,
+        0
+      ],
+      "axis_points": [
+        [
+          0,
+          0.5,
+          1
+        ],
+        [
+          0
+        ]
+      ],
+      "merge_mode": "Forced",
+      "bindings": [
+        {
+          "node": 2,
+          "param_name": "transform.r.z",
+          "values": [
+            [
+              -0.13962634015954636
+            ],
+            [
+              0.0
+            ],
+            [
+              0.13962634015954636
+            ]
+          ],
+          "isSet": [
+            [
+              true
+            ],
+            [
+              true
+            ],
+            [
+              true
+            ]
+          ],
+          "interpolate_mode": "Linear"
+        }
+      ]
+    }
+  ],
+  "automation": [],
+  "animations": {
+    "phase04-demo": {
+      "timestep": 0.03333333333333333,
+      "additive": false,
+      "animationWeight": 1,
+      "length": 121,
+      "leadIn": 0,
+      "leadOut": 120,
+      "lanes": [
+        {
+          "uuid": 100,
+          "target": 0,
+          "interpolation": "Linear",
+          "merge_mode": "Forced",
+          "keyframes": [
+            {
+              "frame": 0,
+              "value": 1,
+              "tension": 0.5
+            },
+            {
+              "frame": 18,
+              "value": 1,
+              "tension": 0.5
+            },
+            {
+              "frame": 22,
+              "value": 0,
+              "tension": 0.5
+            },
+            {
+              "frame": 27,
+              "value": 1,
+              "tension": 0.5
+            },
+            {
+              "frame": 120,
+              "value": 1,
+              "tension": 0.5
+            }
+          ]
+        },
+        {
+          "uuid": 101,
+          "target": 0,
+          "interpolation": "Linear",
+          "merge_mode": "Forced",
+          "keyframes": [
+            {
+              "frame": 0,
+              "value": 1,
+              "tension": 0.5
+            },
+            {
+              "frame": 18,
+              "value": 1,
+              "tension": 0.5
+            },
+            {
+              "frame": 22,
+              "value": 0,
+              "tension": 0.5
+            },
+            {
+              "frame": 27,
+              "value": 1,
+              "tension": 0.5
+            },
+            {
+              "frame": 120,
+              "value": 1,
+              "tension": 0.5
+            }
+          ]
+        },
+        {
+          "uuid": 102,
+          "target": 0,
+          "interpolation": "Linear",
+          "merge_mode": "Forced",
+          "keyframes": [
+            {
+              "frame": 0,
+              "value": 0,
+              "tension": 0.5
+            },
+            {
+              "frame": 35,
+              "value": 0,
+              "tension": 0.5
+            },
+            {
+              "frame": 45,
+              "value": 1,
+              "tension": 0.5
+            },
+            {
+              "frame": 55,
+              "value": 0,
+              "tension": 0.5
+            },
+            {
+              "frame": 65,
+              "value": 1,
+              "tension": 0.5
+            },
+            {
+              "frame": 75,
+              "value": 0,
+              "tension": 0.5
+            },
+            {
+              "frame": 120,
+              "value": 0,
+              "tension": 0.5
+            }
+          ]
+        },
+        {
+          "uuid": 103,
+          "target": 0,
+          "interpolation": "Linear",
+          "merge_mode": "Forced",
+          "keyframes": [
+            {
+              "frame": 0,
+              "value": 0,
+              "tension": 0.5
+            },
+            {
+              "frame": 30,
+              "value": -1,
+              "tension": 0.5
+            },
+            {
+              "frame": 60,
+              "value": 0,
+              "tension": 0.5
+            },
+            {
+              "frame": 90,
+              "value": 1,
+              "tension": 0.5
+            },
+            {
+              "frame": 120,
+              "value": 0,
+              "tension": 0.5
+            }
+          ]
+        },
+        {
+          "uuid": 104,
+          "target": 0,
+          "interpolation": "Linear",
+          "merge_mode": "Forced",
+          "keyframes": [
+            {
+              "frame": 0,
+              "value": 0,
+              "tension": 0.5
+            },
+            {
+              "frame": 30,
+              "value": -1,
+              "tension": 0.5
+            },
+            {
+              "frame": 60,
+              "value": 0,
+              "tension": 0.5
+            },
+            {
+              "frame": 90,
+              "value": 1,
+              "tension": 0.5
+            },
+            {
+              "frame": 120,
+              "value": 0,
+              "tension": 0.5
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

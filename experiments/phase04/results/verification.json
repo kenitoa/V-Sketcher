@@ -1,0 +1,224 @@
+{
+  "created": "2026-11-16T21:14:30+0900",
+  "passed": 40,
+  "total": 40,
+  "checks": [
+    {
+      "name": "neutral calibration removes measured head offset",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "face controls reach contract eye/mouth/head ranges",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "direction and gain settings invert yaw/reduce roll",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "long capture gap cannot cause parameter jump",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "lost face decays to neutral",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "invalid face/volume values fall back safely",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "microphone owns mouth without a face",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "microphone gain reduces same RMS response",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "microphone disconnect returns mouth to closed",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "crop preserves parts neutral reference pixels",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "preview accepts shared parts control contract",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "crop preserves single neutral reference pixels",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "preview accepts shared single control contract",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "crop preserves split neutral reference pixels",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "preview accepts shared split control contract",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "premium authored eye states visibly differ",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "premium authored mouth states visibly differ",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "native INP header",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "all five normalized native parameters exported",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "native demo contains eye mouth and head animation lanes",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "texture section present",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "all exported textures use target premultiplied alpha",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "premium exports seven independently textured states",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "native extension section present",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "autonomous demo loads, loops and survives inactive tracking zone",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "native container has no trailing/lost payload",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "actual official external runtime independent motion proof",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "real device release/reopen recovered frames",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "real recovery/controller step remains bounded",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "real microphone quiet captures callbacks without errors",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "quiet sensitivity gate is monotonic",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "real microphone speech captures callbacks without errors",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "speech sensitivity gate is monotonic",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "real microphone noise captures callbacks without errors",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "noise sensitivity gate is monotonic",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "phase03 historical source snapshots unchanged",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "actual OBS two-background composition preserves transparency",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "actual local encoder file finalized with matching preserved hash",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "actual recording decodes moving avatar frames at expected video mode",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "successful encoding session used real face input and browser frame consumption",
+      "pass": true,
+      "detail": null
+    }
+  ],
+  "code_sha256": {
+    "build_premium.py": "5776d2f906c4379ef1ece7ba8079ea8bbed2f4bb2b517521b50c4bc0fa7a9f23",
+    "demo.py": "ffdf553073426b4d75c8c9ed2427a47411b89d56e6e47ed4193441e4dda6b267",
+    "device_recovery.py": "49532dfc40d39b96dab2c241bc22bd91e05fd834e2a6cf3a53b8a0eff7eb1edb",
+    "export_inp.py": "11c3b572ca5e8d3799b60ec0557e607bd0f6b86feed999150b0079322b5c5e8e",
+    "freeze.py": "bf2cb302072938db7d351742773a41178ddcbb09973ebcb192093f040042968b",
+    "measure_obs.py": "ee446a621d845eb09d8cdd0954c46b3b127d185fa1e5ca03b7177d2c7f7fad24",
+    "mic_probe.py": "76fd8dfe73a4181542e3f24e3da50bf47b680e6ba1d0439c4742c530ca3d7ca8",
+    "obs_control.py": "85c43d92453a521ace51bd03ad42eba16d7a21eb565991a0301a0fd4d4b98e44",
+    "preview_renderer.py": "130ec4cc9b1f0eac87311f29c4c54202dcfadbbbac2a2d20859ca7b4aa40bc69",
+    "runtime.py": "c1e052f90789d25fafbbf2a78f88406bae1f4da6d74348c23df2990dd2b0da21",
+    "setup_tools.py": "30415daae8ba9c631433c6856394a2f5731145c3b6daf675d9d7e9103ab14c9d",
+    "tracking.py": "7ebda78e71e13879c678983d29a70c275f8b2b2fba6feb9eb269a4577b65c9de",
+    "verify.py": "937109eed6a13c63a29391a95557bb7dda5703920855ee724828027e469efb2a",
+    "verify_alpha.py": "48c9a80711c8792887c781fdecaffc8278ec4b3d14dd35f03c4d0358471bdd1f",
+    "verify_external.py": "289a7ff942da399d1395ff51e39a8848fe149a9d2287be9dd63508d1ffecbdbd"
+  }
+}

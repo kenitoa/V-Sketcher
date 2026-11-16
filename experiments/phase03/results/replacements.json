@@ -1,0 +1,20 @@
+[
+  {
+    "part_id": "eye_left_open",
+    "replacement_asset_id": "eye_left_open-variant-v1",
+    "preserved_parameters": true,
+    "other_assets_unchanged": true
+  },
+  {
+    "part_id": "hair_front",
+    "replacement_asset_id": "hair_front-variant-v1",
+    "preserved_parameters": true,
+    "other_assets_unchanged": true
+  },
+  {
+    "part_id": "body",
+    "replacement_asset_id": "body-variant-v1",
+    "preserved_parameters": true,
+    "other_assets_unchanged": true
+  }
+]

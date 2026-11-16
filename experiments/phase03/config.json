@@ -1,0 +1,15 @@
+{
+  "id": "phase03-feasibility-v1",
+  "schema_version": 1,
+  "max_input_pixels": 4194304,
+  "face_detection_confidence": 0.3,
+  "face_presence_confidence": 0.3,
+  "max_faces": 3,
+  "head_roll_degrees": 6.0,
+  "head_yaw_face_width_fraction": 0.045,
+  "occluded_head_limit": 0.35,
+  "safe_mouth_open": 0.65,
+  "benchmark_warmups": 1,
+  "benchmark_repeats": 3,
+  "scope": "phase03 experiment, not production format or release support"
+}

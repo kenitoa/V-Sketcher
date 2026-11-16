@@ -1,0 +1,763 @@
+{
+  "schema_version": 1,
+  "config_id": "phase02-fixtures-v1",
+  "source_id": "SRC-PROCEDURAL-001",
+  "source_ids": [
+    "SRC-PROCEDURAL-001",
+    "SRC-IMAGEGEN-001"
+  ],
+  "source_path": "../lab.py",
+  "rights_path": "RIGHTS.md",
+  "samples": [
+    {
+      "id": "PARTS-001",
+      "path": "parts/library.json",
+      "kind": "parts",
+      "tags": [
+        "eyes-mouth-head-body",
+        "overlap",
+        "state-alternatives"
+      ],
+      "source_id": "SRC-PROCEDURAL-001",
+      "purpose": "phase02-preparation-and-later-feasibility",
+      "allowed_use": [
+        "project-development",
+        "technical-evaluation",
+        "regression",
+        "project-docs-and-repository"
+      ],
+      "derived_from": null,
+      "expected_preflight": {
+        "errors": [],
+        "warnings": []
+      },
+      "sha256": "36a2c38893270254befc5b66a752548327408238be8fe3ceea412ca4a4580c5c"
+    },
+    {
+      "id": "S-001",
+      "path": "single/S-001.png",
+      "kind": "single",
+      "tags": [
+        "flat",
+        "front",
+        "transparent"
+      ],
+      "source_id": "SRC-PROCEDURAL-001",
+      "purpose": "phase02-preparation-and-later-feasibility",
+      "allowed_use": [
+        "project-development",
+        "technical-evaluation",
+        "regression",
+        "project-docs-and-repository"
+      ],
+      "derived_from": "PARTS-001",
+      "expected_preflight": {
+        "errors": [],
+        "warnings": []
+      },
+      "sha256": "6d899a13c74655275918c3e51019edf045217a635c51b11b9e736b6392e77e95"
+    },
+    {
+      "id": "S-002",
+      "path": "single/S-002.png",
+      "kind": "single",
+      "tags": [
+        "opaque-background"
+      ],
+      "source_id": "SRC-PROCEDURAL-001",
+      "purpose": "phase02-preparation-and-later-feasibility",
+      "allowed_use": [
+        "project-development",
+        "technical-evaluation",
+        "regression",
+        "project-docs-and-repository"
+      ],
+      "derived_from": "PARTS-001",
+      "expected_preflight": {
+        "errors": [],
+        "warnings": []
+      },
+      "sha256": "499bd40aae451435611225aec710fd98746b44fc18e7cead749e2b1d0512b841"
+    },
+    {
+      "id": "S-003",
+      "path": "single/S-003.png",
+      "kind": "single",
+      "tags": [
+        "tilted",
+        "rotation-15deg"
+      ],
+      "source_id": "SRC-PROCEDURAL-001",
+      "purpose": "phase02-preparation-and-later-feasibility",
+      "allowed_use": [
+        "project-development",
+        "technical-evaluation",
+        "regression",
+        "project-docs-and-repository"
+      ],
+      "derived_from": "PARTS-001",
+      "expected_preflight": {
+        "errors": [],
+        "warnings": []
+      },
+      "sha256": "661194468d7569b6ec99f6cc62893b7a205e5cf1ac72f4a659a8c3c39f8ddba0"
+    },
+    {
+      "id": "S-004",
+      "path": "single/S-004.png",
+      "kind": "single",
+      "tags": [
+        "eye-occluded",
+        "hidden-region"
+      ],
+      "source_id": "SRC-PROCEDURAL-001",
+      "purpose": "phase02-preparation-and-later-feasibility",
+      "allowed_use": [
+        "project-development",
+        "technical-evaluation",
+        "regression",
+        "project-docs-and-repository"
+      ],
+      "derived_from": "PARTS-001",
+      "expected_preflight": {
+        "errors": [],
+        "warnings": []
+      },
+      "sha256": "af6d13fd33f09f2281e1e0755e38e7a6697e5fd9c679e8907295b06b0fc7bb64"
+    },
+    {
+      "id": "S-005",
+      "path": "single/S-005.png",
+      "kind": "single",
+      "tags": [
+        "mouth-occluded",
+        "hidden-region"
+      ],
+      "source_id": "SRC-PROCEDURAL-001",
+      "purpose": "phase02-preparation-and-later-feasibility",
+      "allowed_use": [
+        "project-development",
+        "technical-evaluation",
+        "regression",
+        "project-docs-and-repository"
+      ],
+      "derived_from": "PARTS-001",
+      "expected_preflight": {
+        "errors": [],
+        "warnings": []
+      },
+      "sha256": "c2ec4a446805220a5f6fddcb58c585c4ffbf0364a3541ea4dbd62d66aafe167b"
+    },
+    {
+      "id": "S-006",
+      "path": "single/S-006.png",
+      "kind": "single",
+      "tags": [
+        "cropped-head",
+        "cropped-body"
+      ],
+      "source_id": "SRC-PROCEDURAL-001",
+      "purpose": "phase02-preparation-and-later-feasibility",
+      "allowed_use": [
+        "project-development",
+        "technical-evaluation",
+        "regression",
+        "project-docs-and-repository"
+      ],
+      "derived_from": "PARTS-001",
+      "expected_preflight": {
+        "errors": [],
+        "warnings": []
+      },
+      "sha256": "643fdd4640237520cb40813f286cecc06d022cf0c6acd479c63df1c89ac600fb"
+    },
+    {
+      "id": "S-007",
+      "path": "single/S-007.png",
+      "kind": "single",
+      "tags": [
+        "multiple-characters"
+      ],
+      "source_id": "SRC-PROCEDURAL-001",
+      "purpose": "phase02-preparation-and-later-feasibility",
+      "allowed_use": [
+        "project-development",
+        "technical-evaluation",
+        "regression",
+        "project-docs-and-repository"
+      ],
+      "derived_from": "PARTS-001",
+      "expected_preflight": {
+        "errors": [],
+        "warnings": []
+      },
+      "sha256": "48b8ef1ae674dac24483733c182a13ee85361048a7632a115a366b8cd4ec920b"
+    },
+    {
+      "id": "S-008",
+      "path": "single/S-008.png",
+      "kind": "single",
+      "tags": [
+        "line-art",
+        "white-fills"
+      ],
+      "source_id": "SRC-PROCEDURAL-001",
+      "purpose": "phase02-preparation-and-later-feasibility",
+      "allowed_use": [
+        "project-development",
+        "technical-evaluation",
+        "regression",
+        "project-docs-and-repository"
+      ],
+      "derived_from": "PARTS-001",
+      "expected_preflight": {
+        "errors": [],
+        "warnings": []
+      },
+      "sha256": "18f11970f06c12be2a3014d7d25148fa8e039eaa72758357c26eac6607fcd9b8"
+    },
+    {
+      "id": "S-009",
+      "path": "single/S-009.png",
+      "kind": "single",
+      "tags": [
+        "shaded",
+        "style-variation"
+      ],
+      "source_id": "SRC-PROCEDURAL-001",
+      "purpose": "phase02-preparation-and-later-feasibility",
+      "allowed_use": [
+        "project-development",
+        "technical-evaluation",
+        "regression",
+        "project-docs-and-repository"
+      ],
+      "derived_from": "PARTS-001",
+      "expected_preflight": {
+        "errors": [],
+        "warnings": []
+      },
+      "sha256": "ea7660fdf46295dd6fa10891f3fd2c6ed25f6e76d6df88a23d4e8c90901aeff1"
+    },
+    {
+      "id": "S-010",
+      "path": "single/S-010.png",
+      "kind": "single",
+      "tags": [
+        "small-face",
+        "low-resolution"
+      ],
+      "source_id": "SRC-PROCEDURAL-001",
+      "purpose": "phase02-preparation-and-later-feasibility",
+      "allowed_use": [
+        "project-development",
+        "technical-evaluation",
+        "regression",
+        "project-docs-and-repository"
+      ],
+      "derived_from": "PARTS-001",
+      "expected_preflight": {
+        "errors": [],
+        "warnings": []
+      },
+      "sha256": "c2437508349ebe16959c9c682a3a4d2c0fb6e1fc6d1cf7304e5425935a1012f9"
+    },
+    {
+      "id": "S-011",
+      "path": "single/S-011.png",
+      "kind": "single",
+      "tags": [
+        "pixel-style"
+      ],
+      "source_id": "SRC-PROCEDURAL-001",
+      "purpose": "phase02-preparation-and-later-feasibility",
+      "allowed_use": [
+        "project-development",
+        "technical-evaluation",
+        "regression",
+        "project-docs-and-repository"
+      ],
+      "derived_from": "PARTS-001",
+      "expected_preflight": {
+        "errors": [],
+        "warnings": []
+      },
+      "sha256": "f6ca130a67e5f4db902dddcbf15f06303a9f5ce406b878013c0e3f27fdfb711c"
+    },
+    {
+      "id": "S-012",
+      "path": "single/S-012.png",
+      "kind": "single",
+      "tags": [
+        "empty",
+        "no-character"
+      ],
+      "source_id": "SRC-PROCEDURAL-001",
+      "purpose": "phase02-preparation-and-later-feasibility",
+      "allowed_use": [
+        "project-development",
+        "technical-evaluation",
+        "regression",
+        "project-docs-and-repository"
+      ],
+      "derived_from": "PARTS-001",
+      "expected_preflight": {
+        "errors": [
+          "empty_image"
+        ],
+        "warnings": []
+      },
+      "sha256": "b262bd68d44f93637b9949caf7ff7ce0b6b6ed839c3a2468681952b215ec4d95"
+    },
+    {
+      "id": "S-013",
+      "path": "single/S-013.png",
+      "kind": "single",
+      "tags": [
+        "corrupt",
+        "invalid-encoding"
+      ],
+      "source_id": "SRC-PROCEDURAL-001",
+      "purpose": "phase02-preparation-and-later-feasibility",
+      "allowed_use": [
+        "project-development",
+        "technical-evaluation",
+        "regression",
+        "project-docs-and-repository"
+      ],
+      "derived_from": null,
+      "expected_preflight": {
+        "errors": [
+          "image_unreadable"
+        ],
+        "warnings": []
+      },
+      "sha256": "9e385de89a69638f8c3ebcc38468bb2aeb6ba67c317acd9ef49e1ab322b58bd5"
+    },
+    {
+      "id": "S-014",
+      "path": "single/S-014.jpg",
+      "kind": "single",
+      "tags": [
+        "jpeg",
+        "opaque"
+      ],
+      "source_id": "SRC-PROCEDURAL-001",
+      "purpose": "phase02-preparation-and-later-feasibility",
+      "allowed_use": [
+        "project-development",
+        "technical-evaluation",
+        "regression",
+        "project-docs-and-repository"
+      ],
+      "derived_from": "PARTS-001",
+      "expected_preflight": {
+        "errors": [],
+        "warnings": []
+      },
+      "sha256": "718e10f71a8d0a5f9085d2ded57b813e836223731d5f20482a3bab98862e7e9f"
+    },
+    {
+      "id": "S-015",
+      "path": "single/S-015.png",
+      "kind": "single",
+      "tags": [
+        "larger-input",
+        "not-product-limit"
+      ],
+      "source_id": "SRC-PROCEDURAL-001",
+      "purpose": "phase02-preparation-and-later-feasibility",
+      "allowed_use": [
+        "project-development",
+        "technical-evaluation",
+        "regression",
+        "project-docs-and-repository"
+      ],
+      "derived_from": "PARTS-001",
+      "expected_preflight": {
+        "errors": [],
+        "warnings": []
+      },
+      "sha256": "969bf9c4f2e1331b11c41647ffdd03b16fd2cca89cf69587504b032c59c56152"
+    },
+    {
+      "id": "S-016",
+      "path": "single/S-016.png",
+      "kind": "single",
+      "tags": [
+        "opaque-no-character",
+        "semantic-negative"
+      ],
+      "source_id": "SRC-PROCEDURAL-001",
+      "purpose": "phase02-preparation-and-later-feasibility",
+      "allowed_use": [
+        "project-development",
+        "technical-evaluation",
+        "regression",
+        "project-docs-and-repository"
+      ],
+      "derived_from": "PARTS-001",
+      "expected_preflight": {
+        "errors": [],
+        "warnings": []
+      },
+      "sha256": "ed46a97e495c041df6b11ef4b3508e39885ea5ebaeefde1d3e69817f908944eb"
+    },
+    {
+      "id": "L-001",
+      "path": "split/L-001.json",
+      "kind": "split",
+      "tags": [
+        "normal",
+        "coordinates",
+        "roles",
+        "order"
+      ],
+      "source_id": "SRC-PROCEDURAL-001",
+      "purpose": "phase02-preparation-and-later-feasibility",
+      "allowed_use": [
+        "project-development",
+        "technical-evaluation",
+        "regression",
+        "project-docs-and-repository"
+      ],
+      "derived_from": "PARTS-001",
+      "expected_preflight": {
+        "errors": [],
+        "warnings": []
+      },
+      "sha256": "7d24f69063b95c371e181e0f6edb08713aa2d9ed4281f5b3a3b5daaadf5a97e1"
+    },
+    {
+      "id": "L-002",
+      "path": "split/L-002.json",
+      "kind": "split",
+      "tags": [
+        "ambiguous-names",
+        "unknown-roles"
+      ],
+      "source_id": "SRC-PROCEDURAL-001",
+      "purpose": "phase02-preparation-and-later-feasibility",
+      "allowed_use": [
+        "project-development",
+        "technical-evaluation",
+        "regression",
+        "project-docs-and-repository"
+      ],
+      "derived_from": "PARTS-001",
+      "expected_preflight": {
+        "errors": [],
+        "warnings": [
+          "role_unassigned"
+        ]
+      },
+      "sha256": "c98f4f1db50b646a5ea07d7b6fe41d342f4708e395039a6ddd0f217e8cfa063f"
+    },
+    {
+      "id": "L-003",
+      "path": "split/L-003.json",
+      "kind": "split",
+      "tags": [
+        "missing-coordinates"
+      ],
+      "source_id": "SRC-PROCEDURAL-001",
+      "purpose": "phase02-preparation-and-later-feasibility",
+      "allowed_use": [
+        "project-development",
+        "technical-evaluation",
+        "regression",
+        "project-docs-and-repository"
+      ],
+      "derived_from": "PARTS-001",
+      "expected_preflight": {
+        "errors": [
+          "coordinates_missing"
+        ],
+        "warnings": []
+      },
+      "sha256": "1ffef5a3de9d20efd486e0409046dbd2cc74e87a085c8334010b6815dfc905e1"
+    },
+    {
+      "id": "L-004",
+      "path": "split/L-004.json",
+      "kind": "split",
+      "tags": [
+        "empty-optional-layer"
+      ],
+      "source_id": "SRC-PROCEDURAL-001",
+      "purpose": "phase02-preparation-and-later-feasibility",
+      "allowed_use": [
+        "project-development",
+        "technical-evaluation",
+        "regression",
+        "project-docs-and-repository"
+      ],
+      "derived_from": "PARTS-001",
+      "expected_preflight": {
+        "errors": [],
+        "warnings": [
+          "empty_layer"
+        ]
+      },
+      "sha256": "ce05b94540740a630ddf800ba4b541f97942131853fe72ca4a154d63d3857fe2"
+    },
+    {
+      "id": "L-005",
+      "path": "split/L-005.json",
+      "kind": "split",
+      "tags": [
+        "duplicate-id"
+      ],
+      "source_id": "SRC-PROCEDURAL-001",
+      "purpose": "phase02-preparation-and-later-feasibility",
+      "allowed_use": [
+        "project-development",
+        "technical-evaluation",
+        "regression",
+        "project-docs-and-repository"
+      ],
+      "derived_from": "PARTS-001",
+      "expected_preflight": {
+        "errors": [
+          "duplicate_id"
+        ],
+        "warnings": []
+      },
+      "sha256": "7d2e2f14f16fe43957e066c13abb2e0dc57fe0eeb212b58f8fa62e5bf20fa997"
+    },
+    {
+      "id": "L-006",
+      "path": "split/L-006.json",
+      "kind": "split",
+      "tags": [
+        "missing-mouth",
+        "partial-motion-only"
+      ],
+      "source_id": "SRC-PROCEDURAL-001",
+      "purpose": "phase02-preparation-and-later-feasibility",
+      "allowed_use": [
+        "project-development",
+        "technical-evaluation",
+        "regression",
+        "project-docs-and-repository"
+      ],
+      "derived_from": "PARTS-001",
+      "expected_preflight": {
+        "errors": [],
+        "warnings": [
+          "missing_role:mouth"
+        ]
+      },
+      "sha256": "4c91cbe11973e7bbe5e74944fc142aacf77797a1af32651f5c2f5c3e16387628"
+    },
+    {
+      "id": "L-007",
+      "path": "split/L-007.json",
+      "kind": "split",
+      "tags": [
+        "missing-resource"
+      ],
+      "source_id": "SRC-PROCEDURAL-001",
+      "purpose": "phase02-preparation-and-later-feasibility",
+      "allowed_use": [
+        "project-development",
+        "technical-evaluation",
+        "regression",
+        "project-docs-and-repository"
+      ],
+      "derived_from": "PARTS-001",
+      "expected_preflight": {
+        "errors": [
+          "resource_missing"
+        ],
+        "warnings": []
+      },
+      "sha256": "2a11f32bedfe183edc48c6c585011bf48e751ad6b59e862a5cb28a7a0d7e3016"
+    },
+    {
+      "id": "L-008",
+      "path": "split/L-008.json",
+      "kind": "split",
+      "tags": [
+        "side-conflict"
+      ],
+      "source_id": "SRC-PROCEDURAL-001",
+      "purpose": "phase02-preparation-and-later-feasibility",
+      "allowed_use": [
+        "project-development",
+        "technical-evaluation",
+        "regression",
+        "project-docs-and-repository"
+      ],
+      "derived_from": "PARTS-001",
+      "expected_preflight": {
+        "errors": [],
+        "warnings": [
+          "side_conflict"
+        ]
+      },
+      "sha256": "3164333831d21c31066800f3fa694656526888537fbd5028568c062b9b99c916"
+    },
+    {
+      "id": "L-009",
+      "path": "split/L-009.json",
+      "kind": "split",
+      "tags": [
+        "cropped-parts",
+        "different-sizes",
+        "nonzero-coordinates"
+      ],
+      "source_id": "SRC-PROCEDURAL-001",
+      "purpose": "phase02-preparation-and-later-feasibility",
+      "allowed_use": [
+        "project-development",
+        "technical-evaluation",
+        "regression",
+        "project-docs-and-repository"
+      ],
+      "derived_from": "PARTS-001",
+      "expected_preflight": {
+        "errors": [],
+        "warnings": []
+      },
+      "sha256": "92cd10fa402a00e1ec1494fb16c1414d381d886cb48127e31332b9b2563e451b"
+    },
+    {
+      "id": "L-010",
+      "path": "split/L-010.json",
+      "kind": "split",
+      "tags": [
+        "visually-wrong-order",
+        "structurally-valid"
+      ],
+      "source_id": "SRC-PROCEDURAL-001",
+      "purpose": "phase02-preparation-and-later-feasibility",
+      "allowed_use": [
+        "project-development",
+        "technical-evaluation",
+        "regression",
+        "project-docs-and-repository"
+      ],
+      "derived_from": "PARTS-001",
+      "expected_preflight": {
+        "errors": [],
+        "warnings": []
+      },
+      "sha256": "9e57e0eca211c66bdd031f18cd03b7eaa6dec2123cf4263d8c8dc465757d3b86"
+    },
+    {
+      "id": "HQ-001",
+      "path": "premium/HQ-001-premium-portrait.png",
+      "kind": "premium",
+      "tags": [
+        "premium-anime",
+        "fine-linework",
+        "detailed-irises",
+        "hair-strands",
+        "embroidered-fabric",
+        "opaque-background"
+      ],
+      "source_id": "SRC-IMAGEGEN-001",
+      "purpose": "High-quality illustration input and appearance-preservation comparison in later automatic preparation experiments",
+      "allowed_use": [
+        "project-technical-evaluation",
+        "project-visual-quality-review",
+        "project-documentation"
+      ],
+      "derived_from": null,
+      "expected_preflight": {
+        "errors": [],
+        "warnings": []
+      },
+      "review": {
+        "status": "reference-candidate",
+        "observed": "Detailed portrait and clothing; eyes and closed mouth visible; opaque background; tight top framing and intended lower torso crop",
+        "not_claimed": "No separated parts, rig, movement or supported production quality has been verified"
+      },
+      "sha256": "c28ec8ff0da80361e61d0c6c3a242fb204feff491887b9ab304c54c015fec961"
+    },
+    {
+      "id": "HQ-002",
+      "path": "premium/HQ-002-alpha-edge-stress.png",
+      "kind": "premium",
+      "tags": [
+        "premium-anime",
+        "transparent-alpha",
+        "thin-hair",
+        "complex-accessories",
+        "edge-artifact-stress"
+      ],
+      "source_id": "SRC-IMAGEGEN-001",
+      "purpose": "High-detail alpha-edge stress input; detect pre-existing fringe before attributing it to segmentation or deformation",
+      "allowed_use": [
+        "project-technical-evaluation",
+        "project-visual-quality-review",
+        "project-documentation"
+      ],
+      "derived_from": "imagegen-draft-001",
+      "expected_preflight": {
+        "errors": [],
+        "warnings": []
+      },
+      "review": {
+        "status": "stress-only-not-clean-edge-gold",
+        "observed": "Fine hair and elaborate costume; real alpha; visible colored fringe/specks at some edges",
+        "not_claimed": "Passing image decoding does not mean visually clean transparency; not accepted as a flawless cutout or completed avatar"
+      },
+      "sha256": "b6bbba73006094198dab988bdae5dfada8a50119f697373581c5d745b41f015b"
+    }
+  ],
+  "scope": "procedural structure fixtures plus generated premium-art inputs; not real-user art or algorithm-quality evidence",
+  "files": {
+    "parts/accessory.png": "e19a3ac5102de5b0d170513b2765adc2820028a715efff94357f92a57bb3b7ab",
+    "parts/body.png": "d21741b5a8e4ff803886b48d46388c91b7efad5bfe3df23d286b4bb6e3927d52",
+    "parts/cropped_accessory.png": "0972e139d5cecfc5a6e744bd82a3ebd1c56e747fccca9b9b8c5080f01da8cdfb",
+    "parts/cropped_body.png": "f713495d18f6776f60ec6334c209eb7a61c47272535f9e53a806a9d11d0f04e4",
+    "parts/cropped_eye_left_open.png": "829e3dd76e6b54ddeee939229a90d83cb73172b177aa2fff1cddba23395d6d4d",
+    "parts/cropped_eye_right_open.png": "829e3dd76e6b54ddeee939229a90d83cb73172b177aa2fff1cddba23395d6d4d",
+    "parts/cropped_hair_back.png": "8bcc9f4bb6ff6cb05753909dd7c478b5dfd92718f3883a2de194dbc6e53ea03a",
+    "parts/cropped_hair_front.png": "c64a39915daf802a5e9cb9e33f765287b5b6dc8666bc246b0aa3c01c1452f7d5",
+    "parts/cropped_head.png": "2df80ce0934bcd92fc03168d68a324519f4c93aa6f976cf07852b4fee72d004d",
+    "parts/cropped_mouth_closed.png": "48409ea00aa2213c133637d00775222f8de9265bf0feaf30bb21d75dbed93102",
+    "parts/empty_accessory.png": "b262bd68d44f93637b9949caf7ff7ce0b6b6ed839c3a2468681952b215ec4d95",
+    "parts/eye_left_closed.png": "8f79ef1938d18b4b79cc5c7b5dac5953e14895369a5d6eecc19dcc854a917cbd",
+    "parts/eye_left_open.png": "35f2039add1a401af7d9e87a5ee599e49b1a337da4ed501471a0b77b645d2808",
+    "parts/eye_right_closed.png": "d036b99c3faba243036dd9fb17bcac3c2f982167d25c76b216f834a131f7b4f5",
+    "parts/eye_right_open.png": "4c5f3dfe29c21d0c2b9c761faba01ab49a079e5520409cdbbd88036241500f14",
+    "parts/hair_back.png": "dbb4626676ef82c76acd4216f9d88e7f6c0878cabf136d9a9f2a0c48c6b5d651",
+    "parts/hair_front.png": "1a3b5e3f552546460f1590a1097f2e8ea2fd6c82c3ef01fb4cca65cb9fd0ccea",
+    "parts/head.png": "974ba22a99aaa1f155e1b4fb6eb1a41373561c3c46c28bbdee1c187c07f022b3",
+    "parts/library.json": "36a2c38893270254befc5b66a752548327408238be8fe3ceea412ca4a4580c5c",
+    "parts/mouth_closed.png": "abdbb4d37875a05dafd07413554cf49d4359fbf0bbe14ae5d1a106acf61fbe54",
+    "parts/mouth_open.png": "801e353b0bdf71d72894558be04faf9b380642e48dcabadb5b7bbfce4c4d6787",
+    "premium/catalog.json": "27d7eadedad1c772a112bdc825515c28f4c92b26a832b23a5ce5a51aed70b37f",
+    "premium/HQ-001-premium-portrait.png": "c28ec8ff0da80361e61d0c6c3a242fb204feff491887b9ab304c54c015fec961",
+    "premium/HQ-002-alpha-edge-stress.png": "b6bbba73006094198dab988bdae5dfada8a50119f697373581c5d745b41f015b",
+    "single/S-001.png": "6d899a13c74655275918c3e51019edf045217a635c51b11b9e736b6392e77e95",
+    "single/S-002.png": "499bd40aae451435611225aec710fd98746b44fc18e7cead749e2b1d0512b841",
+    "single/S-003.png": "661194468d7569b6ec99f6cc62893b7a205e5cf1ac72f4a659a8c3c39f8ddba0",
+    "single/S-004.png": "af6d13fd33f09f2281e1e0755e38e7a6697e5fd9c679e8907295b06b0fc7bb64",
+    "single/S-005.png": "c2ec4a446805220a5f6fddcb58c585c4ffbf0364a3541ea4dbd62d66aafe167b",
+    "single/S-006.png": "643fdd4640237520cb40813f286cecc06d022cf0c6acd479c63df1c89ac600fb",
+    "single/S-007.png": "48b8ef1ae674dac24483733c182a13ee85361048a7632a115a366b8cd4ec920b",
+    "single/S-008.png": "18f11970f06c12be2a3014d7d25148fa8e039eaa72758357c26eac6607fcd9b8",
+    "single/S-009.png": "ea7660fdf46295dd6fa10891f3fd2c6ed25f6e76d6df88a23d4e8c90901aeff1",
+    "single/S-010.png": "c2437508349ebe16959c9c682a3a4d2c0fb6e1fc6d1cf7304e5425935a1012f9",
+    "single/S-011.png": "f6ca130a67e5f4db902dddcbf15f06303a9f5ce406b878013c0e3f27fdfb711c",
+    "single/S-012.png": "b262bd68d44f93637b9949caf7ff7ce0b6b6ed839c3a2468681952b215ec4d95",
+    "single/S-013.png": "9e385de89a69638f8c3ebcc38468bb2aeb6ba67c317acd9ef49e1ab322b58bd5",
+    "single/S-014.jpg": "718e10f71a8d0a5f9085d2ded57b813e836223731d5f20482a3bab98862e7e9f",
+    "single/S-015.png": "969bf9c4f2e1331b11c41647ffdd03b16fd2cca89cf69587504b032c59c56152",
+    "single/S-016.png": "ed46a97e495c041df6b11ef4b3508e39885ea5ebaeefde1d3e69817f908944eb",
+    "split/L-001.json": "7d24f69063b95c371e181e0f6edb08713aa2d9ed4281f5b3a3b5daaadf5a97e1",
+    "split/L-002.json": "c98f4f1db50b646a5ea07d7b6fe41d342f4708e395039a6ddd0f217e8cfa063f",
+    "split/L-003.json": "1ffef5a3de9d20efd486e0409046dbd2cc74e87a085c8334010b6815dfc905e1",
+    "split/L-004.json": "ce05b94540740a630ddf800ba4b541f97942131853fe72ca4a154d63d3857fe2",
+    "split/L-005.json": "7d2e2f14f16fe43957e066c13abb2e0dc57fe0eeb212b58f8fa62e5bf20fa997",
+    "split/L-006.json": "4c91cbe11973e7bbe5e74944fc142aacf77797a1af32651f5c2f5c3e16387628",
+    "split/L-007.json": "2a11f32bedfe183edc48c6c585011bf48e751ad6b59e862a5cb28a7a0d7e3016",
+    "split/L-008.json": "3164333831d21c31066800f3fa694656526888537fbd5028568c062b9b99c916",
+    "split/L-009.json": "92cd10fa402a00e1ec1494fb16c1414d381d886cb48127e31332b9b2563e451b",
+    "split/L-010.json": "9e57e0eca211c66bdd031f18cd03b7eaa6dec2123cf4263d8c8dc465757d3b86"
+  }
+}

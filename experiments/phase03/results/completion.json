@@ -1,0 +1,210 @@
+{
+  "truth": "mirror/inpaint are estimates, not recovered hidden artwork; operator-confirmed regions used for controlled comparison; unoccluded original used for evaluation only",
+  "records": [
+    {
+      "input_id": "S-004",
+      "mode": "restrict",
+      "observed": {
+        "eye_right": true,
+        "eye_left": false,
+        "mouth": true
+      },
+      "estimated_regions": [
+        "eye_right",
+        "mouth"
+      ],
+      "hidden_estimates": [],
+      "fill_only_regions": [],
+      "limits": {
+        "head": 0.35,
+        "mouth": 0.65
+      },
+      "effective_params": {
+        "eye_left": 1,
+        "eye_right": 1,
+        "mouth": 0.65,
+        "head_yaw": 0.0,
+        "head_roll": 0.35
+      },
+      "neutral_changed_pixels": 0,
+      "evaluation_only_hidden_reference_mse": 10636.827,
+      "manual_setup_actions": 4,
+      "setup": "3 feature boxes and hidden flag explicitly operator-confirmed; not automatic detection success",
+      "correction_burden": "confirm limitation; no new feature artwork, hidden motion disabled",
+      "real_user_correction_time": "not_measured",
+      "original_file_unchanged": true
+    },
+    {
+      "input_id": "S-004",
+      "mode": "mirror",
+      "observed": {
+        "eye_right": true,
+        "eye_left": false,
+        "mouth": true
+      },
+      "estimated_regions": [
+        "eye_right",
+        "eye_left",
+        "mouth"
+      ],
+      "hidden_estimates": [
+        "eye_left"
+      ],
+      "fill_only_regions": [],
+      "limits": {
+        "head": 0.35,
+        "mouth": 0.65
+      },
+      "effective_params": {
+        "eye_left": 1,
+        "eye_right": 1,
+        "mouth": 0.65,
+        "head_yaw": 0.0,
+        "head_roll": 0.35
+      },
+      "neutral_changed_pixels": 1710,
+      "evaluation_only_hidden_reference_mse": 4948.203,
+      "manual_setup_actions": 4,
+      "setup": "3 feature boxes and hidden flag explicitly operator-confirmed; not automatic detection success",
+      "correction_burden": "review mirrored eye shape, highlight and edge; not an original restoration",
+      "real_user_correction_time": "not_measured",
+      "original_file_unchanged": true
+    },
+    {
+      "input_id": "S-004",
+      "mode": "inpaint",
+      "observed": {
+        "eye_right": true,
+        "eye_left": false,
+        "mouth": true
+      },
+      "estimated_regions": [
+        "eye_right",
+        "mouth"
+      ],
+      "hidden_estimates": [],
+      "fill_only_regions": [
+        "eye_left"
+      ],
+      "limits": {
+        "head": 0.35,
+        "mouth": 0.65
+      },
+      "effective_params": {
+        "eye_left": 1,
+        "eye_right": 1,
+        "mouth": 0.65,
+        "head_yaw": 0.0,
+        "head_roll": 0.35
+      },
+      "neutral_changed_pixels": 1559,
+      "evaluation_only_hidden_reference_mse": 11101.496,
+      "manual_setup_actions": 4,
+      "setup": "3 feature boxes and hidden flag explicitly operator-confirmed; not automatic detection success",
+      "correction_burden": "review fill; no hidden eye/mouth artwork was produced; new artwork needed to enable feature",
+      "real_user_correction_time": "not_measured",
+      "original_file_unchanged": true
+    },
+    {
+      "input_id": "S-005",
+      "mode": "restrict",
+      "observed": {
+        "eye_right": true,
+        "eye_left": true,
+        "mouth": false
+      },
+      "estimated_regions": [
+        "eye_right",
+        "eye_left"
+      ],
+      "hidden_estimates": [],
+      "fill_only_regions": [],
+      "limits": {
+        "head": 0.35,
+        "mouth": 0.65
+      },
+      "effective_params": {
+        "eye_left": 1,
+        "eye_right": 1,
+        "mouth": 0.65,
+        "head_yaw": 0.0,
+        "head_roll": 0.35
+      },
+      "neutral_changed_pixels": 0,
+      "evaluation_only_hidden_reference_mse": 8145.85,
+      "manual_setup_actions": 4,
+      "setup": "3 feature boxes and hidden flag explicitly operator-confirmed; not automatic detection success",
+      "correction_burden": "confirm limitation; no new feature artwork, hidden motion disabled",
+      "real_user_correction_time": "not_measured",
+      "original_file_unchanged": true
+    },
+    {
+      "input_id": "S-005",
+      "mode": "mirror",
+      "observed": {
+        "eye_right": true,
+        "eye_left": true,
+        "mouth": false
+      },
+      "estimated_regions": [
+        "eye_right",
+        "eye_left"
+      ],
+      "hidden_estimates": [],
+      "fill_only_regions": [],
+      "limits": {
+        "head": 0.35,
+        "mouth": 0.65
+      },
+      "effective_params": {
+        "eye_left": 1,
+        "eye_right": 1,
+        "mouth": 0.65,
+        "head_yaw": 0.0,
+        "head_roll": 0.35
+      },
+      "neutral_changed_pixels": 0,
+      "evaluation_only_hidden_reference_mse": 8145.85,
+      "manual_setup_actions": 4,
+      "setup": "3 feature boxes and hidden flag explicitly operator-confirmed; not automatic detection success",
+      "correction_burden": "review mirrored eye shape, highlight and edge; not an original restoration",
+      "real_user_correction_time": "not_measured",
+      "original_file_unchanged": true
+    },
+    {
+      "input_id": "S-005",
+      "mode": "inpaint",
+      "observed": {
+        "eye_right": true,
+        "eye_left": true,
+        "mouth": false
+      },
+      "estimated_regions": [
+        "eye_right",
+        "eye_left"
+      ],
+      "hidden_estimates": [],
+      "fill_only_regions": [
+        "mouth"
+      ],
+      "limits": {
+        "head": 0.35,
+        "mouth": 0.65
+      },
+      "effective_params": {
+        "eye_left": 1,
+        "eye_right": 1,
+        "mouth": 0.65,
+        "head_yaw": 0.0,
+        "head_roll": 0.35
+      },
+      "neutral_changed_pixels": 537,
+      "evaluation_only_hidden_reference_mse": 8103.602,
+      "manual_setup_actions": 4,
+      "setup": "3 feature boxes and hidden flag explicitly operator-confirmed; not automatic detection success",
+      "correction_burden": "review fill; no hidden eye/mouth artwork was produced; new artwork needed to enable feature",
+      "real_user_correction_time": "not_measured",
+      "original_file_unchanged": true
+    }
+  ]
+}

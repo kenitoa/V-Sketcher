@@ -1,0 +1,82 @@
+{
+  "created": "2026-11-16T21:50:10+0900",
+  "scope": "Final phase05 policy/decision source, research, records and documents",
+  "files": {
+    "docs/Function.md": {
+      "bytes": 106779,
+      "sha256": "b4ba463de3190376c1390df96d169d5d996175e8131828bfe31ef6177c24d61b"
+    },
+    "docs/planning/01-decisions.md": {
+      "bytes": 12236,
+      "sha256": "ea4efa0a7b4a5db3d7604f44e6deacadeb4d998ed10d24d2d2935796132fe81b"
+    },
+    "docs/planning/01-metrics.md": {
+      "bytes": 12817,
+      "sha256": "62cbaec7bc8129611e95d14b6721eb3e60d031d50198f74235222961afac318d"
+    },
+    "docs/planning/05-decisions.md": {
+      "bytes": 25323,
+      "sha256": "c43ba65f3a086f97729fd9dc2a75882e0e735ba220c800b7bc78dd824f91e56c"
+    },
+    "docs/planning/05-m0-review.md": {
+      "bytes": 7903,
+      "sha256": "1e4c2f4f685caaa0e443caef9b960e868106bfbcfdc85f7f5163f9d8c85e7862"
+    },
+    "docs/planning/05-release-gates.md": {
+      "bytes": 13729,
+      "sha256": "f442c5fbd586a26bf76624b3bca642dcf0acf1937826af63158b3fc48189591a"
+    },
+    "docs/planning/05-stack.md": {
+      "bytes": 13605,
+      "sha256": "d653d3abc835ffe155658dbdaeadc1e6f72d398bbe3df371c88656754f741f30"
+    },
+    "docs/PRD.md": {
+      "bytes": 77947,
+      "sha256": "673a3149ce99bbdff0dd00767efe7a56d4e9a070e70c0c7c29f38d5a1c158675"
+    },
+    "docs/Todo": {
+      "bytes": 94931,
+      "sha256": "98eaf792a549a90758739eea3f806d2b0e4cd335f0421b36fbcebc882dd90b61"
+    },
+    "experiments/phase05/audit.py": {
+      "bytes": 6215,
+      "sha256": "f4baa670d04907d696044d75563d28803dc9d9694ce6203d2ac7451c6dfcd15a"
+    },
+    "experiments/phase05/build_records.py": {
+      "bytes": 5606,
+      "sha256": "9247eb541c3fb8df32f5faf38e9b4af76e240c2bad8e2c32607c8c8228a88664"
+    },
+    "experiments/phase05/decisions.json": {
+      "bytes": 13904,
+      "sha256": "7adfef4c28a47b34d64fceb954ed72aa8697d0bdc2f8d022ea6534e60cf6908a"
+    },
+    "experiments/phase05/policy_harness.py": {
+      "bytes": 10415,
+      "sha256": "01b3c77cebcdee68483e0bc23d0cf9da003040832498d8f19a1114d41dcd1bb6"
+    },
+    "experiments/phase05/README.md": {
+      "bytes": 3035,
+      "sha256": "07c6999e445b2da25729e4d04acfe2b4a3bc8d23caa12b66c2bda5518c6330c7"
+    },
+    "experiments/phase05/results/audit.json": {
+      "bytes": 539,
+      "sha256": "2f159762a808554bf66baaab40d7b9c2ea3979d5183ae7ccfbd67e85a8f696c5"
+    },
+    "experiments/phase05/results/baseline.json": {
+      "bytes": 2008,
+      "sha256": "2014361d657531ced2ea0b049d564d690a3a4eed7361d38ea3db2fafb6ca0509"
+    },
+    "experiments/phase05/results/node-research.json": {
+      "bytes": 670,
+      "sha256": "ee47c2965dff46dd74a9205a9870bc8177ec31e74c2b6f7621d43d21a30e76e0"
+    },
+    "experiments/phase05/results/package-research.json": {
+      "bytes": 4130,
+      "sha256": "56da8032c6ddad04d519348d0f33c3548c6adb3d10983ab8152720ecd75cfae8"
+    },
+    "experiments/phase05/results/policy-verification.json": {
+      "bytes": 3404,
+      "sha256": "094a9f9cf08a55b6e586919fd1bcf62042a33a2b1a546236bfa337a6114b081f"
+    }
+  }
+}

@@ -1,0 +1,174 @@
+{
+    "schema_version":  1,
+    "environment_id":  "ENV-WIN-001",
+    "collected_at_utc":  "2026-11-16T06:18:21.6565269Z",
+    "purpose":  "phase02 candidate environment inventory; not minimum requirements or hardware benchmark",
+    "operating_system":  {
+                             "name":  "Microsoft Windows 11 Pro",
+                             "version":  "10.0.26300",
+                             "build":  "26300",
+                             "architecture":  "64비트",
+                             "visible_ram_gib":  31.71
+                         },
+    "cpu":  [
+                {
+                    "Name":  "13th Gen Intel(R) Core(TM) i5-13420H",
+                    "NumberOfCores":  8,
+                    "NumberOfLogicalProcessors":  12
+                }
+            ],
+    "gpu":  [
+                {
+                    "name":  "Intel(R) UHD Graphics",
+                    "driver_version":  "32.0.101.6078",
+                    "driver_date":  "2024-09-13",
+                    "resolution":  [
+                                       1920,
+                                       1080
+                                   ]
+                },
+                {
+                    "name":  "NVIDIA GeForce RTX 4050 Laptop GPU",
+                    "driver_version":  "32.0.16.1078",
+                    "driver_date":  "2026-07-12",
+                    "resolution":  [
+                                       2560,
+                                       1440
+                                   ]
+                }
+            ],
+    "nvidia_inventory":  [
+                             {
+                                 "name":  "NVIDIA GeForce RTX 4050 Laptop GPU",
+                                 "memory_mib":  "6141",
+                                 "driver_version":  "610.78"
+                             }
+                         ],
+    "present_devices":  [
+                            {
+                                "Class":  "MEDIA",
+                                "FriendlyName":  "Microsoft Streaming Service Proxy",
+                                "Status":  "OK"
+                            },
+                            {
+                                "Class":  "MEDIA",
+                                "FriendlyName":  "디지털 마이크용 인텔® 스마트 사운드 기술",
+                                "Status":  "OK"
+                            },
+                            {
+                                "Class":  "MEDIA",
+                                "FriendlyName":  "USB 오디오용 인텔® 스마트 사운드 기술",
+                                "Status":  "OK"
+                            },
+                            {
+                                "Class":  "MEDIA",
+                                "FriendlyName":  "NVIDIA High Definition Audio",
+                                "Status":  "OK"
+                            },
+                            {
+                                "Class":  "AudioEndpoint",
+                                "FriendlyName":  "스피커(Realtek(R) Audio)",
+                                "Status":  "OK"
+                            },
+                            {
+                                "Class":  "AudioEndpoint",
+                                "FriendlyName":  "마이크 배열(디지털 마이크용 인텔® 스마트 사운드 기술)",
+                                "Status":  "OK"
+                            },
+                            {
+                                "Class":  "MEDIA",
+                                "FriendlyName":  "Realtek(R) Audio",
+                                "Status":  "OK"
+                            },
+                            {
+                                "Class":  "AudioEndpoint",
+                                "FriendlyName":  "LS27F61x(NVIDIA High Definition Audio)",
+                                "Status":  "OK"
+                            },
+                            {
+                                "Class":  "MEDIA",
+                                "FriendlyName":  "Bluetooth® 오디오용 인텔® 스마트 사운드 기술",
+                                "Status":  "OK"
+                            },
+                            {
+                                "Class":  "Camera",
+                                "FriendlyName":  "HD Webcam",
+                                "Status":  "OK"
+                            }
+                        ],
+    "media_drivers":  [
+                          {
+                              "name":  "Microsoft Streaming Service Proxy",
+                              "version":  "10.0.26100.1",
+                              "provider":  "Microsoft",
+                              "date":  "2006-06-21"
+                          },
+                          {
+                              "name":  "디지털 마이크용 인텔® 스마트 사운드 기술",
+                              "version":  "10.29.0.12389",
+                              "provider":  "Intel(R) Corporation",
+                              "date":  "2025-09-15"
+                          },
+                          {
+                              "name":  "Bluetooth® 오디오용 인텔® 스마트 사운드 기술",
+                              "version":  "10.29.0.12389",
+                              "provider":  "Intel(R) Corporation",
+                              "date":  "2025-09-15"
+                          },
+                          {
+                              "name":  "USB 오디오용 인텔® 스마트 사운드 기술",
+                              "version":  "10.29.0.12389",
+                              "provider":  "Intel(R) Corporation",
+                              "date":  "2025-09-15"
+                          },
+                          {
+                              "name":  "Realtek High Definition Audio",
+                              "version":  "6.0.9597.1",
+                              "provider":  "Realtek Semiconductor Corp.",
+                              "date":  "2023-10-31"
+                          },
+                          {
+                              "name":  "USB Video Device",
+                              "version":  "10.0.26100.9974",
+                              "provider":  "Microsoft",
+                              "date":  "2006-06-21"
+                          },
+                          {
+                              "name":  "NVIDIA High Definition Audio",
+                              "version":  "1.4.5.7",
+                              "provider":  "NVIDIA Corporation",
+                              "date":  "2026-07-12"
+                          }
+                      ],
+    "tools":  {
+                  "python":  "3.14.10",
+                  "pillow":  "13.0.0",
+                  "node":  "v26.13.0",
+                  "npm":  "11.20.0",
+                  "powershell":  "5.1.26100.9818"
+              },
+    "obs":  {
+                "standard_location_versions":  [
+
+                                               ],
+                "process_running":  false,
+                "portable_installation":  "not_searched",
+                "connection_test":  "not_run"
+            },
+    "input_conditions":  {
+                             "camera":  "HD Webcam enumerated; permission/resolution/FPS/openability not tested",
+                             "microphone":  "present audio endpoints inventoried; headset connection not confirmed",
+                             "driver_enumeration":  "inventory only, does not prove successful input",
+                             "capture":  "no camera frames or microphone audio captured"
+                         },
+    "dependencies":  [
+                         {
+                             "name":  "pillow",
+                             "version":  "13.0.0"
+                         },
+                         {
+                             "name":  "pip",
+                             "version":  "26.2.2"
+                         }
+                     ]
+}

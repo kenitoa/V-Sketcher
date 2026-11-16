@@ -1,0 +1,13 @@
+.venv-lab/
+.venv-phase03/
+.venv-phase04/
+__pycache__/
+*.py[cod]
+experiments/phase02/results/local-*/
+experiments/phase03/models/*.task
+experiments/phase03/results/local-*/
+experiments/phase04/tools/*
+!experiments/phase04/tools/sources.json
+experiments/phase04/reference/
+experiments/phase04/.local/
+experiments/phase05/.local/

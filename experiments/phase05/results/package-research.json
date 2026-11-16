@@ -1,0 +1,126 @@
+{
+  "queried_utc": "2026-11-16T12:20:55.907478+00:00",
+  "packages": [
+    {
+      "name": "electron",
+      "version": "45.3.3",
+      "license": "MIT",
+      "source": "https://registry.npmjs.org/electron",
+      "integrity": "sha512-YS01j/AMWGbPAfbXijkLOUJGFhmrIg6pf9An8+LzY1PIc5sjwqEcSMsEBXgUQiWw1lSfPCP7RpxbvkN1JQRD8A==",
+      "engines": {
+        "node": ">= 22.12.0"
+      }
+    },
+    {
+      "name": "typescript",
+      "version": "7.0.2",
+      "license": "Apache-2.0",
+      "source": "https://registry.npmjs.org/typescript",
+      "integrity": "sha512-8FYau96o3NKOhbjKi/qNvG/W5jhzxkbdm5sj9AbZ/5T5sWqn3hJgLfGx27sRKZWTvyzCP8dLRBTf5tBTSRVUNA==",
+      "engines": {
+        "node": ">=16.20.0"
+      }
+    },
+    {
+      "name": "react",
+      "version": "19.3.1",
+      "license": "MIT",
+      "source": "https://registry.npmjs.org/react",
+      "integrity": "sha512-QNhWdt7nrgVWWQG58QuGsAR3jv3Hbe4mb4vz7w2csnHavciZJgda1CPNaldF6eVxv90ud3jUXpKlHL69gO38yw==",
+      "engines": {
+        "node": ">=0.10.0"
+      }
+    },
+    {
+      "name": "react-dom",
+      "version": "19.3.1",
+      "license": "MIT",
+      "source": "https://registry.npmjs.org/react-dom",
+      "integrity": "sha512-Y0bARz53lhEC1NMCASs0/j+faB/zqt3R8hpvg1e8+61ZVJ4UL0UdC4cBbXfZMcIuhrfgeILTLe+ZeBCavQPtKQ==",
+      "engines": null
+    },
+    {
+      "name": "vite",
+      "version": "8.3.8",
+      "license": "MIT",
+      "source": "https://registry.npmjs.org/vite",
+      "integrity": "sha512-LzOn3h9rG/0vhLdXrV4yJ4QFA9eEoqCl+Yx+kGJd7aB9w6nfNgVHKSYwLPZUHrz4ZGa+t+kXjV9itvcHDLQouA==",
+      "engines": {
+        "node": "^20.19.0 || >=22.12.0"
+      }
+    },
+    {
+      "name": "@electron-forge/cli",
+      "version": "8.0.1",
+      "license": "MIT",
+      "source": "https://registry.npmjs.org/@electron-forge%2fcli",
+      "integrity": "sha512-zbkmgt7vtL8OBY7YDwVizhCfAHJLpmQtA35iOKGWPpLWRZbGADVyIUZz3QZrbc2V81/BkrBerURIBXdd/fnyhQ==",
+      "engines": {
+        "node": ">= 22.13.0"
+      }
+    },
+    {
+      "name": "@electron-forge/maker-zip",
+      "version": "8.0.1",
+      "license": "MIT",
+      "source": "https://registry.npmjs.org/@electron-forge%2fmaker-zip",
+      "integrity": "sha512-EyMyAMFRZTPKbe6K1HEAgnpAMC7OvR8tQ2iG/5Vd++iG2AVdFJ9usChfW72n172jk9CTfFc7L88IF8lXMYYvIQ==",
+      "engines": {
+        "node": ">= 22.13.0"
+      }
+    },
+    {
+      "name": "ajv",
+      "version": "8.20.0",
+      "license": "MIT",
+      "source": "https://registry.npmjs.org/ajv",
+      "integrity": "sha512-Thbli+OlOj+iMPYFBVBfJ3OmCAnaSyNn4M1vz9T6Gka5Jt9ba/HIR56joy65tY6kx/FCF5VXNB819Y7/GUrBGA==",
+      "engines": null
+    },
+    {
+      "name": "pyinstaller",
+      "version": "6.22.3",
+      "license": "GPLv2-or-later with a special exception which allows to use PyInstaller to build and distribute non-free programs (including commercial ones)",
+      "requires_python": "<3.16,>=3.8",
+      "source": "https://pypi.org/pypi/pyinstaller/json"
+    },
+    {
+      "name": "mediapipe",
+      "version": "1.2.3",
+      "license": "Apache 2.0",
+      "requires_python": null,
+      "source": "https://pypi.org/pypi/mediapipe/json"
+    },
+    {
+      "name": "pillow",
+      "version": "13.0.0",
+      "license": "MIT-CMU",
+      "requires_python": ">=3.11",
+      "source": "https://pypi.org/pypi/pillow/json"
+    },
+    {
+      "name": "opencv-contrib-python",
+      "version": "5.0.0.93",
+      "license": "Apache 2.0",
+      "requires_python": ">=3.6",
+      "source": "https://pypi.org/pypi/opencv-contrib-python/json"
+    },
+    {
+      "name": "sounddevice",
+      "version": "0.5.6",
+      "license": "MIT",
+      "requires_python": ">=3.7",
+      "source": "https://pypi.org/pypi/sounddevice/json"
+    },
+    {
+      "name": "ws",
+      "version": "8.23.0",
+      "license": "MIT",
+      "source": "https://registry.npmjs.org/ws",
+      "integrity": "sha512-wCkmX8QMOrKjgO8HW2WyDbTSGeqkocxgDzS9iR79rEAexty6/2qzilx3Ag8Tqf9ykop3irLKle0MtVn5qjVnoQ==",
+      "engines": {
+        "node": ">=10.0.0"
+      }
+    }
+  ]
+}

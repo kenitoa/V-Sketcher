@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "config_id": "phase02-fixtures-v1",
+  "seed": 20261116,
+  "canvas": [512, 512],
+  "pixel_format": "RGBA",
+  "coordinate_origin": "top-left",
+  "positive_axes": {"x": "right", "y": "down"},
+  "side_convention": "character-anatomical",
+  "fixture_only_max_pixels": 4194304,
+  "repeats": 3,
+  "warmup_runs": 1,
+  "scope": "preparation-only; no production support or performance decision"
+}

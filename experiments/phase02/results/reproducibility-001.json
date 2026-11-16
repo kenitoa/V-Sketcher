@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "run_id": "reproducibility-001",
+  "timestamp_utc": "2026-11-16T06:29:52.184542+00:00",
+  "python": "3.14.10",
+  "config_id": "phase02-fixtures-v1",
+  "generator_sha256": "c28055d7a80b8010258e1d6203429edbadc6b357e5afc1735f4ca57b3d8cb55a",
+  "config_sha256": "1f74f3a4390dc576ddf64bbeefed6d1c6af8c96b3ce83316fe01fb36fc68df19",
+  "environment_sha256": "2c02bfcc00230c8bffde496aa25d236b69783cb1b396da7537dabd586f602e57",
+  "manifest_before_sha256": "c5bbc9fb9bf4d88b0185525bb7c8d69c2e0a03748e5da6cbf34977db2760f71f",
+  "manifest_after_sha256": "c5bbc9fb9bf4d88b0185525bb7c8d69c2e0a03748e5da6cbf34977db2760f71f",
+  "file_hashes_identical": true,
+  "premium_original_hashes_before": {
+    "HQ-001": "c28ec8ff0da80361e61d0c6c3a242fb204feff491887b9ab304c54c015fec961",
+    "HQ-002": "b6bbba73006094198dab988bdae5dfada8a50119f697373581c5d745b41f015b"
+  },
+  "premium_original_hashes_after": {
+    "HQ-001": "c28ec8ff0da80361e61d0c6c3a242fb204feff491887b9ab304c54c015fec961",
+    "HQ-002": "b6bbba73006094198dab988bdae5dfada8a50119f697373581c5d745b41f015b"
+  },
+  "build_stdout": "Built 29 sample records and 50 payload files",
+  "passed": true,
+  "scope": "deterministic procedural fixture rebuild; generated premium originals preserved, no image model rerun"
+}

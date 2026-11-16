@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "source_id": "SRC-IMAGEGEN-001",
+  "tool": "built-in image_gen",
+  "model_identifier": "not_exposed_by_tool; GPT Image 2.0 is user quality reference, not a verified model identifier",
+  "authorization": "User requested sophisticated GPT Image 2.0-like imagery for the ongoing project task on 2026-11-16",
+  "provenance": "Original fictional characters generated for this project without uploaded third-party character references",
+  "prompt_record": "generation-prompts.md",
+  "samples": [
+    {
+      "id": "HQ-001",
+      "path": "premium/HQ-001-premium-portrait.png",
+      "kind": "premium",
+      "tags": ["premium-anime", "fine-linework", "detailed-irises", "hair-strands", "embroidered-fabric", "opaque-background"],
+      "source_id": "SRC-IMAGEGEN-001",
+      "purpose": "High-quality illustration input and appearance-preservation comparison in later automatic preparation experiments",
+      "allowed_use": ["project-technical-evaluation", "project-visual-quality-review", "project-documentation"],
+      "derived_from": null,
+      "expected_preflight": {"errors": [], "warnings": []},
+      "review": {"status": "reference-candidate", "observed": "Detailed portrait and clothing; eyes and closed mouth visible; opaque background; tight top framing and intended lower torso crop", "not_claimed": "No separated parts, rig, movement or supported production quality has been verified"}
+    },
+    {
+      "id": "HQ-002",
+      "path": "premium/HQ-002-alpha-edge-stress.png",
+      "kind": "premium",
+      "tags": ["premium-anime", "transparent-alpha", "thin-hair", "complex-accessories", "edge-artifact-stress"],
+      "source_id": "SRC-IMAGEGEN-001",
+      "purpose": "High-detail alpha-edge stress input; detect pre-existing fringe before attributing it to segmentation or deformation",
+      "allowed_use": ["project-technical-evaluation", "project-visual-quality-review", "project-documentation"],
+      "derived_from": "imagegen-draft-001",
+      "expected_preflight": {"errors": [], "warnings": []},
+      "review": {"status": "stress-only-not-clean-edge-gold", "observed": "Fine hair and elaborate costume; real alpha; visible colored fringe/specks at some edges", "not_claimed": "Passing image decoding does not mean visually clean transparency; not accepted as a flawless cutout or completed avatar"}
+    }
+  ]
+}

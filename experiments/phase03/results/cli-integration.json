@@ -1,0 +1,42 @@
+{
+  "run_id": "cli-integration-001",
+  "scope": "all three CLI imports and common renderer invoked from a different working directory, including Korean absolute model path",
+  "commands": [
+    {
+      "command": "cli import parts",
+      "exit_code": 0,
+      "stdout": "{\"project\": \"C:\\\\Users\\\\abc20\\\\Desktop\\\\포트폴리오용\\\\개발중\\\\2DSketcher\\\\experiments\\\\phase03\\\\results\\\\cli-parts\\\\project.json\", \"route\": \"parts\", \"warnings\": []}"
+    },
+    {
+      "command": "cli render parts",
+      "exit_code": 0,
+      "stdout": "{\"output\": \"C:\\\\Users\\\\abc20\\\\Desktop\\\\\\ud3ec\\ud2b8\\ud3f4\\ub9ac\\uc624\\uc6a9\\\\\\uac1c\\ubc1c\\uc911\\\\2DSketcher\\\\experiments\\\\phase03\\\\results\\\\cli-parts\\\\frame.png\", \"canvas\": [512, 512], \"renderer\": \"engine.render\"}",
+      "image_created": true
+    },
+    {
+      "command": "cli import single",
+      "exit_code": 0,
+      "stdout": "{\"project\": \"C:\\\\Users\\\\abc20\\\\Desktop\\\\포트폴리오용\\\\개발중\\\\2DSketcher\\\\experiments\\\\phase03\\\\results\\\\cli-single\\\\project.json\", \"route\": \"single\", \"warnings\": []}"
+    },
+    {
+      "command": "cli render single",
+      "exit_code": 0,
+      "stdout": "{\"output\": \"C:\\\\Users\\\\abc20\\\\Desktop\\\\\\ud3ec\\ud2b8\\ud3f4\\ub9ac\\uc624\\uc6a9\\\\\\uac1c\\ubc1c\\uc911\\\\2DSketcher\\\\experiments\\\\phase03\\\\results\\\\cli-single\\\\frame.png\", \"canvas\": [512, 512], \"renderer\": \"engine.render\"}",
+      "image_created": true
+    },
+    {
+      "command": "cli import split",
+      "exit_code": 0,
+      "stdout": "{\"project\": \"C:\\\\Users\\\\abc20\\\\Desktop\\\\포트폴리오용\\\\개발중\\\\2DSketcher\\\\experiments\\\\phase03\\\\results\\\\cli-split\\\\project.json\", \"route\": \"split\", \"warnings\": []}"
+    },
+    {
+      "command": "cli render split",
+      "exit_code": 0,
+      "stdout": "{\"output\": \"C:\\\\Users\\\\abc20\\\\Desktop\\\\\\ud3ec\\ud2b8\\ud3f4\\ub9ac\\uc624\\uc6a9\\\\\\uac1c\\ubc1c\\uc911\\\\2DSketcher\\\\experiments\\\\phase03\\\\results\\\\cli-split\\\\frame.png\", \"canvas\": [512, 512], \"renderer\": \"engine.render\"}",
+      "image_created": true
+    }
+  ],
+  "passed": true,
+  "cli_sha256": "1bbcf4ae82be74fa146f9c401e46fb92808b4e9c6b064ae6a1d90689f67f021c",
+  "engine_sha256": "9008e42d437ad39a6f338f53ab10c052c9879f5805e952d566d778822eaf2b99"
+}

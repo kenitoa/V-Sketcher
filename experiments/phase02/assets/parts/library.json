@@ -1,0 +1,310 @@
+{
+  "schema_version": 1,
+  "id": "PARTS-001",
+  "canvas": [
+    512,
+    512
+  ],
+  "parts": [
+    {
+      "id": "hair_back",
+      "path": "parts/hair_back.png",
+      "role": "hair_back",
+      "side": "center",
+      "state": "base",
+      "origin": [
+        0,
+        0
+      ],
+      "bounds": [
+        130,
+        50,
+        383,
+        358
+      ],
+      "sha256": "dbb4626676ef82c76acd4216f9d88e7f6c0878cabf136d9a9f2a0c48c6b5d651",
+      "source_id": "SRC-PROCEDURAL-001",
+      "allowed_use": [
+        "project-development",
+        "technical-evaluation",
+        "regression",
+        "project-docs-and-repository"
+      ]
+    },
+    {
+      "id": "body",
+      "path": "parts/body.png",
+      "role": "body",
+      "side": "center",
+      "state": "base",
+      "origin": [
+        0,
+        0
+      ],
+      "bounds": [
+        104,
+        310,
+        409,
+        506
+      ],
+      "sha256": "d21741b5a8e4ff803886b48d46388c91b7efad5bfe3df23d286b4bb6e3927d52",
+      "source_id": "SRC-PROCEDURAL-001",
+      "allowed_use": [
+        "project-development",
+        "technical-evaluation",
+        "regression",
+        "project-docs-and-repository"
+      ]
+    },
+    {
+      "id": "head",
+      "path": "parts/head.png",
+      "role": "head",
+      "side": "center",
+      "state": "base",
+      "origin": [
+        0,
+        0
+      ],
+      "bounds": [
+        146,
+        77,
+        367,
+        327
+      ],
+      "sha256": "974ba22a99aaa1f155e1b4fb6eb1a41373561c3c46c28bbdee1c187c07f022b3",
+      "source_id": "SRC-PROCEDURAL-001",
+      "allowed_use": [
+        "project-development",
+        "technical-evaluation",
+        "regression",
+        "project-docs-and-repository"
+      ]
+    },
+    {
+      "id": "eye_right_open",
+      "path": "parts/eye_right_open.png",
+      "role": "eye",
+      "side": "right",
+      "state": "open",
+      "origin": [
+        0,
+        0
+      ],
+      "bounds": [
+        184,
+        173,
+        229,
+        221
+      ],
+      "sha256": "4c5f3dfe29c21d0c2b9c761faba01ab49a079e5520409cdbbd88036241500f14",
+      "source_id": "SRC-PROCEDURAL-001",
+      "allowed_use": [
+        "project-development",
+        "technical-evaluation",
+        "regression",
+        "project-docs-and-repository"
+      ]
+    },
+    {
+      "id": "eye_left_open",
+      "path": "parts/eye_left_open.png",
+      "role": "eye",
+      "side": "left",
+      "state": "open",
+      "origin": [
+        0,
+        0
+      ],
+      "bounds": [
+        284,
+        173,
+        329,
+        221
+      ],
+      "sha256": "35f2039add1a401af7d9e87a5ee599e49b1a337da4ed501471a0b77b645d2808",
+      "source_id": "SRC-PROCEDURAL-001",
+      "allowed_use": [
+        "project-development",
+        "technical-evaluation",
+        "regression",
+        "project-docs-and-repository"
+      ]
+    },
+    {
+      "id": "eye_right_closed",
+      "path": "parts/eye_right_closed.png",
+      "role": "eye",
+      "side": "right",
+      "state": "closed",
+      "origin": [
+        0,
+        0
+      ],
+      "bounds": [
+        184,
+        199,
+        229,
+        214
+      ],
+      "sha256": "d036b99c3faba243036dd9fb17bcac3c2f982167d25c76b216f834a131f7b4f5",
+      "source_id": "SRC-PROCEDURAL-001",
+      "allowed_use": [
+        "project-development",
+        "technical-evaluation",
+        "regression",
+        "project-docs-and-repository"
+      ]
+    },
+    {
+      "id": "eye_left_closed",
+      "path": "parts/eye_left_closed.png",
+      "role": "eye",
+      "side": "left",
+      "state": "closed",
+      "origin": [
+        0,
+        0
+      ],
+      "bounds": [
+        284,
+        199,
+        329,
+        214
+      ],
+      "sha256": "8f79ef1938d18b4b79cc5c7b5dac5953e14895369a5d6eecc19dcc854a917cbd",
+      "source_id": "SRC-PROCEDURAL-001",
+      "allowed_use": [
+        "project-development",
+        "technical-evaluation",
+        "regression",
+        "project-docs-and-repository"
+      ]
+    },
+    {
+      "id": "mouth_closed",
+      "path": "parts/mouth_closed.png",
+      "role": "mouth",
+      "side": "center",
+      "state": "closed",
+      "origin": [
+        0,
+        0
+      ],
+      "bounds": [
+        232,
+        255,
+        281,
+        266
+      ],
+      "sha256": "abdbb4d37875a05dafd07413554cf49d4359fbf0bbe14ae5d1a106acf61fbe54",
+      "source_id": "SRC-PROCEDURAL-001",
+      "allowed_use": [
+        "project-development",
+        "technical-evaluation",
+        "regression",
+        "project-docs-and-repository"
+      ]
+    },
+    {
+      "id": "mouth_open",
+      "path": "parts/mouth_open.png",
+      "role": "mouth",
+      "side": "center",
+      "state": "open",
+      "origin": [
+        0,
+        0
+      ],
+      "bounds": [
+        237,
+        243,
+        276,
+        282
+      ],
+      "sha256": "801e353b0bdf71d72894558be04faf9b380642e48dcabadb5b7bbfce4c4d6787",
+      "source_id": "SRC-PROCEDURAL-001",
+      "allowed_use": [
+        "project-development",
+        "technical-evaluation",
+        "regression",
+        "project-docs-and-repository"
+      ]
+    },
+    {
+      "id": "hair_front",
+      "path": "parts/hair_front.png",
+      "role": "hair_front",
+      "side": "center",
+      "state": "base",
+      "origin": [
+        0,
+        0
+      ],
+      "bounds": [
+        141,
+        57,
+        375,
+        163
+      ],
+      "sha256": "1a3b5e3f552546460f1590a1097f2e8ea2fd6c82c3ef01fb4cca65cb9fd0ccea",
+      "source_id": "SRC-PROCEDURAL-001",
+      "allowed_use": [
+        "project-development",
+        "technical-evaluation",
+        "regression",
+        "project-docs-and-repository"
+      ]
+    },
+    {
+      "id": "accessory",
+      "path": "parts/accessory.png",
+      "role": "accessory",
+      "side": "center",
+      "state": "base",
+      "origin": [
+        0,
+        0
+      ],
+      "bounds": [
+        338,
+        92,
+        376,
+        133
+      ],
+      "sha256": "e19a3ac5102de5b0d170513b2765adc2820028a715efff94357f92a57bb3b7ab",
+      "source_id": "SRC-PROCEDURAL-001",
+      "allowed_use": [
+        "project-development",
+        "technical-evaluation",
+        "regression",
+        "project-docs-and-repository"
+      ]
+    }
+  ],
+  "default_order": [
+    "hair_back",
+    "body",
+    "head",
+    "eye_right_open",
+    "eye_left_open",
+    "mouth_closed",
+    "hair_front",
+    "accessory"
+  ],
+  "eye_states": [
+    "open",
+    "closed"
+  ],
+  "mouth_states": [
+    "closed",
+    "open"
+  ],
+  "source_id": "SRC-PROCEDURAL-001",
+  "allowed_use": [
+    "project-development",
+    "technical-evaluation",
+    "regression",
+    "project-docs-and-repository"
+  ]
+}

@@ -1,0 +1,106 @@
+{
+  "schema_version": 1,
+  "canvas": [
+    512,
+    512
+  ],
+  "coordinates": "top-left-pixels",
+  "layers": [
+    {
+      "id": "hair_back",
+      "name": "hair_back",
+      "path": "../parts/cropped_hair_back.png",
+      "role": "hair_back",
+      "side": "center",
+      "origin": [
+        130,
+        50
+      ],
+      "z": 0
+    },
+    {
+      "id": "body",
+      "name": "body",
+      "path": "../parts/cropped_body.png",
+      "role": "body",
+      "side": "center",
+      "origin": [
+        104,
+        310
+      ],
+      "z": 1
+    },
+    {
+      "id": "head",
+      "name": "head",
+      "path": "../parts/cropped_head.png",
+      "role": "head",
+      "side": "center",
+      "origin": [
+        146,
+        77
+      ],
+      "z": 2
+    },
+    {
+      "id": "eye_right_open",
+      "name": "eye_right_open",
+      "path": "../parts/cropped_eye_right_open.png",
+      "role": "eye",
+      "side": "right",
+      "origin": [
+        184,
+        173
+      ],
+      "z": 3
+    },
+    {
+      "id": "eye_left_open",
+      "name": "eye_left_open",
+      "path": "../parts/cropped_eye_left_open.png",
+      "role": "eye",
+      "side": "left",
+      "origin": [
+        284,
+        173
+      ],
+      "z": 4
+    },
+    {
+      "id": "mouth_closed",
+      "name": "mouth_closed",
+      "path": "../parts/cropped_mouth_closed.png",
+      "role": "mouth",
+      "side": "center",
+      "origin": [
+        232,
+        255
+      ],
+      "z": 5
+    },
+    {
+      "id": "hair_front",
+      "name": "hair_front",
+      "path": "../parts/cropped_hair_front.png",
+      "role": "hair_front",
+      "side": "center",
+      "origin": [
+        141,
+        57
+      ],
+      "z": 6
+    },
+    {
+      "id": "accessory",
+      "name": "accessory",
+      "path": "../parts/cropped_accessory.png",
+      "role": "accessory",
+      "side": "center",
+      "origin": [
+        338,
+        92
+      ],
+      "z": 7
+    }
+  ]
+}

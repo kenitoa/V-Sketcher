@@ -1,0 +1,25 @@
+{
+  "source": ".local/recordings/2026-11-16 21-06-20.mkv",
+  "preserved_avatar_video": "results/captured-avatar-only.mkv",
+  "sha256": "489d75e82c9fe26e67ed4dc0c8494aa98a776a4029e2d6afd28492ec227eb502",
+  "fps": 30.0,
+  "frame_count": 926.0,
+  "size": [
+    1280,
+    720
+  ],
+  "decoded_samples": 4,
+  "samples": [
+    "results/recording-01s.png",
+    "results/recording-08s.png",
+    "results/recording-16s.png",
+    "results/recording-25s.png"
+  ],
+  "sample_diff_from_first": [
+    0,
+    1795379,
+    10322868,
+    5586967
+  ],
+  "content": "Avatar-only OBS scene, microphone/desktop sources muted; no raw webcam/audio recording"
+}

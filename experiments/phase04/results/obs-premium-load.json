@@ -1,0 +1,2084 @@
+{
+  "duration_s": 30.863135499996133,
+  "conditions": {
+    "input": "live",
+    "avatar_canvas": [
+      640,
+      640
+    ],
+    "obs_video": {
+      "baseHeight": 1080,
+      "baseWidth": 1920,
+      "fpsDenominator": 1,
+      "fpsNumerator": 30,
+      "outputHeight": 720,
+      "outputWidth": 1280
+    },
+    "stream_started": false,
+    "recording_started": false,
+    "latency_definition": "PNG published to first browser decode acknowledgement; excludes camera exposure, display scanout and network stream"
+  },
+  "version": {
+    "obsVersion": "33.0.1",
+    "obsWebSocketVersion": "5.7.6",
+    "platform": "windows",
+    "platformDescription": "Windows 11 Version 26H2",
+    "rpcVersion": 1,
+    "supportedImageFormats": [
+      "bmp",
+      "cur",
+      "icns",
+      "ico",
+      "jfif",
+      "jpeg",
+      "jpg",
+      "pbm",
+      "pgm",
+      "png",
+      "ppm",
+      "tif",
+      "tiff",
+      "wbmp",
+      "webp",
+      "xbm",
+      "xpm"
+    ]
+  },
+  "summary": {
+    "avatar_unique_fps": 11.003775505424946,
+    "render_encode_ms": {
+      "min": 63.74640000285581,
+      "p50": 83.86230003088713,
+      "p95": 135.06274999235757,
+      "max": 184.3499000533484
+    },
+    "publish_to_browser_ack_ms": {
+      "min": 20.94990003388375,
+      "p50": 41.336100024636835,
+      "p95": 71.24280001153238,
+      "max": 115.78699998790398
+    },
+    "browser_unique_acks": 331,
+    "obs_skipped_delta": 0,
+    "obs_frames_delta": 905,
+    "source_alpha": {
+      "transparent_pixels": 198911,
+      "partial_pixels": 204872,
+      "opaque_pixels": 5817
+    }
+  },
+  "gpu_snapshot": "NVIDIA GeForce RTX 4050 Laptop GPU, 7, 347",
+  "rows": [
+    {
+      "t": 1.0023494000197388,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69604.27734375,
+        "averageFrameRenderTime": 0.535283,
+        "cpuUsage": 2.5973571753600253,
+        "memoryUsage": 468.26953125,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 0,
+        "renderSkippedFrames": 7,
+        "renderTotalFrames": 19490,
+        "webSocketSessionIncomingMessages": 3,
+        "webSocketSessionOutgoingMessages": 3
+      },
+      "processes": [
+        {
+          "pid": 8164,
+          "name": "python.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 4.125
+        },
+        {
+          "pid": 33772,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 31.2,
+          "rss_mib": 468.26953125
+        },
+        {
+          "pid": 40140,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 29.5859375
+        },
+        {
+          "pid": 43592,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 62.4,
+          "rss_mib": 74.8671875
+        },
+        {
+          "pid": 51448,
+          "name": "python.exe",
+          "cpu_one_core_percent": 165.2,
+          "rss_mib": 174.53125
+        },
+        {
+          "pid": 53300,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 23.4,
+          "rss_mib": 35.203125
+        },
+        {
+          "pid": 55484,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.671875
+        },
+        {
+          "pid": 63692,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 4.7,
+          "rss_mib": 88.4375
+        }
+      ],
+      "system_cpu_percent": 82.5
+    },
+    {
+      "t": 2.0056887000100687,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69604.27734375,
+        "averageFrameRenderTime": 0.53459,
+        "cpuUsage": 3.24544603167007,
+        "memoryUsage": 489.84375,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 0,
+        "renderSkippedFrames": 7,
+        "renderTotalFrames": 19520,
+        "webSocketSessionIncomingMessages": 4,
+        "webSocketSessionOutgoingMessages": 4
+      },
+      "processes": [
+        {
+          "pid": 8164,
+          "name": "python.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 4.125
+        },
+        {
+          "pid": 33772,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 38.9,
+          "rss_mib": 489.84375
+        },
+        {
+          "pid": 40140,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 29.5859375
+        },
+        {
+          "pid": 43592,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 49.8,
+          "rss_mib": 75.1328125
+        },
+        {
+          "pid": 51448,
+          "name": "python.exe",
+          "cpu_one_core_percent": 174.4,
+          "rss_mib": 178.24609375
+        },
+        {
+          "pid": 53300,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 23.4,
+          "rss_mib": 34.453125
+        },
+        {
+          "pid": 55484,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.671875
+        },
+        {
+          "pid": 63692,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 7.8,
+          "rss_mib": 88.4375
+        }
+      ],
+      "system_cpu_percent": 82.4
+    },
+    {
+      "t": 3.008477099996526,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69604.27734375,
+        "averageFrameRenderTime": 0.614477,
+        "cpuUsage": 1.9459161589973784,
+        "memoryUsage": 511.7421875,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 0,
+        "renderSkippedFrames": 7,
+        "renderTotalFrames": 19550,
+        "webSocketSessionIncomingMessages": 5,
+        "webSocketSessionOutgoingMessages": 5
+      },
+      "processes": [
+        {
+          "pid": 8164,
+          "name": "python.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 4.125
+        },
+        {
+          "pid": 33772,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 23.4,
+          "rss_mib": 511.7421875
+        },
+        {
+          "pid": 40140,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 29.5859375
+        },
+        {
+          "pid": 43592,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 46.7,
+          "rss_mib": 75.27734375
+        },
+        {
+          "pid": 51448,
+          "name": "python.exe",
+          "cpu_one_core_percent": 168.3,
+          "rss_mib": 174.04296875
+        },
+        {
+          "pid": 53300,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 15.6,
+          "rss_mib": 34.45703125
+        },
+        {
+          "pid": 55484,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.671875
+        },
+        {
+          "pid": 63692,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 12.5,
+          "rss_mib": 88.4375
+        }
+      ],
+      "system_cpu_percent": 79.8
+    },
+    {
+      "t": 4.010767300031148,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69604.27734375,
+        "averageFrameRenderTime": 0.804264,
+        "cpuUsage": 2.469892889636991,
+        "memoryUsage": 534.47265625,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 0,
+        "renderSkippedFrames": 7,
+        "renderTotalFrames": 19580,
+        "webSocketSessionIncomingMessages": 6,
+        "webSocketSessionOutgoingMessages": 6
+      },
+      "processes": [
+        {
+          "pid": 8164,
+          "name": "python.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 4.125
+        },
+        {
+          "pid": 33772,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 29.6,
+          "rss_mib": 534.47265625
+        },
+        {
+          "pid": 40140,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 29.5859375
+        },
+        {
+          "pid": 43592,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 46.8,
+          "rss_mib": 75.80078125
+        },
+        {
+          "pid": 51448,
+          "name": "python.exe",
+          "cpu_one_core_percent": 169.9,
+          "rss_mib": 171.68359375
+        },
+        {
+          "pid": 53300,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 24.9,
+          "rss_mib": 34.44140625
+        },
+        {
+          "pid": 55484,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.671875
+        },
+        {
+          "pid": 63692,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 9.4,
+          "rss_mib": 88.40234375
+        }
+      ],
+      "system_cpu_percent": 74.8
+    },
+    {
+      "t": 5.013480300025549,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69603.33984375,
+        "averageFrameRenderTime": 0.5107,
+        "cpuUsage": 2.4664371797972597,
+        "memoryUsage": 298.734375,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 0,
+        "renderSkippedFrames": 7,
+        "renderTotalFrames": 19610,
+        "webSocketSessionIncomingMessages": 7,
+        "webSocketSessionOutgoingMessages": 7
+      },
+      "processes": [
+        {
+          "pid": 8164,
+          "name": "python.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 4.125
+        },
+        {
+          "pid": 33772,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 29.6,
+          "rss_mib": 298.734375
+        },
+        {
+          "pid": 40140,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 29.5859375
+        },
+        {
+          "pid": 43592,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 53.0,
+          "rss_mib": 75.1796875
+        },
+        {
+          "pid": 51448,
+          "name": "python.exe",
+          "cpu_one_core_percent": 177.6,
+          "rss_mib": 173.06640625
+        },
+        {
+          "pid": 53300,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 24.9,
+          "rss_mib": 34.453125
+        },
+        {
+          "pid": 55484,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.671875
+        },
+        {
+          "pid": 63692,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 10.9,
+          "rss_mib": 88.40234375
+        }
+      ],
+      "system_cpu_percent": 75.1
+    },
+    {
+      "t": 6.016125000023749,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69604.1640625,
+        "averageFrameRenderTime": 0.582748,
+        "cpuUsage": 1.8182064211121336,
+        "memoryUsage": 320.10546875,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 0,
+        "renderSkippedFrames": 7,
+        "renderTotalFrames": 19640,
+        "webSocketSessionIncomingMessages": 8,
+        "webSocketSessionOutgoingMessages": 8
+      },
+      "processes": [
+        {
+          "pid": 8164,
+          "name": "python.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 4.125
+        },
+        {
+          "pid": 33772,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 21.8,
+          "rss_mib": 320.10546875
+        },
+        {
+          "pid": 40140,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 29.5859375
+        },
+        {
+          "pid": 43592,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 42.1,
+          "rss_mib": 77.51953125
+        },
+        {
+          "pid": 51448,
+          "name": "python.exe",
+          "cpu_one_core_percent": 179.2,
+          "rss_mib": 176.66015625
+        },
+        {
+          "pid": 53300,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 17.1,
+          "rss_mib": 34.75
+        },
+        {
+          "pid": 55484,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.671875
+        },
+        {
+          "pid": 63692,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 4.7,
+          "rss_mib": 88.40234375
+        }
+      ],
+      "system_cpu_percent": 83.5
+    },
+    {
+      "t": 7.018617200024892,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69604.1015625,
+        "averageFrameRenderTime": 0.50689,
+        "cpuUsage": 2.4690092043831475,
+        "memoryUsage": 342.35546875,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 0,
+        "renderSkippedFrames": 7,
+        "renderTotalFrames": 19670,
+        "webSocketSessionIncomingMessages": 9,
+        "webSocketSessionOutgoingMessages": 9
+      },
+      "processes": [
+        {
+          "pid": 8164,
+          "name": "python.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 4.11328125
+        },
+        {
+          "pid": 33772,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 28.1,
+          "rss_mib": 342.35546875
+        },
+        {
+          "pid": 40140,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 29.5859375
+        },
+        {
+          "pid": 43592,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 46.8,
+          "rss_mib": 75.30078125
+        },
+        {
+          "pid": 51448,
+          "name": "python.exe",
+          "cpu_one_core_percent": 160.6,
+          "rss_mib": 170.73828125
+        },
+        {
+          "pid": 53300,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 29.6,
+          "rss_mib": 34.75
+        },
+        {
+          "pid": 55484,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.671875
+        },
+        {
+          "pid": 63692,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 20.3,
+          "rss_mib": 88.40234375
+        }
+      ],
+      "system_cpu_percent": 75.6
+    },
+    {
+      "t": 8.022121100046206,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69604.1015625,
+        "averageFrameRenderTime": 0.510535,
+        "cpuUsage": 2.5928868310853956,
+        "memoryUsage": 365.65625,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 0,
+        "renderSkippedFrames": 7,
+        "renderTotalFrames": 19700,
+        "webSocketSessionIncomingMessages": 10,
+        "webSocketSessionOutgoingMessages": 10
+      },
+      "processes": [
+        {
+          "pid": 8164,
+          "name": "python.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 4.11328125
+        },
+        {
+          "pid": 33772,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 32.7,
+          "rss_mib": 364.96875
+        },
+        {
+          "pid": 40140,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 29.5859375
+        },
+        {
+          "pid": 43592,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 63.8,
+          "rss_mib": 75.43359375
+        },
+        {
+          "pid": 51448,
+          "name": "python.exe",
+          "cpu_one_core_percent": 175.9,
+          "rss_mib": 171.87890625
+        },
+        {
+          "pid": 53300,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 17.1,
+          "rss_mib": 34.59765625
+        },
+        {
+          "pid": 55484,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.671875
+        },
+        {
+          "pid": 63692,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 6.2,
+          "rss_mib": 88.40234375
+        }
+      ],
+      "system_cpu_percent": 78.9
+    },
+    {
+      "t": 9.025066800008062,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69604.1015625,
+        "averageFrameRenderTime": 0.522377,
+        "cpuUsage": 4.02508786263019,
+        "memoryUsage": 386.046875,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 0,
+        "renderSkippedFrames": 7,
+        "renderTotalFrames": 19730,
+        "webSocketSessionIncomingMessages": 11,
+        "webSocketSessionOutgoingMessages": 11
+      },
+      "processes": [
+        {
+          "pid": 8164,
+          "name": "python.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 4.11328125
+        },
+        {
+          "pid": 33772,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 48.3,
+          "rss_mib": 386.046875
+        },
+        {
+          "pid": 40140,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 29.5859375
+        },
+        {
+          "pid": 43592,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 56.1,
+          "rss_mib": 75.46484375
+        },
+        {
+          "pid": 51448,
+          "name": "python.exe",
+          "cpu_one_core_percent": 166.7,
+          "rss_mib": 177.484375
+        },
+        {
+          "pid": 53300,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 18.7,
+          "rss_mib": 34.66015625
+        },
+        {
+          "pid": 55484,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.671875
+        },
+        {
+          "pid": 63692,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 6.2,
+          "rss_mib": 88.40234375
+        }
+      ],
+      "system_cpu_percent": 83.5
+    },
+    {
+      "t": 10.027931000047829,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69604.1015625,
+        "averageFrameRenderTime": 0.56957,
+        "cpuUsage": 2.209234543001631,
+        "memoryUsage": 410.13671875,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 0,
+        "renderSkippedFrames": 7,
+        "renderTotalFrames": 19760,
+        "webSocketSessionIncomingMessages": 12,
+        "webSocketSessionOutgoingMessages": 12
+      },
+      "processes": [
+        {
+          "pid": 8164,
+          "name": "python.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 4.11328125
+        },
+        {
+          "pid": 33772,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 26.5,
+          "rss_mib": 409.61328125
+        },
+        {
+          "pid": 40140,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 29.5859375
+        },
+        {
+          "pid": 43592,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 49.9,
+          "rss_mib": 75.76171875
+        },
+        {
+          "pid": 51448,
+          "name": "python.exe",
+          "cpu_one_core_percent": 166.7,
+          "rss_mib": 177.546875
+        },
+        {
+          "pid": 53300,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 31.2,
+          "rss_mib": 34.60546875
+        },
+        {
+          "pid": 55484,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.671875
+        },
+        {
+          "pid": 63692,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 15.6,
+          "rss_mib": 88.40234375
+        }
+      ],
+      "system_cpu_percent": 88.3
+    },
+    {
+      "t": 11.030521200038493,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69604.1015625,
+        "averageFrameRenderTime": 0.479803,
+        "cpuUsage": 2.337351267170993,
+        "memoryUsage": 431.79296875,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 0,
+        "renderSkippedFrames": 7,
+        "renderTotalFrames": 19791,
+        "webSocketSessionIncomingMessages": 13,
+        "webSocketSessionOutgoingMessages": 13
+      },
+      "processes": [
+        {
+          "pid": 8164,
+          "name": "python.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 4.11328125
+        },
+        {
+          "pid": 33772,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 28.1,
+          "rss_mib": 431.79296875
+        },
+        {
+          "pid": 40140,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 29.5859375
+        },
+        {
+          "pid": 43592,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 57.7,
+          "rss_mib": 78.0390625
+        },
+        {
+          "pid": 51448,
+          "name": "python.exe",
+          "cpu_one_core_percent": 176.1,
+          "rss_mib": 172.70703125
+        },
+        {
+          "pid": 53300,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 29.6,
+          "rss_mib": 34.60546875
+        },
+        {
+          "pid": 55484,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.671875
+        },
+        {
+          "pid": 63692,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 10.9,
+          "rss_mib": 88.40625
+        }
+      ],
+      "system_cpu_percent": 83.5
+    },
+    {
+      "t": 12.033324100018945,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69604.1015625,
+        "averageFrameRenderTime": 0.472651,
+        "cpuUsage": 2.5976533107552786,
+        "memoryUsage": 454.453125,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 0,
+        "renderSkippedFrames": 7,
+        "renderTotalFrames": 19821,
+        "webSocketSessionIncomingMessages": 14,
+        "webSocketSessionOutgoingMessages": 14
+      },
+      "processes": [
+        {
+          "pid": 8164,
+          "name": "python.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 4.11328125
+        },
+        {
+          "pid": 33772,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 31.2,
+          "rss_mib": 454.453125
+        },
+        {
+          "pid": 40140,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 29.5859375
+        },
+        {
+          "pid": 43592,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 51.4,
+          "rss_mib": 78.16796875
+        },
+        {
+          "pid": 51448,
+          "name": "python.exe",
+          "cpu_one_core_percent": 177.7,
+          "rss_mib": 174.2578125
+        },
+        {
+          "pid": 53300,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 29.6,
+          "rss_mib": 34.61328125
+        },
+        {
+          "pid": 55484,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.671875
+        },
+        {
+          "pid": 63692,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 7.8,
+          "rss_mib": 88.4453125
+        }
+      ],
+      "system_cpu_percent": 74.1
+    },
+    {
+      "t": 13.035999100015033,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69604.1015625,
+        "averageFrameRenderTime": 0.630516,
+        "cpuUsage": 2.075213438192374,
+        "memoryUsage": 477.0859375,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 0,
+        "renderSkippedFrames": 7,
+        "renderTotalFrames": 19851,
+        "webSocketSessionIncomingMessages": 15,
+        "webSocketSessionOutgoingMessages": 15
+      },
+      "processes": [
+        {
+          "pid": 8164,
+          "name": "python.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 4.11328125
+        },
+        {
+          "pid": 33772,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 24.9,
+          "rss_mib": 477.0859375
+        },
+        {
+          "pid": 40140,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 29.5859375
+        },
+        {
+          "pid": 43592,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 59.2,
+          "rss_mib": 78.05078125
+        },
+        {
+          "pid": 51448,
+          "name": "python.exe",
+          "cpu_one_core_percent": 165.2,
+          "rss_mib": 177.3984375
+        },
+        {
+          "pid": 53300,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 23.4,
+          "rss_mib": 34.6171875
+        },
+        {
+          "pid": 55484,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.671875
+        },
+        {
+          "pid": 63692,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 12.5,
+          "rss_mib": 88.4453125
+        }
+      ],
+      "system_cpu_percent": 70.8
+    },
+    {
+      "t": 14.043481500004418,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69604.1640625,
+        "averageFrameRenderTime": 0.606948,
+        "cpuUsage": 2.4562836530510737,
+        "memoryUsage": 499.74609375,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 0,
+        "renderSkippedFrames": 7,
+        "renderTotalFrames": 19881,
+        "webSocketSessionIncomingMessages": 16,
+        "webSocketSessionOutgoingMessages": 16
+      },
+      "processes": [
+        {
+          "pid": 8164,
+          "name": "python.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 4.11328125
+        },
+        {
+          "pid": 33772,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 29.5,
+          "rss_mib": 499.74609375
+        },
+        {
+          "pid": 40140,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 29.5859375
+        },
+        {
+          "pid": 43592,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 46.5,
+          "rss_mib": 75.90625
+        },
+        {
+          "pid": 51448,
+          "name": "python.exe",
+          "cpu_one_core_percent": 184.6,
+          "rss_mib": 177.47265625
+        },
+        {
+          "pid": 53300,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 20.2,
+          "rss_mib": 34.62109375
+        },
+        {
+          "pid": 55484,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.671875
+        },
+        {
+          "pid": 63692,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 10.9,
+          "rss_mib": 88.4453125
+        }
+      ],
+      "system_cpu_percent": 79.6
+    },
+    {
+      "t": 15.046384899993427,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69604.0390625,
+        "averageFrameRenderTime": 0.570648,
+        "cpuUsage": 2.2077591040214135,
+        "memoryUsage": 522.41015625,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 0,
+        "renderSkippedFrames": 7,
+        "renderTotalFrames": 19911,
+        "webSocketSessionIncomingMessages": 17,
+        "webSocketSessionOutgoingMessages": 17
+      },
+      "processes": [
+        {
+          "pid": 8164,
+          "name": "python.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 4.11328125
+        },
+        {
+          "pid": 33772,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 26.5,
+          "rss_mib": 522.41015625
+        },
+        {
+          "pid": 40140,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 29.5859375
+        },
+        {
+          "pid": 43592,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 49.9,
+          "rss_mib": 78.32421875
+        },
+        {
+          "pid": 51448,
+          "name": "python.exe",
+          "cpu_one_core_percent": 180.7,
+          "rss_mib": 175.59765625
+        },
+        {
+          "pid": 53300,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 21.8,
+          "rss_mib": 34.62109375
+        },
+        {
+          "pid": 55484,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.671875
+        },
+        {
+          "pid": 63692,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 10.9,
+          "rss_mib": 88.4453125
+        }
+      ],
+      "system_cpu_percent": 76.6
+    },
+    {
+      "t": 16.04954269999871,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69604.0390625,
+        "averageFrameRenderTime": 0.654119,
+        "cpuUsage": 2.46481240044026,
+        "memoryUsage": 289.14453125,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 0,
+        "renderSkippedFrames": 7,
+        "renderTotalFrames": 19941,
+        "webSocketSessionIncomingMessages": 18,
+        "webSocketSessionOutgoingMessages": 18
+      },
+      "processes": [
+        {
+          "pid": 8164,
+          "name": "python.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 4.11328125
+        },
+        {
+          "pid": 33772,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 29.6,
+          "rss_mib": 289.43359375
+        },
+        {
+          "pid": 40140,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 29.5859375
+        },
+        {
+          "pid": 43592,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 62.3,
+          "rss_mib": 75.99609375
+        },
+        {
+          "pid": 51448,
+          "name": "python.exe",
+          "cpu_one_core_percent": 197.8,
+          "rss_mib": 178.08203125
+        },
+        {
+          "pid": 53300,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 24.9,
+          "rss_mib": 34.6171875
+        },
+        {
+          "pid": 55484,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.671875
+        },
+        {
+          "pid": 63692,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 3.1,
+          "rss_mib": 88.41796875
+        }
+      ],
+      "system_cpu_percent": 85.1
+    },
+    {
+      "t": 17.053191900020465,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69604.03515625,
+        "averageFrameRenderTime": 0.7021,
+        "cpuUsage": 2.465376112547943,
+        "memoryUsage": 307.69140625,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 0,
+        "renderSkippedFrames": 7,
+        "renderTotalFrames": 19971,
+        "webSocketSessionIncomingMessages": 19,
+        "webSocketSessionOutgoingMessages": 19
+      },
+      "processes": [
+        {
+          "pid": 8164,
+          "name": "python.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 4.11328125
+        },
+        {
+          "pid": 33772,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 29.6,
+          "rss_mib": 307.69140625
+        },
+        {
+          "pid": 40140,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 29.5859375
+        },
+        {
+          "pid": 43592,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 63.8,
+          "rss_mib": 75.01953125
+        },
+        {
+          "pid": 51448,
+          "name": "python.exe",
+          "cpu_one_core_percent": 174.3,
+          "rss_mib": 175.35546875
+        },
+        {
+          "pid": 53300,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 26.5,
+          "rss_mib": 34.6171875
+        },
+        {
+          "pid": 55484,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.671875
+        },
+        {
+          "pid": 63692,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 12.5,
+          "rss_mib": 88.42578125
+        }
+      ],
+      "system_cpu_percent": 94.6
+    },
+    {
+      "t": 18.05581930000335,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69604.03125,
+        "averageFrameRenderTime": 0.6494,
+        "cpuUsage": 1.4282502896470812,
+        "memoryUsage": 328.0234375,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 0,
+        "renderSkippedFrames": 7,
+        "renderTotalFrames": 20001,
+        "webSocketSessionIncomingMessages": 20,
+        "webSocketSessionOutgoingMessages": 20
+      },
+      "processes": [
+        {
+          "pid": 8164,
+          "name": "python.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 4.11328125
+        },
+        {
+          "pid": 33772,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 17.1,
+          "rss_mib": 328.0234375
+        },
+        {
+          "pid": 40140,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 29.5859375
+        },
+        {
+          "pid": 43592,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 49.9,
+          "rss_mib": 75.0703125
+        },
+        {
+          "pid": 51448,
+          "name": "python.exe",
+          "cpu_one_core_percent": 190.1,
+          "rss_mib": 177.70703125
+        },
+        {
+          "pid": 53300,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 26.5,
+          "rss_mib": 34.625
+        },
+        {
+          "pid": 55484,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.671875
+        },
+        {
+          "pid": 63692,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 15.6,
+          "rss_mib": 88.42578125
+        }
+      ],
+      "system_cpu_percent": 92.5
+    },
+    {
+      "t": 19.059196100046393,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69604.02734375,
+        "averageFrameRenderTime": 0.510329,
+        "cpuUsage": 3.117608462097214,
+        "memoryUsage": 350.6015625,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 0,
+        "renderSkippedFrames": 7,
+        "renderTotalFrames": 20031,
+        "webSocketSessionIncomingMessages": 21,
+        "webSocketSessionOutgoingMessages": 21
+      },
+      "processes": [
+        {
+          "pid": 8164,
+          "name": "python.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 4.11328125
+        },
+        {
+          "pid": 33772,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 37.4,
+          "rss_mib": 350.4765625
+        },
+        {
+          "pid": 40140,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 29.5859375
+        },
+        {
+          "pid": 43592,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 56.1,
+          "rss_mib": 75.1953125
+        },
+        {
+          "pid": 51448,
+          "name": "python.exe",
+          "cpu_one_core_percent": 155.7,
+          "rss_mib": 175.765625
+        },
+        {
+          "pid": 53300,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 20.2,
+          "rss_mib": 34.625
+        },
+        {
+          "pid": 55484,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.671875
+        },
+        {
+          "pid": 63692,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 7.8,
+          "rss_mib": 88.42578125
+        }
+      ],
+      "system_cpu_percent": 74.4
+    },
+    {
+      "t": 20.061530600010883,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69603.16015625,
+        "averageFrameRenderTime": 0.987935,
+        "cpuUsage": 1.8169023564862261,
+        "memoryUsage": 372.3125,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 0,
+        "renderSkippedFrames": 7,
+        "renderTotalFrames": 20061,
+        "webSocketSessionIncomingMessages": 22,
+        "webSocketSessionOutgoingMessages": 22
+      },
+      "processes": [
+        {
+          "pid": 8164,
+          "name": "python.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 4.11328125
+        },
+        {
+          "pid": 33772,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 21.8,
+          "rss_mib": 372.80078125
+        },
+        {
+          "pid": 40140,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 29.5859375
+        },
+        {
+          "pid": 43592,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 45.2,
+          "rss_mib": 75.51171875
+        },
+        {
+          "pid": 51448,
+          "name": "python.exe",
+          "cpu_one_core_percent": 159.0,
+          "rss_mib": 171.69140625
+        },
+        {
+          "pid": 53300,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 28.1,
+          "rss_mib": 34.62109375
+        },
+        {
+          "pid": 55484,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.671875
+        },
+        {
+          "pid": 63692,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 12.5,
+          "rss_mib": 88.42578125
+        }
+      ],
+      "system_cpu_percent": 81.1
+    },
+    {
+      "t": 21.06456560001243,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69603.91015625,
+        "averageFrameRenderTime": 0.507216,
+        "cpuUsage": 2.857740188677526,
+        "memoryUsage": 394.94140625,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 0,
+        "renderSkippedFrames": 7,
+        "renderTotalFrames": 20092,
+        "webSocketSessionIncomingMessages": 23,
+        "webSocketSessionOutgoingMessages": 23
+      },
+      "processes": [
+        {
+          "pid": 8164,
+          "name": "python.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 4.11328125
+        },
+        {
+          "pid": 33772,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 34.3,
+          "rss_mib": 394.94140625
+        },
+        {
+          "pid": 40140,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 29.5859375
+        },
+        {
+          "pid": 43592,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 51.4,
+          "rss_mib": 77.67578125
+        },
+        {
+          "pid": 51448,
+          "name": "python.exe",
+          "cpu_one_core_percent": 162.0,
+          "rss_mib": 176.33984375
+        },
+        {
+          "pid": 53300,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 31.2,
+          "rss_mib": 34.625
+        },
+        {
+          "pid": 55484,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.671875
+        },
+        {
+          "pid": 63692,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 10.9,
+          "rss_mib": 88.42578125
+        }
+      ],
+      "system_cpu_percent": 75.8
+    },
+    {
+      "t": 22.066843900014646,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69603.91015625,
+        "averageFrameRenderTime": 0.5502,
+        "cpuUsage": 2.2080176481146134,
+        "memoryUsage": 416.0390625,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 0,
+        "renderSkippedFrames": 7,
+        "renderTotalFrames": 20122,
+        "webSocketSessionIncomingMessages": 24,
+        "webSocketSessionOutgoingMessages": 24
+      },
+      "processes": [
+        {
+          "pid": 8164,
+          "name": "python.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 4.11328125
+        },
+        {
+          "pid": 33772,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 26.5,
+          "rss_mib": 416.0390625
+        },
+        {
+          "pid": 40140,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 29.5859375
+        },
+        {
+          "pid": 43592,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 62.4,
+          "rss_mib": 75.57421875
+        },
+        {
+          "pid": 51448,
+          "name": "python.exe",
+          "cpu_one_core_percent": 180.8,
+          "rss_mib": 179.4375
+        },
+        {
+          "pid": 53300,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 18.7,
+          "rss_mib": 34.625
+        },
+        {
+          "pid": 55484,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.671875
+        },
+        {
+          "pid": 63692,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 7.8,
+          "rss_mib": 88.42578125
+        }
+      ],
+      "system_cpu_percent": 84.1
+    },
+    {
+      "t": 23.069275200017728,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69603.91015625,
+        "averageFrameRenderTime": 0.763809,
+        "cpuUsage": 2.3383178537938516,
+        "memoryUsage": 438.62890625,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 0,
+        "renderSkippedFrames": 7,
+        "renderTotalFrames": 20152,
+        "webSocketSessionIncomingMessages": 25,
+        "webSocketSessionOutgoingMessages": 25
+      },
+      "processes": [
+        {
+          "pid": 8164,
+          "name": "python.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 4.11328125
+        },
+        {
+          "pid": 33772,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 28.1,
+          "rss_mib": 438.62890625
+        },
+        {
+          "pid": 40140,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 29.5859375
+        },
+        {
+          "pid": 43592,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 56.1,
+          "rss_mib": 78.05859375
+        },
+        {
+          "pid": 51448,
+          "name": "python.exe",
+          "cpu_one_core_percent": 173.0,
+          "rss_mib": 175.26171875
+        },
+        {
+          "pid": 53300,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 24.9,
+          "rss_mib": 34.625
+        },
+        {
+          "pid": 55484,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.671875
+        },
+        {
+          "pid": 63692,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 9.4,
+          "rss_mib": 88.42578125
+        }
+      ],
+      "system_cpu_percent": 79.5
+    },
+    {
+      "t": 24.073177999991458,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69604.34765625,
+        "averageFrameRenderTime": 0.620458,
+        "cpuUsage": 2.5932834340788675,
+        "memoryUsage": 461.32421875,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 0,
+        "renderSkippedFrames": 7,
+        "renderTotalFrames": 20182,
+        "webSocketSessionIncomingMessages": 26,
+        "webSocketSessionOutgoingMessages": 26
+      },
+      "processes": [
+        {
+          "pid": 8164,
+          "name": "python.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 4.11328125
+        },
+        {
+          "pid": 33772,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 31.1,
+          "rss_mib": 461.32421875
+        },
+        {
+          "pid": 40140,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 29.5859375
+        },
+        {
+          "pid": 43592,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 57.6,
+          "rss_mib": 76.2265625
+        },
+        {
+          "pid": 51448,
+          "name": "python.exe",
+          "cpu_one_core_percent": 185.2,
+          "rss_mib": 171.95703125
+        },
+        {
+          "pid": 53300,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 28.0,
+          "rss_mib": 34.625
+        },
+        {
+          "pid": 55484,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.671875
+        },
+        {
+          "pid": 63692,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 12.5,
+          "rss_mib": 88.41796875
+        }
+      ],
+      "system_cpu_percent": 83.1
+    },
+    {
+      "t": 25.07678240002133,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69604.34765625,
+        "averageFrameRenderTime": 0.465396,
+        "cpuUsage": 2.4657579620788477,
+        "memoryUsage": 483.9609375,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 0,
+        "renderSkippedFrames": 7,
+        "renderTotalFrames": 20212,
+        "webSocketSessionIncomingMessages": 27,
+        "webSocketSessionOutgoingMessages": 27
+      },
+      "processes": [
+        {
+          "pid": 8164,
+          "name": "python.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 4.11328125
+        },
+        {
+          "pid": 33772,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 29.6,
+          "rss_mib": 483.9609375
+        },
+        {
+          "pid": 40140,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 29.5859375
+        },
+        {
+          "pid": 43592,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 52.9,
+          "rss_mib": 77.74609375
+        },
+        {
+          "pid": 51448,
+          "name": "python.exe",
+          "cpu_one_core_percent": 182.1,
+          "rss_mib": 175.69140625
+        },
+        {
+          "pid": 53300,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 23.4,
+          "rss_mib": 34.62890625
+        },
+        {
+          "pid": 55484,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.671875
+        },
+        {
+          "pid": 63692,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 9.3,
+          "rss_mib": 88.4296875
+        }
+      ],
+      "system_cpu_percent": 78.8
+    },
+    {
+      "t": 26.079605300037656,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69604.34765625,
+        "averageFrameRenderTime": 0.465396,
+        "cpuUsage": 2.208369444590491,
+        "memoryUsage": 505.1328125,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 0,
+        "renderSkippedFrames": 7,
+        "renderTotalFrames": 20242,
+        "webSocketSessionIncomingMessages": 28,
+        "webSocketSessionOutgoingMessages": 28
+      },
+      "processes": [
+        {
+          "pid": 8164,
+          "name": "python.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 4.11328125
+        },
+        {
+          "pid": 33772,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 26.5,
+          "rss_mib": 505.1328125
+        },
+        {
+          "pid": 40140,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 29.5859375
+        },
+        {
+          "pid": 43592,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 54.5,
+          "rss_mib": 76.37890625
+        },
+        {
+          "pid": 51448,
+          "name": "python.exe",
+          "cpu_one_core_percent": 190.1,
+          "rss_mib": 173.890625
+        },
+        {
+          "pid": 53300,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 14.0,
+          "rss_mib": 34.62890625
+        },
+        {
+          "pid": 55484,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.671875
+        },
+        {
+          "pid": 63692,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 12.5,
+          "rss_mib": 88.4296875
+        }
+      ],
+      "system_cpu_percent": 74.6
+    },
+    {
+      "t": 27.082012800034136,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69604.34765625,
+        "averageFrameRenderTime": 0.50039,
+        "cpuUsage": 3.2451415796391347,
+        "memoryUsage": 527.7890625,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 0,
+        "renderSkippedFrames": 7,
+        "renderTotalFrames": 20272,
+        "webSocketSessionIncomingMessages": 29,
+        "webSocketSessionOutgoingMessages": 29
+      },
+      "processes": [
+        {
+          "pid": 8164,
+          "name": "python.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 4.11328125
+        },
+        {
+          "pid": 33772,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 39.0,
+          "rss_mib": 527.7890625
+        },
+        {
+          "pid": 40140,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 29.5859375
+        },
+        {
+          "pid": 43592,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 63.9,
+          "rss_mib": 76.5859375
+        },
+        {
+          "pid": 51448,
+          "name": "python.exe",
+          "cpu_one_core_percent": 163.7,
+          "rss_mib": 178.58203125
+        },
+        {
+          "pid": 53300,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 26.5,
+          "rss_mib": 34.6328125
+        },
+        {
+          "pid": 55484,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.671875
+        },
+        {
+          "pid": 63692,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 15.6,
+          "rss_mib": 88.4296875
+        }
+      ],
+      "system_cpu_percent": 72.8
+    },
+    {
+      "t": 28.08431780000683,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69604.34765625,
+        "averageFrameRenderTime": 0.466848,
+        "cpuUsage": 3.247517886226959,
+        "memoryUsage": 292.23828125,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 0,
+        "renderSkippedFrames": 7,
+        "renderTotalFrames": 20302,
+        "webSocketSessionIncomingMessages": 30,
+        "webSocketSessionOutgoingMessages": 30
+      },
+      "processes": [
+        {
+          "pid": 8164,
+          "name": "python.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 4.11328125
+        },
+        {
+          "pid": 33772,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 39.0,
+          "rss_mib": 292.23828125
+        },
+        {
+          "pid": 40140,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 29.5859375
+        },
+        {
+          "pid": 43592,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 54.6,
+          "rss_mib": 77.01171875
+        },
+        {
+          "pid": 51448,
+          "name": "python.exe",
+          "cpu_one_core_percent": 198.0,
+          "rss_mib": 177.66796875
+        },
+        {
+          "pid": 53300,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 26.5,
+          "rss_mib": 34.6328125
+        },
+        {
+          "pid": 55484,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.671875
+        },
+        {
+          "pid": 63692,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 9.4,
+          "rss_mib": 88.42578125
+        }
+      ],
+      "system_cpu_percent": 85.9
+    },
+    {
+      "t": 29.086887900019065,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69604.34765625,
+        "averageFrameRenderTime": 0.518187,
+        "cpuUsage": 2.4697392777251954,
+        "memoryUsage": 313.32421875,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 0,
+        "renderSkippedFrames": 7,
+        "renderTotalFrames": 20332,
+        "webSocketSessionIncomingMessages": 31,
+        "webSocketSessionOutgoingMessages": 31
+      },
+      "processes": [
+        {
+          "pid": 8164,
+          "name": "python.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 4.11328125
+        },
+        {
+          "pid": 33772,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 29.6,
+          "rss_mib": 313.32421875
+        },
+        {
+          "pid": 40140,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 29.5859375
+        },
+        {
+          "pid": 43592,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 53.0,
+          "rss_mib": 76.40234375
+        },
+        {
+          "pid": 51448,
+          "name": "python.exe",
+          "cpu_one_core_percent": 180.8,
+          "rss_mib": 172.4609375
+        },
+        {
+          "pid": 53300,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 14.0,
+          "rss_mib": 34.63671875
+        },
+        {
+          "pid": 55484,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.671875
+        },
+        {
+          "pid": 63692,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 7.8,
+          "rss_mib": 88.4296875
+        }
+      ],
+      "system_cpu_percent": 75.7
+    },
+    {
+      "t": 30.089124599995557,
+      "obs": {
+        "activeFps": 30.000000300000007,
+        "availableDiskSpace": 69604.34765625,
+        "averageFrameRenderTime": 0.501667,
+        "cpuUsage": 1.2990315185867176,
+        "memoryUsage": 336.5234375,
+        "outputSkippedFrames": 0,
+        "outputTotalFrames": 0,
+        "renderSkippedFrames": 7,
+        "renderTotalFrames": 20362,
+        "webSocketSessionIncomingMessages": 32,
+        "webSocketSessionOutgoingMessages": 32
+      },
+      "processes": [
+        {
+          "pid": 8164,
+          "name": "python.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 4.11328125
+        },
+        {
+          "pid": 33772,
+          "name": "obs64.exe",
+          "cpu_one_core_percent": 15.6,
+          "rss_mib": 336.5234375
+        },
+        {
+          "pid": 40140,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 29.5859375
+        },
+        {
+          "pid": 43592,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 51.4,
+          "rss_mib": 78.75
+        },
+        {
+          "pid": 51448,
+          "name": "python.exe",
+          "cpu_one_core_percent": 188.6,
+          "rss_mib": 178.4765625
+        },
+        {
+          "pid": 53300,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 31.2,
+          "rss_mib": 35.24609375
+        },
+        {
+          "pid": 55484,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 0.0,
+          "rss_mib": 16.671875
+        },
+        {
+          "pid": 63692,
+          "name": "obs-browser-page.exe",
+          "cpu_one_core_percent": 10.9,
+          "rss_mib": 88.4296875
+        }
+      ],
+      "system_cpu_percent": 80.9
+    }
+  ],
+  "input_errors": []
+}

@@ -1,0 +1,152 @@
+{
+  "schema_version": 1,
+  "name": "PREMIUM-003",
+  "route": "single",
+  "canvas": [
+    1254,
+    1254
+  ],
+  "parts": [
+    {
+      "id": "premium-illustration",
+      "role": "body",
+      "side": "center",
+      "z": 0,
+      "origin": [
+        0,
+        0
+      ],
+      "opacity": 1.0,
+      "bind": null,
+      "estimated": false,
+      "states": {
+        "base": {
+          "path": "textures/00-base.png",
+          "sha256": "1599b359b246e226fee73fa9c644972f58b727b158e8e47fdc87bf4c976d9121"
+        }
+      }
+    },
+    {
+      "id": "eye_right",
+      "role": "eye",
+      "side": "right",
+      "z": 1,
+      "origin": [
+        510,
+        250
+      ],
+      "opacity": 1.0,
+      "bind": "eye_right",
+      "estimated": false,
+      "states": {
+        "open": {
+          "path": "textures/01-open.png",
+          "sha256": "b39a598b59775823efab0224203483c629b207a2de7f5666d13c01dd5125f12e"
+        },
+        "closed": {
+          "path": "textures/01-closed.png",
+          "sha256": "b52e002d4325ce9c2aa228deda4735f89e58c5abd356afbacb3198581669b29a"
+        }
+      }
+    },
+    {
+      "id": "eye_left",
+      "role": "eye",
+      "side": "left",
+      "z": 2,
+      "origin": [
+        635,
+        250
+      ],
+      "opacity": 1.0,
+      "bind": "eye_left",
+      "estimated": false,
+      "states": {
+        "open": {
+          "path": "textures/02-open.png",
+          "sha256": "8c6bf06622b67105d5c11e2064eb2292590262a3f6362529734af62163816172"
+        },
+        "closed": {
+          "path": "textures/02-closed.png",
+          "sha256": "e3d22c95fb4a4da724806ed682e27578f9a8e8ccc9813475cf0a463f2e1f0c01"
+        }
+      }
+    },
+    {
+      "id": "mouth",
+      "role": "mouth",
+      "side": "mouth",
+      "z": 3,
+      "origin": [
+        580,
+        360
+      ],
+      "opacity": 1.0,
+      "bind": "mouth",
+      "estimated": false,
+      "states": {
+        "closed": {
+          "path": "textures/03-closed.png",
+          "sha256": "3fe2220caee156e9bfc47e5f0e170fc7bd2ac28b890fb8995498fb9f5c8f13ca"
+        },
+        "open": {
+          "path": "textures/03-open.png",
+          "sha256": "1821b8eaaa6c828c66396e04e7f115c93787e3fa154f26529c88585c3f61ec98"
+        }
+      }
+    }
+  ],
+  "face": [
+    509,
+    190,
+    749,
+    453
+  ],
+  "regions": {
+    "eye_right": [
+      510,
+      250,
+      615,
+      325
+    ],
+    "eye_left": [
+      635,
+      250,
+      741,
+      325
+    ],
+    "mouth": [
+      580,
+      360,
+      685,
+      429
+    ]
+  },
+  "source": null,
+  "prepared": null,
+  "analysis": {
+    "binding_method": "manual authored ROI over generated state pair",
+    "recognition_claim": false
+  },
+  "warnings": [
+    "Authored expression patches, not automatic rigging",
+    "Fine alpha fringe remains in generated source",
+    "Planar portrait motion only"
+  ],
+  "params": {
+    "eye_left": 1.0,
+    "eye_right": 1.0,
+    "mouth": 0.0,
+    "head_yaw": 0.0,
+    "head_roll": 0.0
+  },
+  "limits": {
+    "head": 1.0,
+    "mouth": 1.0
+  },
+  "corrections": [],
+  "provenance": {
+    "neutral_sha256": "955e597230d4cdd15cd64c09ecf8f48686bbd5702f32e429109d581d68d6f442",
+    "expression_sha256": "e78602d341961d5562555fc95caf5f7538c9e00c1f281d26e71657f04e78132a"
+  }
+}

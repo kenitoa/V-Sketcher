@@ -1,0 +1,100 @@
+{
+  "scope": "in-process Tk widget/callback integration, no Computer Use mouse/visual inspection; desktop native pipe unavailable after documented recovery retries",
+  "checks": [
+    {
+      "name": "premium_project_loaded",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "canvas_has_image_and_transform",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "save_button_inside_window",
+      "passed": true,
+      "details": {
+        "button_bottom": 1000,
+        "window_bottom": 1072
+      }
+    },
+    {
+      "name": "manual_controls_affect_common_renderer",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "drag_callback_updates_source_coordinates",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "drag_preserves_original",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size_control_updates_region",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "eye_drag_callback_changes_eye_region",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "occlusion_control_limits_motion",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "occlusion_control_can_restore_feature",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "save_widget_creates_project",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "saved_corrections_and_parameters_reopen",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "parts_route_load_button",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "replacement_button_changes_asset",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "split_route_load_button",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "invalid_input_preserves_active_project",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "invalid_input_shows_next_state",
+      "passed": true,
+      "details": null
+    }
+  ],
+  "passed": true,
+  "code_sha256": {
+    "engine.py": "9008e42d437ad39a6f338f53ab10c052c9879f5805e952d566d778822eaf2b99",
+    "viewer.py": "c692fc71c0a8a8c395b60bba9c2557535697df95d8569af40974297346a0c16c",
+    "ui_smoke.py": "f97765ffa816af5f6e8530bd6d4ba2b8b0b47aae9a8d63484f101ebd85cd58a7"
+  },
+  "created_project": "results\\projects\\user-1794826499742287000\\project.json"
+}

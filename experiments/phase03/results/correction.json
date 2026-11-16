@@ -1,0 +1,38 @@
+{
+  "case": "controlled +50px mouth and -20px eye errors, not claimed natural recognition errors",
+  "mouth_before_box": [
+    277,
+    250,
+    336,
+    271
+  ],
+  "mouth_after_box": [
+    227,
+    250,
+    286,
+    271
+  ],
+  "eye_before_box": [
+    264,
+    173,
+    309,
+    221
+  ],
+  "eye_after_box": [
+    284,
+    173,
+    329,
+    221
+  ],
+  "center_error_vs_original_proposal_before_px": {
+    "mouth": 50,
+    "eye_left": 20
+  },
+  "after_px": {
+    "mouth": 0,
+    "eye_left": 0
+  },
+  "actions_executed": 4,
+  "source_preserved": true,
+  "novice_user_validation": "not_run"
+}

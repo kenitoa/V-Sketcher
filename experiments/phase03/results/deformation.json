@@ -1,0 +1,65 @@
+{
+  "measurement": "CPU full-canvas evaluation, source-over plus remap; no Tk presentation or OBS",
+  "records": [
+    {
+      "input": "parts-512",
+      "mode": "rigid",
+      "warmups": 1,
+      "repeats_ms": [
+        577.069,
+        526.421,
+        540.647
+      ],
+      "median_ms": 540.647,
+      "unchanged_neutral_pixels": true,
+      "lower_body_changed_pixels": 2503,
+      "quality": "see images; no automatic aesthetic score",
+      "external_export": "parameter/texture mapping candidate only; target loading not tested"
+    },
+    {
+      "input": "parts-512",
+      "mode": "weighted",
+      "warmups": 1,
+      "repeats_ms": [
+        446.335,
+        550.142,
+        646.994
+      ],
+      "median_ms": 550.142,
+      "unchanged_neutral_pixels": true,
+      "lower_body_changed_pixels": 0,
+      "quality": "see images; no automatic aesthetic score",
+      "external_export": "parameter/texture mapping candidate only; target loading not tested"
+    },
+    {
+      "input": "premium-1254",
+      "mode": "rigid",
+      "warmups": 1,
+      "repeats_ms": [
+        518.714,
+        571.592,
+        617.508
+      ],
+      "median_ms": 571.592,
+      "unchanged_neutral_pixels": true,
+      "lower_body_changed_pixels": 335470,
+      "quality": "see images; no automatic aesthetic score",
+      "external_export": "parameter/texture mapping candidate only; target loading not tested"
+    },
+    {
+      "input": "premium-1254",
+      "mode": "weighted",
+      "warmups": 1,
+      "repeats_ms": [
+        596.223,
+        492.577,
+        640.693
+      ],
+      "median_ms": 596.223,
+      "unchanged_neutral_pixels": true,
+      "lower_body_changed_pixels": 0,
+      "quality": "see images; no automatic aesthetic score",
+      "external_export": "parameter/texture mapping candidate only; target loading not tested"
+    }
+  ]
+}

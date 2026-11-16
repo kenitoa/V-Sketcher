@@ -1,0 +1,10 @@
+{
+  "distribution": "Pillow",
+  "version": "13.0.0",
+  "python": "CPython 3.14",
+  "platform": "win_amd64",
+  "filename": "pillow-13.0.0-cp314-cp314-win_amd64.whl",
+  "sha256": "f7cbb7a64e7ec664775195e4f81923bc8a93d9451b963f844e59118f63147a7a",
+  "url": "https://files.pythonhosted.org/packages/50/e2/7ad17747517e4c813dca78257d6bb593466f8231baf1384bc98d92745edb/pillow-13.0.0-cp314-cp314-win_amd64.whl",
+  "metadata_source": "https://pypi.org/pypi/Pillow/13.0.0/json"
+}
