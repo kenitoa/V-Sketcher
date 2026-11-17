@@ -2,6 +2,7 @@ import { assertProject,type Project,type PreviewKey,type Parameter,type MotionRi
 import { partWorldTransform,partIsVisible } from '../project-model/geometry';
 import { inverse,transform,multiply,type Point } from '../coordinates';
 import { NEUTRAL,type Parameters } from '../scene-core';
+import {ExpressionController} from '../expression-control';
 export const KEYS = Object.keys(NEUTRAL) as PreviewKey[];
 export const motionNames:Record<PreviewKey,string> = { eye_left:'왼쪽 눈',eye_right:'오른쪽 눈',mouth:'입 열기',head_yaw:'고개 좌우',head_roll:'고개 기울기' };
 export function clampValue(p:Parameter,value:number):number { if (!Number.isFinite(value) || !Number.isFinite(p.max-p.min) || p.max<=p.min) throw new Error('E_PARAMETER_INVALID'); return Math.max(p.min,Math.min(p.max,value)); }
@@ -34,17 +35,22 @@ export function capabilities(p:Project,available = new Set(p.parts.filter(v => p
 export interface MotionFrame { parameters:Parameters; values:ReadonlyMap<string,number>; playing:boolean; elapsed:number; clamped:boolean; }
 /** Device-free test input. No project mutation, wall clock, timers, secondary dynamics or file writes. */
 export class MotionPlayer {
+  readonly controls=new ExpressionController(); private testOwned=new Set<string>();
+  synthetic:{camera:boolean;microphone:boolean;paused:boolean}={camera:false,microphone:false,paused:false};private signalSerial=0;
+
   private project:Project | null = null; private supported:Capability[] = []; private goals = new Map<string,number>(); private filtered = new Map<string,number>();
   private previous:number | null = null; private elapsed = 0; private mode:PreviewKey | 'all' | null = null; private repeat = false; private generation = ''; private revision = -1; private last:MotionFrame = { parameters:{ ...NEUTRAL },values:new Map(),playing:false,elapsed:0,clamped:false };
   setProject(p:Project | null,available?:Set<string>,generation?:string):void {
+    this.controls.setProject(p,generation??p?.projectId??'');
+    if(this.project?.projectId!==p?.projectId||this.generation!==(generation??p?.projectId))this.synthetic={camera:false,microphone:false,paused:false};
     if (!p) { this.project = null; this.supported = []; this.stop(); return; } if (this.project?.projectId !== p.projectId || this.generation !== (generation ?? p.projectId)) { this.generation = generation ?? p.projectId; this.project = p; this.revision = p.revision; this.supported = capabilities(p,available); this.stop(); return; }
     this.project = p; this.supported = capabilities(p,available); if (this.revision !== p.revision) { this.revision = p.revision; this.stop(); }
   }
   snapshot():MotionFrame { return this.last; }
   list():Capability[] { return this.supported; }
-  set(key:PreviewKey,value:number):number { const c = this.supported.find(c => c.key === key); if (!c?.supported || !c.parameter) throw new Error('E_MOTION_UNSUPPORTED'); let v = clampValue(c.parameter,value); if (key === 'mouth' && c.limited) v = Math.min(v,c.parameter.min+(c.parameter.max-c.parameter.min)*.65); this.mode = null; this.goals.set(c.parameter.id,v); return v; }
+  set(key:PreviewKey,value:number):number { const c = this.supported.find(c => c.key === key); if (!c?.supported || !c.parameter) throw new Error('E_MOTION_UNSUPPORTED'); let v = clampValue(c.parameter,value); if (key === 'mouth' && c.limited) v = Math.min(v,c.parameter.min+(c.parameter.max-c.parameter.min)*.65); this.mode = null; this.goals.set(c.parameter.id,v); this.testOwned.add(c.parameter.id); return v; }
   play(key:PreviewKey | 'all',repeat:boolean):void { if (!this.project || key !== 'all' && !this.supported.some(c => c.key === key && c.supported) || key === 'all' && !this.supported.some(c => c.supported)) throw new Error('E_MOTION_UNSUPPORTED'); this.stop(); this.mode = key; this.repeat = repeat; }
-  stop():void { this.mode = null; this.elapsed = 0; this.previous = null; this.goals.clear(); this.filtered.clear(); if (this.project) for (const p of this.project.parameters) { const value = this.project.motion?.settings.pose.find(v => v.parameterId === p.id)?.value ?? p.neutral; this.goals.set(p.id,value); this.filtered.set(p.id,value); } const parameters = { ...NEUTRAL }; for (const c of this.supported) if (c.supported && c.parameter) parameters[c.key] = normalize(c.parameter,this.filtered.get(c.parameter.id) ?? c.parameter.neutral); this.last = { parameters,values:new Map(this.filtered),playing:false,elapsed:0,clamped:false }; }
+  stop():void { this.testOwned.clear(); this.mode = null; this.elapsed = 0; this.previous = null; this.goals.clear(); this.filtered.clear(); if (this.project) for (const p of this.project.parameters) { const value = this.project.motion?.settings.pose.find(v => v.parameterId === p.id)?.value ?? p.neutral; this.goals.set(p.id,value); this.filtered.set(p.id,value); } const parameters = { ...NEUTRAL }; for (const c of this.supported) if (c.supported && c.parameter) parameters[c.key] = normalize(c.parameter,this.filtered.get(c.parameter.id) ?? c.parameter.neutral); const composed=this.controls.frame(0);for(const c of this.supported)if(c.supported&&c.parameter)parameters[c.key]=normalize(c.parameter,composed.values.get(c.parameter.id)??c.parameter.neutral);this.last = { parameters,values:this.project?composed.values:new Map(),playing:false,elapsed:0,clamped:false }; }
   targets():{ parameterId:string;value:number }[] { return [...this.goals].map(([parameterId,value]) => ({ parameterId,value })); }
   frame(now:number):MotionFrame {
     if (!Number.isFinite(now)) throw new Error('E_MOTION_TIME'); const p = this.project; const parameters = { ...NEUTRAL }; if (!p) return { parameters,values:new Map(),playing:false,elapsed:0,clamped:false };
@@ -56,6 +62,10 @@ export class MotionPlayer {
       target = baseline+(clampValue(param,target)-baseline)*settings.strength;
       const previous = this.filtered.get(param.id) ?? param.neutral; const value = settings.smoothingMs === 0 ? target : previous+(target-previous)*(1-Math.exp(-dt/(settings.smoothingMs/1000))); this.filtered.set(param.id,value); parameters[c.key] = normalize(param,value);
     }
-    this.last = { parameters,values:new Map(this.filtered),playing:this.mode!==null,elapsed:this.elapsed,clamped }; return this.last;
+
+    const test=new Map<string,number>();for(const c of this.supported)if(c.parameter&&(this.testOwned.has(c.parameter.id)||this.mode==='all'||this.mode===c.key))test.set(c.parameter.id,this.filtered.get(c.parameter.id)??c.parameter.neutral);
+    if(!this.synthetic.paused)for(const source of ['camera','microphone'] as const)if(this.synthetic[source]){const values=new Map<string,number>();for(const c of this.supported)if(c.supported&&c.parameter&&(source==='camera'||c.key==='mouth')){const q=c.key.startsWith('eye')?.7:c.key==='mouth'?(source==='camera'?.3:.6):.45*Math.sin(now/700);const p=c.parameter;values.set(p.id,c.key.startsWith('head')?p.neutral+q*(p.max-p.neutral):p.min+q*(p.max-p.min));}this.controls.input(source,values,now,++this.signalSerial);}
+    const composed=this.controls.frame(Math.max(0,now),test);for(const c of this.supported)if(c.parameter&&c.supported)parameters[c.key]=normalize(c.parameter,composed.values.get(c.parameter.id)??c.parameter.neutral);
+    this.last = { parameters,values:composed.values,playing:this.mode!==null,elapsed:this.elapsed,clamped }; return this.last;
   }
 }

@@ -1,6 +1,6 @@
 # 2DSketcher
 
-Windows용 버추얼 캐릭터 제작 도구입니다. **0.12.0 미리보기**는 세 제작 경로의 부위·계층·망·매개변수 연결을 직접 편집하고, 영향을 비교해 적용·복원합니다. 고급 파츠 **64개 기본 조합**, 한 장 그림의 자동 준비/보정·보호된 재분석, PNG 폴더·.2dparts 안내 연결과 공통 움직임을 제공합니다. 원본 보존·장치 없는 GPU 시험·자급 ZIP 저장/복제/복구/되돌리기를 사용할 수 있습니다. 공통 모델 1.7·WebGL2·독립 Python worker를 사용하며 자유 topology 생성·표정 제어·실시간 추적·OBS·독립 아바타 내보내기와 보조 흔들림은 후속입니다. [PRD](docs/PRD.md)·[Todo](docs/Todo)를 따르며 M0는 HOLD입니다.
+Windows용 버추얼 캐릭터 제작 도구입니다. **0.13.0 미리보기**에서 세 제작 경로의 외형·보정·세부 변형과 표정을 편집하고, 부위별 고정·입력 우선순위·전환/최신 입력 복귀를 고급 그림으로 시험합니다. 고급 파츠 **64개 기본 조합**, 한 장 자동 준비·선택 보정, PNG 폴더·.2dparts 안내 연결과 원본 보존·원자적 저장/복제/복구/되돌리기를 제공합니다. 공통 모델 1.8·WebGL2·독립 Python worker를 사용합니다. M2 로컬 제작 검토를 마쳤으며 실제 추적·OBS·독립 아바타 내보내기·보조 흔들림·독립 품질 평가는 후속입니다. [PRD](docs/PRD.md)·[Todo](docs/Todo)를 따르며 **M0는 HOLD**입니다.
 
 개발 환경은 Windows x64, Python **3.14.10 x64**, Git입니다. 최초 준비에는 인터넷이 필요하며 Node와 Python 패키지는 프로젝트 안에 설치됩니다. PowerShell 실행 정책 변경과 전역 npm 설치는 필요하지 않습니다.
 
@@ -17,7 +17,7 @@ Windows 패키지와 격리 실행 검증:
 
 ```powershell
 tools/dev.cmd run make
-.local/toolchain/node-v24.22.3-win-x64/node.exe scripts/detail-package-check.mjs --evidence-dir=evidence/phase17
+.local/toolchain/node-v24.22.3-win-x64/node.exe scripts/expression-package-check.mjs --evidence-dir=evidence/phase18
 ```
 
 EXE는 `out/2DSketcher-win32-x64/2DSketcher.exe`, ZIP은 `out/make/zip/win32/x64/`에 생성됩니다. ZIP을 풀 때 폴더 전체를 유지해야 합니다. Electron과 Python·라이브러리·얼굴 모델이 포함되어 사용자의 Node/Python 설치를 요구하지 않습니다. 서명·설치 프로그램·공개 배포 승인을 완료한 제품은 아닙니다.
@@ -34,9 +34,9 @@ EXE는 `out/2DSketcher-win32-x64/2DSketcher.exe`, ZIP은 `out/make/zip/win32/x64
 
 자동 결과를 적용한 뒤 **모양 고치기 · 넓은 보정 화면 열기**에서 원화의 눈/입 위치·크기와 사각 경계/가림·앞뒤 순서를 고칩니다. 확대/드래그/수치·부위 시험으로 확인하고 **체크한 새 결과만 적용**하세요. 재분석은 수동 보정을 기본 보호하며 명시적 덮어쓰기 후보·폐기·자동 복원도 비교 후 적용합니다. [보정 사용법과 범위](docs/planning/15-corrections.md)를 확인하세요.
 
-**움직임 시험**에서는 준비된 다섯 제어의 슬라이더·예제 재생·반복·중지를 사용할 수 있습니다. 시험 입력은 이력/파일을 바꾸지 않고, 명시적으로 저장한 세기·부드러움·기본 자세만 편집에 포함됩니다. 이전 1.0~1.6도 읽으며 모델을 업그레이드한 변환본은 다른 파일로 저장합니다.
+**움직임 시험**에서는 준비된 다섯 제어의 슬라이더·예제 재생·반복·중지를 사용할 수 있습니다. 시험 입력은 이력/파일을 바꾸지 않고, 명시적으로 저장한 세기·부드러움·기본 자세만 편집에 포함됩니다. 이전 1.0~1.7도 읽으며 모델을 업그레이드한 변환본은 다른 파일로 저장합니다.
 
-`.local/toolchain/node-v24.22.3-win-x64/node.exe scripts/verify-detail.mjs`는 198개 검사 그룹과 실제 보정/보호/선택 적용 UI·자동 구조화/보정 GPU 각 25상태·파츠 64조합/1,472프레임·색상/alpha/금색 보존·기존 입력/움직임/편집/저장 회귀 검사를 실행합니다. self-check 창을 표시하며 배포 검사는 기본 창과 1080×720 창을 확인합니다. `run dev`의 “작업 상태 시험”은 고정 입력 모의 작업이고 release에는 시험 버튼이 없습니다. 독립 ART-01 평가·추적/방송·M0 성능·물리적 디스크 고갈/전원 차단 검증은 후속입니다.
+`.local/toolchain/node-v24.22.3-win-x64/node.exe scripts/verify-expressions.mjs`는 218개 검사 그룹과 실제 보정/보호/선택 적용 UI·자동 구조화/보정 GPU 각 25상태·파츠 64조합/1,472프레임·색상/alpha/금색 보존·기존 입력/움직임/편집/저장 회귀 검사를 실행합니다. self-check 창을 표시하며 배포 검사는 기본 창과 1080×720 창을 확인합니다. `run dev`의 “작업 상태 시험”은 고정 입력 모의 작업이고 release에는 시험 버튼이 없습니다. 독립 ART-01 평가·추적/방송·M0 성능·물리적 디스크 고갈/전원 차단 검증은 후속입니다.
 
 [개발 규칙](CONTRIBUTING.md) · [공통 모델](docs/architecture/project-model.md) · [작업/트랜잭션](docs/architecture/workflow.md) · [프로젝트 저장/복구](docs/architecture/project-session.md) · [공통 편집 화면](docs/architecture/common-editor.md) · [움직임 평가](docs/architecture/motion.md) · [자산 정책](docs/architecture/assets.md) · [11 완료 근거](docs/planning/11-common-motion.md)
 
@@ -48,6 +48,8 @@ EXE는 `out/2DSketcher-win32-x64/2DSketcher.exe`, ZIP은 `out/make/zip/win32/x64
 
 [보정·선택 적용 구조](docs/architecture/corrections.md) · [15 완료 근거](docs/planning/15-corrections.md) · [보정 원화 비교](evidence/phase15/correction-comparison.png)
 
-**분리 그림**에서 PNG 폴더나 `.2dparts`를 열고 배치·역할·캐릭터 좌우·부모를 확인한 뒤 후보를 준비해 비교/적용합니다. `.2dparts` 저장은 원본과 배치 자료 교환이며 독립 아바타 내보내기가 아닙니다. [16 사용법·검증 범위](docs/planning/16-split-image.md) · [형식 계약](docs/architecture/split-image.md). 패키지 검사는 세 제작 경로의 세부 편집+기반 코어 범위이며 이전 경로는 전체 개발 앱 회귀로 확인합니다.
+**분리 그림**에서 PNG 폴더나 `.2dparts`를 열고 배치·역할·캐릭터 좌우·부모를 확인한 뒤 후보를 준비해 비교/적용합니다. `.2dparts` 저장은 원본과 배치 자료 교환이며 독립 아바타 내보내기가 아닙니다. [16 사용법·검증 범위](docs/planning/16-split-image.md) · [형식 계약](docs/architecture/split-image.md). 패키지 검사는 세 제작 경로의 표정/로컬 제작 흐름+기반 코어 범위이며 이전 경로는 전체 개발 앱 회귀로 확인합니다.
 
 **세부 부위·연결·변형**에서 같은 부위의 역할/계층/순서·기준점/망 점/영향/변위·매개변수 연결을 편집합니다. 최소/중립/최대와 영향을 비교한 뒤 적용하고, 부위별로 복원합니다. [17 사용법·검증](docs/planning/17-detail-editor.md) · [세부 편집 계약](docs/architecture/detail-editor.md). M2 제작 기반의 기술 점검이며 표정/제어와 M2 종료는 18단계에서 확인합니다.
+
+**표정·입력 제어**에서 저장할 항목/값/고정 범위를 선택하고 이름을 붙입니다. 표정 적용·해제와 합성 입력은 프로젝트 값을 바꾸지 않습니다. 입 우선 입력·대체·자동 깜빡임·앱 안 단축키를 설정하고, 대상 변경 표정은 다시 연결/제거로 수선합니다. [사용법·M2 로컬 제작 종료 검토](docs/planning/18-expressions.md), [전체 검사 근거](evidence/phase18/verification.json), [배포본/문서 감사](evidence/phase18/audit.json)를 확인하세요.

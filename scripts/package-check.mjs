@@ -27,7 +27,7 @@ for (const item of assetManifest.assets) {
   assert.equal(createHash('sha256').update(bytes).digest('hex'), item.sha256, 'Bundled preview asset changed');
 }
 const model = JSON.parse(extractFile(archive, join('dist','renderer','assets','preview-project.json')).toString());
-assert.equal(model.schemaVersion.major, 1); assert.equal(model.schemaVersion.minor, 7);
+assert.equal(model.schemaVersion.major, 1); assert.equal(model.schemaVersion.minor, 8);
 for (const asset of model.assets) assert.ok(assetManifest.assets.some(item => item.sha256 === asset.fingerprint.sha256), 'Undeclared model resource');
 const partsCatalog=JSON.parse(extractFile(archive,join('dist','renderer','assets','parts','catalog.json')).toString());assert.equal(Object.keys(partsCatalog.files).length,13);const partsEntries=entries.filter(p=>p.startsWith('/dist/renderer/assets/parts/')&&p.endsWith('.png'));assert.equal(partsEntries.length,13);for(const [digest,path] of Object.entries(partsCatalog.files)){assert.equal(createHash('sha256').update(extractFile(archive,join('dist','renderer','assets',path))).digest('hex'),digest);}
 const system = process.env.SystemRoot ?? 'C:\\Windows';
@@ -62,7 +62,7 @@ for (const attempt of [1, 2]) {
   assert.equal(report.renderer.diagnosticsVisible, false); assert.equal(report.renderer.projectRoutesEnabled, true); assert.equal(report.projects?.passed,true);
   assert.equal(report.projects?.recoveryToNewFile,true); assert.equal(report.projects?.recoveryComparison,true);
   assert.equal(report.detail?.passed,true);assert.equal(report.split?.passed,true);assert.equal(report.corrections?.passed,true);assert.equal(report.corrections?.pixels?.passed,true);assert.equal(report.structure?.passed,true);assert.equal(report.structure?.pixels?.passed,true);assert.equal(report.parts?.passed,true);assert.equal(report.parts?.invalidRestores,true);assert.equal(report.renderer.partsPixels?.passed,true);assert.equal(report.renderer.partsPixels?.combinations,64);assert.equal(report.renderer.partsPixels?.frames,1472);assert.equal(report.input?.passed,true); assert.equal(report.input?.keyboardMask,true); assert.equal(report.input?.pointerCrop,true); assert.equal(report.motion?.passed,true); assert.equal(report.renderer.motionPixels?.passed,true); assert.equal(report.editor?.passed,true); assert.equal(report.editor?.contrast?.passed,true);
-  assert.equal(report.renderer.projectModel?.schemaVersion, '1.7');
+  assert.equal(report.renderer.projectModel?.schemaVersion, '1.8');
   assert.equal(report.renderer.projectModel?.projectId, model.projectId);
   assert.equal(report.renderer.modelPixels?.passed, true);
   assert.equal(report.renderer.workflowCore?.passed, true); assert.equal(report.renderer.sampleRuntimeFrozen, true);
@@ -82,6 +82,6 @@ const summary = { passed: true, platform: process.platform, architecture: proces
   singleImageStructure:{passed:true,configurationVersion:'1.0.0',reviewBeforeApply:true,estimatedStates:true,earlyPreview:true},modularParts:{selectedPngs:13,states:27,items:12,combinations:64},frozenImageInput:{passed:true,detectorAvailable:imageProbe.report.detectorAvailable,normalizedSize:imageProbe.report.size,originalSize:imageProbe.report.originalSize},
   isolation: { developerToolsOnPath: false, externalNodeOrPythonRequired: false, freshProfiles: 2, unicodeAndSpacePath: true, rendererExternalNetworkBlocked: true, systemNetworkDisabled: false },
   reports, archiveEntries: entries.length, forbiddenDevelopmentContent: false, packageBytes: inventory.reduce((total, item) => total + item.bytes, 0),
-  commonProjectSchema: '1.7', limitations: ['Same Windows installation, drivers and system DLLs retained', 'No clean-OS claim', 'No camera/microphone, OBS, creation, full rigging or M0 performance test'], files: inventory };
+  commonProjectSchema: '1.8', limitations: ['Same Windows installation, drivers and system DLLs retained', 'No clean-OS claim', 'No camera/microphone, OBS, creation, full rigging or M0 performance test'], files: inventory };
 writeFileSync(join(evidence, 'package-audit.json'), JSON.stringify(summary, null, 2) + '\n');
 console.log(`Packaged release passed twice: ${inventory.length} files, ${summary.packageBytes} bytes; no developer tools on PATH. Same-PC scope.`);

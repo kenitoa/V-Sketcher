@@ -32,13 +32,16 @@ export interface InputBinding {
   invert: boolean; gain: number; offset: number; smoothingMs: number;
   fallback: { mode: 'neutral' | 'hold' | 'constant'; value: number; returnMs: number };
 }
-export interface Expression { id: string; displayName: string; values: { parameterId: string; value: number; locked: boolean }[]; transitionMs: number; release: 'live-input' | 'neutral'; }
+export interface ExpressionValue { parameterId:string; value:number; locked:boolean; partIds?:string[]; }
+export interface Expression { id: string; displayName: string; values: ExpressionValue[]; transitionMs: number; release: 'live-input' | 'neutral'; releaseMs?:number; }
+export interface ExpressionSettings { version:1; mouth:'camera'|'microphone'; alternate:boolean; autoBlink:boolean; releaseMs:number; shortcuts:(string|null)[]; }
 export interface RuntimeProfile { id: string; revision: number; mode: 'idle' | 'camera' | 'microphone' | 'camera-microphone'; mirror: boolean; fallbackExpressionId: string | null; }
 export interface BroadcastProfile { id: string; revision: number; displayName: string; width: number; height: number; fps: number; transparent: boolean; region: Rect; fit: 'contain' | 'cover'; }
 export interface ExportProfile { id: string; revision: number; displayName: string; target: 'inochi2d'; targetVersion: string; format: 'inp'; converterVersion: string; parameterMap: { parameterId: string; targetName: string }[]; }
 export interface MotionMesh { partId:string; pivot:[number,number]; vertices:{ position:[number,number]; weight:number; minimum:[number,number]; maximum:[number,number] }[]; triangles:number[]; yawParameterId:string | null; rollParameterId:string | null; curve:'linear' | 'smoothstep'; }
 export interface MotionRig { version:1; meshes:MotionMesh[]; faceWidth:number; maxRollDegrees:number; settings:{ strength:number; smoothingMs:number; pose:{ parameterId:string; value:number }[] }; secondary:'disabled'; }
 export interface Project {
+  expressionSettings?:ExpressionSettings;
   detail?:import('../detail-editor/types').DetailRecord;
   split?:import('../split-image/types').SplitRecord;
   structure?:import('../single-image/types').StructureRecord;

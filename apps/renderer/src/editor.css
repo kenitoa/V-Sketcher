@@ -25,3 +25,34 @@
 .about.detail-dialog{width:min(1520px,calc(100vw - 28px));max-width:none}.detail-top,.detail-fields fieldset,.detail-impact dl{display:grid;gap:10px}.detail-top{grid-template-columns:1fr 1fr}.detail-layout{display:grid;grid-template-columns:minmax(400px,1.15fr) minmax(360px,1fr);gap:22px}.detail-fields{display:grid;gap:16px}.detail-fields fieldset{grid-template-columns:repeat(2,minmax(0,1fr));border:1px solid #d6cbdc;border-radius:12px;padding:16px}.detail-fields label{display:flex;flex-direction:column;gap:5px;min-width:0}.detail-fields input,.detail-fields select{max-width:100%;min-width:0}.detail-fields small,.detail-fields .detail-map{grid-column:1/-1}.detail-layout .editor-preview{min-height:340px;margin-bottom:16px}.detail-layout .viewport{height:320px;min-height:320px}.detail-review{position:sticky;top:0;align-self:start;background:#f8f5ef}.detail-impact{border:1px solid #b9a2c4;padding:14px;border-radius:10px}.detail-impact dl{grid-template-columns:110px 1fr}.detail-impact dt{font-weight:600}.detail-impact dd{margin:0}.detail-impact button{margin:2px}.detail-compare{display:grid;grid-template-columns:1fr 1fr;gap:10px}.detail-compare canvas{width:100%;max-height:410px;object-fit:contain;background:#e8e5eb}.detail-map svg{display:block;width:100%;height:320px;background:repeating-conic-gradient(#eee 0% 25%,#fff 0% 50%) 0/20px 20px;touch-action:none}.detail-map circle{cursor:grab}.detail-editor legend{font-weight:650}.detail-top{margin-bottom:16px}.detail-review h4{font-size:13px}@media(max-width:1100px){.detail-layout{grid-template-columns:minmax(380px,1fr) minmax(300px,.8fr);gap:14px}.detail-fields fieldset{padding:10px}.detail-compare{gap:6px}.detail-compare canvas{max-height:320px}}@media(max-width:800px){.detail-layout{display:block}.detail-review{position:static}.detail-top{grid-template-columns:1fr}}
 
 .detail-fields label:has(input[type="checkbox"]){flex-direction:row;align-items:center}.detail-impact>p{margin:8px 0}.detail-impact details{margin:8px 0}.detail-compare h4{margin:8px 0}
+
+.expression-dialog { width:min(860px,calc(100vw - 32px)); max-height:90vh; overflow:auto; }
+.expression-panel { display:grid; gap:16px; }
+.expression-panel label { display:flex; align-items:center; gap:8px; }
+.expression-panel input[type=checkbox] { width:auto; flex:none; }
+.expression-panel input[type=number] { width:100px; }
+.expression-actions,.expression-item,.expression-row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+.expression-list,.expression-draft,.expression-panel fieldset { display:grid; gap:10px; }
+.expression-row>label:first-child { min-width:145px; }
+.expression-panel table { width:100%; border-collapse:collapse; text-align:left; }
+.expression-panel td,.expression-panel th { padding:6px; border-bottom:1px solid var(--border,#464b63); }
+.expression-panel small { color:var(--muted,#bdc4d4); display:block; }
+.expression-panel details { padding:12px; border:1px solid var(--border,#464b63); border-radius:8px; }
+.expression-panel [aria-pressed=true] { outline:2px solid var(--accent,#b7a0ff); }
+
+.about.expression-dialog { max-width:min(1120px,calc(100vw - 32px)); width:1120px; padding:24px; color:#51385f; }
+.expression-layout { display:grid;grid-template-columns:minmax(240px,0.85fr) minmax(400px,1.3fr);gap:24px;align-items:start; }
+.expression-preview { position:sticky;top:0;border:1px solid #d8cbdc;border-radius:12px;background:radial-gradient(ellipse,#55445e,#292132);overflow:hidden;text-align:center;padding:12px; }
+.expression-preview canvas { width:100%;height:auto;display:block; }
+.expression-preview small { color:#e0d5e8; }
+.expression-panel small { color:#6a5476;line-height:1.6; }
+.expression-panel input,.expression-panel select { max-width:100%;min-height:32px; }
+@media(max-width:850px){.expression-layout { grid-template-columns:1fr; }.expression-preview {position:static;max-width:280px;justify-self:center;} }
+
+.expression-panel label { margin:0; font-size:12px; line-height:1.5; }
+.expression-panel input { margin:0; padding:7px; }
+.expression-panel fieldset { min-width:0; padding:12px; }
+.expression-draft>label { display:grid;grid-template-columns:110px minmax(0,1fr); }
+.expression-row { padding:3px 0; }
+.expression-panel .expression-row>label:first-child { min-width:135px; }
+.expression-panel .expression-row input[type=number] { width:80px; }

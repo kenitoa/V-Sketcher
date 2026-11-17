@@ -1,0 +1,189 @@
+{
+  "passed": true,
+  "expressions": {
+    "passed": true,
+    "routes": [
+      {
+        "route": "parts",
+        "passed": true,
+        "actualRoutePreparation": true,
+        "appearanceAndCorrection": true,
+        "commonMotion": true,
+        "createScopeLocks": true,
+        "noNoiseSaved": true,
+        "latestInputRelease": true,
+        "exclusiveMouthPolicy": true,
+        "appLocalShortcutAndGuards": true,
+        "duplicateDelete": true,
+        "damageRepairAndUndo": true,
+        "saveDuplicateReopen": true,
+        "originalHashesPreserved": true,
+        "pixels": {
+          "passed": true,
+          "frames": 4,
+          "changedChannels": 2857,
+          "glClean": true
+        }
+      },
+      {
+        "route": "single-image",
+        "passed": true,
+        "actualRoutePreparation": true,
+        "appearanceAndCorrection": true,
+        "commonMotion": true,
+        "createScopeLocks": true,
+        "noNoiseSaved": true,
+        "latestInputRelease": true,
+        "exclusiveMouthPolicy": true,
+        "appLocalShortcutAndGuards": true,
+        "duplicateDelete": true,
+        "damageRepairAndUndo": true,
+        "saveDuplicateReopen": true,
+        "originalHashesPreserved": true,
+        "pixels": {
+          "passed": true,
+          "frames": 4,
+          "changedChannels": 664,
+          "glClean": true
+        }
+      },
+      {
+        "route": "split-image",
+        "passed": true,
+        "actualRoutePreparation": true,
+        "appearanceAndCorrection": true,
+        "commonMotion": true,
+        "createScopeLocks": true,
+        "noNoiseSaved": true,
+        "latestInputRelease": true,
+        "exclusiveMouthPolicy": true,
+        "appLocalShortcutAndGuards": true,
+        "duplicateDelete": true,
+        "damageRepairAndUndo": true,
+        "saveDuplicateReopen": true,
+        "originalHashesPreserved": true,
+        "pixels": {
+          "passed": true,
+          "frames": 4,
+          "changedChannels": 3075,
+          "glClean": true
+        }
+      }
+    ],
+    "devicesOpened": false,
+    "m2CreationExitApproved": true,
+    "m3Ready": true,
+    "m0": "HOLD",
+    "scope": "Three actual local creation routes, appearance/correction/motion/expression/save; synthetic mapped inputs only. No live device, broadcast, global keys, independent ART/export or M0 approval."
+  },
+  "renderer": {
+    "webgl2": true,
+    "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+    "renderer": "WebKit WebGL",
+    "textureCount": 7,
+    "layers": 4,
+    "submittedFrames": 283,
+    "projectModel": {
+      "projectId": "example-premium",
+      "revision": 1,
+      "sourceType": "single-image",
+      "schemaVersion": "1.8"
+    },
+    "visiblePixels": 335581,
+    "transparentPixels": 464419,
+    "glError": 0,
+    "pixelHash": "cbc0eda8",
+    "meshLayers": 4,
+    "staticBufferUploads": 7,
+    "scope": "Shared GPU triangle deformation and authored state blend; not automatic rigging, live tracking or M0 performance approval",
+    "modelPixels": {
+      "passed": true,
+      "translationPixels": 18,
+      "translationMismatches": 0,
+      "cropMismatches": 0,
+      "tolerance": 3,
+      "frameSize": [
+        180,
+        180
+      ],
+      "scope": "Actual GPU model translation/crop pixels; not full rigging, tracking or performance"
+    },
+    "motionPixels": {
+      "passed": true,
+      "leftChanged": 224,
+      "rightChanged": 231,
+      "leftDoesNotMoveRight": true,
+      "rightDoesNotMoveLeft": true,
+      "mouthIntermediateChanged": 56,
+      "headChanged": 25729,
+      "bodyDifferences": 0,
+      "neutralDifference": 0,
+      "defaultPoseDifference": 0,
+      "defaultPoseChanges": 22589,
+      "uploadsUnchanged": true,
+      "meshLayers": 4,
+      "extremeFrames": 120,
+      "frameSize": [
+        256,
+        256
+      ],
+      "scope": "Actual WebGL pixels, authored premium patches and GPU mesh; no tracking, broadcast, universal art quality or M0 FPS claim"
+    },
+    "workflowCore": {
+      "passed": true,
+      "staleHeld": true,
+      "reviewApplied": true,
+      "latestEditPreserved": true,
+      "runtimeSnapshotPreserved": true,
+      "ownedResources": 0,
+      "scope": "Fixed in-memory async state check; no real analysis, disk save, tracking or broadcast"
+    },
+    "workflowUI": {
+      "passed": true,
+      "developmentOnly": true,
+      "visible": false
+    },
+    "sampleRuntimeFrozen": true,
+    "workflowLabVisible": false,
+    "workerReady": true,
+    "nodeExposed": false,
+    "shellExposed": false,
+    "appInfoDialog": true,
+    "diagnosticsVisible": false,
+    "projectRoutesEnabled": true
+  },
+  "worker": {
+    "workerVersion": "0.1.0",
+    "python": "3.14.10",
+    "frozen": true,
+    "dependencyFilesInsideBundle": true,
+    "modelSha256": "64184e229b263107bc2b804c6625db1341ff2bb731874b0bcc2fe6544e0bc9ff",
+    "modelLoaded": true,
+    "cameraOpened": false,
+    "microphoneOpened": false,
+    "dependencies": {
+      "numpy": "2.5.5",
+      "opencv": "5.0.0",
+      "mediapipe": "1.2.3",
+      "sounddevice": "0.5.6",
+      "pillow": "13.0.0"
+    }
+  },
+  "workerStopped": true,
+  "packaged": true,
+  "channel": "release",
+  "appVersion": "0.13.0",
+  "windowSize": [
+    1080,
+    720
+  ],
+  "devicesOpened": false,
+  "protections": {
+    "sandbox": true,
+    "contextIsolation": true,
+    "nodeIntegration": false,
+    "externalNetworkBlocked": true
+  },
+  "priorRouteUI": "NOT_RUN",
+  "scope": "Targeted expression and M2 creation flow on three actual routes plus foundation core; same PC, synthetic inputs, M0 HOLD"
+}

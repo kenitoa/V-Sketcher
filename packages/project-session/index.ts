@@ -21,6 +21,7 @@ import { ResourceCache } from '../project-storage/cache';
 import { ProjectCatalog, type RecoveryRecord } from '../project-storage/catalog';
 import { readBundle, encodeBundle, decodeBundle, sha256, type LoadedBundle } from '../project-storage/archive';
 import { atomicBundle, storageError, type AtomicOptions } from '../project-storage/atomic';
+import {editExpressions} from '../expression-control';
 import { contentKey, duplicateProject, EditHistory } from './history';
 import { parseSessionCommand, type SessionView, type SessionCommand, type SessionReply, type RecoveryComparison } from './contracts';
 export type LeaveDecision = 'save' | 'discard' | 'cancel';
@@ -151,7 +152,7 @@ export class ProjectSession {
     const d = this.editable(); const revision = d.flow.project().revision; await this.checkpoint('예제 캐릭터 삽입 전'); const source = this.options.bundled;
     for (const asset of source.assets) { const data = this.options.bundledBytes.get(asset.id); if (!data) throw new Error('E_SAMPLE_RESOURCE'); await this.cache.put(asset,data); }
     if (this.document !== d || d.flow.project().revision !== revision) throw new Error('E_EDIT_STALE');
-    d.history.change('고급 예제 캐릭터',draft => { for (const field of ['canvas','assets','parts','groups','parameters','partBindings','inputBindings','expressions','runtimeProfile','broadcastProfiles','exportProfiles','inputAssetIds'] as const) (draft as unknown as Record<string,unknown>)[field] = structuredClone(source[field]); if (source.motion) { draft.schemaVersion.minor = Math.max(draft.schemaVersion.minor,source.schemaVersion.minor); draft.motion = structuredClone(source.motion); } else delete draft.motion; delete draft.inputPreparation;delete draft.assembly;delete draft.structure;delete draft.split;draft.provenance = { preparation:'Bundled authored example; not route-specific automatic preparation',limitations:source.provenance.limitations }; });
+    d.history.change('고급 예제 캐릭터',draft => { for (const field of ['canvas','assets','parts','groups','parameters','partBindings','inputBindings','expressions','runtimeProfile','broadcastProfiles','exportProfiles','inputAssetIds'] as const) (draft as unknown as Record<string,unknown>)[field] = structuredClone(source[field]); if (source.motion) { draft.schemaVersion.minor = Math.max(draft.schemaVersion.minor,source.schemaVersion.minor); draft.motion = structuredClone(source.motion); } else delete draft.motion; delete draft.expressionSettings; delete draft.inputPreparation;delete draft.assembly;delete draft.structure;delete draft.split;draft.provenance = { preparation:'Bundled authored example; not route-specific automatic preparation',limitations:source.provenance.limitations }; });
     d.available = await this.cache.available(d.flow.project()); d.unresolved.clear(); this.changed();
   }
   private async relink(assetId:string):Promise<void> {
@@ -198,6 +199,7 @@ export class ProjectSession {
       else if (command.type === 'edit') await this.edit(command);
       else if (command.type === 'undo' || command.type === 'redo') { const d = this.editable(); if (command.type === 'undo') d.history.undo(); else d.history.redo(); this.changed(); }
       else if (command.type === 'sample') await this.sample();
+      else if(command.type==='expression-edit'){const d=this.editable();if(d.flow.project().revision!==command.expectedRevision)throw new Error('E_EDIT_STALE');await this.checkpoint('Before expression edit');if(this.document!==d||d.flow.project().revision!==command.expectedRevision)throw new Error('E_EDIT_STALE');d.history.change('Expression edit',p=>editExpressions(p,command.operation,randomUUID));this.changed();}
       else if (['prepare-motion','motion-settings','motion-parameter'].includes(command.type)) {
         if (command.type !== 'prepare-motion' && command.type !== 'motion-settings' && command.type !== 'motion-parameter') throw new Error('E_SESSION_COMMAND');
         const d = this.editable(); if (command.expectedRevision !== d.flow.project().revision) throw new Error('E_EDIT_STALE');

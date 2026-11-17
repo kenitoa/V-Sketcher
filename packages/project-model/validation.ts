@@ -115,7 +115,9 @@ export function validateProject(value: unknown): ValidationIssue[] {
     if (binding.inputRange[0] >= binding.inputRange[1]) issue('E_INPUT_RANGE',`/inputBindings/${i}`);
     if (parameter && (binding.fallback.value < parameter.min || binding.fallback.value > parameter.max)) issue('E_PARAMETER_RANGE',`/inputBindings/${i}/fallback`);
   });
+  if(p.expressionSettings){if(p.schemaVersion.minor<8)issue('E_EXPRESSION_VERSION','/expressionSettings');for(const id of p.expressionSettings.shortcuts)if(id!==null&&!expressions.has(id))issue('E_REFERENCE_MISSING','/expressionSettings/shortcuts');}
   p.expressions.forEach((expression,i) => {
+    if((expression.releaseMs!==undefined||expression.values.some(v=>v.partIds!==undefined))&&p.schemaVersion.minor<8)issue('E_EXPRESSION_VERSION',`/expressions/${i}`);
     const targets = new Set<string>();
     expression.values.forEach(target => {
       const parameter = parameters.get(target.parameterId);
