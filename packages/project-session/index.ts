@@ -199,6 +199,7 @@ export class ProjectSession {
       else if (command.type === 'edit') await this.edit(command);
       else if (command.type === 'undo' || command.type === 'redo') { const d = this.editable(); if (command.type === 'undo') d.history.undo(); else d.history.redo(); this.changed(); }
       else if (command.type === 'sample') await this.sample();
+      else if(command.type==='tracking-settings'){const d=this.editable();if(d.flow.project().revision!==command.expectedRevision)throw new Error('E_EDIT_STALE');d.history.change('Tracking mapping',p=>{p.schemaVersion.minor=Math.max(9,p.schemaVersion.minor);p.tracking=structuredClone(command.value);});this.changed();}
       else if(command.type==='expression-edit'){const d=this.editable();if(d.flow.project().revision!==command.expectedRevision)throw new Error('E_EDIT_STALE');await this.checkpoint('Before expression edit');if(this.document!==d||d.flow.project().revision!==command.expectedRevision)throw new Error('E_EDIT_STALE');d.history.change('Expression edit',p=>editExpressions(p,command.operation,randomUUID));this.changed();}
       else if (['prepare-motion','motion-settings','motion-parameter'].includes(command.type)) {
         if (command.type !== 'prepare-motion' && command.type !== 'motion-settings' && command.type !== 'motion-parameter') throw new Error('E_SESSION_COMMAND');

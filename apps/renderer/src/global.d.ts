@@ -2,6 +2,9 @@ import type { StudioInfo } from '../../../packages/contracts';
 import type { SessionCommand,SessionView,SessionReply } from '../../../packages/project-session/contracts';
 declare global {
   interface Window {
+    cameraLiveCheck?:(hint?:string|null)=>Promise<Record<string,unknown>>;
+    liveReviewPhase?:{phase:string;seconds:number;faceCount?:number;selected?:boolean;brightness?:number|null;yaw?:number|null;roll?:number|null;state?:string};
+    trackingSelfCheck?:()=>Promise<Record<string,unknown>>;
     expressionSelfCheck?:()=>Promise<Record<string,unknown>>;
     expressionExtremeData?:string;
     detailSelfCheck?:()=>Promise<Record<string,unknown>>;
@@ -13,7 +16,7 @@ declare global {
     structureSelfCheck?:()=>Promise<Record<string,unknown>>;
     structureExtremeData?:string;
     workflowLabCheck?: (options?:{ holdForCapture:boolean }) => Promise<Record<string,unknown>>;
-    studio: { info: () => Promise<StudioInfo>; health: () => Promise<{ ready: boolean }>; projects:{ dropImage:(file:File)=>Promise<SessionReply>;view:()=>Promise<SessionView>; command:(command:SessionCommand)=>Promise<SessionReply>; subscribe:(listener:(view:SessionView)=>void)=>()=>void } };
+    studio: { tracking:import('../../../packages/tracking/api').TrackingAPI; info: () => Promise<StudioInfo>; health: () => Promise<{ ready: boolean }>; projects:{ dropImage:(file:File)=>Promise<SessionReply>;view:()=>Promise<SessionView>; command:(command:SessionCommand)=>Promise<SessionReply>; subscribe:(listener:(view:SessionView)=>void)=>()=>void } };
     projectSelfCheck?:()=>Promise<Record<string,unknown>>;
     projectSelfCheckCapture?:()=>Promise<void>;
     partsSelfCheck?:()=>Promise<Record<string,unknown>>;

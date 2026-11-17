@@ -41,6 +41,7 @@ export interface ExportProfile { id: string; revision: number; displayName: stri
 export interface MotionMesh { partId:string; pivot:[number,number]; vertices:{ position:[number,number]; weight:number; minimum:[number,number]; maximum:[number,number] }[]; triangles:number[]; yawParameterId:string | null; rollParameterId:string | null; curve:'linear' | 'smoothstep'; }
 export interface MotionRig { version:1; meshes:MotionMesh[]; faceWidth:number; maxRollDegrees:number; settings:{ strength:number; smoothingMs:number; pose:{ parameterId:string; value:number }[] }; secondary:'disabled'; }
 export interface Project {
+  tracking?:import('../tracking').TrackingSettings;
   expressionSettings?:ExpressionSettings;
   detail?:import('../detail-editor/types').DetailRecord;
   split?:import('../split-image/types').SplitRecord;

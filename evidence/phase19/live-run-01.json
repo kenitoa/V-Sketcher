@@ -1,0 +1,123 @@
+{
+  "passed": false,
+  "tracking": {
+    "passed": false,
+    "source": "physical-camera",
+    "cameraOpened": true,
+    "microphoneOpened": false,
+    "normal": {
+      "frames": 106,
+      "detectedFrames": 1,
+      "selectedFrames": 1,
+      "multipleFrames": 0,
+      "lowLightFrames": 106,
+      "medianBrightness": 26.09982747395833,
+      "medianInferenceMs": 26.30570001201704,
+      "ranges": {
+        "eye_left": {
+          "min": 0.43943095207214355,
+          "max": 0.43943095207214355,
+          "span": 0
+        },
+        "eye_right": {
+          "min": 0.5657631456851959,
+          "max": 0.5657631456851959,
+          "span": 0
+        },
+        "mouth": {
+          "min": 0.0009397885296493769,
+          "max": 0.0009397885296493769,
+          "span": 0
+        },
+        "head_yaw": {
+          "min": -73.91052205220791,
+          "max": -73.91052205220791,
+          "span": 0
+        },
+        "head_roll": {
+          "min": 22.73443498554968,
+          "max": 22.73443498554968,
+          "span": 0
+        }
+      }
+    },
+    "motion": {
+      "frames": 75,
+      "detectedFrames": 1,
+      "selectedFrames": 0,
+      "multipleFrames": 0,
+      "lowLightFrames": 75,
+      "medianBrightness": 25.841744791666667,
+      "medianInferenceMs": 26.716699998360127,
+      "ranges": {
+        "eye_left": null,
+        "eye_right": null,
+        "mouth": null,
+        "head_yaw": null,
+        "head_roll": null
+      }
+    },
+    "multiple": {
+      "frames": 82,
+      "detectedFrames": 1,
+      "selectedFrames": 0,
+      "multipleFrames": 0,
+      "lowLightFrames": 82,
+      "medianBrightness": 25.84096462673611,
+      "medianInferenceMs": 33.180000027641654,
+      "ranges": {
+        "eye_left": null,
+        "eye_right": null,
+        "mouth": null,
+        "head_yaw": null,
+        "head_roll": null
+      }
+    },
+    "dark": {
+      "frames": 85,
+      "detectedFrames": 0,
+      "selectedFrames": 0,
+      "multipleFrames": 0,
+      "lowLightFrames": 85,
+      "medianBrightness": 26.07244791666667,
+      "medianInferenceMs": 29.394000011961907,
+      "ranges": {
+        "eye_left": null,
+        "eye_right": null,
+        "mouth": null,
+        "head_yaw": null,
+        "head_roll": null
+      }
+    },
+    "restore": {
+      "frames": 70,
+      "detectedFrames": 0,
+      "selectedFrames": 0,
+      "multipleFrames": 0,
+      "lowLightFrames": 70,
+      "medianBrightness": 26.195669487847223,
+      "medianInferenceMs": 32.23820001585409,
+      "ranges": {
+        "eye_left": null,
+        "eye_right": null,
+        "mouth": null,
+        "head_yaw": null,
+        "head_roll": null
+      }
+    },
+    "calibrationApplied": false,
+    "cancelPreserved": true,
+    "projectUnchanged": true,
+    "framesSaved": false,
+    "pcmSaved": false,
+    "previewInCharacterOutput": false,
+    "environmentConfirmation": "PENDING_USER",
+    "cameraErrorCode": null,
+    "m0": "HOLD",
+    "scope": "Real camera and user-directed scenes; aggregate derived metrics only, no performance/identity/broadcast or M0 approval"
+  },
+  "appVersion": "0.14.0",
+  "packaged": false,
+  "channel": "test",
+  "workerStopped": true
+}

@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "source": "DirectShow index 0; identity not assumed equal to browser selection",
+  "frames": 70,
+  "framesWithRawFaces": 0,
+  "framesWithValidFaces": 0,
+  "maxRawFaces": 0,
+  "medianBrightness": 3.2414664713541668,
+  "medianStd": 4.674293011812497,
+  "poseExamples": [],
+  "sourceSize": [
+    640,
+    480
+  ],
+  "framesSaved": false,
+  "microphoneOpened": false
+}

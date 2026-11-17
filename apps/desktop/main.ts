@@ -1,3 +1,5 @@
+import {CameraTracker,CameraProfiles} from './camera-tracker';
+import {assertCalibration} from '../../packages/tracking';
 import {assertCatalog,combination,type Catalog} from '../../packages/parts-library';
 import { app, BrowserWindow, ipcMain, protocol, session, screen, dialog } from 'electron';
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
@@ -14,10 +16,11 @@ import { readProject } from '../../packages/project-model';
 
 protocol.registerSchemesAsPrivileged([{ scheme: 'sketcher', privileges: { standard: true, secure: true, supportFetchAPI: true, corsEnabled: true } }]);
 const argument = (name: string): string | undefined => process.argv.find(v => v.startsWith(`--${name}=`))?.slice(name.length + 3);
-const reportPath = argument('self-check-report');
+const reportPath = argument('self-check-report')??argument('live-tracking-report');
 const profileDir = argument('profile-dir');
 if (profileDir) app.setPath('userData', resolve(profileDir));
 app.setAppUserModelId('local.2dsketcher.studio'); app.setName('2DSketcher');
+let cameraTracker:CameraTracker|undefined;let cameraAllowed=false;
 let worker: WorkerClient | undefined;
 let log: DiagnosticLog;
 let quitting = false;
@@ -25,7 +28,7 @@ let projectSession:ProjectSession | undefined;
 let exitPending = false;
 async function requestExit():Promise<void> {
   if (exitPending || quitting) return; exitPending = true;
-  try { if (projectSession && !await projectSession.requestClose()) return; await projectSession?.shutdown(); await worker?.stop(); quitting = true; log.write('app-stop'); app.exit(); }
+  try { if (projectSession && !await projectSession.requestClose()) return; await projectSession?.shutdown(); await cameraTracker?.stop(); await worker?.stop(); quitting = true; log.write('app-stop'); app.exit(); }
   catch { log.write('app-error',{ code:'E_SAVE_LEAVE' }); }
   finally { exitPending = false; }
 }
@@ -65,6 +68,10 @@ app.whenReady().then(async () => {
     minWidth: 1080, minHeight: 720, show: false, backgroundColor: '#f5f2ed', autoHideMenuBar: true,
     title: '2DSketcher Studio', webPreferences: { preload: join(__dirname, 'preload.js'), sandbox: true, contextIsolation: true,
       nodeIntegration: false, webSecurity: true, devTools: build.channel !== 'release', backgroundThrottling: !reportPath } });
+  session.defaultSession.setPermissionCheckHandler((contents,permission,origin,details)=>cameraAllowed&&contents===window.webContents&&permission==='media'&&(origin==='sketcher://app'||origin==='sketcher://app/')&&details.mediaType==='video');
+  session.defaultSession.setPermissionRequestHandler((contents,permission,callback,details)=>callback(cameraAllowed&&contents===window.webContents&&permission==='media'&&'mediaTypes' in details&&details.mediaTypes?.length===1&&details.mediaTypes[0]==='video'));
+  cameraTracker=new CameraTracker(executable,app.isPackaged?[]:['-I','-u',join(root,'worker/main.py')],env);const cameraProfiles=new CameraProfiles(join(app.getPath('userData'),'machine'));
+  window.webContents.once('destroyed',()=>{cameraAllowed=false;void cameraTracker?.stop();});
   window.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
   window.webContents.on('will-navigate', event => event.preventDefault());
   window.on('close',event => { if (!quitting) { event.preventDefault(); void requestExit(); } });
@@ -92,6 +99,11 @@ app.whenReady().then(async () => {
     if (event.sender !== window.webContents || event.senderFrame !== window.webContents.mainFrame || !event.senderFrame.url.startsWith('sketcher://app/')) throw new Error('E_IPC_ORIGIN');
   };
   const info: StudioInfo = { name: '2DSketcher', version: build.version, channel: build.channel, features: { creation: false, tracking: false, preview: true, projects:true } };
+  ipcMain.handle('tracking:begin',async event=>{trusted(event);if(!projectSession!.view().project)return {ok:false,errorCode:'E_TRACKING_WORKER'};cameraAllowed=true;try{const ok=await cameraTracker!.begin();if(!ok)cameraAllowed=false;return {ok,errorCode:ok?undefined:'E_TRACKING_WORKER'};}catch{cameraAllowed=false;return {ok:false,errorCode:'E_TRACKING_WORKER'};}});
+  ipcMain.handle('tracking:end',async event=>{trusted(event);cameraAllowed=false;await cameraTracker!.stop();});
+  ipcMain.handle('tracking:frame',async(event,seq:unknown,bytes:unknown)=>{trusted(event);try{if(!cameraAllowed||typeof seq!=='number'||!(bytes instanceof Uint8Array))throw new Error();const result=await cameraTracker!.frame(seq,bytes);return result?{ok:true,result}:{ok:false,errorCode:'E_TRACKING_RESULT'};}catch{return {ok:false,errorCode:'E_TRACKING_RESULT'};}});
+  ipcMain.handle('tracking:profiles',async event=>{trusted(event);try{return {ok:true,profiles:await cameraProfiles.read()};}catch{return {ok:false,profiles:[]};}});
+  ipcMain.handle('tracking:calibration',async(event,value:unknown)=>{trusted(event);try{assertCalibration(value);await cameraProfiles.save(value);return {ok:true};}catch{return {ok:false,errorCode:'E_TRACKING_CALIBRATION'};}});
   ipcMain.handle('studio:info', event => { trusted(event); return info; });
   ipcMain.handle('studio:health', async event => { trusted(event); await workerReady; return { ready }; });
   ipcMain.handle('projects:view',event => { trusted(event); return projectSession!.view(); });
@@ -100,6 +112,7 @@ app.whenReady().then(async () => {
   if (!reportPath) window.once('ready-to-show', () => window.show());
   await window.loadURL('sketcher://app/index.html');
   if (reportPath) window.showInactive();
+  if(argument('live-tracking-report')){window.show();window.focus();}
   if (reportPath) {
     let passed = false;
     let stage = 'worker';
@@ -110,9 +123,15 @@ app.whenReady().then(async () => {
       await window.webContents.executeJavaScript(`new Promise((resolve,reject)=>{const start=Date.now();const timer=setInterval(()=>{if(typeof window.foundationSelfCheck==='function'){clearInterval(timer);resolve(true)}else if(Date.now()-start>30000){clearInterval(timer);reject(new Error('E_RENDER_TIMEOUT'))}},50)})`);
       stage = 'renderer-check';
       const renderer = await window.webContents.executeJavaScript('window.foundationSelfCheck()') as Record<string, unknown>;
+      if(argument('live-tracking-report')){stage='live-tracking';testLeave='discard';const progress=argument('live-tracking-report')!+'.progress.json';const timer=setInterval(()=>{void window.webContents.executeJavaScript('window.liveReviewPhase??{phase:"preparing",seconds:0}').then(value=>writeFile(progress,JSON.stringify(value)+'\n')).catch(()=>{});},1000);let tracking;try{tracking=await window.webContents.executeJavaScript('window.cameraLiveCheck('+JSON.stringify(argument('live-camera-hint')??null)+')') as Record<string,unknown>;}finally{clearInterval(timer);}await cameraTracker?.stop();await projectSession.shutdown();await worker.stop();worker=undefined;await mkdir(resolve(reportPath,'..'),{recursive:true});await writeFile(reportPath,JSON.stringify({passed:tracking.passed,tracking,appVersion:build.version,packaged:app.isPackaged,channel:build.channel,workerStopped:true},null,2)+'\n');log.write('app-stop');quitting=true;app.exit(tracking.passed===true?0:1);return;}
       const checkSplit=async()=>{testLeave='discard';stage='split-ui';const source=await readArchive(splitExample);const rows=source.layers.map((l,i)=>({name:'fragment-'+String(i).padStart(2,'0')+'.png',sourceId:l.id,origin:l.origin,role:l.role,side:l.side,z:l.z,visible:l.visible,opacity:l.opacity,usage:l.usage,variantOf:l.variantOf,state:l.state}));const split=await window.webContents.executeJavaScript('window.splitSelfCheck('+JSON.stringify(rows)+')') as Record<string,unknown>;const screenshot=argument('split-screenshot');if(screenshot){await mkdir(resolve(screenshot,'..'),{recursive:true});await writeFile(screenshot,(await window.webContents.capturePage()).toPNG());}const extremes=argument('split-extremes');if(extremes){const data=await window.webContents.executeJavaScript('window.splitExtremeData') as string;await mkdir(resolve(extremes,'..'),{recursive:true});await writeFile(extremes,Buffer.from(data.split(',')[1]!,'base64'));}await window.webContents.executeJavaScript("document.querySelector('[data-split-close]').click()");await window.webContents.executeJavaScript("window.studio.projects.command({type:'split-cancel'})");return split;};
       const checkDetail=async()=>{stage='detail-ui';testLeave='discard';testSaves.splice(0,testSaves.length,...['detail-parts.2dsketch','detail-parts-copy.2dsketch','detail-single.2dsketch','detail-single-copy.2dsketch','detail-split.2dsketch','detail-split-copy.2dsketch'].map(name=>join(app.getPath('userData'),name)));const detail=await window.webContents.executeJavaScript('window.detailSelfCheck()') as Record<string,unknown>;const screenshot=argument('detail-screenshot');if(screenshot){await mkdir(resolve(screenshot,'..'),{recursive:true});await writeFile(screenshot,(await window.webContents.capturePage()).toPNG());}const extremes=argument('detail-extremes');if(extremes){const data=await window.webContents.executeJavaScript('window.detailExtremeData') as string;await mkdir(resolve(extremes,'..'),{recursive:true});await writeFile(extremes,Buffer.from(data.split(',')[1]!,'base64'));}await window.webContents.executeJavaScript("document.querySelector('[data-detail-close]').click()");await window.webContents.executeJavaScript("window.studio.projects.command({type:'detail-cancel'})");return detail;};
       const checkExpressions=async()=>{stage='expression-ui';testLeave='discard';testSaves.splice(0,testSaves.length,...['expression-parts.2dsketch','expression-parts-copy.2dsketch','expression-single.2dsketch','expression-single-copy.2dsketch','expression-split.2dsketch','expression-split-copy.2dsketch'].map(name=>join(app.getPath('userData'),name)));const expressions=await window.webContents.executeJavaScript('window.expressionSelfCheck()') as Record<string,unknown>;for(const [arg,mode]of [['expression-screenshot','ui'],['expression-extremes','gpu']]){const path=argument(arg!);if(path){await mkdir(resolve(path,'..'),{recursive:true});await writeFile(path,mode==='ui'?(await window.webContents.capturePage()).toPNG():Buffer.from((await window.webContents.executeJavaScript('window.expressionExtremeData') as string).split(',')[1]!,'base64'));}}return expressions;};
+      const checkTracking=async()=>{stage='tracking-ui';testLeave='discard';testSaves.splice(0,testSaves.length,...['tracking-parts.2dsketch','tracking-parts-copy.2dsketch','tracking-single.2dsketch','tracking-single-copy.2dsketch','tracking-split.2dsketch','tracking-split-copy.2dsketch'].map(name=>join(app.getPath('userData'),name)));const tracking=await window.webContents.executeJavaScript('window.trackingSelfCheck()') as Record<string,unknown>;await new Promise(resolve=>setTimeout(resolve,500));const path=argument('tracking-screenshot');if(path){await mkdir(resolve(path,'..'),{recursive:true});await writeFile(path,(await window.webContents.capturePage()).toPNG());}return tracking;};
+      if(argument('tracking-only')==='true'){
+        if(argument('compact-editor')==='true')window.setSize(1080,720);const tracking=await checkTracking();await cameraTracker?.stop();await projectSession.shutdown();await worker.stop();worker=undefined;passed=tracking.passed===true&&renderer.webgl2===true&&renderer.glError===0&&renderer.nodeExposed===false&&renderer.shellExposed===false&&(renderer.modelPixels as {passed?:boolean})?.passed===true&&health.modelLoaded===true&&(!app.isPackaged||health.dependencyFilesInsideBundle===true);
+        await mkdir(resolve(reportPath,'..'),{recursive:true});await writeFile(reportPath,JSON.stringify({passed,tracking,renderer,worker:health,workerStopped:true,packaged:app.isPackaged,channel:build.channel,appVersion:build.version,windowSize:window.getSize(),devicesOpened:false,protections:{sandbox:true,contextIsolation:true,nodeIntegration:false,externalNetworkBlocked:true},priorRouteUI:'NOT_RUN',scope:'Targeted camera UI and real local inference using synthetic canvas media on three actual routes; same PC, real device/environment separately recorded, M0 HOLD'},null,2)+'\n');log.write('app-stop');quitting=true;app.exit(passed?0:1);return;
+      }
       if(argument('expression-only')==='true'){
         if(argument('compact-editor')==='true')window.setSize(1080,720);const expressions=await checkExpressions();await projectSession.shutdown();await worker.stop();worker=undefined;passed=expressions.passed===true&&renderer.webgl2===true&&renderer.glError===0&&renderer.nodeExposed===false&&renderer.shellExposed===false&&(renderer.modelPixels as {passed?:boolean})?.passed===true&&(renderer.workflowCore as {passed?:boolean})?.passed===true&&health.modelLoaded===true&&(!app.isPackaged||health.dependencyFilesInsideBundle===true);
         await mkdir(resolve(reportPath,'..'),{recursive:true});await writeFile(reportPath,JSON.stringify({passed,expressions,renderer,worker:health,workerStopped:true,packaged:app.isPackaged,channel:build.channel,appVersion:build.version,windowSize:window.getSize(),devicesOpened:false,protections:{sandbox:true,contextIsolation:true,nodeIntegration:false,externalNetworkBlocked:true},priorRouteUI:'NOT_RUN',scope:'Targeted expression and M2 creation flow on three actual routes plus foundation core; same PC, synthetic inputs, M0 HOLD'},null,2)+'\n');log.write('app-stop');quitting=true;app.exit(passed?0:1);return;
@@ -172,11 +191,11 @@ app.whenReady().then(async () => {
         await mkdir(resolve(workflowScreenshot,'..'),{ recursive:true }); await writeFile(workflowScreenshot,(await window.webContents.capturePage()).toPNG());
         await window.webContents.executeJavaScript(`(async()=>{document.querySelector('.workflow-lab .close').click();const start=Date.now();while(document.querySelector('.workflow-lab')){if(Date.now()-start>5000)throw new Error('E_WORKFLOW_UI_TIMEOUT');await new Promise(r=>setTimeout(r,10))}})()`);
       }
-      const split=await checkSplit();const detail=await checkDetail();const expressions=await checkExpressions();
+      const split=await checkSplit();const detail=await checkDetail();const expressions=await checkExpressions();const tracking=await checkTracking();
       await projectSession.shutdown(); await worker.stop(); worker = undefined;
       passed = renderer.webgl2 === true && Number(renderer.visiblePixels) > 1000 && Number(renderer.transparentPixels) > 1000 && renderer.glError === 0 && renderer.nodeExposed === false && renderer.shellExposed === false && renderer.appInfoDialog === true && (renderer.modelPixels as { passed?:boolean } | undefined)?.passed === true && (renderer.workflowCore as { passed?:boolean } | undefined)?.passed === true && (renderer.workflowUI as { passed?:boolean } | undefined)?.passed === true && renderer.sampleRuntimeFrozen === true && health.modelLoaded === true && (!app.isPackaged || health.dependencyFilesInsideBundle === true);
-      passed = passed && expressions.passed===true && detail.passed===true && split.passed===true && corrections.passed===true && structure.passed===true && parts.passed===true && (renderer.partsPixels as {passed?:boolean}).passed===true && input.passed === true && projects.passed === true && editor.passed === true && motion.passed === true && (renderer.motionPixels as { passed?:boolean } | undefined)?.passed === true;
-      const report = { passed, expressions, detail, split, projects, editor, motion, input, parts, structure, corrections, packaged: app.isPackaged, channel: build.channel, appVersion: build.version,
+      passed = passed && tracking.passed===true && expressions.passed===true && detail.passed===true && split.passed===true && corrections.passed===true && structure.passed===true && parts.passed===true && (renderer.partsPixels as {passed?:boolean}).passed===true && input.passed === true && projects.passed === true && editor.passed === true && motion.passed === true && (renderer.motionPixels as { passed?:boolean } | undefined)?.passed === true;
+      const report = { passed, tracking, expressions, detail, split, projects, editor, motion, input, parts, structure, corrections, packaged: app.isPackaged, channel: build.channel, appVersion: build.version,
         electron: process.versions.electron, node: process.versions.node, worker: health, workerStopped: true, renderer,
         protections: { sandbox: true, contextIsolation: true, nodeIntegration: false, externalNetworkBlocked: true },
         gpuFeatureStatus: app.getGPUFeatureStatus(), devicesOpened: false,

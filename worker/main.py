@@ -58,7 +58,15 @@ def serve(source,sink):
         if shutdown or len(line)>MAX_BYTES:return
 
 if __name__=='__main__':
-    if '--image-input' in sys.argv:
+    if '--tracking' in sys.argv:
+        if getattr(sys,'frozen',False):
+            from tracking import cli
+        else:
+            import importlib.util
+            spec=importlib.util.spec_from_file_location('tracking',Path(__file__).with_name('tracking.py'))
+            module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module);cli=module.cli
+        cli()
+    elif '--image-input' in sys.argv:
         if getattr(sys,'frozen',False):
             from image_input import cli
         else:

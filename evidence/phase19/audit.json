@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "errors": [],
+  "phase": 19,
+  "completedTasks": 189,
+  "remainingTasks": 221,
+  "nodeGroups": 205,
+  "pythonGroups": 36,
+  "newTrackingGroups": 23,
+  "samePcReleaseRuns": 2,
+  "packagedPriorRouteUI": "NOT_RUN; full development regression retained",
+  "m3CameraStepChecked": true,
+  "liveCameraScenesChecked": false,
+  "microphoneChecked": false,
+  "task190Complete": false,
+  "auditScope": "Evidence integrity and automated checks; actual camera acceptance is separate",
+  "m0": "HOLD",
+  "openM0Revalidations": 5,
+  "manifestSha256": "e77440eeb132dc6565f9ce4fe1f9227da2d6d5e5ef7eab0e8303595e9fb683e5"
+}

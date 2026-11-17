@@ -2,14 +2,14 @@
 
 | 항목 | 내용 |
 |---|---|
-| 문서 버전 | v0.19 — 18단계 표정 저장·전환·제어 우선순위 반영 |
+| 문서 버전 | v0.20 — 19단계 카메라 구현·실환경 재검증 대기 반영 |
 | 작성일 | 2026-11-16 |
-| 최종 갱신 | 2026-11-17 |
-| 기준 문서 | [PRD.md](./PRD.md) v0.19, [01 기획 기준](./planning/01-product-baseline.md), [02 검증 준비](./planning/02-readiness.md), [03 가능성 검증](./planning/03-feasibility.md), [04 실제 외부 사용 검증](./planning/04-tracking-broadcast-export.md), [05 결정](./planning/05-decisions.md), [06 제품 기반](./planning/06-foundation.md), [07 공통 모델](./planning/07-common-model.md), [08 작업/트랜잭션](./planning/08-async-workflow.md), [09 프로젝트 보존](./planning/09-project-lifecycle.md), [10 공통 화면](./planning/10-common-editor.md), [11 공통 움직임](./planning/11-common-motion.md), [12 그림 입력](./planning/12-image-input.md), [13 파츠 조합](./planning/13-parts-library.md), [14 한 장 자동 구조화](./planning/14-single-image.md), [15 쉬운 보정](./planning/15-corrections.md), [16 분리 그림](./planning/16-split-image.md), [17 세부 편집](./planning/17-detail-editor.md), [18 표정 제어](./planning/18-expressions.md) |
+| 최종 갱신 | 2026-11-18 |
+| 기준 문서 | [PRD.md](./PRD.md) v0.20, [01 기획 기준](./planning/01-product-baseline.md), [02 검증 준비](./planning/02-readiness.md), [03 가능성 검증](./planning/03-feasibility.md), [04 실제 외부 사용 검증](./planning/04-tracking-broadcast-export.md), [05 결정](./planning/05-decisions.md), [06 제품 기반](./planning/06-foundation.md), [07 공통 모델](./planning/07-common-model.md), [08 작업/트랜잭션](./planning/08-async-workflow.md), [09 프로젝트 보존](./planning/09-project-lifecycle.md), [10 공통 화면](./planning/10-common-editor.md), [11 공통 움직임](./planning/11-common-motion.md), [12 그림 입력](./planning/12-image-input.md), [13 파츠 조합](./planning/13-parts-library.md), [14 한 장 자동 구조화](./planning/14-single-image.md), [15 쉬운 보정](./planning/15-corrections.md), [16 분리 그림](./planning/16-split-image.md), [17 세부 편집](./planning/17-detail-editor.md), [18 표정 제어](./planning/18-expressions.md), [19 카메라 구현/재검증](./planning/19-camera-tracking.md) |
 | 목적 | PRD의 요구사항을 화면 행동, 처리 규칙, 상태, 데이터, 예외, 검증 가능한 완료 조건으로 구체화 |
 | 초기 범위 | 파츠·한 장 그림·분리 그림 기반 2D 제작, 반응·추적, 앱 내 실행, 실제 방송 연결, 외부 아바타용 내보내기 |
 | 장기 필수 범위 | 그림 기반 3D 제작 및 자체 모델을 제작·연결하는 글 기반 생성 |
-| 구현 상태 | 01~18 — 세 경로 외형/보정·세부 편집·표정 정의/고정·전환/해제/우선순위·입 정책·손상 수선·앱 안 명령/미리보기·저장 구현. M2 로컬 제작 검토 통과·M3 실제 장치 결합 후속. M0 HOLD·재검증 5건 유지 |
+| 구현 상태 | 01~18 및 T-181~189 — 세 경로 제작/표정에 카메라 연결·개인 영상/대상·안정 중립 후보/취소·안전 매핑·기기 기준 분리를 연결. T-190 실제 정상/복수 얼굴 품질 재검증 미완료. M0 HOLD·재검증 5건 유지 |
 
 ## 1. 문서 사용 규칙
 
@@ -1307,3 +1307,4 @@ PRD의 확정 방향을 변경해야 한다면 기능 명세만 조용히 축소
 | v0.17 | 2026-11-17 | T-151~160 PNG 폴더/.2dparts 실제 읽기·원본 합성·배치/역할/좌우/계층 안내·공통 움직임·저장 왕복 구현. 178개 검사·전체 개발 앱 회귀·분리/기반 배포본 2회. T-161~410·표정 UI T-179/180·독립 품질·M0 HOLD·5 OPEN·필수 장기 범위 유지. |
 | v0.18 | 2026-11-17 | T-161~170 같은 프로젝트의 세부 부위/계층/그룹·기준점/망/가중치/변위·연결 편집·삭제/교체 영향·부분 복원/충돌/ID 위치·세 경로 교차 구현. 198개 검사·전체 개발 앱 회귀·세부/기반 배포본 2회. M2 제작 기반 기술 점검이며 T-180 종료·T-171~410·독립 품질·M0 HOLD/5 OPEN·필수 장기 범위 유지. |
 | v0.19 | 2026-11-17 | T-171~180 표정 정의/범위/고정·전환/해제·최신 입력 복귀·제어 우선순위·입 정책·손상 참조 수선·앱 안 명령/미리보기 구현. 218개 검사·전체 개발 앱 회귀·세 실제 경로 제작/표정/저장·동일 PC release 2회. M2 로컬 제작 종료 검토 통과·M3 장치 결합 후속, T-181~410·M0 HOLD/5 OPEN·필수 장기 범위 유지. |
+| v0.20 | 2026-11-17 | T-181~189 카메라/영상/얼굴 상태·개인 미리보기/대상 유지·검토 적용 중립 보정·방향/범위/안전 평활·기기 기준/프로젝트 분리를 구현. 241개 자동 검사·전체 개발 앱 회귀·세 경로·내장 worker release 2회 검증 통과. 실제 입력의 검출/보정 미통과를 보존하며 T-190 정상 실환경 재검증은 미완료. M0 HOLD/5 OPEN·필수 장기 범위 유지. |

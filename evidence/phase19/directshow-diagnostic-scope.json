@@ -1,0 +1,7 @@
+{
+  "scope": "Developer read-path comparison. passed means frames read, not tracking acceptance. DirectShow index identity is not assumed equal to the browser selection.",
+  "tool": "tools/camera-diagnostic.py",
+  "toolSha256": "db6d7250ebfba59ab45629092869f15489339207b14d29020819309b7d8a8709",
+  "framesSaved": false,
+  "microphoneOpened": false
+}

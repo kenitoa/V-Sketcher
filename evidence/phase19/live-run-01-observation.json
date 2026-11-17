@@ -1,0 +1,13 @@
+{
+  "run": "live-run-01.json",
+  "userReported": {
+    "allSegmentsPerformed": true,
+    "characterMotionVisible": true,
+    "cameraPreviewFaceVisible": true,
+    "darkMethod": "camera-front-covering"
+  },
+  "measurementPassed": false,
+  "finding": "Camera frames arrived but normal scene average was low and face detection/neutral calibration did not pass. User observations do not override measured failure. Face-region lighting and a manual preflight are added for the next run.",
+  "framesSaved": false,
+  "microphoneOpened": false
+}

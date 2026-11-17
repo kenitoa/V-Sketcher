@@ -1,0 +1,34 @@
+{
+  "passed": false,
+  "state": "PENDING_ACTUAL_REVALIDATION",
+  "selectedRun": null,
+  "userConfirmedScenes": true,
+  "userReported": {
+    "allInitialSegmentsPerformed": true,
+    "characterMotionVisible": true,
+    "faceVisibleAndLightingBright": true,
+    "retryStartButtonPressed": true,
+    "darkMethod": "camera-front-covering"
+  },
+  "measurement": {
+    "initialCameraFrameRead": true,
+    "initialNormalFaceFrames": 1,
+    "initialNormalFrames": 106,
+    "initialNeutralCalibrationPassed": false,
+    "retryMeasurementStarted": false,
+    "matchedHdWebcamRetryFaceCount": 0,
+    "directshowDiagnosticRawFaceFrames": 0,
+    "directshowDiagnosticFrames": 70,
+    "latestPreflightFaceCount": 0,
+    "latestPreflightBrightness": 25.53798394097222,
+    "latestTrialStarted": false
+  },
+  "reason": "User observations and measured input do not agree. No stable valid normal input/neutral baseline or real multiple-person measurement was obtained, so T-190 stays open. Later preflights did not start measurement and are not relabeled as successful trials.",
+  "framesSaved": false,
+  "pcmSaved": false,
+  "microphoneOpened": false,
+  "m0": "HOLD",
+  "physicalCameraQualityApproved": false,
+  "latestRun": "live-run-05.json",
+  "latestRunScope": "HD Webcam explicitly matched; same analysis-canvas preview, 120-second preflight ended without stable face or measurement start"
+}

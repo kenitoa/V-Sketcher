@@ -1,3 +1,4 @@
+import {assertTracking} from '../tracking';
 import {assertCorrection} from '../single-image/correction-types';
 import {configuration,assertConfig,issues as splitIssues} from '../split-image/types';
 import type { ValidateFunction } from 'ajv';
@@ -20,6 +21,7 @@ export function validateProject(value: unknown): ValidationIssue[] {
     const map = new Map<string,T>(); items.forEach((item,i) => { if (ids.has(item.id)) issue('E_DUPLICATE_ID',`${location}/${i}/id`); ids.add(item.id); map.set(item.id,item); }); return map;
   };
   ids.add(p.projectId);
+  if(p.tracking){try{assertTracking(p.tracking);if(p.schemaVersion.minor<9)issue('E_TRACKING_VERSION','/tracking');}catch{issue('E_TRACKING_SETTINGS','/tracking');}}
   const assets = unique(p.assets,'/assets'); const parts = unique(p.parts,'/parts'); const groups = unique(p.groups,'/groups');
   if(p.groups.some(g=>g.opacity!==undefined)&&p.schemaVersion.minor<6)issue('E_SPLIT_VERSION','/groups');
   if(p.split){const d=p.split.draft;if(p.schemaVersion.minor<6||p.sourceType!=='split-image')issue('E_SPLIT_VERSION','/split');try{assertConfig(configuration(d));if(splitIssues(d).some(v=>v.level==='block'))issue('E_SPLIT_INCOMPLETE','/split');}catch{issue('E_SPLIT_MODEL','/split');}for(const l of d.layers){const a=assets.get(l.originalAssetId),b=assets.get(l.imageAssetId);if(!parts.has(l.id)&&!p.detail?.baselines.some(b=>b.part.id===l.id)||!a||!b||a.fingerprint.sha256!==l.sourceHash||b.fingerprint.sha256!==l.imageHash||b.dimensions.width!==l.image.width||b.dimensions.height!==l.image.height)issue('E_SPLIT_REFERENCE','/split/layers');}}

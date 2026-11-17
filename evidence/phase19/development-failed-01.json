@@ -1,0 +1,1 @@
+{"passed":false,"code":"E_FOUNDATION_CHECK","stage":"tracking-ui","detail":"E_TRACKING_UI_TIMEOUT","diagnostic":{"trackingStage":"[data-camera-calibrate]","state":"open","error":null,"faces":1,"target":"lost","calibration":"failed","samples":0,"frames":336},"packaged":false}

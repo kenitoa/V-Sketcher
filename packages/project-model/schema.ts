@@ -39,8 +39,8 @@ const motion = object({ version:{ const:1 },faceWidth:positive,maxRollDegrees:{ 
   settings:object({ strength:{ type:'number',minimum:0,maximum:1 },smoothingMs:integer(1000),pose:array(object({ parameterId:id,value:number }),128) }),
   meshes:array(object({ partId:id,pivot:pair,yawParameterId:nullable(id),rollParameterId:nullable(id),curve:choice('linear','smoothstep'),
     vertices:{ ...array(object({ position:pair,weight:{ type:'number',minimum:0,maximum:1 },minimum:pair,maximum:pair }),1024),minItems:3 },triangles:{ ...array(integer(1023),6144),minItems:3 } }),64) });
-export const PROJECT_SCHEMA = { $schema:'https://json-schema.org/draft/2020-12/schema', $id:'https://2dsketcher.local/schema/project-1.8',
-  ...object({ projectId:id,schemaVersion:object({ major:{ const:1 },minor:{ enum:[0,1,2,3,4,5,6,7,8] } }),displayName:string(),sourceType:choice('parts','single-image','split-image'),
+export const PROJECT_SCHEMA = { $schema:'https://json-schema.org/draft/2020-12/schema', $id:'https://2dsketcher.local/schema/project-1.9',
+  ...object({ projectId:id,schemaVersion:object({ major:{ const:1 },minor:{ enum:[0,1,2,3,4,5,6,7,8,9] } }),displayName:string(),sourceType:choice('parts','single-image','split-image'),
     createdAt:{ ...string(24),pattern:'^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$' },modifiedAt:{ ...string(24),pattern:'^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$' },
     revision,savedRevision:nullable(revision),canvas:size,inputAssetIds:{ ...array(id),uniqueItems:true },assets:array(asset),parts:array(part,64),
     groups:array(object({ id,displayName:string(),parentGroupId:nullable(id),visible:boolean }),128),parameters:array(parameter,128),
@@ -97,3 +97,5 @@ const expressionValue=((projectProperties.expressions!.items as Schema).properti
 (expressionValue.properties as Record<string,Schema>).partIds={...array(id,64),uniqueItems:true};
 ((projectProperties.expressions!.items as Schema).properties as Record<string,Schema>).releaseMs=integer(3000);
 projectProperties.expressionSettings=object({version:{const:1},mouth:choice('camera','microphone'),alternate:boolean,autoBlink:boolean,releaseMs:integer(3000),shortcuts:{...array(nullable(id),3),minItems:3}});
+
+projectProperties.tracking=object({version:{const:1},channels:{...array(object({key:choice('eye_left','eye_right','mouth','head_yaw','head_roll'),enabled:boolean,range:pair,invert:boolean,gain:{type:'number',minimum:0,maximum:2},smoothingMs:integer(500),deadzone:{type:'number',minimum:0,maximum:.1}}),5),minItems:5}});

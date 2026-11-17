@@ -56,3 +56,11 @@
 .expression-row { padding:3px 0; }
 .expression-panel .expression-row>label:first-child { min-width:135px; }
 .expression-panel .expression-row input[type=number] { width:80px; }
+
+.about.camera-dialog{width:1120px;max-width:calc(100vw - 32px);max-height:90vh;overflow:auto;padding:24px;color:#51385f}
+.camera-layout{display:grid;grid-template-columns:minmax(240px,.85fr) minmax(400px,1.3fr);gap:24px;align-items:start}
+.camera-controls{display:grid;gap:12px;font-size:12px}.camera-controls label{display:flex;gap:8px;align-items:center;margin:0}.camera-controls input[type=checkbox]{width:auto}.camera-controls input[type=number]{width:82px}.camera-controls small{font-size:11px;line-height:1.6;color:#6a5476}.camera-source{overflow:hidden;max-width:420px;background:#18131e;border-radius:8px}.camera-video{display:block;width:100%;height:auto}.camera-video.mirrored{transform:scaleX(-1)}.camera-calibration{padding:12px;border:1px solid #d8cbdc;border-radius:8px}.camera-controls fieldset{min-width:0;margin:12px 0;padding:12px}.camera-controls .expression-row{margin:8px 0}.camera-controls summary{cursor:pointer;font-weight:600}
+
+.camera-review{padding:16px;border:2px solid #816092;border-radius:8px;background:#ede2f2;font-size:16px;font-weight:700;line-height:1.7;position:sticky;top:0;z-index:3}
+
+.camera-source{position:relative}.camera-face-overlay{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none}.camera-face-overlay rect{fill:none;stroke:#edbeff;stroke-width:.006}.camera-face-overlay text{fill:white;stroke:#493459;stroke-width:.003;paint-order:stroke;font-size:.05px;font-weight:700}
