@@ -1,0 +1,24 @@
+{
+  "passed": false,
+  "code": "E_OBS_ALPHA_COMPOSITE",
+  "images": [
+    {
+      "label": "obs-neutral",
+      "width": 1920,
+      "height": 1080,
+      "visiblePixels": 503550,
+      "transparentPixels": 1570050,
+      "partialAlphaPixels": 232267,
+      "pixelSha256": "2284a48d97c77cdba04755b609e7d8839cc1062251e839c15fba249bdd06ec2f"
+    },
+    {
+      "label": "obs-alpha-dark",
+      "width": 1920,
+      "height": 1080,
+      "visiblePixels": 2073600,
+      "transparentPixels": 0,
+      "partialAlphaPixels": 0,
+      "pixelSha256": "136231081918d49b4d427b80fbf5f4322bc89ecf0a751c5f155220b7db42a4e7"
+    }
+  ]
+}

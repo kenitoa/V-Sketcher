@@ -43,8 +43,8 @@ export class AvatarRenderer {
       this.batches.set(layer.id+'|'+path,{ buffer,data,count:triangles.length,crop:[crop.x/tex.width,crop.y/tex.height,(crop.x+crop.width)/tex.width,(crop.y+crop.height)/tex.height] });
     }
   }
-  draw(input:Partial<Parameters> = {}):void {
-    this.current = parameters({ ...(this.scene.defaults ?? NEUTRAL),...input }); const gl = this.gl; const [width,height] = this.scene.canvas; gl.viewport(0,0,this.canvas.width,this.canvas.height); gl.clearColor(0,0,0,0); gl.clear(gl.COLOR_BUFFER_BIT); gl.useProgram(this.program);
+  draw(input:Partial<Parameters> = {},placement?:{scale:number;x:number;y:number;crop:{left:number;right:number;top:number;bottom:number}}):void {
+    this.current = parameters({ ...(this.scene.defaults ?? NEUTRAL),...input }); const gl = this.gl; const [width,height] = this.scene.canvas;gl.disable(gl.SCISSOR_TEST);gl.clearColor(0,0,0,0); gl.clear(gl.COLOR_BUFFER_BIT);gl.viewport(0,0,this.canvas.width,this.canvas.height);if(placement){const w=this.canvas.width,h=this.canvas.height,s=placement.scale,c=placement.crop;gl.viewport(Math.round((w-w*s)/2+placement.x*w),Math.round((h-h*s)/2-placement.y*h),Math.round(w*s),Math.round(h*s));gl.enable(gl.SCISSOR_TEST);gl.scissor(Math.round(c.left*w),Math.round(c.bottom*h),Math.round((1-c.left-c.right)*w),Math.round((1-c.top-c.bottom)*h));}gl.useProgram(this.program);
     gl.uniform1i(gl.getUniformLocation(this.program,'artwork'),0);gl.uniform1i(gl.getUniformLocation(this.program,'artworkNext'),1);
     const fit = Math.min(this.canvas.width/width,this.canvas.height/height); gl.uniform2f(gl.getUniformLocation(this.program,'canvasSize'),width,height); gl.uniform2f(gl.getUniformLocation(this.program,'fit'),fit*width/this.canvas.width,fit*height/this.canvas.height);
     for (const layer of this.ordered()) {

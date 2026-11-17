@@ -1,0 +1,30 @@
+{
+  "passed": true,
+  "errors": [],
+  "phase": 23,
+  "completedTasks": 228,
+  "remainingTasks": 182,
+  "newTasksChecked": [
+    221,
+    222,
+    223,
+    224,
+    225,
+    226,
+    227,
+    228,
+    229,
+    230
+  ],
+  "task190Complete": false,
+  "task209Complete": false,
+  "nodeGroups": 275,
+  "pythonGroups": 36,
+  "samePcReleaseRuns": 2,
+  "actualOBSVerified": true,
+  "actualOSGlobalKeysVerified": false,
+  "actualPhysicalDevicesChecked": false,
+  "m0": "HOLD",
+  "openM0Revalidations": 5,
+  "manifestSha256": "3f307da6e3930db9777f360ede9785de679e9aeee7225ef1213dc0209c46a95e"
+}

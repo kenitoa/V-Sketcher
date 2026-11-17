@@ -1,0 +1,276 @@
+{
+  "passed": true,
+  "created": "2026-11-17T21:22:42.791Z",
+  "obsVersion": "33.0.1",
+  "obsWebSocketVersion": "5.7.6",
+  "rpcVersion": 1,
+  "method": "AUTOMATED_OBS_WEBSOCKET_SOURCE_AND_SCENE_PNG",
+  "target": "isolated existing portable OBS on same PC",
+  "streamingStarted": false,
+  "recordingStarted": false,
+  "existingUserScenesModified": false,
+  "sourceType": "browser_source",
+  "sourceDimensions": [
+    1920,
+    1080
+  ],
+  "settingsVersionTested": 11,
+  "alphaComposites": [
+    {
+      "background": "dark",
+      "comparison": "linear-premultiplied-source-over-sRGB",
+      "meanRGBError": 0.0038474151234567902,
+      "p99RGBError": 0,
+      "backgroundPixelsCorrect": true,
+      "fractionWithin2": 1,
+      "passed": true
+    },
+    {
+      "background": "light",
+      "comparison": "linear-premultiplied-source-over-sRGB",
+      "meanRGBError": 0.036360918209876546,
+      "p99RGBError": 1,
+      "backgroundPixelsCorrect": true,
+      "fractionWithin2": 1,
+      "passed": true
+    }
+  ],
+  "motion": true,
+  "expression": true,
+  "shortcut": true,
+  "shortcutScope": "App-focused Electron keyboard injection; physical keys and outside-app OS delivery NOT_RUN",
+  "workingEditIsolation": true,
+  "saveDuringBroadcast": true,
+  "executionChange": true,
+  "publisherFailureTransparent": true,
+  "publisherRecovery": true,
+  "syntheticInputLossFallback": true,
+  "settingsRestore": true,
+  "outputRestart": true,
+  "outputOffOn": true,
+  "addressRotationReconnect": true,
+  "physicalDevicesOpened": false,
+  "rawCameraFramesSaved": false,
+  "rawAudioSaved": false,
+  "m0": "HOLD",
+  "performanceAcceptance": false,
+  "observedRenderFrames": 39741,
+  "images": [
+    {
+      "label": "obs-neutral",
+      "width": 1920,
+      "height": 1080,
+      "visiblePixels": 503550,
+      "transparentPixels": 1570050,
+      "partialAlphaPixels": 232267,
+      "pixelSha256": "2284a48d97c77cdba04755b609e7d8839cc1062251e839c15fba249bdd06ec2f"
+    },
+    {
+      "label": "obs-alpha-dark",
+      "width": 1920,
+      "height": 1080,
+      "visiblePixels": 2073600,
+      "transparentPixels": 0,
+      "partialAlphaPixels": 0,
+      "pixelSha256": "136231081918d49b4d427b80fbf5f4322bc89ecf0a751c5f155220b7db42a4e7"
+    },
+    {
+      "label": "obs-alpha-light",
+      "width": 1920,
+      "height": 1080,
+      "visiblePixels": 2073600,
+      "transparentPixels": 0,
+      "partialAlphaPixels": 0,
+      "pixelSha256": "b5558de7f72b917c95e6d3234acdb665fa3a9abad7384d2e5ca42d9b5bd60e63"
+    },
+    {
+      "label": "obs-motion-a",
+      "width": 1920,
+      "height": 1080,
+      "visiblePixels": 503544,
+      "transparentPixels": 1570056,
+      "partialAlphaPixels": 233154,
+      "pixelSha256": "53b5fc82811094db96f70c354b87883b79fe256ec2cff50742e20e9409bbd00d"
+    },
+    {
+      "label": "obs-motion-b",
+      "width": 1920,
+      "height": 1080,
+      "visiblePixels": 503412,
+      "transparentPixels": 1570188,
+      "partialAlphaPixels": 233268,
+      "pixelSha256": "cd94deeee62d17543c4864b587dd628ac442ec0e1a793c0239396de944d3adcf"
+    },
+    {
+      "label": "obs-base",
+      "width": 1920,
+      "height": 1080,
+      "visiblePixels": 503550,
+      "transparentPixels": 1570050,
+      "partialAlphaPixels": 232267,
+      "pixelSha256": "2284a48d97c77cdba04755b609e7d8839cc1062251e839c15fba249bdd06ec2f"
+    },
+    {
+      "label": "obs-expression",
+      "width": 1920,
+      "height": 1080,
+      "visiblePixels": 503550,
+      "transparentPixels": 1570050,
+      "partialAlphaPixels": 232129,
+      "pixelSha256": "72d9c82fd111eeec03739c008c085186b765c4c244a6da242b6d89a29db04f8b"
+    },
+    {
+      "label": "obs-key-hidden",
+      "width": 1920,
+      "height": 1080,
+      "visiblePixels": 0,
+      "transparentPixels": 2073600,
+      "partialAlphaPixels": 0,
+      "pixelSha256": "788ae0147bdf979a6575938ca2d7d4403788588f7be2010f03776c968fd1ab49"
+    },
+    {
+      "label": "obs-key-shown",
+      "width": 1920,
+      "height": 1080,
+      "visiblePixels": 503550,
+      "transparentPixels": 1570050,
+      "partialAlphaPixels": 232267,
+      "pixelSha256": "2284a48d97c77cdba04755b609e7d8839cc1062251e839c15fba249bdd06ec2f"
+    },
+    {
+      "label": "obs-key-expression",
+      "width": 1920,
+      "height": 1080,
+      "visiblePixels": 503550,
+      "transparentPixels": 1570050,
+      "partialAlphaPixels": 232129,
+      "pixelSha256": "72d9c82fd111eeec03739c008c085186b765c4c244a6da242b6d89a29db04f8b"
+    },
+    {
+      "label": "obs-before-edit",
+      "width": 1920,
+      "height": 1080,
+      "visiblePixels": 503550,
+      "transparentPixels": 1570050,
+      "partialAlphaPixels": 232267,
+      "pixelSha256": "2284a48d97c77cdba04755b609e7d8839cc1062251e839c15fba249bdd06ec2f"
+    },
+    {
+      "label": "obs-work-edit",
+      "width": 1920,
+      "height": 1080,
+      "visiblePixels": 503550,
+      "transparentPixels": 1570050,
+      "partialAlphaPixels": 232267,
+      "pixelSha256": "2284a48d97c77cdba04755b609e7d8839cc1062251e839c15fba249bdd06ec2f"
+    },
+    {
+      "label": "obs-applied",
+      "width": 1920,
+      "height": 1080,
+      "visiblePixels": 503549,
+      "transparentPixels": 1570051,
+      "partialAlphaPixels": 232722,
+      "pixelSha256": "3bf3c2c5b0143c8fc587b4f6c69079cafacc82e8d47f494c74a8555fb7b91b30"
+    },
+    {
+      "label": "obs-publisher-stale",
+      "width": 1920,
+      "height": 1080,
+      "visiblePixels": 0,
+      "transparentPixels": 2073600,
+      "partialAlphaPixels": 0,
+      "pixelSha256": "788ae0147bdf979a6575938ca2d7d4403788588f7be2010f03776c968fd1ab49"
+    },
+    {
+      "label": "obs-publisher-restored",
+      "width": 1920,
+      "height": 1080,
+      "visiblePixels": 503549,
+      "transparentPixels": 1570051,
+      "partialAlphaPixels": 232722,
+      "pixelSha256": "3bf3c2c5b0143c8fc587b4f6c69079cafacc82e8d47f494c74a8555fb7b91b30"
+    },
+    {
+      "label": "obs-input-active",
+      "width": 1920,
+      "height": 1080,
+      "visiblePixels": 503453,
+      "transparentPixels": 1570147,
+      "partialAlphaPixels": 232909,
+      "pixelSha256": "9106936469117e4aac64ec2a1684d4758fa1afa3d3b94b51d1c8faf8b5a96917"
+    },
+    {
+      "label": "obs-input-fallback",
+      "width": 1920,
+      "height": 1080,
+      "visiblePixels": 503549,
+      "transparentPixels": 1570051,
+      "partialAlphaPixels": 232722,
+      "pixelSha256": "3bf3c2c5b0143c8fc587b4f6c69079cafacc82e8d47f494c74a8555fb7b91b30"
+    },
+    {
+      "label": "obs-720p",
+      "width": 1280,
+      "height": 720,
+      "visiblePixels": 125885,
+      "transparentPixels": 795715,
+      "partialAlphaPixels": 58175,
+      "pixelSha256": "a898341baad337effbcd55d74aa21d8eb9e1753a6c27b6ad74d8e72002fc7878"
+    },
+    {
+      "label": "obs-settings-restored",
+      "width": 1920,
+      "height": 1080,
+      "visiblePixels": 503549,
+      "transparentPixels": 1570051,
+      "partialAlphaPixels": 232722,
+      "pixelSha256": "3bf3c2c5b0143c8fc587b4f6c69079cafacc82e8d47f494c74a8555fb7b91b30"
+    },
+    {
+      "label": "obs-output-reconnected",
+      "width": 1920,
+      "height": 1080,
+      "visiblePixels": 503549,
+      "transparentPixels": 1570051,
+      "partialAlphaPixels": 232722,
+      "pixelSha256": "3bf3c2c5b0143c8fc587b4f6c69079cafacc82e8d47f494c74a8555fb7b91b30"
+    },
+    {
+      "label": "obs-output-off",
+      "width": 1920,
+      "height": 1080,
+      "visiblePixels": 0,
+      "transparentPixels": 2073600,
+      "partialAlphaPixels": 0,
+      "pixelSha256": "788ae0147bdf979a6575938ca2d7d4403788588f7be2010f03776c968fd1ab49"
+    },
+    {
+      "label": "obs-output-resumed",
+      "width": 1920,
+      "height": 1080,
+      "visiblePixels": 503549,
+      "transparentPixels": 1570051,
+      "partialAlphaPixels": 232722,
+      "pixelSha256": "3bf3c2c5b0143c8fc587b4f6c69079cafacc82e8d47f494c74a8555fb7b91b30"
+    },
+    {
+      "label": "obs-revoked-address",
+      "width": 1920,
+      "height": 1080,
+      "visiblePixels": 0,
+      "transparentPixels": 2073600,
+      "partialAlphaPixels": 0,
+      "pixelSha256": "788ae0147bdf979a6575938ca2d7d4403788588f7be2010f03776c968fd1ab49"
+    },
+    {
+      "label": "obs-new-address",
+      "width": 1920,
+      "height": 1080,
+      "visiblePixels": 503549,
+      "transparentPixels": 1570051,
+      "partialAlphaPixels": 232722,
+      "pixelSha256": "3bf3c2c5b0143c8fc587b4f6c69079cafacc82e8d47f494c74a8555fb7b91b30"
+    }
+  ]
+}

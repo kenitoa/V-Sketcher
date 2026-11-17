@@ -1,3 +1,4 @@
+import {broadcastCheck} from './broadcast-self-check';
 import {checkRuntimeChangesUI} from './runtime-changes-self-check';
 import {RunDock} from './run-dock';
 import {concurrentCommand} from '../../../packages/execution/changes';
@@ -91,6 +92,7 @@ export function ProjectDesk({ onView }:{ onView:(view:SessionView)=>void }) {
   useEffect(()=>{window.correctionSelfCheck=()=>checkCorrectionUI({current:()=>latest.current,command,settled:()=>queue.current});return()=>{delete window.correctionSelfCheck;};},[]);
   useEffect(()=>{window.splitSelfCheck=rows=>checkSplitUI({current:()=>latest.current,command,settled:()=>queue.current},rows);return()=>{delete window.splitSelfCheck;};},[]);
   useEffect(()=>{window.microphoneLiveCheck=scripted=>checkMicrophoneLive({current:()=>latest.current,command,settled:()=>queue.current,mic:microphone},scripted??false);return()=>{delete window.microphoneLiveCheck;};},[]);
+  useEffect(()=>{window.broadcastCheckStep=broadcastCheck({current:()=>latest.current,command,settled:()=>queue.current,runtime:run});return()=>{delete window.broadcastCheckStep;};},[]);
   useEffect(()=>{window.runtimeChangesSelfCheck=()=>checkRuntimeChangesUI({current:()=>latest.current,command,settled:()=>queue.current,runtime:run,camera,microphone});window.runtimeChangesStop=()=>run.stop();return()=>{delete window.runtimeChangesSelfCheck;delete window.runtimeChangesStop;};},[]);
   useEffect(()=>{window.prepareExecutionKeys=()=>prepareExecutionKeys({current:()=>latest.current,command,settled:()=>queue.current,runtime:run});window.executionKeyState=()=>({hidden:run.hidden,neutral:run.player.neutralHold,active:run.active,lastAction:run.lastAction});window.executionSelfCheck=()=>checkExecutionUI({current:()=>latest.current,command,settled:()=>queue.current,runtime:run});return()=>{delete window.executionSelfCheck;delete window.prepareExecutionKeys;delete window.executionKeyState;};},[]);
   useEffect(()=>{window.inputRecoverySelfCheck=()=>checkInputRecoveryUI({current:()=>latest.current,command,settled:()=>queue.current,camera,mic:microphone});return()=>{delete window.inputRecoverySelfCheck;};},[]);

@@ -2,14 +2,14 @@
 
 | 항목 | 내용 |
 |---|---|
-| 문서 버전 | v0.23 — 22단계 실행 중 변경 반영·프로젝트 전환·자원 보호 반영 |
+| 문서 버전 | v0.24 — 23단계 방송용 출력·연결 안내·복구 반영 |
 | 작성일 | 2026-11-16 |
 | 최종 갱신 | 2026-11-18 |
-| 기준 문서 | [PRD.md](./PRD.md) v0.23, [01 기획 기준](./planning/01-product-baseline.md), [02 검증 준비](./planning/02-readiness.md), [03 가능성 검증](./planning/03-feasibility.md), [04 실제 외부 사용 검증](./planning/04-tracking-broadcast-export.md), [05 결정](./planning/05-decisions.md), [06 제품 기반](./planning/06-foundation.md), [07 공통 모델](./planning/07-common-model.md), [08 작업/트랜잭션](./planning/08-async-workflow.md), [09 프로젝트 보존](./planning/09-project-lifecycle.md), [10 공통 화면](./planning/10-common-editor.md), [11 공통 움직임](./planning/11-common-motion.md), [12 그림 입력](./planning/12-image-input.md), [13 파츠 조합](./planning/13-parts-library.md), [14 한 장 자동 구조화](./planning/14-single-image.md), [15 쉬운 보정](./planning/15-corrections.md), [16 분리 그림](./planning/16-split-image.md), [17 세부 편집](./planning/17-detail-editor.md), [18 표정 제어](./planning/18-expressions.md), [19 카메라 구현/재검증](./planning/19-camera-tracking.md), [20 입력 복구](./planning/20-input-recovery.md), [21 실행 준비](./planning/21-execution.md), [22 실행 중 변경](./planning/22-runtime-changes.md) |
+| 기준 문서 | [PRD.md](./PRD.md) v0.24, [01 기획 기준](./planning/01-product-baseline.md), [02 검증 준비](./planning/02-readiness.md), [03 가능성 검증](./planning/03-feasibility.md), [04 실제 외부 사용 검증](./planning/04-tracking-broadcast-export.md), [05 결정](./planning/05-decisions.md), [06 제품 기반](./planning/06-foundation.md), [07 공통 모델](./planning/07-common-model.md), [08 작업/트랜잭션](./planning/08-async-workflow.md), [09 프로젝트 보존](./planning/09-project-lifecycle.md), [10 공통 화면](./planning/10-common-editor.md), [11 공통 움직임](./planning/11-common-motion.md), [12 그림 입력](./planning/12-image-input.md), [13 파츠 조합](./planning/13-parts-library.md), [14 한 장 자동 구조화](./planning/14-single-image.md), [15 쉬운 보정](./planning/15-corrections.md), [16 분리 그림](./planning/16-split-image.md), [17 세부 편집](./planning/17-detail-editor.md), [18 표정 제어](./planning/18-expressions.md), [19 카메라 구현/재검증](./planning/19-camera-tracking.md), [20 입력 복구](./planning/20-input-recovery.md), [21 실행 준비](./planning/21-execution.md), [22 실행 중 변경](./planning/22-runtime-changes.md), [23 방송 출력](./planning/23-broadcast.md) |
 | 목적 | PRD의 요구사항을 화면 행동, 처리 규칙, 상태, 데이터, 예외, 검증 가능한 완료 조건으로 구체화 |
 | 초기 범위 | 파츠·한 장 그림·분리 그림 기반 2D 제작, 반응·추적, 앱 내 실행, 실제 방송 연결, 외부 아바타용 내보내기 |
 | 장기 필수 범위 | 그림 기반 3D 제작 및 자체 모델을 제작·연결하는 글 기반 생성 |
-| 구현 상태 | 01~18·T-181~189·T-191~208·T-210~220 구현. 앱 0.17.0·모델 1.9 유지. 실행 중 편집/검증 반영·프로젝트 전환·입력/렌더링 소유권·저장 경쟁 보호를 연결하며 검증 범위는 단계별 기록으로 구분한다. T-190 실제 카메라 재검증·T-209 실제 OS 전역 키 확인 미완료. 사람 음성 구간·물리 USB 분리·OBS/성능 승인은 별도, M0 HOLD/5 OPEN 유지 |
+| 구현 상태 | 01~18·T-181~189·T-191~208·T-210~230 구현. 앱 0.18.0·모델 1.9 유지. 실행 중 편집/검증 반영·프로젝트 전환·입력/렌더링 소유권·저장 경쟁 보호·로컬 투명 방송 출력/설정/복구를 연결하며 검증 범위는 단계별 기록으로 구분한다. T-190 실제 카메라 재검증·T-209 실제 OS 전역 키 확인 미완료. 사람 음성 구간·물리 USB 분리·OBS/성능 승인은 별도, M0 HOLD/5 OPEN 유지 |
 
 ## 1. 문서 사용 규칙
 
@@ -686,7 +686,7 @@ T-201~208·T-210 검증과 **T-209 실제 전역 입력 확인 대기**를 구�
 
 ### F-BRD-001. 방송용 렌더링과 출력 설정
 
-**범위:** 초기 필수, 전달 방식·지원 대상 검증 대기. **연결:** FR-BROAD-01.
+**범위:** 초기 필수, OBS 33.0.1의 같은 PC 검증 근거. **연결:** FR-BROAD-01.
 
 - **입력:** 실행본, 지원 출력 방식, 해상도·프레임 설정, 캐릭터 위치·크기·잘림 범위, 배경 설정.
 - **출력 내용:** 캐릭터 영상만 전달한다. 편집 UI, 카메라 영상, 파일 경로, 진단, 도움말을 전달하지 않는다.
@@ -696,6 +696,8 @@ T-201~208·T-210 검증과 **T-209 실제 전역 입력 확인 대기**를 구�
 - **변경:** 해상도·전달 방식 변경이 출력 재시작을 요구하면 사전에 알리고 기존 설정을 복원할 수 있게 한다.
 - **상태:** OFF → PREPARING → SOURCE_READY를 관리한다. SOURCE_READY는 외부 수신 확인을 뜻하지 않는다.
 - **완료 기준:** 선정한 방식으로 캐릭터와 투명도가 전달되고 사용자용 UI가 외부 소스에 섞이지 않는다.
+
+**23단계 구현:** 실행본만 읽는 로컬 투명 페이지와 공통 렌더러·출력 viewport/scissor·기기 설정/복원·생산 만료 시 투명 전환을 제공한다. 수동 OBS 안내, 페이지 소비 ACK와 사용자 외부 확인의 별도 기록·버전 무효화, 증상별 진단·숨김/재연결/주소 회전을 연결한다. 실제 OBS의 자동 검증은 개발 evidence로 분리하고 제품 사용자 확인을 자동 판정으로 표시하지 않는다. [범위·검증](./planning/23-broadcast.md), [계약](./architecture/broadcast.md). OS 전역 키 T-209·실제 카메라 T-190·M0 HOLD는 유지한다.
 
 ### F-BRD-002. 방송 프로그램 연결 안내와 확인
 
@@ -1321,3 +1323,4 @@ PRD의 확정 방향을 변경해야 한다면 기능 명세만 조용히 축소
 | v0.21 | 2026-11-18 | T-191~200 마이크·소음 기준/튜닝·단일 입 소유자·독립 손실/500ms 기본 복귀/250ms 복구·수동 재연결·복합 자동 시나리오 구현. 261개 검사·전체 개발 앱 회귀·세 경로·동결 worker release 2회 통과. 실제 기본 마이크 수신/중지/재연결 확인, 실제 사람 세 음성 구간·물리 USB 분리·T-190 카메라 실환경 재검증은 별도 미완료. M0 HOLD/5 OPEN·필수 장기 범위 유지. |
 | v0.22 | 2026-11-18 | T-201~208·T-210 실행 준비/스냅샷/최근 바로 실행/독립 조작/중지·재시작/PC 키 설정 구현·검증. 278개 검사·전체 개발 앱 회귀·같은 PC release 검증. T-209 실제 OS 전역 입력 확인은 대기이며 21 전체 완료로 표시하지 않음. T-190·M0 HOLD/5 OPEN·필수 장기 범위 유지. |
 | v0.23 | 2026-11-18 | T-211~220 실행 중 편집/검증 반영·독립 GPU 후보/취소/롤백·구조 재시작·프로젝트 유지/전환·리비전/고정 입력·작업 보류/64MiB 조건·입력/렌더링 소유권·저장/전환 경쟁 보호 구현. 298개 검사·전체 개발 앱 회귀·세 실제 경로·같은 PC release 새 설정 2회 통과. T-190/T-209 미완료·M0 HOLD/5 OPEN·필수 장기 범위 유지. |
+| v0.24 | 2026-11-18 | T-221~230 로컬 투명 방송 출력·독립 크기/배치/잘림/프레임·설정 복원/재연결·OBS 안내/확인 분리·증상 진단·숨김/입력/출력 손실 복구 구현. 311개 검사·전체 개발 앱 회귀·세 경로 출력 페이지·실제 별도 OBS의 분리 그림/앱 초점 키/편집·저장·복구·같은 PC release 2회 통과. T-190/T-209 미완료·M0 HOLD/5 OPEN·필수 장기 범위 유지. |

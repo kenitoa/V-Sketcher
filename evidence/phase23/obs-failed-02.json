@@ -1,0 +1,168 @@
+{
+  "passed": false,
+  "code": "E_OBS_ASSERTION",
+  "images": [
+    {
+      "label": "obs-neutral",
+      "width": 1920,
+      "height": 1080,
+      "visiblePixels": 503550,
+      "transparentPixels": 1570050,
+      "partialAlphaPixels": 232267,
+      "pixelSha256": "2284a48d97c77cdba04755b609e7d8839cc1062251e839c15fba249bdd06ec2f"
+    },
+    {
+      "label": "obs-alpha-dark",
+      "width": 1920,
+      "height": 1080,
+      "visiblePixels": 2073600,
+      "transparentPixels": 0,
+      "partialAlphaPixels": 0,
+      "pixelSha256": "136231081918d49b4d427b80fbf5f4322bc89ecf0a751c5f155220b7db42a4e7"
+    },
+    {
+      "label": "obs-alpha-light",
+      "width": 1920,
+      "height": 1080,
+      "visiblePixels": 2073600,
+      "transparentPixels": 0,
+      "partialAlphaPixels": 0,
+      "pixelSha256": "b5558de7f72b917c95e6d3234acdb665fa3a9abad7384d2e5ca42d9b5bd60e63"
+    },
+    {
+      "label": "obs-motion-a",
+      "width": 1920,
+      "height": 1080,
+      "visiblePixels": 503444,
+      "transparentPixels": 1570156,
+      "partialAlphaPixels": 233096,
+      "pixelSha256": "e97ea072eaace5b6417d2ed2887d7997efe371085669e426b8bfc8173f4c5534"
+    },
+    {
+      "label": "obs-motion-b",
+      "width": 1920,
+      "height": 1080,
+      "visiblePixels": 503843,
+      "transparentPixels": 1569757,
+      "partialAlphaPixels": 232918,
+      "pixelSha256": "9e01a861bf579a90766dc98b3070556c44e6b3810e596f9243d6d2b1bb66d142"
+    },
+    {
+      "label": "obs-base",
+      "width": 1920,
+      "height": 1080,
+      "visiblePixels": 503550,
+      "transparentPixels": 1570050,
+      "partialAlphaPixels": 232267,
+      "pixelSha256": "2284a48d97c77cdba04755b609e7d8839cc1062251e839c15fba249bdd06ec2f"
+    },
+    {
+      "label": "obs-expression",
+      "width": 1920,
+      "height": 1080,
+      "visiblePixels": 503550,
+      "transparentPixels": 1570050,
+      "partialAlphaPixels": 232129,
+      "pixelSha256": "72d9c82fd111eeec03739c008c085186b765c4c244a6da242b6d89a29db04f8b"
+    },
+    {
+      "label": "obs-key-hidden",
+      "width": 1920,
+      "height": 1080,
+      "visiblePixels": 0,
+      "transparentPixels": 2073600,
+      "partialAlphaPixels": 0,
+      "pixelSha256": "788ae0147bdf979a6575938ca2d7d4403788588f7be2010f03776c968fd1ab49"
+    },
+    {
+      "label": "obs-key-shown",
+      "width": 1920,
+      "height": 1080,
+      "visiblePixels": 503550,
+      "transparentPixels": 1570050,
+      "partialAlphaPixels": 232267,
+      "pixelSha256": "2284a48d97c77cdba04755b609e7d8839cc1062251e839c15fba249bdd06ec2f"
+    },
+    {
+      "label": "obs-key-expression",
+      "width": 1920,
+      "height": 1080,
+      "visiblePixels": 503550,
+      "transparentPixels": 1570050,
+      "partialAlphaPixels": 232129,
+      "pixelSha256": "72d9c82fd111eeec03739c008c085186b765c4c244a6da242b6d89a29db04f8b"
+    },
+    {
+      "label": "obs-before-edit",
+      "width": 1920,
+      "height": 1080,
+      "visiblePixels": 503550,
+      "transparentPixels": 1570050,
+      "partialAlphaPixels": 232267,
+      "pixelSha256": "2284a48d97c77cdba04755b609e7d8839cc1062251e839c15fba249bdd06ec2f"
+    },
+    {
+      "label": "obs-work-edit",
+      "width": 1920,
+      "height": 1080,
+      "visiblePixels": 503550,
+      "transparentPixels": 1570050,
+      "partialAlphaPixels": 232267,
+      "pixelSha256": "2284a48d97c77cdba04755b609e7d8839cc1062251e839c15fba249bdd06ec2f"
+    },
+    {
+      "label": "obs-applied",
+      "width": 1920,
+      "height": 1080,
+      "visiblePixels": 503549,
+      "transparentPixels": 1570051,
+      "partialAlphaPixels": 232722,
+      "pixelSha256": "3bf3c2c5b0143c8fc587b4f6c69079cafacc82e8d47f494c74a8555fb7b91b30"
+    },
+    {
+      "label": "obs-publisher-stale",
+      "width": 1920,
+      "height": 1080,
+      "visiblePixels": 0,
+      "transparentPixels": 2073600,
+      "partialAlphaPixels": 0,
+      "pixelSha256": "788ae0147bdf979a6575938ca2d7d4403788588f7be2010f03776c968fd1ab49"
+    },
+    {
+      "label": "obs-publisher-restored",
+      "width": 1920,
+      "height": 1080,
+      "visiblePixels": 503549,
+      "transparentPixels": 1570051,
+      "partialAlphaPixels": 232722,
+      "pixelSha256": "3bf3c2c5b0143c8fc587b4f6c69079cafacc82e8d47f494c74a8555fb7b91b30"
+    },
+    {
+      "label": "obs-input-active",
+      "width": 1920,
+      "height": 1080,
+      "visiblePixels": 503441,
+      "transparentPixels": 1570159,
+      "partialAlphaPixels": 232462,
+      "pixelSha256": "b0001ffea699ebe2b992549958d23b4025c4f48830d47f279bf364649ddae629"
+    },
+    {
+      "label": "obs-input-fallback",
+      "width": 1920,
+      "height": 1080,
+      "visiblePixels": 503549,
+      "transparentPixels": 1570051,
+      "partialAlphaPixels": 232722,
+      "pixelSha256": "3bf3c2c5b0143c8fc587b4f6c69079cafacc82e8d47f494c74a8555fb7b91b30"
+    },
+    {
+      "label": "obs-720p",
+      "width": 1920,
+      "height": 1080,
+      "visiblePixels": 503549,
+      "transparentPixels": 1570051,
+      "partialAlphaPixels": 232722,
+      "pixelSha256": "3bf3c2c5b0143c8fc587b4f6c69079cafacc82e8d47f494c74a8555fb7b91b30"
+    }
+  ]
+}
