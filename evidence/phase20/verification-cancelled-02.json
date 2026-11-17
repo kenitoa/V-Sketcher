@@ -1,0 +1,6 @@
+{
+  "state": "CANCELLED",
+  "requiredGateGroupsPassed": 261,
+  "fullBrowserPassed": false,
+  "reason": "Stopped incomplete browser regression to require loaded premium preview before evidence capture. Blank image is not accepted as visual proof."
+}

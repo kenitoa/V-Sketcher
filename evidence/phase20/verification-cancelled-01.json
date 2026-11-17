@@ -1,0 +1,6 @@
+{
+  "state": "CANCELLED",
+  "requiredGateGroupsPassed": 261,
+  "fullBrowserPassed": false,
+  "reason": "Stopped before browser regression completed to correct malformed Korean close-button text. Not a passing final verification."
+}

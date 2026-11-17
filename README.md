@@ -1,6 +1,6 @@
 # 2DSketcher
 
-Windows용 버추얼 캐릭터 제작 도구입니다. **0.14.0 미리보기**에서 세 제작 경로의 외형·보정·표정에 카메라 목록/개인 미리보기·대상 선택·중립 후보/취소·방향/범위/평활 매핑을 연결합니다. 장치 기준은 이 PC에, 매핑은 프로젝트에 저장하며 원화/표정을 보존합니다. 고급 파츠 64조합·한 장 자동 준비/선택 보정·PNG 폴더/.2dparts·저장/복사/복구와 모델 1.9·WebGL2·내장 worker를 사용합니다. **T-190 정상 실환경 재검증은 미완료**이며 실제 입력의 검출/보정 미통과를 기록합니다. 마이크/복합 손실·OBS·독립 아바타 내보내기는 후속이며 [M0는 HOLD](docs/planning/05-m0-review.md)입니다.
+Windows용 버추얼 캐릭터 제작 도구입니다. **0.15.0 미리보기**에서 세 제작 경로의 외형·표정·카메라에 마이크 레벨/소음 기준·감도·독립 입력 손실·부드러운 복구·수동 재연결을 연결합니다. 장치 기준과 마이크 튜닝은 이 PC에, 카메라 매핑과 입 우선 모드는 프로젝트에 저장합니다. 고급 파츠 64조합·한 장 자동 준비/선택 보정·PNG 폴더/.2dparts·저장/복사/복구와 모델 1.9·WebGL2·내장 worker를 사용합니다. **T-190 정상 실환경 재검증은 미완료**입니다. 실제 사람/물리 장치 검증과 자동 검증을 구분하며 OBS·독립 아바타 내보내기는 후속입니다. [M0는 HOLD](docs/planning/05-m0-review.md)입니다.
 
 개발 환경은 Windows x64, Python **3.14.10 x64**, Git입니다. 최초 준비에는 인터넷이 필요하며 Node와 Python 패키지는 프로젝트 안에 설치됩니다. PowerShell 실행 정책 변경과 전역 npm 설치는 필요하지 않습니다.
 
@@ -17,12 +17,12 @@ Windows 패키지와 격리 실행 검증:
 
 ```powershell
 tools/dev.cmd run make
-.local/toolchain/node-v24.22.3-win-x64/node.exe scripts/tracking-package-check.mjs --evidence-dir=evidence/phase19
+.local/toolchain/node-v24.22.3-win-x64/node.exe scripts/input-recovery-package-check.mjs --evidence-dir=evidence/phase20
 ```
 
 EXE는 `out/2DSketcher-win32-x64/2DSketcher.exe`, ZIP은 `out/make/zip/win32/x64/`에 생성됩니다. ZIP을 풀 때 폴더 전체를 유지해야 합니다. Electron과 Python·라이브러리·얼굴 모델이 포함되어 사용자의 Node/Python 설치를 요구하지 않습니다. 서명·설치 프로그램·공개 배포 승인을 완료한 제품은 아닙니다.
 
-위 패키지 검증은 새 프로필과 한글·공백 경로에서 두 번 실행하고 PATH를 Windows 시스템 도구만 남겨 제한합니다. 물리 카메라·마이크 없이 세 실제 제작 경로의 합성 영상과 실제 로컬 추론·개인 미리보기·보정 적용/취소·매핑 저장/재열기 및 기반 코어를 확인합니다. 이전 기능 전체 UI/복구·종료 취소는 전체 개발 앱 회귀로 확인합니다. 파일 선택은 self-check 전용 adapter를 사용합니다. **현재 PC의 OS/DLL/드라이버는 유지되므로 새 Windows 시험을 대신했다는 주장을 하지 않습니다.** 현재 결과는 `evidence/phase19/`, 이전 06~18 결과는 동결 보존합니다. 명시적 evidence 인수가 없으면 카메라 패키지 검사는 `.local/smoke/tracking-package/`에 기록합니다. 개인 경로가 포함될 수 있는 개발 로그와 임시 실행본은 `.local/`에 보관합니다.
+위 패키지 검증은 새 프로필과 한글·공백 경로에서 두 번 실행하고 PATH를 Windows 시스템 도구만 남겨 제한합니다. 물리 카메라·마이크 없이 세 실제 제작 경로의 합성 음량/영상을 실제 AudioWorklet·로컬 추론기에 통과시켜 소음 보정/취소·감도·입력 손실/복구·수동 재연결·표정 우선순위·정책 저장/재열기 및 기반 코어를 확인합니다. 이전 기능 전체 UI/복구·종료 취소는 전체 개발 앱 회귀로 확인합니다. 파일 선택은 self-check 전용 adapter를 사용합니다. **현재 PC의 OS/DLL/드라이버는 유지되므로 새 Windows 시험을 대신했다는 주장을 하지 않습니다.** 현재 결과는 `evidence/phase20/`, 이전 06~19 결과는 동결 보존합니다. 명시적 evidence 인수가 없으면 카메라 패키지 검사는 `.local/smoke/input-recovery-package/`에 기록합니다. 개인 경로가 포함될 수 있는 개발 로그와 임시 실행본은 `.local/`에 보관합니다.
 
 **파츠로 만들기 → 기본 파츠 조합 준비**에서 얼굴·머리·눈·입·의상·장식을 고르고, 부위를 선택해 허용된 조절 범위 안에서 바꾸세요. 표정/입력 매개변수는 보존되며 제거/재장착 시 끊긴 연결과 제한을 안내합니다. **이 조합으로 움직임 시험**에서 확인하고 프로젝트로 저장·복제해 재사용합니다. [파츠 사용법/검수 범위](docs/planning/13-parts-library.md), [64조합 화면](evidence/phase13/parts-contact.png)을 확인하세요. 기존 **고급 예제 넣기**는 별도의 전체 초상/수동 표정 패치 예제입니다.
 
@@ -36,7 +36,7 @@ EXE는 `out/2DSketcher-win32-x64/2DSketcher.exe`, ZIP은 `out/make/zip/win32/x64
 
 **움직임 시험**에서는 준비된 다섯 제어의 슬라이더·예제 재생·반복·중지를 사용할 수 있습니다. 시험 입력은 이력/파일을 바꾸지 않고, 명시적으로 저장한 세기·부드러움·기본 자세만 편집에 포함됩니다. 이전 1.0~1.8도 읽으며 모델을 업그레이드한 변환본은 다른 파일로 저장합니다.
 
-`.local/toolchain/node-v24.22.3-win-x64/node.exe scripts/verify-tracking.mjs`는 241개 검사 그룹과 실제 보정/보호/선택 적용 UI·자동 구조화/보정 GPU 각 25상태·파츠 64조합/1,472프레임·색상/alpha/금색 보존·기존 입력/움직임/편집/저장 회귀 검사를 실행합니다. self-check 창을 표시하며 배포 검사는 기본 창과 1080×720 창을 확인합니다. `run dev`의 “작업 상태 시험”은 고정 입력 모의 작업이고 release에는 시험 버튼이 없습니다. 독립 ART-01 평가·추적/방송·M0 성능·물리적 디스크 고갈/전원 차단 검증은 후속입니다.
+`.local/toolchain/node-v24.22.3-win-x64/node.exe scripts/verify-input-recovery.mjs`는 261개 검사 그룹과 실제 보정/보호/선택 적용 UI·자동 구조화/보정 GPU 각 25상태·파츠 64조합/1,472프레임·색상/alpha/금색 보존·기존 입력/움직임/편집/저장 회귀 검사를 실행합니다. self-check 창을 표시하며 배포 검사는 기본 창과 1080×720 창을 확인합니다. `run dev`의 “작업 상태 시험”은 고정 입력 모의 작업이고 release에는 시험 버튼이 없습니다. 독립 ART-01 평가·추적/방송·M0 성능·물리적 디스크 고갈/전원 차단 검증은 후속입니다.
 
 [개발 규칙](CONTRIBUTING.md) · [공통 모델](docs/architecture/project-model.md) · [작업/트랜잭션](docs/architecture/workflow.md) · [프로젝트 저장/복구](docs/architecture/project-session.md) · [공통 편집 화면](docs/architecture/common-editor.md) · [움직임 평가](docs/architecture/motion.md) · [자산 정책](docs/architecture/assets.md) · [11 완료 근거](docs/planning/11-common-motion.md)
 
@@ -55,3 +55,5 @@ EXE는 `out/2DSketcher-win32-x64/2DSketcher.exe`, ZIP은 `out/make/zip/win32/x64
 **표정·입력 제어**에서 저장할 항목/값/고정 범위를 선택하고 이름을 붙입니다. 표정 적용·해제와 합성 입력은 프로젝트 값을 바꾸지 않습니다. 입 우선 입력·대체·자동 깜빡임·앱 안 단축키를 설정하고, 대상 변경 표정은 다시 연결/제거로 수선합니다. [사용법·M2 로컬 제작 종료 검토](docs/planning/18-expressions.md), [전체 검사 근거](evidence/phase18/verification.json), [배포본/문서 감사](evidence/phase18/audit.json)를 확인하세요.
 
 **카메라·추적 보정**에서 실제 웹캠을 연결하고 영상 수신/얼굴 검출/대상 추적을 구분해 확인합니다. 원본 영상은 이 화면에만 선택적으로 표시하며 캐릭터/프로젝트/기본 로그에 넣지 않습니다. 안정된 중립 후보는 확인 후 적용하고 취소/실패 시 이전 기준을 유지합니다. [사용법·실제 재검증 상태](docs/planning/19-camera-tracking.md) · [기술 계약](docs/architecture/camera-tracking.md).
+
+**마이크·입력 복구**에서 소음 기준 측정/검토 적용·감도·세기·평활과 입 우선 모드를 조절합니다. 유효 무음과 실패를 구분하며 한 장치의 중지가 다른 입력을 끄지 않습니다. 입력 만료 후 기본 동작으로 완화하고 새 입력으로 부드럽게 돌아갑니다. 자동 재연결은 하지 않으며 장치 재선택 후 연결 버튼으로 복구합니다. 녹음·원음 재생·방송 오디오 전송은 하지 않습니다. [20단계 사용법/검증 범위](docs/planning/20-input-recovery.md), [시간/수명/저장 계약](docs/architecture/input-recovery.md).

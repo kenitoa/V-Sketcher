@@ -37,5 +37,6 @@ def run():
     shutil.copyfile(assets/'split/manifest.json',output/'split/manifest.json')
     shutil.copyfile(assets/'preview-scene.json',output/'preview-scene.json')
     shutil.copyfile(assets/'preview-project.json',output/'preview-project.json')
+    shutil.copyfile(ROOT/'apps/renderer/src/level-worklet.js',output/'audio-level-worklet.js')
     print('Model and',len(manifest['assets']),'premium assets verified')
 if __name__=='__main__':run()

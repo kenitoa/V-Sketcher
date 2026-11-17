@@ -1,0 +1,12 @@
+{
+  "levelReadPassed": true,
+  "selectedRun": "live-microphone-02.json",
+  "humanScenesConfirmed": false,
+  "humanScenes": "NOT_RUN",
+  "physicalUnplug": "NOT_RUN",
+  "cameraScenes": "NOT_RUN; T190 unchanged",
+  "pcmSaved": false,
+  "framesSaved": false,
+  "m0": "HOLD",
+  "scope": "Actual default microphone aggregate levels, explicit stop and reconnect only. No quiet/speech/noise or physical unplug/camera scene approval."
+}

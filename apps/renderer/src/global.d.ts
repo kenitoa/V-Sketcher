@@ -2,6 +2,9 @@ import type { StudioInfo } from '../../../packages/contracts';
 import type { SessionCommand,SessionView,SessionReply } from '../../../packages/project-session/contracts';
 declare global {
   interface Window {
+    microphoneLiveCheck?:(scripted?:boolean)=>Promise<Record<string,unknown>>;
+    microphoneReviewPhase?:{phase:string;seconds:number;blocks:number;state:string;rms:number};
+    inputRecoverySelfCheck?:()=>Promise<Record<string,unknown>>;
     cameraLiveCheck?:(hint?:string|null)=>Promise<Record<string,unknown>>;
     liveReviewPhase?:{phase:string;seconds:number;faceCount?:number;selected?:boolean;brightness?:number|null;yaw?:number|null;roll?:number|null;state?:string};
     trackingSelfCheck?:()=>Promise<Record<string,unknown>>;
@@ -16,7 +19,7 @@ declare global {
     structureSelfCheck?:()=>Promise<Record<string,unknown>>;
     structureExtremeData?:string;
     workflowLabCheck?: (options?:{ holdForCapture:boolean }) => Promise<Record<string,unknown>>;
-    studio: { tracking:import('../../../packages/tracking/api').TrackingAPI; info: () => Promise<StudioInfo>; health: () => Promise<{ ready: boolean }>; projects:{ dropImage:(file:File)=>Promise<SessionReply>;view:()=>Promise<SessionView>; command:(command:SessionCommand)=>Promise<SessionReply>; subscribe:(listener:(view:SessionView)=>void)=>()=>void } };
+    studio: { microphone:import('../../../packages/input-control/api').MicrophoneAPI;tracking:import('../../../packages/tracking/api').TrackingAPI; info: () => Promise<StudioInfo>; health: () => Promise<{ ready: boolean }>; projects:{ dropImage:(file:File)=>Promise<SessionReply>;view:()=>Promise<SessionView>; command:(command:SessionCommand)=>Promise<SessionReply>; subscribe:(listener:(view:SessionView)=>void)=>()=>void } };
     projectSelfCheck?:()=>Promise<Record<string,unknown>>;
     projectSelfCheckCapture?:()=>Promise<void>;
     partsSelfCheck?:()=>Promise<Record<string,unknown>>;

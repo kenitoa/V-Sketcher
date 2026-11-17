@@ -1,0 +1,38 @@
+{
+  "passed": true,
+  "inputLive": {
+    "passed": true,
+    "source": "Windows default selected microphone",
+    "scriptedHumanScenes": false,
+    "humanSceneConfirmation": "NOT_RUN",
+    "quiet": null,
+    "speech": null,
+    "noise": null,
+    "observed": {
+      "samples": 151,
+      "medianRms": 0.0016318500638766004,
+      "maxPeak": 0.017089901491999626,
+      "maxMappedMouth": 0.000005205619386304688
+    },
+    "reconnected": {
+      "samples": 76,
+      "medianRms": 0.0024069171661211235,
+      "maxPeak": 0.015378287062048912,
+      "maxMappedMouth": 0
+    },
+    "baselineApplied": false,
+    "manualStopAndReconnect": true,
+    "projectUnchanged": true,
+    "cameraOpened": false,
+    "physicalUnplug": "NOT_RUN",
+    "pcmSaved": false,
+    "framesSaved": false,
+    "audioPlayed": false,
+    "m0": "HOLD",
+    "scope": "Actual microphone open, aggregate level reception, manual stop and reconnect only; no quiet/speech/noise classification or physical unplug/camera scene acceptance"
+  },
+  "appVersion": "0.15.0",
+  "packaged": false,
+  "channel": "test",
+  "workerStopped": true
+}

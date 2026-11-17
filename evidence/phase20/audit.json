@@ -1,0 +1,33 @@
+{
+  "passed": true,
+  "errors": [],
+  "phase": 20,
+  "completedTasks": 199,
+  "remainingTasks": 211,
+  "newTasksChecked": [
+    191,
+    192,
+    193,
+    194,
+    195,
+    196,
+    197,
+    198,
+    199,
+    200
+  ],
+  "task190Complete": false,
+  "nodeGroups": 225,
+  "pythonGroups": 36,
+  "newInputControlGroups": 20,
+  "samePcReleaseRuns": 2,
+  "automatedCompositeInputScenarios": true,
+  "actualMicrophoneReadChecked": true,
+  "humanAudioScenesChecked": false,
+  "physicalUnplugChecked": false,
+  "actualCameraScenesChecked": false,
+  "m0": "HOLD",
+  "openM0Revalidations": 5,
+  "auditScope": "Source/document/evidence integrity and bounded automated compound scenarios; physical compatibility and T190 remain separate",
+  "manifestSha256": "82b30440c9fe5afaba0a51d3073a76439f71548f8243e1ed62ce103f72ce82db"
+}

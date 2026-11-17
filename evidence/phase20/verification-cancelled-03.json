@@ -1,0 +1,6 @@
+{
+  "state": "CANCELLED",
+  "requiredGateGroupsPassed": 261,
+  "fullBrowserPassed": false,
+  "reason": "Stopped incomplete browser regression to apply existing uncertain-mouth response limit to physical camera/microphone packets."
+}
