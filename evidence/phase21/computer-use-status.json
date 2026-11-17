@@ -1,0 +1,10 @@
+{
+  "available": false,
+  "operation": "list_apps",
+  "attempts": 3,
+  "kernelResetTried": true,
+  "error": "NATIVE_PIPE_UNAVAILABLE_OS_ERROR_2",
+  "osKeyboardAutomation": "NOT_RUN",
+  "userInputRequestedForPreparedWindow": true,
+  "rawScreenshotsOrPathsSaved": false
+}

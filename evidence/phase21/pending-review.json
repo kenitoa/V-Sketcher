@@ -1,0 +1,27 @@
+{
+  "implementationChecksPassed": true,
+  "phaseComplete": false,
+  "errors": [],
+  "pendingTask": "T-209",
+  "pendingReason": "OS key callback outside the main window has not been observed; native Computer Use pipe unavailable and prepared user input review timed out without attestation.",
+  "completedTasks": 208,
+  "phase21CompletedTasks": [
+    201,
+    202,
+    203,
+    204,
+    205,
+    206,
+    207,
+    208,
+    210
+  ],
+  "nodeGroups": 242,
+  "pythonGroups": 36,
+  "samePcReleaseRuns": 2,
+  "cleanWindowsOS": false,
+  "m0": "HOLD",
+  "openM0Revalidations": 5,
+  "task190Complete": false,
+  "checkerSha256": "60aa43400d2e476c614164b3ad80c772b9f99c9a5f87eb66f9d92ab82dbc122e"
+}

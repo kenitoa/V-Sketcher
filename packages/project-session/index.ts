@@ -1,3 +1,4 @@
+import {availableRunActions,checkReadiness,RUN_MODES,type RunLease,type RunMode} from '../execution';
 import {DetailSession} from '../detail-editor/session';
 import {assertSimpleSafe} from '../detail-editor/model';
 import {SplitSession} from '../split-image/session';
@@ -49,6 +50,16 @@ export class ProjectSession {
     try { const result = projectToPreview(copy,asset => `assets/session/${token}/${asset.fingerprint.sha256}.${asset.mediaType === 'image/png' ? 'png' : 'jpg'}${asset.producer.name.startsWith('atelier-luna') ? '?asset='+asset.id : ''}`); return result.layers.length ? result : null; } catch { return null; }
   }
   async resource(token:string,name:string):Promise<Buffer | null> { const asset = this.grants.get(token)?.get(name); return (asset?await this.cache.read(asset):null)??this.document?.input?.resource(token,name)??this.document?.split?.resource(token,name)??null; }
+  private runtimeLease:RunLease|null=null;private runtimeRequest:string|null=null;private runtimeGeneration=0;
+  runtimeBusy():boolean{return this.runtimeRequest!==null||this.runtimeLease!==null;}
+  async prepareRuntime(request:{requestId:string;sessionId:string;revision:number;mode:RunMode}):Promise<RunLease>{
+    if(!/^[a-f0-9-]{36}$/.test(request.requestId)||!RUN_MODES.includes(request.mode))throw new Error('E_RUN_REQUEST');if(this.runtimeBusy())throw new Error('E_RUN_ACTIVE');const d=this.editable(),project=structuredClone(d.flow.project());if(request.sessionId!==d.id||request.revision!==project.revision)throw new Error('E_RUN_STALE');const view=this.view(),busy=!!this.saving||view.jobs.some(j=>['QUEUED','RUNNING','RESULT_READY','CANCEL_REQUESTED'].includes(j.state))||!!view.input?.busy||!!view.structure?.busy||!!view.correction?.busy||!!view.split?.busy||!!view.detail?.busy;
+    const check=checkReadiness(project,request.mode,d.available,undefined,busy);if(!check.canStart)throw new Error(check.issues.find(i=>i.severity==='block')!.code);const generation=++this.runtimeGeneration;this.runtimeRequest=request.requestId;
+    try{const used=new Set(project.parts.flatMap(p=>p.textures.map(t=>t.assetId))),available=new Set<string>();for(const asset of project.assets){if(!used.has(asset.id))continue;if(!await this.cache.read(asset))throw new Error('E_RUN_RESOURCE');available.add(asset.id);}if(generation!==this.runtimeGeneration||this.document!==d||d.flow.project().revision!==project.revision)throw new Error('E_RUN_STALE');const scene=this.scene(project,available,'run-'+request.requestId);if(!scene)throw new Error('E_RUN_ARTWORK');const lease:RunLease={requestId:request.requestId,sessionId:d.id,revision:project.revision,fingerprint:sha256(Buffer.from(JSON.stringify(project))),mode:request.mode,project,scene,issues:check.issues};this.runtimeLease=structuredClone(lease);return lease;}catch(e){if(this.runtimeRequest===request.requestId)this.runtimeRequest=null;this.grants.delete('run-'+request.requestId);throw e;}
+  }
+  releaseRuntime(requestId:string):void {if(this.runtimeRequest!==requestId&&this.runtimeLease?.requestId!==requestId)return;++this.runtimeGeneration;this.runtimeRequest=null;this.runtimeLease=null;this.grants.delete('run-'+requestId);}
+  runtimeActions(requestId:string):import('../execution').RunAction[]{return this.runtimeLease?.requestId===requestId?availableRunActions(this.runtimeLease.project,this.runtimeLease.mode):[];}
+  activeRuntime(requestId:string):boolean{return this.runtimeLease?.requestId===requestId;}
   view():SessionView {
     const d = this.document; const p = d?.flow.project() ?? null; const scene = d && p ? this.scene(p,d.available,d.id) : null;
     const renderKey = scene ? sha256(Buffer.from(JSON.stringify({ canvas:scene.canvas,layers:scene.layers }))) : 'empty';
@@ -96,7 +107,7 @@ export class ProjectSession {
     } finally { this.transitioning = false; }
   }
   async newProject(name:string,sourceType:SourceType):Promise<boolean> { const permit = await this.permission(); if (!permit) return false; return this.activate(createProject(name.trim() || '새 프로젝트',sourceType),null,null,permit); }
-  dropImage(file:string):SessionReply { const active=this.editable();if(active.split?.view().busy||active.structure?.view().busy||active.correction?.view().busy)throw new Error('E_INPUT_STRUCTURE_BUSY');const input=active.input;if(!input)throw new Error('E_INPUT_UNAVAILABLE');input.drop(file);return {view:this.view()}; }
+  dropImage(file:string):SessionReply {if(this.runtimeBusy())throw new Error('E_RUN_ACTIVE'); const active=this.editable();if(active.split?.view().busy||active.structure?.view().busy||active.correction?.view().busy)throw new Error('E_INPUT_STRUCTURE_BUSY');const input=active.input;if(!input)throw new Error('E_INPUT_UNAVAILABLE');input.drop(file);return {view:this.view()}; }
   async openFile(file:string):Promise<boolean> { const bundle = await readBundle(file,true); const permit = await this.permission(); if (!permit) return false; return this.activate(bundle.project,bundle,resolve(file),permit); }
   async save(saveAs:boolean):Promise<boolean> {
     if (this.saving) return this.saving; const d = this.editable(); d.history.settle();
@@ -177,7 +188,7 @@ export class ProjectSession {
   private watchCheck(d:Document,id:string):void { void d.flow.wait(id).then(async result => { if (this.document !== d) return; d.available = await this.cache.available(d.flow.project()); if (result.state === 'FAILED') this.lastError = result.errorCode; this.emit(); }).catch(() => {}); }
   async dispatch(input:unknown):Promise<SessionReply> {
     try {
-      const command = parseSessionCommand(input); let value:string | undefined; let preview:RecoveryComparison | undefined;
+      const command = parseSessionCommand(input);if(this.runtimeBusy())throw new Error('E_RUN_ACTIVE'); let value:string | undefined; let preview:RecoveryComparison | undefined;
       if(['sample','parts-start','parts-select','parts-remove','parts-adjust','parts-link','parts-reset','structure-start','structure-apply','structure-retry','correction-start','correction-apply','correction-retry','split-edit','split-prepare','split-apply','input-apply','prepare-motion'].includes(command.type))assertSimpleSafe(this.editable().flow.project());
       if(command.type.startsWith('detail-')){this.lastError=null;const c=command as Extract<SessionCommand,{type:`detail-${string}`}>;const d=this.editable();if(c.type==='detail-open')d.detail.open(c.location);else if(c.type==='detail-prepare')d.detail.prepare(c.operation,c.expectedRevision);else if(c.type==='detail-apply')await d.detail.apply(c.draftId,c.expectedRevision);else if(c.type==='detail-cancel')d.detail.cancel();else if(c.type==='detail-import'){if(!this.options.dialogs.chooseDetailTexture)throw new Error('E_DETAIL_IMPORT_UNAVAILABLE');if(c.expectedRevision!==d.flow.project().revision)throw new Error('E_DETAIL_STALE');const file=await this.options.dialogs.chooseDetailTexture();if(this.document!==d||c.expectedRevision!==d.flow.project().revision)throw new Error('E_DETAIL_STALE');if(file)d.detail.importTexture(file,c.partId,c.state,c.expectedRevision);}}
       else if(command.type.startsWith('split-')){const c=command as Extract<SessionCommand,{type:`split-${string}`}>;const d=this.editable();if(!d.split||d.flow.project().sourceType!=='split-image')throw new Error('E_SPLIT_ROUTE');if(d.input?.view().busy||d.structure?.view().busy||d.correction?.view().busy)throw new Error('E_SPLIT_BUSY');
@@ -231,5 +242,5 @@ export class ProjectSession {
     } catch (error) { this.lastError = storageError(error); this.emit(); return { view:this.view() }; }
   }
   async requestClose():Promise<boolean> { const permit = await this.permission(); if (!permit) return false; if (this.autoPromise) { try { await this.autoPromise; } catch { /* explicit discard or successful manual save governs leaving */ } } if (this.document !== permit.doc || this.document && this.document.flow.project().revision !== permit.revision) return false; if (this.document && permit.discard) await this.catalog.acknowledge(this.document.flow.project().projectId); return true; }
-  async shutdown():Promise<void> { this.stopped = true; this.cancelTimer(); if (this.saving) await this.saving; if (this.autoPromise) { try { await this.autoPromise; } catch { /* shutdown follows an explicit save/discard guard */ } } if (this.document) { this.document.detail.dispose();this.document.split?.dispose();this.document.correction?.dispose();this.document.structure?.dispose();this.document.input?.dispose();await this.document.flow.close(); } this.listeners.clear(); this.grants.clear(); }
+  async shutdown():Promise<void> {if(this.runtimeRequest)this.releaseRuntime(this.runtimeRequest); this.stopped = true; this.cancelTimer(); if (this.saving) await this.saving; if (this.autoPromise) { try { await this.autoPromise; } catch { /* shutdown follows an explicit save/discard guard */ } } if (this.document) { this.document.detail.dispose();this.document.split?.dispose();this.document.correction?.dispose();this.document.structure?.dispose();this.document.input?.dispose();await this.document.flow.close(); } this.listeners.clear(); this.grants.clear(); }
 }

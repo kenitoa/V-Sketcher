@@ -35,7 +35,7 @@ export function capabilities(p:Project,available = new Set(p.parts.filter(v => p
 export interface MotionFrame { parameters:Parameters; values:ReadonlyMap<string,number>; playing:boolean; elapsed:number; clamped:boolean; }
 /** Device-free test input. No project mutation, wall clock, timers, secondary dynamics or file writes. */
 export class MotionPlayer {
-  cameraLive=false;microphoneLive=false;
+  cameraLive=false;microphoneLive=false;neutralHold=false;automaticBlink=false;
   feedCamera(values:ReadonlyMap<string,number>,now:number):boolean{return this.controls.input('camera',this.liveValues(values),now,++this.signalSerial);}
   feedMicrophone(values:ReadonlyMap<string,number>,now:number):boolean{return this.controls.input('microphone',this.liveValues(values),now,++this.signalSerial);}
   private liveValues(values:ReadonlyMap<string,number>):ReadonlyMap<string,number>{const c=this.supported.find(c=>c.key==='mouth');if(!c?.limited||!c.parameter||!this.project)return values;const p=c.parameter,base=this.project.motion?.settings.pose.find(v=>v.parameterId===p.id)?.value??p.neutral,value=values.get(p.id);if(value===undefined)return values;const clean=new Map(values);clean.set(p.id,Math.min(value,base+(p.max-base)*.65));return clean;}
@@ -69,7 +69,8 @@ export class MotionPlayer {
 
     const test=new Map<string,number>();for(const c of this.supported)if(c.parameter&&(this.testOwned.has(c.parameter.id)||this.mode==='all'||this.mode===c.key))test.set(c.parameter.id,this.filtered.get(c.parameter.id)??c.parameter.neutral);
     if(!this.synthetic.paused)for(const source of ['camera','microphone'] as const)if(this.synthetic[source]&&!(source==='camera'&&this.cameraLive)&&!(source==='microphone'&&this.microphoneLive)){const values=new Map<string,number>();for(const c of this.supported)if(c.supported&&c.parameter&&(source==='camera'||c.key==='mouth')){const q=c.key.startsWith('eye')?.7:c.key==='mouth'?(source==='camera'?.3:.6):.45*Math.sin(now/700);const p=c.parameter;values.set(p.id,c.key.startsWith('head')?p.neutral+q*(p.max-p.neutral):p.min+q*(p.max-p.min));}this.controls.input(source,values,now,++this.signalSerial);}
-    const composed=this.controls.frame(Math.max(0,now),test);for(const c of this.supported)if(c.parameter&&c.supported)parameters[c.key]=normalize(c.parameter,composed.values.get(c.parameter.id)??c.parameter.neutral);
+    if(this.neutralHold)for(const param of p.parameters)test.set(param.id,settings.pose.find(v=>v.parameterId===param.id)?.value??param.neutral);
+    const composed=this.controls.frame(Math.max(0,now),test,this.automaticBlink);for(const c of this.supported)if(c.parameter&&c.supported)parameters[c.key]=normalize(c.parameter,composed.values.get(c.parameter.id)??c.parameter.neutral);
     this.last = { parameters,values:composed.values,playing:this.mode!==null,elapsed:this.elapsed,clamped }; return this.last;
   }
 }

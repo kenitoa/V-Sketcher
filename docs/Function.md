@@ -2,10 +2,10 @@
 
 | 항목 | 내용 |
 |---|---|
-| 문서 버전 | v0.21 — 20단계 마이크·입력 복구 구현·복합 자동 검증 완료 반영 |
+| 문서 버전 | v0.22 — 21단계 실행 준비·바로 실행·빠른 조작 반영 |
 | 작성일 | 2026-11-16 |
 | 최종 갱신 | 2026-11-18 |
-| 기준 문서 | [PRD.md](./PRD.md) v0.21, [01 기획 기준](./planning/01-product-baseline.md), [02 검증 준비](./planning/02-readiness.md), [03 가능성 검증](./planning/03-feasibility.md), [04 실제 외부 사용 검증](./planning/04-tracking-broadcast-export.md), [05 결정](./planning/05-decisions.md), [06 제품 기반](./planning/06-foundation.md), [07 공통 모델](./planning/07-common-model.md), [08 작업/트랜잭션](./planning/08-async-workflow.md), [09 프로젝트 보존](./planning/09-project-lifecycle.md), [10 공통 화면](./planning/10-common-editor.md), [11 공통 움직임](./planning/11-common-motion.md), [12 그림 입력](./planning/12-image-input.md), [13 파츠 조합](./planning/13-parts-library.md), [14 한 장 자동 구조화](./planning/14-single-image.md), [15 쉬운 보정](./planning/15-corrections.md), [16 분리 그림](./planning/16-split-image.md), [17 세부 편집](./planning/17-detail-editor.md), [18 표정 제어](./planning/18-expressions.md), [19 카메라 구현/재검증](./planning/19-camera-tracking.md), [20 입력 복구](./planning/20-input-recovery.md) |
+| 기준 문서 | [PRD.md](./PRD.md) v0.22, [01 기획 기준](./planning/01-product-baseline.md), [02 검증 준비](./planning/02-readiness.md), [03 가능성 검증](./planning/03-feasibility.md), [04 실제 외부 사용 검증](./planning/04-tracking-broadcast-export.md), [05 결정](./planning/05-decisions.md), [06 제품 기반](./planning/06-foundation.md), [07 공통 모델](./planning/07-common-model.md), [08 작업/트랜잭션](./planning/08-async-workflow.md), [09 프로젝트 보존](./planning/09-project-lifecycle.md), [10 공통 화면](./planning/10-common-editor.md), [11 공통 움직임](./planning/11-common-motion.md), [12 그림 입력](./planning/12-image-input.md), [13 파츠 조합](./planning/13-parts-library.md), [14 한 장 자동 구조화](./planning/14-single-image.md), [15 쉬운 보정](./planning/15-corrections.md), [16 분리 그림](./planning/16-split-image.md), [17 세부 편집](./planning/17-detail-editor.md), [18 표정 제어](./planning/18-expressions.md), [19 카메라 구현/재검증](./planning/19-camera-tracking.md), [20 입력 복구](./planning/20-input-recovery.md) |
 | 목적 | PRD의 요구사항을 화면 행동, 처리 규칙, 상태, 데이터, 예외, 검증 가능한 완료 조건으로 구체화 |
 | 초기 범위 | 파츠·한 장 그림·분리 그림 기반 2D 제작, 반응·추적, 앱 내 실행, 실제 방송 연결, 외부 아바타용 내보내기 |
 | 장기 필수 범위 | 그림 기반 3D 제작 및 자체 모델을 제작·연결하는 글 기반 생성 |
@@ -622,6 +622,10 @@ PRD는 제품이 해결할 문제와 반드시 제공할 범위를 정의한다.
 
 ### F-RUN-001. 실행 준비 검사
 
+**21단계 구현:** 수동·자동 눈 깜빡임·카메라·마이크·복합 모드별 검사와 문제 위치, 해시 재검증 리비전 실행본, 최근 바로 실행을 연결한다. 실행 중 편집 잠금은 21단계 정책이며 동시 변경 반영은 22단계다. [사용법·검증](./planning/21-execution.md), [실행/수명/키 계약](./architecture/execution.md).
+
+T-201~208·T-210 검증과 **T-209 실제 전역 입력 확인 대기**를 구분한다. 현재 전체 단계 완료가 아니며 실제 OS 등록·해제와 자동 입력 시험만으로 전역 키 배달을 통과 처리하지 않는다.
+
 **범위:** 초기 필수. **연결:** FR-RUN-01, FR-EDIT-01.
 
 - 현재 프로젝트의 외형, 리소스, 부위 연결, 매개변수, 표정 참조를 검사한다.
@@ -664,7 +668,7 @@ PRD는 제품이 해결할 문제와 반드시 제공할 범위를 정의한다.
 
 ### F-RUN-004. 단축키와 빠른 조작
 
-**18단계 구현 범위:** 앱 안 표정 슬롯 `Ctrl+Alt+Shift+1~3`/해제 `...+0`과 버튼, 글/IME/모달/반복 보호를 제공한다. OS 전역 등록·OBS 초점은 이 구현의 검증에 포함하지 않는다. [DEC-12 명료화](./planning/05-decisions.md), [표정 제어](./planning/18-expressions.md).
+**18단계 구현 범위:** 편집 화면의 앱 안 표정 슬롯 `Ctrl+Alt+Shift+1~3`/해제 `...+0`과 버튼, 글/IME/모달/반복 보호를 제공한다. **21단계 실행 화면**은 별도 PC 키 설정·선택 전역 등록·실제 등록/충돌/보류 상태를 제공한다. 앱 전용·전역·토글/단발·텍스트/IME/키 설정 보호와 실제 검증 범위는 [21 실행](./planning/21-execution.md)에 기록한다. OBS 초점/방송 전체 검증으로 확대하지 않는다. [DEC-12](./planning/05-decisions.md), [표정 제어](./planning/18-expressions.md).
 
 **범위:** 초기 필수, 전역 입력 지원 검증 대기. **연결:** FR-MOTION-02, FR-BROAD-03.
 
@@ -1313,3 +1317,4 @@ PRD의 확정 방향을 변경해야 한다면 기능 명세만 조용히 축소
 | v0.19 | 2026-11-17 | T-171~180 표정 정의/범위/고정·전환/해제·최신 입력 복귀·제어 우선순위·입 정책·손상 참조 수선·앱 안 명령/미리보기 구현. 218개 검사·전체 개발 앱 회귀·세 실제 경로 제작/표정/저장·동일 PC release 2회. M2 로컬 제작 종료 검토 통과·M3 장치 결합 후속, T-181~410·M0 HOLD/5 OPEN·필수 장기 범위 유지. |
 | v0.20 | 2026-11-17 | T-181~189 카메라/영상/얼굴 상태·개인 미리보기/대상 유지·검토 적용 중립 보정·방향/범위/안전 평활·기기 기준/프로젝트 분리를 구현. 241개 자동 검사·전체 개발 앱 회귀·세 경로·내장 worker release 2회 검증 통과. 실제 입력의 검출/보정 미통과를 보존하며 T-190 정상 실환경 재검증은 미완료. M0 HOLD/5 OPEN·필수 장기 범위 유지. |
 | v0.21 | 2026-11-18 | T-191~200 마이크·소음 기준/튜닝·단일 입 소유자·독립 손실/500ms 기본 복귀/250ms 복구·수동 재연결·복합 자동 시나리오 구현. 261개 검사·전체 개발 앱 회귀·세 경로·동결 worker release 2회 통과. 실제 기본 마이크 수신/중지/재연결 확인, 실제 사람 세 음성 구간·물리 USB 분리·T-190 카메라 실환경 재검증은 별도 미완료. M0 HOLD/5 OPEN·필수 장기 범위 유지. |
+| v0.22 | 2026-11-18 | T-201~208·T-210 실행 준비/스냅샷/최근 바로 실행/독립 조작/중지·재시작/PC 키 설정 구현·검증. 278개 검사·전체 개발 앱 회귀·같은 PC release 검증. T-209 실제 OS 전역 입력 확인은 대기이며 21 전체 완료로 표시하지 않음. T-190·M0 HOLD/5 OPEN·필수 장기 범위 유지. |

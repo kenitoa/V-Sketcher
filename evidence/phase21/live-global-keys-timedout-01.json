@@ -1,0 +1,18 @@
+{
+  "passed": false,
+  "appVersion": "0.16.0",
+  "registeredBeforeInput": true,
+  "actualGlobalCallbackOutsideMain": false,
+  "localNeutralDidNotFire": true,
+  "ownedChordReleased": true,
+  "requestedSequence": "local F8 then global F9",
+  "userSequenceAttestation": "PENDING",
+  "rawKeysRecorded": false,
+  "physicalDevicesOpened": false,
+  "protections": {
+    "sandbox": true,
+    "contextIsolation": true,
+    "nodeIntegration": false,
+    "externalNetworkBlocked": true
+  }
+}

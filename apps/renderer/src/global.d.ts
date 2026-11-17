@@ -4,6 +4,9 @@ declare global {
   interface Window {
     microphoneLiveCheck?:(scripted?:boolean)=>Promise<Record<string,unknown>>;
     microphoneReviewPhase?:{phase:string;seconds:number;blocks:number;state:string;rms:number};
+    prepareExecutionKeys?:()=>Promise<{registered:boolean;revision:number}>;
+    executionKeyState?:()=>{hidden:boolean;neutral:boolean;active:boolean;lastAction:import('../../../packages/execution').RunAction|null};
+    executionSelfCheck?:()=>Promise<Record<string,unknown>>;
     inputRecoverySelfCheck?:()=>Promise<Record<string,unknown>>;
     cameraLiveCheck?:(hint?:string|null)=>Promise<Record<string,unknown>>;
     liveReviewPhase?:{phase:string;seconds:number;faceCount?:number;selected?:boolean;brightness?:number|null;yaw?:number|null;roll?:number|null;state?:string};
@@ -19,7 +22,7 @@ declare global {
     structureSelfCheck?:()=>Promise<Record<string,unknown>>;
     structureExtremeData?:string;
     workflowLabCheck?: (options?:{ holdForCapture:boolean }) => Promise<Record<string,unknown>>;
-    studio: { microphone:import('../../../packages/input-control/api').MicrophoneAPI;tracking:import('../../../packages/tracking/api').TrackingAPI; info: () => Promise<StudioInfo>; health: () => Promise<{ ready: boolean }>; projects:{ dropImage:(file:File)=>Promise<SessionReply>;view:()=>Promise<SessionView>; command:(command:SessionCommand)=>Promise<SessionReply>; subscribe:(listener:(view:SessionView)=>void)=>()=>void } };
+    studio: { run:import('../../../packages/execution/api').RunAPI;microphone:import('../../../packages/input-control/api').MicrophoneAPI;tracking:import('../../../packages/tracking/api').TrackingAPI; info: () => Promise<StudioInfo>; health: () => Promise<{ ready: boolean }>; projects:{ dropImage:(file:File)=>Promise<SessionReply>;view:()=>Promise<SessionView>; command:(command:SessionCommand)=>Promise<SessionReply>; subscribe:(listener:(view:SessionView)=>void)=>()=>void } };
     projectSelfCheck?:()=>Promise<Record<string,unknown>>;
     projectSelfCheckCapture?:()=>Promise<void>;
     partsSelfCheck?:()=>Promise<Record<string,unknown>>;

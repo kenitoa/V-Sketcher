@@ -1,0 +1,1 @@
+{"passed":false,"state":"CANCELLED","reason":"Fixed quick recent execution after an unsaved-changes cancellation: a cancelled open must preserve the editor without starting the previous character. Final gate restarted with regression coverage."}
