@@ -1,0 +1,11 @@
+{
+  "passed": false,
+  "scope": "Previous real image processor failure during protected reanalysis; not counted as a passing run. Worker timeout had no dedicated error code.",
+  "previousWorkerOperationTimeoutMs": 60000,
+  "compiledSha256": {
+    "dist/electron/apps/desktop/image-processor.js": "2a5a075385928748b77e8e1bcc907b7617cf847bea25545b6a37ed3103e9e5ed",
+    "dist/renderer/assets/output-BbyEh9SM.js": "6e9a8bd34f1b35ca5a4efbef819efb3f0b0fa1aa3d8625a7b3b4103152049b11",
+    "dist/renderer/assets/preview-DzcwwFkt.js": "0ff83978231ffd335e2a871977d3b7074e157d9697118f891ae7ed5b47292081",
+    "dist/renderer/assets/studio-C7K2wJ6u.js": "e13ff218a4d5ce63de41d1dba655c437e2ea308bec014605be05302b5174355b"
+  }
+}

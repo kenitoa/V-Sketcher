@@ -1,0 +1,13 @@
+{
+  "passed": false,
+  "scope": "Previous integration run stopped at the aggregate UI wait while the second structure step was still preparing. Not counted as a passing run.",
+  "workerOperationTimeoutMs": 60000,
+  "previousAggregateWaitMs": 65000,
+  "sourceSha256": {
+    "apps/renderer/src/structure-self-check.ts": "be27e59f704f8aca3c489c848e5b47d9f39a7334547cd69dc3fbb99754121656",
+    "apps/renderer/src/correction-self-check.ts": "479b715478cab028330f580c3a3eb6cbbf4df7d0c6c59fd6b383d5e3b5a70247",
+    "apps/renderer/src/ui-check-control.ts": "1562eb0f9f1178e0b8a2fca0eb598e0be4584c63e237002fc7769d63ec556d9a",
+    "apps/renderer/src/project-desk.tsx": "3e16ed00b8f7e8f4ac895da53bb998f9bd19a1432f57742521510d1f5625dcf8",
+    "apps/desktop/image-processor.ts": "97a788417d12721c71b68c1ece7b5b824d5519d5c2451a5709625f9e50d29818"
+  }
+}

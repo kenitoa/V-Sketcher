@@ -52,21 +52,32 @@ def analyze(image,model,occluded=False):
     report['maxRollDegrees']=6*report['headGain']
     return report
 
-def build(image,report,target,completion):
+def build(image,report,target,completion,keys=None):
     if completion not in ['estimated','restrict']:raise ValueError('E_INPUT_STRUCTURE_OPTIONS')
     if report.get('version')!=VERSION or report.get('status') not in ['ready','partial']:raise ValueError('E_INPUT_STRUCTURE_FACE')
-    source=np.array(image);base=source.copy();hole=np.zeros(source.shape[:2],np.uint8);patches=[];files=[]
+    selected=set(FEATURES if keys is None else keys)
+    if not selected.issubset(FEATURES) or keys is not None and len(keys)!=len(selected):raise ValueError('E_INPUT_STRUCTURE_OPTIONS')
+    source=np.array(image);base=source.copy();hole=np.zeros(source.shape[:2],np.uint8);ownership=np.zeros(source.shape[:2],np.uint8);patches=[];files=[]
     for item in report['regions']:
-        if not item['observed'] or completion=='restrict':continue
+        if not item.get('enabled',item['observed']) or completion=='restrict':continue
         key=item['key'];r=item['rect'];x,y,w,h=[r[k] for k in ['x','y','width','height']]
         if min(x,y)<0 or min(w,h)<1 or x+w>image.width or y+h>image.height:raise ValueError('E_INPUT_REGION')
-        patch=source[y:y+h,x:x+w].copy();cv2.ellipse(hole,(x+w//2,y+h//2),(max(1,round(w*.46)),max(1,round(h*.43))),0,0,360,255,-1);patches.append((key,r,patch))
+        patch=source[y:y+h,x:x+w].copy();mask=np.full((h,w),255,np.uint8)
+        for entry in item.get('masks',[]):
+            m=entry['rect'];mx,my,mw,mh=[m[k] for k in ['x','y','width','height']]
+            if min(mx,my)<0 or min(mw,mh)<1 or mx+mw>image.width or my+mh>image.height or entry['mode'] not in ['erase','restore']:raise ValueError('E_INPUT_REGION')
+            ax,ay,bx,by=max(0,mx-x),max(0,my-y),min(w,mx+mw-x),min(h,my+mh-y)
+            if bx>ax and by>ay:mask[ay:by,ax:bx]=0 if entry['mode']=='erase' else 255
+        if np.any((ownership[y:y+h,x:x+w]>0)&(mask>0)):raise ValueError('E_INPUT_STRUCTURE_OVERLAP')
+        ownership[y:y+h,x:x+w]=np.maximum(ownership[y:y+h,x:x+w],mask)
+        ellipse=np.zeros((h,w),np.uint8);cv2.ellipse(ellipse,(w//2,h//2),(max(1,round(w*.46)),max(1,round(h*.43))),0,0,360,255,-1);hole[y:y+h,x:x+w]=np.maximum(hole[y:y+h,x:x+w],np.minimum(ellipse,mask));patches.append((key,r,patch,mask))
     if hole.any():
-        filled=cv2.inpaint(source[:,:,:3],hole,3,cv2.INPAINT_TELEA);base[hole>0,:3]=filled[hole>0]
+        filled=cv2.inpaint(source[:,:,:3],hole,3,cv2.INPAINT_TELEA);visible=(hole>0)&(source[:,:,3]>0);base[visible,:3]=filled[visible]
         # The patch owns its original alpha; avoid double alpha at semi-transparent skin pixels.
-        for _,r,_ in patches:base[r['y']:r['y']+r['height'],r['x']:r['x']+r['width'],3]=0
+    base[ownership>0,3]=0
     Image.fromarray(base).save(target/'structure-base.png');files.append('structure-base.png')
-    for key,r,patch in patches:
+    for key,r,patch,coverage in patches:
+        if key not in selected:continue
         x,y,w,h=[r[k] for k in ['x','y','width','height']];plate=base[y:y+h,x:x+w].copy();plate[:,:,3]=patch[:,:,3]
         if key.startswith('eye'):
             # Local cheek texture supplies an estimated lid surface, retaining the source lash palette.
@@ -90,5 +101,6 @@ def build(image,report,target,completion):
             cv2.ellipse(opened,(w//2,h//2),(max(1,round(w*.20)),max(1,round(min(h*.10,w*.045)))),0,0,360,(*color,255),-1,cv2.LINE_AA)
             opened[:,:,3]=patch[:,:,3];states={'closed':patch,'open':opened}
         for state,pixels in states.items():
+            pixels[:,:,3]=np.minimum(pixels[:,:,3],coverage)
             name=f'structure-{key}-{state}.png';Image.fromarray(pixels).save(target/name);files.append(name)
-    return {**report,'completion':completion,'files':files,'regions':[{**r,'enabled':r['observed'] and completion=='estimated'} for r in report['regions']]}
+    return {**report,'completion':completion,'files':files,'regions':[{**r,'enabled':r.get('enabled',r['observed']) and completion=='estimated'} for r in report['regions']]}

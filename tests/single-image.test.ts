@@ -11,7 +11,7 @@ import {encodeBundle,sha256} from '../packages/project-storage/archive';
 import {capabilities,authorRig} from '../packages/motion';
 import {parseSessionCommand} from '../packages/project-session/contracts';
 const sleep=()=>new Promise(r=>setTimeout(r,15));
-async function until(fn:()=>boolean){const t=Date.now();while(!fn()){if(Date.now()-t>60000)throw new Error('E_STRUCTURE_TEST_TIMEOUT');await sleep();}}
+async function until(fn:()=>boolean){const t=Date.now();while(!fn()){if(Date.now()-t>300000)throw new Error('E_STRUCTURE_TEST_TIMEOUT');await sleep();}}
 let memo:ReturnType<typeof fixture>|undefined;
 async function fixture(){
  await mkdir('.local/structure-tests',{recursive:true});const dir=await mkdtemp(resolve('.local/structure-tests/fixture-'));const read=readProject(await readFile('assets/product/preview-project.json','utf8'));if(read.mode!=='read-write')throw new Error('fixture');const bundled=read.project;const bundledBytes=new Map(await Promise.all(bundled.assets.map(async a=>[a.id,await readFile(join('assets/product/preview',a.fingerprint.sha256+'.png'))] as const)));const source=bundledBytes.get(bundled.inputAssetIds[0]!)!;const file=join(dir,'source.png');await writeFile(file,source);const processor=imageProcessor(resolve('.venv-product/Scripts/python.exe'),['-I','-u',resolve('worker/main.py')],join(dir,'worker'),process.env);

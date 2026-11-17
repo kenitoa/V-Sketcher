@@ -40,7 +40,7 @@ const motion = object({ version:{ const:1 },faceWidth:positive,maxRollDegrees:{ 
   meshes:array(object({ partId:id,pivot:pair,yawParameterId:nullable(id),rollParameterId:nullable(id),curve:choice('linear','smoothstep'),
     vertices:{ ...array(object({ position:pair,weight:{ type:'number',minimum:0,maximum:1 },minimum:pair,maximum:pair }),1024),minItems:3 },triangles:{ ...array(integer(1023),6144),minItems:3 } }),64) });
 export const PROJECT_SCHEMA = { $schema:'https://json-schema.org/draft/2020-12/schema', $id:'https://2dsketcher.local/schema/project-1.3',
-  ...object({ projectId:id,schemaVersion:object({ major:{ const:1 },minor:{ enum:[0,1,2,3,4] } }),displayName:string(),sourceType:choice('parts','single-image','split-image'),
+  ...object({ projectId:id,schemaVersion:object({ major:{ const:1 },minor:{ enum:[0,1,2,3,4,5] } }),displayName:string(),sourceType:choice('parts','single-image','split-image'),
     createdAt:{ ...string(24),pattern:'^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$' },modifiedAt:{ ...string(24),pattern:'^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$' },
     revision,savedRevision:nullable(revision),canvas:size,inputAssetIds:{ ...array(id),uniqueItems:true },assets:array(asset),parts:array(part,64),
     groups:array(object({ id,displayName:string(),parentGroupId:nullable(id),visible:boolean }),128),parameters:array(parameter,128),
@@ -72,4 +72,11 @@ return INPUT_SCHEMA;
 export const MACHINE_SCHEMA = { $schema:'https://json-schema.org/draft/2020-12/schema', ...object({ schemaVersion:{ const:1 },projectId:id,
   cameraId:nullable(string(512)),microphoneId:nullable(string(512)),calibrations:array(object({ bindingId:id,inputRange:pair }),128) }) };
 const structureReport=object({version:{const:'1.0.0'},method:{const:'mediapipe-landmarks-pixel-evidence'},status:choice('ready','partial','failed'),face:nullable(rect),regions:array({...object({key:choice('eye_left','eye_right','mouth'),rect,observed:boolean,reason:string(128),estimatedStates:array(choice('open','closed'),2),enabled:boolean}),required:['key','rect','observed','reason','estimatedStates']},3),unconfirmed:array(string(128),16),warnings:array(string(128),16),headGain:{type:'number',minimum:0,maximum:.65},maxRollDegrees:{type:'number',minimum:0,maximum:3.900000001},completion:choice('estimated','restrict'),files:array({...string(128),pattern:'^structure-(base|eye_(left|right)-(open|closed)|mouth-(open|closed))\\.png$'},7)});
-((PROJECT_SCHEMA as Record<string,unknown>).properties as Record<string,Schema>).structure=object({version:{const:1},inputAssetId:id,inputRevision:revision,configurationVersion:{const:'1.0.0'},report:structureReport});
+((PROJECT_SCHEMA as Record<string,unknown>).properties as Record<string,Schema>).structure=object({version:{const:1},inputAssetId:id,inputRevision:revision,configurationVersion:choice('1.0.0','1.1.0'),report:structureReport});
+
+const correctionMask=object({mode:choice('erase','restore'),rect});
+const correction=object({key:choice('eye_left','eye_right','mouth'),rect,masks:array(correctionMask,32),order:{type:'integer',minimum:5,maximum:20},decision:choice('confirmed','skip','blocked'),occluded:boolean,protect:boolean});
+const reportRegion=(((structureReport.properties as Record<string,Schema>).regions!.items as Schema).properties as Record<string,Schema>);
+reportRegion.masks=array(correctionMask,32);reportRegion.order={type:'integer',minimum:5,maximum:20};
+const structureExtension=(((PROJECT_SCHEMA as Schema).properties as Record<string,Schema>).structure!.properties as Record<string,Schema>);
+structureExtension.corrections=object({version:{const:1},automatic:structureReport,entries:array(correction,3),invalidated:object({keys:array(choice('eye_left','eye_right','mouth'),3),checks:array(choice('preview','compatibility','export'),3)})});

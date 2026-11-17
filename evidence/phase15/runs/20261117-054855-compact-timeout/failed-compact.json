@@ -1,0 +1,15 @@
+{
+  "passed": false,
+  "code": "E_FOUNDATION_CHECK",
+  "stage": "structure-ui",
+  "detail": "E_STRUCTURE_UI_TIMEOUT",
+  "diagnostic": {
+    "contrast": {
+      "passed": true,
+      "checked": 80,
+      "minimum": 5.148766376459664,
+      "failures": []
+    }
+  },
+  "packaged": true
+}

@@ -1,3 +1,4 @@
+import {assertCorrection} from '../single-image/correction-types';
 import type { ValidateFunction } from 'ajv';
 import { inverse,multiply,transform, type Affine } from '../coordinates';
 import { projectStructure, machineStructure } from './structure.generated';
@@ -20,6 +21,8 @@ export function validateProject(value: unknown): ValidationIssue[] {
   ids.add(p.projectId);
   const assets = unique(p.assets,'/assets'); const parts = unique(p.parts,'/parts'); const groups = unique(p.groups,'/groups');
   if(p.structure){const s=p.structure;try{assertReport(s.report);}catch{issue('E_STRUCTURE_REPORT','/structure');}if(p.schemaVersion.minor<4||p.sourceType!=='single-image'||!p.inputPreparation||s.inputAssetId!==p.inputPreparation.selectedAssetId||!assets.has(s.inputAssetId)||s.inputRevision>p.revision)issue('E_STRUCTURE_REFERENCE','/structure');for(const r of s.report.regions)if(r.rect.x+r.rect.width>p.canvas.width||r.rect.y+r.rect.height>p.canvas.height)issue('E_STRUCTURE_REGION','/structure');}
+  if(p.structure?.corrections){const c=p.structure.corrections;try{c.entries.forEach(e=>assertCorrection(e,p.canvas.width,p.canvas.height));assertReport(c.automatic);}catch{issue('E_CORRECTION_MODEL','/structure/corrections');}if(p.schemaVersion.minor<5||new Set(c.entries.map(e=>e.key)).size!==c.entries.length)issue('E_CORRECTION_MODEL','/structure/corrections');}
+  if(p.structure?.report.regions.some(r=>r.masks!==undefined||r.order!==undefined)&&p.schemaVersion.minor<5)issue('E_CORRECTION_VERSION','/structure');
   if (p.inputPreparation) {
     const i=p.inputPreparation;const o=assets.get(i.originalAssetId),n=assets.get(i.normalizedAssetId),s=assets.get(i.selectedAssetId),a=assets.get(i.analysisAssetId);
     if (p.schemaVersion.minor<2 || !o || !n || !s || !a || o.kind!=='original-image' || !p.inputAssetIds.includes(o.id) || !n.parentAssetIds.includes(o.id) || !s.parentAssetIds.includes(n.id) || !a.parentAssetIds.includes(s.id)) issue('E_INPUT_REFERENCE','/inputPreparation');

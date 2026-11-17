@@ -48,6 +48,7 @@ export function impactedKeys(before:Project,after:Project,tx:Transaction): Set<D
     else if (change.collection === 'project') {
       if (field === 'displayName') { add('export-names'); add('export'); }
       else if (field === 'runtimeProfile') { add('runtime'); add('input'); add('output'); }
+      else if(field==='motion'){const all=new Set([...before.motion?.meshes.map(m=>m.partId)??[],...after.motion?.meshes.map(m=>m.partId)??[]]);for(const id of all)if(JSON.stringify(before.motion?.meshes.find(m=>m.partId===id))!==JSON.stringify(after.motion?.meshes.find(m=>m.partId===id))||JSON.stringify(before.motion?.settings)!==JSON.stringify(after.motion?.settings)||before.motion?.maxRollDegrees!==after.motion?.maxRollDegrees)part(id,false);add('runtime');add('compatibility');add('export');}
       else if (field === 'provenance' || field === 'derivedProjects') add('provenance');
       else { add('analysis'); add('references'); add('geometry'); add('runtime'); add('compatibility'); add('export'); }
     }

@@ -2,6 +2,8 @@ import type { StudioInfo } from '../../../packages/contracts';
 import type { SessionCommand,SessionView,SessionReply } from '../../../packages/project-session/contracts';
 declare global {
   interface Window {
+    correctionSelfCheck?:()=>Promise<Record<string,unknown>>;
+    correctionExtremeData?:string;
     structureSelfCheck?:()=>Promise<Record<string,unknown>>;
     structureExtremeData?:string;
     workflowLabCheck?: (options?:{ holdForCapture:boolean }) => Promise<Record<string,unknown>>;

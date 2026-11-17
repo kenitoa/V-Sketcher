@@ -143,7 +143,7 @@ def execute(request):
         if max(image.size)>4096 or image.width*image.height>MAX_PIXELS:fail('E_INPUT_DIMENSIONS')
         settings=request['selection']
         if request['operation']=='structure-analyze':return analyze(image,model,settings['occluded'])
-        return build(image,settings['report'],target,settings['completion'])
+        return build(image,settings['report'],target,settings['completion'],settings.get('keys'))
     if request['operation']=='probe':
         data=Path(request['source']).read_bytes();image,report=decode(data,request['suffix']);image.save(target/'normalized.png')
         small=image.copy();small.thumbnail((1024,1024),Image.Resampling.LANCZOS);available=True

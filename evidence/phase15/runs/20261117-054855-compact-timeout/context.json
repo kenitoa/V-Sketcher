@@ -1,0 +1,10 @@
+{
+  "scope": "Preserved previous package attempt, before committed-view control synchronization; this compact run failed and is not counted as a passing release run.",
+  "capturedAt": "2026-11-17T06:01:49.058502+00:00",
+  "appVersion": "0.10.0",
+  "portableZipSha256": "0a0998bcab4aef778896c5c1af9c5b8181c628be3c1723dec9336356ead85502",
+  "defaultPassed": true,
+  "compactPassed": false,
+  "failure": "E_STRUCTURE_UI_TIMEOUT",
+  "sourceInventory": "previous-development-verification.json"
+}

@@ -31,7 +31,7 @@ const slot = (exists:boolean,value:unknown): Slot => ({ exists,value:exists ? st
 export function transaction(before:Project, after:Project, label:string): Transaction {
   assertProject(before); assertProject(after);
   for (const field of ['projectId','sourceType','createdAt','savedRevision'] as const) if (!equal(before[field],after[field])) throw new Error('E_TRANSACTION_IDENTITY');
-  if (!equal(before.schemaVersion,after.schemaVersion) && !(before.schemaVersion.major===1 && after.schemaVersion.major===1 && before.schemaVersion.minor<=after.schemaVersion.minor && after.schemaVersion.minor<=4)) throw new Error('E_TRANSACTION_IDENTITY');
+  if (!equal(before.schemaVersion,after.schemaVersion) && !(before.schemaVersion.major===1 && after.schemaVersion.major===1 && before.schemaVersion.minor<=after.schemaVersion.minor && after.schemaVersion.minor<=5)) throw new Error('E_TRANSACTION_IDENTITY');
   if (!label.trim() || label.length > 120) throw new Error('E_TRANSACTION_LABEL');
   const changes: Change[] = [];
   for (const field of projectFields) if (!equal(before[field as keyof Project],after[field as keyof Project])) changes.push({ key:'project/'+field,collection:'project',entityId:null,field,before:slot(Object.hasOwn(before,field),before[field as keyof Project]),after:slot(Object.hasOwn(after,field),after[field as keyof Project]) });

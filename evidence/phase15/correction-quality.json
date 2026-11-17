@@ -1,0 +1,61 @@
+{
+  "passed": true,
+  "scope": "Five actual worker correction variants and pixel/alpha locality; no fixture annotations, independent art scores, user observation or M0 performance claim",
+  "inputSha256": "955e597230d4cdd15cd64c09ecf8f48686bbd5702f32e429109d581d68d6f442",
+  "cases": [
+    {
+      "case": "automatic",
+      "neutralChangedChannels": 0,
+      "closedAlphaChangedChannels": 0,
+      "outsideChangedChannels": 0,
+      "enabledKeys": [
+        "eye_right",
+        "eye_left",
+        "mouth"
+      ]
+    },
+    {
+      "case": "moved",
+      "neutralChangedChannels": 0,
+      "closedAlphaChangedChannels": 0,
+      "outsideChangedChannels": 0,
+      "enabledKeys": [
+        "eye_right",
+        "eye_left",
+        "mouth"
+      ]
+    },
+    {
+      "case": "foreground-mask",
+      "neutralChangedChannels": 0,
+      "closedAlphaChangedChannels": 0,
+      "outsideChangedChannels": 0,
+      "enabledKeys": [
+        "eye_right",
+        "eye_left",
+        "mouth"
+      ]
+    },
+    {
+      "case": "skipped",
+      "neutralChangedChannels": 0,
+      "closedAlphaChangedChannels": 0,
+      "outsideChangedChannels": 0,
+      "enabledKeys": [
+        "eye_left",
+        "mouth"
+      ]
+    },
+    {
+      "case": "restored",
+      "neutralChangedChannels": 0,
+      "closedAlphaChangedChannels": 0,
+      "outsideChangedChannels": 0,
+      "enabledKeys": [
+        "eye_right",
+        "eye_left",
+        "mouth"
+      ]
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-import { mkdirSync, writeFileSync, readFileSync } from 'node:fs';
+import { mkdirSync, writeFileSync, readFileSync, copyFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { root, python, run, bin } from './common.mjs';
 const mode = process.argv.find(v => v.startsWith('--mode='))?.slice(7) ?? 'release';
@@ -6,6 +6,7 @@ if (!['development', 'test', 'release'].includes(mode)) throw new Error('Unknown
 run(process.execPath,['scripts/generate-project-validators.mjs','--check']);
 run(python, ['scripts/provision.py']);
 bin('typescript', 'tsc', ['-p', 'tsconfig.build.json']);
+copyFileSync(resolve(root,'packages/project-model/structure.runtime.js'),resolve(root,'dist/electron/packages/project-model/structure.runtime.js'));
 bin('vite', 'vite', ['build']);
 mkdirSync(resolve(root, 'dist'), { recursive: true });
 const pkg = JSON.parse(readFileSync(resolve(root, 'package.json'), 'utf8'));

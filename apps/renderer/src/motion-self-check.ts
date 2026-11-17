@@ -1,3 +1,4 @@
+import {clickCommittedControl} from './ui-check-control';
 import { AvatarRenderer } from '../../../packages/avatar-renderer';
 import { projectToPreview } from '../../../packages/project-model/preview';
 import type { Project,PreviewKey } from '../../../packages/project-model';
@@ -20,7 +21,7 @@ export async function checkMotionPixels(project:Project):Promise<Record<string,u
 export async function checkMotionUI(host:{ current:()=>SessionView | null;command:(c:SessionCommand)=>Promise<SessionReply>;settled:()=>Promise<unknown>;player:MotionPlayer }):Promise<Record<string,unknown>> {
   let phase = 'READY';
   const pause = (ms=30):Promise<void> => new Promise(r => setTimeout(r,ms)); const verify = (v:unknown,code:string):void => { if (!v) throw new Error(code); }; const until = async (predicate:()=>unknown):Promise<void> => { const start = performance.now(); while (!predicate()) { if (performance.now()-start>12000) { window.editorFailureState = { ...window.editorFailureState,motionPhase:phase,motionFrame:{ parameters:host.player.snapshot().parameters,elapsed:host.player.snapshot().elapsed,playing:host.player.snapshot().playing },motionSettings:host.current()?.project?.motion?.settings,ready:window.previewProbe?.().ready }; throw new Error('E_MOTION_UI_'+phase); } await pause(25); } };
-  const click = async (selector:string):Promise<void> => { const el = document.querySelector<HTMLButtonElement>(selector); verify(el && !el.disabled,'E_MOTION_UI_CONTROL'); el!.click(); await pause(); await host.settled(); await pause(); };
+  const click = async (selector:string):Promise<void> => {await clickCommittedControl(selector,host.current);await pause(); await host.settled();await new Promise<void>(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve()))); await pause(); };
   await window.editorCapture!(); await click('[data-step="motion"]'); await until(() => window.previewProbe?.().ready); verify(document.querySelectorAll('[data-motion-key]').length===5 && [...document.querySelectorAll<HTMLInputElement>('[data-motion-key]')].every(el => !el.disabled),'E_MOTION_UI_CAPABILITIES');
   const p = host.current()!.project!; await host.command({ type:'motion-settings',expectedRevision:p.revision,strength:1,smoothingMs:0,pose:[] }); await pause(); const snapshot = JSON.stringify(host.current()!.project);
   phase = 'EYE'; await click('[data-motion-point="eye_left-0"]'); await until(() => host.player.snapshot().parameters.eye_left===0); verify(host.player.snapshot().parameters.eye_right===1,'E_MOTION_UI_EYE'); await click('[data-motion-stop]'); verify(host.player.snapshot().parameters.eye_left===1,'E_MOTION_UI_STOP');
