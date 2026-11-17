@@ -63,6 +63,8 @@ if __name__=='__main__':
             from image_input import cli
         else:
             import importlib.util
+            split_spec=importlib.util.spec_from_file_location('split_image',Path(__file__).with_name('split_image.py'))
+            split_module=importlib.util.module_from_spec(split_spec);sys.modules['split_image']=split_module;split_spec.loader.exec_module(split_module)
             structure_spec=importlib.util.spec_from_file_location('structure',Path(__file__).with_name('structure.py'))
             structure_module=importlib.util.module_from_spec(structure_spec);sys.modules['structure']=structure_module;structure_spec.loader.exec_module(structure_module)
             spec=importlib.util.spec_from_file_location('image_input',Path(__file__).with_name('image_input.py'))

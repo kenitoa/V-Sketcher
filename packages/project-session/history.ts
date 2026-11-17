@@ -14,6 +14,7 @@ function restore(flow:Workflow,snapshot:Project,label:string):void {
     if (!snapshot.inputPreparation) delete draft.inputPreparation;
     if (!snapshot.assembly) delete draft.assembly;
     if (!snapshot.structure) delete draft.structure;
+    if (!snapshot.split) delete draft.split;
     for (const [key,value] of Object.entries(snapshot)) if (!protectedFields.has(key)) (draft as unknown as Record<string,unknown>)[key] = structuredClone(value);
   });
 }

@@ -24,3 +24,9 @@ export function partIsVisible(project: Project, part: CharacterPart): boolean {
   return true;
 }
 export const identityTransform = (): Affine => [...IDENTITY];
+/** DEC-03 pass-through group opacity, multiplied along the group ancestry. */
+export function partOpacity(project:Project,part:CharacterPart):number {
+ let value=part.opacity,id=part.groupId;let depth=0;
+ while(id){const g=project.groups.find(g=>g.id===id);if(!g||++depth>128)throw new Error('E_GROUP_REFERENCE');value*=g.opacity??1;id=g.parentGroupId;}
+ return value;
+}

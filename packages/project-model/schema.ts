@@ -39,8 +39,8 @@ const motion = object({ version:{ const:1 },faceWidth:positive,maxRollDegrees:{ 
   settings:object({ strength:{ type:'number',minimum:0,maximum:1 },smoothingMs:integer(1000),pose:array(object({ parameterId:id,value:number }),128) }),
   meshes:array(object({ partId:id,pivot:pair,yawParameterId:nullable(id),rollParameterId:nullable(id),curve:choice('linear','smoothstep'),
     vertices:{ ...array(object({ position:pair,weight:{ type:'number',minimum:0,maximum:1 },minimum:pair,maximum:pair }),1024),minItems:3 },triangles:{ ...array(integer(1023),6144),minItems:3 } }),64) });
-export const PROJECT_SCHEMA = { $schema:'https://json-schema.org/draft/2020-12/schema', $id:'https://2dsketcher.local/schema/project-1.3',
-  ...object({ projectId:id,schemaVersion:object({ major:{ const:1 },minor:{ enum:[0,1,2,3,4,5] } }),displayName:string(),sourceType:choice('parts','single-image','split-image'),
+export const PROJECT_SCHEMA = { $schema:'https://json-schema.org/draft/2020-12/schema', $id:'https://2dsketcher.local/schema/project-1.6',
+  ...object({ projectId:id,schemaVersion:object({ major:{ const:1 },minor:{ enum:[0,1,2,3,4,5,6] } }),displayName:string(),sourceType:choice('parts','single-image','split-image'),
     createdAt:{ ...string(24),pattern:'^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$' },modifiedAt:{ ...string(24),pattern:'^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$' },
     revision,savedRevision:nullable(revision),canvas:size,inputAssetIds:{ ...array(id),uniqueItems:true },assets:array(asset),parts:array(part,64),
     groups:array(object({ id,displayName:string(),parentGroupId:nullable(id),visible:boolean }),128),parameters:array(parameter,128),
@@ -80,3 +80,13 @@ const reportRegion=(((structureReport.properties as Record<string,Schema>).regio
 reportRegion.masks=array(correctionMask,32);reportRegion.order={type:'integer',minimum:5,maximum:20};
 const structureExtension=(((PROJECT_SCHEMA as Schema).properties as Record<string,Schema>).structure!.properties as Record<string,Schema>);
 structureExtension.corrections=object({version:{const:1},automatic:structureReport,entries:array(correction,3),invalidated:object({keys:array(choice('eye_left','eye_right','mouth'),3),checks:array(choice('preview','compatibility','export'),3)})});
+
+const groupOpacity={type:'number',minimum:0,maximum:1};
+(((((PROJECT_SCHEMA as Schema).properties as Record<string,Schema>).groups!.items as Schema).properties) as Record<string,Schema>).opacity=groupOpacity;
+const splitRole=choice('base','body','head','hair-front','hair-back','eye','mouth','accessory','custom');
+const splitSide=choice('character-left','character-right','center','none');
+const splitGroup=object({id,name:string(),parentGroupId:nullable(id),visible:boolean,opacity:groupOpacity});
+const splitImage=object({key:{type:'string',pattern:'^[a-f0-9]{64}$'},width:{...integer(4096),minimum:1},height:{...integer(4096),minimum:1},bounds:nullable(rect),empty:boolean,opaque:boolean,iccConverted:boolean});
+const splitLayer=object({id,name:string(),origin:pair,z:{type:'integer',minimum:-100000,maximum:100000},role:splitRole,side:splitSide,visible:boolean,opacity:groupOpacity,parentId:nullable(id),groupId:nullable(id),usage:choice('primary','auxiliary','alternative'),variantOf:nullable(id),state:choice('default','open','closed','middle'),positionConfirmed:boolean,roleConfirmed:boolean,
+ sourceId:string(128),sourceName:string(),sourcePath:string(240),sourceZ:nullable({type:'integer',minimum:-100000,maximum:100000}),sourceOrigin:nullable(pair),originalAssetId:id,imageAssetId:id,sourceHash:{type:'string',pattern:'^[a-f0-9]{64}$'},imageHash:{type:'string',pattern:'^[a-f0-9]{64}$'},image:splitImage,proposal:object({role:splitRole,side:splitSide,confidence:{type:'number',minimum:0,maximum:1},reasons:array(string(128),8)})});
+((PROJECT_SCHEMA as Schema).properties as Record<string,Schema>).split=object({version:{const:1},rigSignature:{type:'string',pattern:'^[a-f0-9]{64}$'},draft:object({id,sourceKind:choice('folder','2dparts'),sourceHash:nullable({type:'string',pattern:'^[a-f0-9]{64}$'}),sourceManifest:nullable(string(1048576)),canvas:size,layout:choice('manifest','common','cropped'),layoutConfirmed:boolean,limitedAccepted:boolean,omittedAccepted:boolean,layers:{...array(splitLayer,64),minItems:1},groups:array(splitGroup,128),missingProperties:array(string(128),32),omitted:array(string(240),128)})});

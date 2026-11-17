@@ -135,6 +135,9 @@ def select(image,selection,model):
     return edited,analysis,{'faces':detected,'warnings':warnings,'crop':{'x':crop[0],'y':crop[1],'width':crop[2]-crop[0],'height':crop[3]-crop[1]},'analysisSize':{'width':analysis.width,'height':analysis.height}}
 
 def execute(request):
+    if request['operation']=='split-probe':
+        from split_image import probe_batch
+        return probe_batch(request)
     root=Path(sys._MEIPASS) if getattr(sys,'frozen',False) else Path(__file__).resolve().parent.parent/'.local'
     model=root/'models/face_landmarker.task';target=Path(request['output'])
     if request['operation'] in ['structure-analyze','structure-build']:

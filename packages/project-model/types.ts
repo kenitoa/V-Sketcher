@@ -19,7 +19,7 @@ export interface CharacterPart {
   textures: PartTexture[]; localTransform: Affine; drawOrder: number; visible: boolean; opacity: number;
   correctionOrigin: 'automatic' | 'user-confirmed' | 'manual'; limitations: string[];
 }
-export interface PartGroup { id: string; displayName: string; parentGroupId: string | null; visible: boolean; }
+export interface PartGroup { id: string; displayName: string; parentGroupId: string | null; visible: boolean; opacity?:number; }
 export type PreviewKey = 'eye_left' | 'eye_right' | 'mouth' | 'head_yaw' | 'head_roll';
 export interface Parameter { id: string; displayName: string; semantic: string; unit: 'ratio' | 'degrees' | 'custom'; min: number; neutral: number; max: number; previewKey: PreviewKey | null; }
 interface BindingIdentity { id: string; parameterId: string; partId: string; }
@@ -39,6 +39,7 @@ export interface ExportProfile { id: string; revision: number; displayName: stri
 export interface MotionMesh { partId:string; pivot:[number,number]; vertices:{ position:[number,number]; weight:number; minimum:[number,number]; maximum:[number,number] }[]; triangles:number[]; yawParameterId:string | null; rollParameterId:string | null; curve:'linear' | 'smoothstep'; }
 export interface MotionRig { version:1; meshes:MotionMesh[]; faceWidth:number; maxRollDegrees:number; settings:{ strength:number; smoothingMs:number; pose:{ parameterId:string; value:number }[] }; secondary:'disabled'; }
 export interface Project {
+  split?:import('../split-image/types').SplitRecord;
   structure?:import('../single-image/types').StructureRecord;
   assembly?:import('../parts-library/types').Assembly;
   inputPreparation?:import('../image-input/types').InputPreparation;

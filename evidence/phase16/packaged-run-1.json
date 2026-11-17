@@ -1,0 +1,151 @@
+{
+  "passed": true,
+  "split": {
+    "passed": true,
+    "manifest": true,
+    "ambiguousFolderRepair": true,
+    "emptyHiddenDuplicateNames": true,
+    "cycleBlocked": true,
+    "zoomPointer": true,
+    "mirrorViewOnly": true,
+    "reviewBeforeApply": true,
+    "compare": true,
+    "commonFiveControls": true,
+    "undoRedo": true,
+    "saveDuplicateReopen": true,
+    "reguide": true,
+    "sourceHashesPreserved": true,
+    "sourceBundleExport": true,
+    "pixels": {
+      "passed": true,
+      "frames": 25,
+      "uniqueFrames": 17,
+      "neutralMeanDifference": 0.07770206227023516,
+      "neutralAlphaMeanDifference": 0.0109710693359375,
+      "glClean": true,
+      "buffersStable": true,
+      "reference": "Independent Canvas2D composition of source PNG coordinates/order/group alpha, compared with common GPU premultiplied pixels"
+    },
+    "folderPixels": {
+      "passed": true,
+      "frames": 25,
+      "uniqueFrames": 17,
+      "neutralMeanDifference": 0.07770206227023516,
+      "neutralAlphaMeanDifference": 0.0109710693359375,
+      "glClean": true,
+      "buffersStable": true,
+      "reference": "Independent Canvas2D composition of source PNG coordinates/order/group alpha, compared with common GPU premultiplied pixels"
+    },
+    "devicesOpened": false
+  },
+  "renderer": {
+    "webgl2": true,
+    "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+    "renderer": "WebKit WebGL",
+    "textureCount": 7,
+    "layers": 4,
+    "submittedFrames": 1606,
+    "projectModel": {
+      "projectId": "example-premium",
+      "revision": 1,
+      "sourceType": "single-image",
+      "schemaVersion": "1.6"
+    },
+    "visiblePixels": 335603,
+    "transparentPixels": 464397,
+    "glError": 0,
+    "pixelHash": "bc64108f",
+    "meshLayers": 4,
+    "staticBufferUploads": 7,
+    "scope": "Shared GPU triangle deformation and authored state blend; not automatic rigging, live tracking or M0 performance approval",
+    "modelPixels": {
+      "passed": true,
+      "translationPixels": 18,
+      "translationMismatches": 0,
+      "cropMismatches": 0,
+      "tolerance": 3,
+      "frameSize": [
+        180,
+        180
+      ],
+      "scope": "Actual GPU model translation/crop pixels; not full rigging, tracking or performance"
+    },
+    "motionPixels": {
+      "passed": true,
+      "leftChanged": 224,
+      "rightChanged": 231,
+      "leftDoesNotMoveRight": true,
+      "rightDoesNotMoveLeft": true,
+      "mouthIntermediateChanged": 56,
+      "headChanged": 25729,
+      "bodyDifferences": 0,
+      "neutralDifference": 0,
+      "defaultPoseDifference": 0,
+      "defaultPoseChanges": 22589,
+      "uploadsUnchanged": true,
+      "meshLayers": 4,
+      "extremeFrames": 120,
+      "frameSize": [
+        256,
+        256
+      ],
+      "scope": "Actual WebGL pixels, authored premium patches and GPU mesh; no tracking, broadcast, universal art quality or M0 FPS claim"
+    },
+    "workflowCore": {
+      "passed": true,
+      "staleHeld": true,
+      "reviewApplied": true,
+      "latestEditPreserved": true,
+      "runtimeSnapshotPreserved": true,
+      "ownedResources": 0,
+      "scope": "Fixed in-memory async state check; no real analysis, disk save, tracking or broadcast"
+    },
+    "workflowUI": {
+      "passed": true,
+      "developmentOnly": true,
+      "visible": false
+    },
+    "sampleRuntimeFrozen": true,
+    "workflowLabVisible": false,
+    "workerReady": true,
+    "nodeExposed": false,
+    "shellExposed": false,
+    "appInfoDialog": true,
+    "diagnosticsVisible": false,
+    "projectRoutesEnabled": true
+  },
+  "worker": {
+    "workerVersion": "0.1.0",
+    "python": "3.14.10",
+    "frozen": true,
+    "dependencyFilesInsideBundle": true,
+    "modelSha256": "64184e229b263107bc2b804c6625db1341ff2bb731874b0bcc2fe6544e0bc9ff",
+    "modelLoaded": true,
+    "cameraOpened": false,
+    "microphoneOpened": false,
+    "dependencies": {
+      "numpy": "2.5.5",
+      "opencv": "5.0.0",
+      "mediapipe": "1.2.3",
+      "sounddevice": "0.5.6",
+      "pillow": "13.0.0"
+    }
+  },
+  "workerStopped": true,
+  "packaged": true,
+  "channel": "release",
+  "appVersion": "0.11.0",
+  "windowSize": [
+    1380,
+    900
+  ],
+  "devicesOpened": false,
+  "protections": {
+    "sandbox": true,
+    "contextIsolation": true,
+    "nodeIntegration": false,
+    "externalNetworkBlocked": true
+  },
+  "priorRouteUI": "NOT_RUN",
+  "scope": "Targeted split artwork UI, actual source PNG worker, GPU, save/reopen/export plus foundation core; same PC, no clean OS or M0 claim"
+}

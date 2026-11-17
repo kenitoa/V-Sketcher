@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "nonemptyExpressionPreserved": true,
+  "asymmetricLockedValuePreserved": true,
+  "inputMappingAndFallbackPreserved": true,
+  "nondefaultStrengthSmoothingAndPosePreserved": true,
+  "parameterAndPartIdsPreserved": true,
+  "manualDecorationPositionChanged": true,
+  "devicesOpened": false,
+  "scope": "Supplemental nonempty semantic preservation check using actual PNG worker and public split model; not expression UI completion"
+}

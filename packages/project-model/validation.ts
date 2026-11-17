@@ -1,4 +1,5 @@
 import {assertCorrection} from '../single-image/correction-types';
+import {configuration,assertConfig,issues as splitIssues} from '../split-image/types';
 import type { ValidateFunction } from 'ajv';
 import { inverse,multiply,transform, type Affine } from '../coordinates';
 import { projectStructure, machineStructure } from './structure.generated';
@@ -20,6 +21,8 @@ export function validateProject(value: unknown): ValidationIssue[] {
   };
   ids.add(p.projectId);
   const assets = unique(p.assets,'/assets'); const parts = unique(p.parts,'/parts'); const groups = unique(p.groups,'/groups');
+  if(p.groups.some(g=>g.opacity!==undefined)&&p.schemaVersion.minor<6)issue('E_SPLIT_VERSION','/groups');
+  if(p.split){const d=p.split.draft;if(p.schemaVersion.minor<6||p.sourceType!=='split-image')issue('E_SPLIT_VERSION','/split');try{assertConfig(configuration(d));if(splitIssues(d).some(v=>v.level==='block'))issue('E_SPLIT_INCOMPLETE','/split');}catch{issue('E_SPLIT_MODEL','/split');}for(const l of d.layers){const a=assets.get(l.originalAssetId),b=assets.get(l.imageAssetId);if(!parts.has(l.id)||!a||!b||a.fingerprint.sha256!==l.sourceHash||b.fingerprint.sha256!==l.imageHash||b.dimensions.width!==l.image.width||b.dimensions.height!==l.image.height)issue('E_SPLIT_REFERENCE','/split/layers');}}
   if(p.structure){const s=p.structure;try{assertReport(s.report);}catch{issue('E_STRUCTURE_REPORT','/structure');}if(p.schemaVersion.minor<4||p.sourceType!=='single-image'||!p.inputPreparation||s.inputAssetId!==p.inputPreparation.selectedAssetId||!assets.has(s.inputAssetId)||s.inputRevision>p.revision)issue('E_STRUCTURE_REFERENCE','/structure');for(const r of s.report.regions)if(r.rect.x+r.rect.width>p.canvas.width||r.rect.y+r.rect.height>p.canvas.height)issue('E_STRUCTURE_REGION','/structure');}
   if(p.structure?.corrections){const c=p.structure.corrections;try{c.entries.forEach(e=>assertCorrection(e,p.canvas.width,p.canvas.height));assertReport(c.automatic);}catch{issue('E_CORRECTION_MODEL','/structure/corrections');}if(p.schemaVersion.minor<5||new Set(c.entries.map(e=>e.key)).size!==c.entries.length)issue('E_CORRECTION_MODEL','/structure/corrections');}
   if(p.structure?.report.regions.some(r=>r.masks!==undefined||r.order!==undefined)&&p.schemaVersion.minor<5)issue('E_CORRECTION_VERSION','/structure');

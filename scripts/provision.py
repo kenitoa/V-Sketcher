@@ -28,6 +28,13 @@ def run():
         if not path.is_relative_to((assets/'parts').resolve()) or sha(path)!=digest:raise ValueError('E_PARTS_ASSET_HASH')
         destination=output/name;destination.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(path,destination)
     shutil.copyfile(assets/'parts/catalog.json',output/'parts/catalog.json')
+    split=json.loads((assets/'split/manifest.json').read_text(encoding='utf-8'))
+    if split['path']!='split/premium-example.2dparts' or sha(assets/split['path'])!=split['sha256']:raise ValueError('E_SPLIT_EXAMPLE_HASH')
+    for name,digest in split['sourceSha256'].items():
+        if sha(ROOT/name)!=digest:raise ValueError('E_SPLIT_ART_SOURCE_HASH')
+    (output/'split').mkdir(exist_ok=True)
+    shutil.copyfile(assets/split['path'],output/split['path'])
+    shutil.copyfile(assets/'split/manifest.json',output/'split/manifest.json')
     shutil.copyfile(assets/'preview-scene.json',output/'preview-scene.json')
     shutil.copyfile(assets/'preview-project.json',output/'preview-project.json')
     print('Model and',len(manifest['assets']),'premium assets verified')

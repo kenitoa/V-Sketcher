@@ -11,6 +11,7 @@ def run():
     shutil.copyfile(ROOT/'experiments/phase04/assets/premium/generation-prompts.md',out/'preview-generation-record.md')
     for name in ['catalog.json','generation-record.json','USAGE.md']:
         shutil.copyfile(ROOT/'assets/product/parts'/name,out/('parts-'+name))
+    shutil.copyfile(ROOT/'assets/product/split/manifest.json',out/'split-provenance.json')
     python=[]
     for dist in meta.distributions():
         name=dist.metadata['Name'];item={'name':name,'version':dist.version,'license':dist.metadata.get('License-Expression') or dist.metadata.get('License'),'scope':'installed build environment; bundled use verified separately'}

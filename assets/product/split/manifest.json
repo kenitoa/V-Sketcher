@@ -1,0 +1,17 @@
+{
+  "path": "split/premium-example.2dparts",
+  "sha256": "61a617b114557004d2c3edd81ed53fe3028023132d2008df0bbd715c5eaa612c",
+  "bytes": 3034903,
+  "layers": 16,
+  "sourceSha256": {
+    "assets/product/parts/face-a.png": "6891f6971c5f4ec07148a9d7180009607d7345937156fa6b81da74901c0425c4",
+    "assets/product/parts/hair-a-back.png": "a4da80250030a919da27504ec22712147c43e6077554ecb57b52775674fc71c2",
+    "assets/product/parts/hair-a-front-v2.png": "a78922f88eaf7b97c64724d0e1430c6c62623ec30e47d1e14501e0d9d02c8dfd",
+    "assets/product/parts/eyes-a-clean.png": "252bc12ddc88d5f628d6f4c604cea67b800df8723809c3faea391e7be3e1fa8c",
+    "assets/product/parts/mouth-a-clean.png": "52ca10e0471ea24e5c25a0502eea8b32f72fa74c633d49e66a17c6809283b164",
+    "assets/product/parts/outfit-a.png": "9c99ce47dc816756e8d587064b96c415dad58cb21cdee0c5b0e07d655fb06731",
+    "assets/product/parts/accessory-on.png": "918c8134202d0ca9a8f8cea799f3f3cbc4b72aa43fa5cd2d531f033dca603fa4"
+  },
+  "provenance": "Cropped and scaled from the existing authored premium parts; no inferred or newly generated artwork.",
+  "formatVersion": "1.0.0"
+}
