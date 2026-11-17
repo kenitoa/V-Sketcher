@@ -1,4 +1,5 @@
-import {availableRunActions,checkReadiness,RUN_MODES,type RunLease,type RunMode} from '../execution';
+import {classifyChange,concurrentCommand,RUN_FILE_BUDGET,assertChangeRequest,type ChangeRequest,type InputBasis} from '../execution/changes';
+import {availableRunActions,freezeSnapshot,checkReadiness,RUN_MODES,type RunLease,type RunMode} from '../execution';
 import {DetailSession} from '../detail-editor/session';
 import {assertSimpleSafe} from '../detail-editor/model';
 import {SplitSession} from '../split-image/session';
@@ -9,7 +10,7 @@ import {assertCatalog,startAssembly,selectItem,removeSlot,adjustPart,linkEyes,re
 import {StructureSession} from '../single-image/session';
 import { InputSession } from '../image-input/session';
 import type { InputProcessor } from '../image-input/types';
-import { readFile, mkdir } from 'node:fs/promises';
+import { readFile, mkdir, stat } from 'node:fs/promises';
 import { join, basename, resolve } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { Workflow } from '../workflow';
@@ -50,16 +51,43 @@ export class ProjectSession {
     try { const result = projectToPreview(copy,asset => `assets/session/${token}/${asset.fingerprint.sha256}.${asset.mediaType === 'image/png' ? 'png' : 'jpg'}${asset.producer.name.startsWith('atelier-luna') ? '?asset='+asset.id : ''}`); return result.layers.length ? result : null; } catch { return null; }
   }
   async resource(token:string,name:string):Promise<Buffer | null> { const asset = this.grants.get(token)?.get(name); return (asset?await this.cache.read(asset):null)??this.document?.input?.resource(token,name)??this.document?.split?.resource(token,name)??null; }
-  private runtimeLease:RunLease|null=null;private runtimeRequest:string|null=null;private runtimeGeneration=0;
-  runtimeBusy():boolean{return this.runtimeRequest!==null||this.runtimeLease!==null;}
-  async prepareRuntime(request:{requestId:string;sessionId:string;revision:number;mode:RunMode}):Promise<RunLease>{
-    if(!/^[a-f0-9-]{36}$/.test(request.requestId)||!RUN_MODES.includes(request.mode))throw new Error('E_RUN_REQUEST');if(this.runtimeBusy())throw new Error('E_RUN_ACTIVE');const d=this.editable(),project=structuredClone(d.flow.project());if(request.sessionId!==d.id||request.revision!==project.revision)throw new Error('E_RUN_STALE');const view=this.view(),busy=!!this.saving||view.jobs.some(j=>['QUEUED','RUNNING','RESULT_READY','CANCEL_REQUESTED'].includes(j.state))||!!view.input?.busy||!!view.structure?.busy||!!view.correction?.busy||!!view.split?.busy||!!view.detail?.busy;
-    const check=checkReadiness(project,request.mode,d.available,undefined,busy);if(!check.canStart)throw new Error(check.issues.find(i=>i.severity==='block')!.code);const generation=++this.runtimeGeneration;this.runtimeRequest=request.requestId;
-    try{const used=new Set(project.parts.flatMap(p=>p.textures.map(t=>t.assetId))),available=new Set<string>();for(const asset of project.assets){if(!used.has(asset.id))continue;if(!await this.cache.read(asset))throw new Error('E_RUN_RESOURCE');available.add(asset.id);}if(generation!==this.runtimeGeneration||this.document!==d||d.flow.project().revision!==project.revision)throw new Error('E_RUN_STALE');const scene=this.scene(project,available,'run-'+request.requestId);if(!scene)throw new Error('E_RUN_ARTWORK');const lease:RunLease={requestId:request.requestId,sessionId:d.id,revision:project.revision,fingerprint:sha256(Buffer.from(JSON.stringify(project))),mode:request.mode,project,scene,issues:check.issues};this.runtimeLease=structuredClone(lease);return lease;}catch(e){if(this.runtimeRequest===request.requestId)this.runtimeRequest=null;this.grants.delete('run-'+request.requestId);throw e;}
+  private runtimeLease:RunLease|null=null;private runtimeRequest:string|null=null;private runtimeGeneration=0;private runtimeRoot:string|null=null;private runtimeMode:RunMode='manual';
+  private runtimeCandidate:RunLease|null=null;private candidateRequest:string|null=null;private candidateGeneration=0;private retiredRuntime=new Map<string,RunLease>();
+  runtimeBusy():boolean{return this.runtimeRoot!==null;}
+  runtimeOwner():{ownerId:string;mode:RunMode}|null{return this.runtimeRoot?{ownerId:this.runtimeRoot,mode:this.runtimeLease?.mode??this.runtimeMode}:null;}
+  private async runtimeSnapshot(request:{requestId:string;sessionId:string;revision:number;mode:RunMode},valid:()=>boolean):Promise<RunLease>{
+    const d=this.editable(),project=structuredClone(d.flow.project());if(request.sessionId!==d.id||request.revision!==project.revision)throw new Error('E_RUN_STALE');
+    const view=this.view(),busy=!!this.saving||!!d.history.groupId||view.jobs.some(j=>['QUEUED','RUNNING','RESULT_READY','CANCEL_REQUESTED'].includes(j.state))||!!view.input?.busy||!!view.structure?.busy||!!view.correction?.busy||!!view.split?.busy||!!view.detail?.busy;
+    const check=checkReadiness(project,request.mode,new Set([...d.available].filter(id=>!d.unresolved.has(id))),undefined,busy);if(!check.canStart)throw new Error(check.issues.find(i=>i.severity==='block')!.code);
+    if(this.runtimeLease&&project.assets.reduce((n,a)=>n+a.fingerprint.bytes,0)>RUN_FILE_BUDGET)throw new Error('E_RUN_HEAVY');
+    const used=new Set(project.parts.flatMap(p=>p.textures.map(t=>t.assetId))),available=new Set<string>();for(const asset of project.assets){if(!used.has(asset.id))continue;if(!await this.cache.read(asset))throw new Error('E_RUN_RESOURCE');available.add(asset.id);}
+    if(!valid()||this.document!==d||d.flow.project().revision!==project.revision)throw new Error('E_RUN_STALE');const scene=this.scene(project,available,'run-'+request.requestId);if(!scene)throw new Error('E_RUN_ARTWORK');
+    return {requestId:request.requestId,sessionId:d.id,revision:project.revision,fingerprint:sha256(Buffer.from(JSON.stringify(project))),mode:request.mode,project,scene,issues:check.issues};
   }
-  releaseRuntime(requestId:string):void {if(this.runtimeRequest!==requestId&&this.runtimeLease?.requestId!==requestId)return;++this.runtimeGeneration;this.runtimeRequest=null;this.runtimeLease=null;this.grants.delete('run-'+requestId);}
+  async prepareRuntime(request:{requestId:string;sessionId:string;revision:number;mode:RunMode}):Promise<RunLease>{
+    if(!/^[a-f0-9-]{36}$/.test(request.requestId)||!RUN_MODES.includes(request.mode))throw new Error('E_RUN_REQUEST');if(this.runtimeBusy())throw new Error('E_RUN_ACTIVE');const generation=++this.runtimeGeneration;this.runtimeRoot=this.runtimeRequest=request.requestId;this.runtimeMode=request.mode;
+    try{const lease=await this.runtimeSnapshot(request,()=>generation===this.runtimeGeneration&&this.runtimeRequest===request.requestId);this.runtimeLease=structuredClone(lease);this.emit();return lease;}catch(e){if(this.runtimeRequest===request.requestId){this.runtimeRequest=null;this.runtimeRoot=null;}this.grants.delete('run-'+request.requestId);throw e;}
+  }
+  async prepareRuntimeChange(request:ChangeRequest):Promise<RunLease>{
+    assertChangeRequest(request);if(this.runtimeRoot!==request.ownerId||this.runtimeLease?.requestId!==request.baseId)throw new Error('E_RUN_STALE');if(this.candidateRequest||this.retiredRuntime.size>0)throw new Error('E_RUN_CHANGE_BUSY');if(request.requestId===this.runtimeRoot||this.retiredRuntime.has(request.requestId))throw new Error('E_RUN_REQUEST');
+    const generation=++this.candidateGeneration;this.candidateRequest=request.requestId;this.emit();
+    try{const lease=await this.runtimeSnapshot({...request,mode:this.runtimeLease.mode},()=>this.runtimeRoot===request.ownerId&&this.runtimeLease?.requestId===request.baseId&&this.candidateGeneration===generation&&this.candidateRequest===request.requestId);this.runtimeCandidate=structuredClone(lease);this.emit();return lease;}catch(e){if(this.candidateRequest===request.requestId){this.candidateRequest=null;this.runtimeCandidate=null;}this.grants.delete('run-'+request.requestId);this.emit();throw e;}
+  }
+  commitRuntimeChange(ownerId:string,baseId:string,requestId:string,restart:boolean):void{
+    const c=this.runtimeCandidate,old=this.runtimeLease,d=this.editable();if(this.runtimeRoot!==ownerId||old?.requestId!==baseId||!c||c.requestId!==requestId||d.id!==c.sessionId||d.flow.project().revision!==c.revision||d.history.groupId)throw new Error('E_RUN_STALE');
+    if((old.sessionId!==c.sessionId||classifyChange(old.project,c.project).kind==='restart')&&!restart)throw new Error('E_RUN_RESTART');this.retiredRuntime.set(old.requestId,old);this.runtimeLease=c;this.runtimeRequest=c.requestId;this.runtimeCandidate=null;this.candidateRequest=null;this.emit();
+  }
+  rollbackRuntimeChange(ownerId:string,requestId:string,baseId:string):void{const old=this.retiredRuntime.get(baseId);if(this.runtimeRoot!==ownerId||this.runtimeLease?.requestId!==requestId||!old)throw new Error('E_RUN_STALE');this.runtimeLease=old;this.runtimeRequest=baseId;this.retiredRuntime.delete(baseId);this.grants.delete('run-'+requestId);this.emit();}
+  releaseRuntime(requestId:string):void {
+    if(this.candidateRequest===requestId){++this.candidateGeneration;this.candidateRequest=null;this.runtimeCandidate=null;this.grants.delete('run-'+requestId);this.emit();return;}
+    if(this.retiredRuntime.delete(requestId)){this.grants.delete('run-'+requestId);return;}
+    if(this.runtimeRequest===requestId&&this.runtimeRoot)this.stopRuntime(this.runtimeRoot);
+  }
+  stopRuntime(ownerId:string):boolean{if(this.runtimeRoot!==ownerId)return false;++this.runtimeGeneration;++this.candidateGeneration;for(const id of [this.runtimeRequest,this.candidateRequest,...this.retiredRuntime.keys()])if(id)this.grants.delete('run-'+id);this.runtimeRoot=null;this.runtimeRequest=null;this.runtimeLease=null;this.candidateRequest=null;this.runtimeCandidate=null;this.retiredRuntime.clear();this.emit();return true;}
   runtimeActions(requestId:string):import('../execution').RunAction[]{return this.runtimeLease?.requestId===requestId?availableRunActions(this.runtimeLease.project,this.runtimeLease.mode):[];}
   activeRuntime(requestId:string):boolean{return this.runtimeLease?.requestId===requestId;}
+  runtimeInputBasis(source:'working'|'execution',projectId:string,revision:number):InputBasis{if(!['working','execution'].includes(source))throw new Error('E_RUN_REQUEST');if(source==='execution'&&this.retiredRuntime.size)throw new Error('E_RUN_BUSY');const p=source==='execution'?this.runtimeLease?.project:this.document?.flow.project();if(!p||p.projectId!==projectId||p.revision!==revision)throw new Error('E_RUN_STALE');return {source,projectId,revision,fingerprint:sha256(Buffer.from(JSON.stringify(p)))};}
+  async captureRuntimeInput(basis:InputBasis):Promise<{basis:InputBasis;project:Project;resources:Map<string,Buffer>}>{const actual=this.runtimeInputBasis(basis.source,basis.projectId,basis.revision);if(actual.fingerprint!==basis.fingerprint)throw new Error('E_RUN_STALE');const p=basis.source==='execution'?this.runtimeLease!.project:this.editable().flow.project(),project=freezeSnapshot(structuredClone(p));const resources=await this.cache.bytes(project);return {basis:actual,project,resources};}
   view():SessionView {
     const d = this.document; const p = d?.flow.project() ?? null; const scene = d && p ? this.scene(p,d.available,d.id) : null;
     const renderKey = scene ? sha256(Buffer.from(JSON.stringify({ canvas:scene.canvas,layers:scene.layers }))) : 'empty';
@@ -68,23 +96,23 @@ export class ProjectSession {
     const corrected=d?.correction?.preview()??null;if(d&&!corrected)this.grants.delete(d.id+'-correction');const correction=d?.correction?{...d.correction.view(),project:corrected,scene:corrected?this.scene(corrected,new Set(corrected.assets.map(a=>a.id)),d.id+'-correction'):null}:null;
     const splitCandidate=d?.split?.preview()??null;if(d&&!splitCandidate)this.grants.delete(d.id+'-split');const split=d?.split?{...d.split.view(),project:splitCandidate,scene:splitCandidate?this.scene(splitCandidate,new Set(splitCandidate.assets.map(a=>a.id)),d.id+'-split'):null}:null;
     const detailCandidate=d?.detail.preview()??null;if(d&&!detailCandidate)this.grants.delete(d.id+'-detail');const detail=d?{...d.detail.view(),project:detailCandidate,scene:detailCandidate?this.scene(detailCandidate,new Set([...d.available,...d.detail.view().extraAssetIds]),d.id+'-detail'):null}:null;
-    return { detail,split,correction,structure,partsCatalog:this.options.parts?.catalog??null,input:d?.input?.view() ?? null,sequence:++this.viewSequence,sessionId:d?.id ?? null,mode:this.readOnly ? 'read-only' : d ? 'editable' : 'empty',project:p,label:d?.label ?? this.readOnlyLabel,dirty:this.dirty(),saving:this.saving !== null,canUndo:!this.saving && !!d?.history.canUndo,canRedo:!this.saving && !!d?.history.canRedo,
+    return { execution:this.runtimeLease&&this.runtimeRoot?{ownerId:this.runtimeRoot,requestId:this.runtimeLease.requestId,sessionId:this.runtimeLease.sessionId,projectId:this.runtimeLease.project.projectId,name:this.runtimeLease.project.displayName,revision:this.runtimeLease.revision,mode:this.runtimeLease.mode,pending:p?(d?.id!==this.runtimeLease.sessionId?{kind:'restart',reason:'project'}:classifyChange(this.runtimeLease.project,p)):null,preparing:!!this.candidateRequest,publishing:!!this.retiredRuntime.size}:null,editingGroup:!!d?.history.groupId,savedRevision:p?.savedRevision??null,detail,split,correction,structure,partsCatalog:this.options.parts?.catalog??null,input:d?.input?.view() ?? null,sequence:++this.viewSequence,sessionId:d?.id ?? null,mode:this.readOnly ? 'read-only' : d ? 'editable' : 'empty',project:p,label:d?.label ?? this.readOnlyLabel,dirty:this.dirty(),saving:this.saving !== null,canUndo:!this.saving && !!d?.history.canUndo,canRedo:!this.saving && !!d?.history.canRedo,
       scene,originalScene:original && p && d ? originalScene([p.canvas.width,p.canvas.height],{ x:original.dimensions.width,y:original.dimensions.height },`assets/session/${d.id}/${original.fingerprint.sha256}.${original.mediaType === 'image/png' ? 'png' : 'jpg'}`) : null,jobs:d?.flow.view().jobs ?? [],renderKey,issues:d && p ? p.assets.filter(a => !d.available.has(a.id) || d.unresolved.has(a.id)).map(a => ({ assetId:a.id,code:'E_RESOURCE_MISSING' })) : [],errorCode:this.lastError,lastRecoveryAt:d?.lastRecoveryAt ?? null,
       recent:this.catalog.recent().map(({ id,displayName,openedAt,sourceType }) => ({ id,displayName,openedAt,sourceType })),
       recoveries:this.catalog.recoveries().slice(0,30).map(r => ({ id:r.id,displayName:r.displayName,revision:r.revision,createdAt:r.createdAt,kind:r.kind,reason:r.reason,originalLabel:r.sourcePath ? basename(r.sourcePath) : null,pending:r.pending })),
       readOnlyName:this.readOnly ? String((this.readOnly.raw as { displayName?:unknown } | null)?.displayName ?? '지원 범위가 다른 프로젝트') : null };
   }
-  private async permission():Promise<{ doc:Document | null; revision:number; discard:boolean } | null> {
-    if (this.saving) await this.saving; const d = this.document; d?.history.settle();
-    if (!d || !this.dirty(d)) return { doc:d,revision:d?.flow.project().revision ?? -1,discard:false };
+  private async permission(owner=this.runtimeRoot):Promise<{ doc:Document | null; revision:number; discard:boolean;runtimeOwner:string|null } | null> {
+    if (this.saving) await this.saving;const d = this.document; d?.history.settle();
+    if (!d || !this.dirty(d)) return { doc:d,revision:d?.flow.project().revision ?? -1,discard:false,runtimeOwner:owner };
     const answer = await this.options.dialogs.unsaved(d.flow.project().displayName);
     if (answer === 'cancel') return null;
-    if (answer === 'save' && !await this.save(false)) return null;
-    return { doc:d,revision:d.flow.project().revision,discard:answer === 'discard' };
+    if (answer === 'save') {if(!await this.save(false))return null;if(this.document!==d||this.dirty(d))return null;}
+    return { doc:d,revision:d.flow.project().revision,discard:answer === 'discard',runtimeOwner:owner };
   }
   private async activate(project:Project | null,bundle:LoadedBundle | null,target:string | null,permit:Awaited<ReturnType<ProjectSession['permission']>>,restored = false):Promise<boolean> {
-    if (!permit) return false;
-    if (this.document !== permit.doc || this.document && this.document.flow.project().revision !== permit.revision) { permit = await this.permission(); if (!permit) return false; }
+    if (!permit) return false;if(permit.runtimeOwner!==this.runtimeRoot)throw new Error('E_RUN_STALE');
+    if (this.document !== permit.doc || this.document && this.document.flow.project().revision !== permit.revision) { permit = await this.permission(permit.runtimeOwner); if (!permit) return false; }
     this.transitioning = true;
     try {
       const previous = this.document;
@@ -92,7 +120,7 @@ export class ProjectSession {
       if (bundle && project) await this.cache.ingest(bundle);
       const available = project ? await this.cache.available(project) : new Set<string>();
       if (previous && previous.flow.project().revision !== permit.revision) throw new Error('E_EDIT_STALE');
-      if (previous) { previous.detail.dispose();previous.correction?.dispose();previous.split?.dispose();previous.structure?.dispose();previous.input?.dispose();await previous.flow.close(); if (permit.discard || !this.dirty(previous)) { try { await this.catalog.acknowledge(previous.flow.project().projectId); } catch { /* valid snapshots remain available */ } } this.grants.delete(previous.id);this.grants.delete(previous.id+'-structure');this.grants.delete(previous.id+'-correction');this.grants.delete(previous.id+'-split'); }
+      if (previous) { previous.detail.dispose();previous.correction?.dispose();previous.split?.dispose();previous.structure?.dispose();previous.input?.dispose();await previous.flow.close(); if (permit.discard || !this.dirty(previous)) { try { await this.catalog.acknowledge(previous.flow.project().projectId); } catch { /* valid snapshots remain available */ } } this.grants.delete(previous.id);this.grants.delete(previous.id+'-structure');this.grants.delete(previous.id+'-correction');this.grants.delete(previous.id+'-split');this.grants.delete(previous.id+'-detail'); }
       this.cancelTimer(); this.document = null; this.readOnly = null; this.readOnlyLabel = '';
       if (bundle?.mode === 'read-only') { this.readOnly = bundle; this.readOnlyLabel = target ? basename(target) : '읽기 전용'; }
       else if (project) {
@@ -106,11 +134,11 @@ export class ProjectSession {
       this.lastError = null; this.lastEdit = this.now(); this.lastAuto = this.now(); this.scheduleAuto(); this.emit(); return true;
     } finally { this.transitioning = false; }
   }
-  async newProject(name:string,sourceType:SourceType):Promise<boolean> { const permit = await this.permission(); if (!permit) return false; return this.activate(createProject(name.trim() || '새 프로젝트',sourceType),null,null,permit); }
+  async newProject(name:string,sourceType:SourceType,owner=this.runtimeRoot):Promise<boolean> { const permit = await this.permission(owner); if (!permit) return false; return this.activate(createProject(name.trim() || '새 프로젝트',sourceType),null,null,permit); }
   dropImage(file:string):SessionReply {if(this.runtimeBusy())throw new Error('E_RUN_ACTIVE'); const active=this.editable();if(active.split?.view().busy||active.structure?.view().busy||active.correction?.view().busy)throw new Error('E_INPUT_STRUCTURE_BUSY');const input=active.input;if(!input)throw new Error('E_INPUT_UNAVAILABLE');input.drop(file);return {view:this.view()}; }
-  async openFile(file:string):Promise<boolean> { const bundle = await readBundle(file,true); const permit = await this.permission(); if (!permit) return false; return this.activate(bundle.project,bundle,resolve(file),permit); }
+  async openFile(file:string,owner=this.runtimeRoot):Promise<boolean> { if(this.runtimeBusy()&&(await stat(file)).size>RUN_FILE_BUDGET)throw new Error('E_RUN_HEAVY');const bundle = await readBundle(file,true);if(this.runtimeBusy()&&bundle.project&&bundle.project.assets.reduce((n,a)=>n+a.fingerprint.bytes,0)>RUN_FILE_BUDGET)throw new Error('E_RUN_HEAVY'); const permit = await this.permission(owner); if (!permit) return false; return this.activate(bundle.project,bundle,resolve(file),permit); }
   async save(saveAs:boolean):Promise<boolean> {
-    if (this.saving) return this.saving; const d = this.editable(); d.history.settle();
+    if (this.saving) return this.saving; const d = this.editable(); d.history.settle();if(this.runtimeBusy()&&d.flow.project().assets.reduce((n,a)=>n+a.fingerprint.bytes,0)>RUN_FILE_BUDGET)throw new Error('E_RUN_HEAVY');
     const operation = async ():Promise<boolean> => {
       let target = !saveAs ? d.target : null;
       if (!target) { target = await this.options.dialogs.saveProject(d.flow.project().displayName+'.2dsketch'); if (!target) return false; }
@@ -186,9 +214,9 @@ export class ProjectSession {
       collect:(_input,identity) => ({ identity,outcome:{ kind:'checked',reportId:'local-resources',dependencies:['resources:*'] } }) }); this.watchCheck(d,job.jobId);
   }
   private watchCheck(d:Document,id:string):void { void d.flow.wait(id).then(async result => { if (this.document !== d) return; d.available = await this.cache.available(d.flow.project()); if (result.state === 'FAILED') this.lastError = result.errorCode; this.emit(); }).catch(() => {}); }
-  async dispatch(input:unknown):Promise<SessionReply> {
+  async dispatch(input:unknown,transitionBase?:string):Promise<SessionReply> {
     try {
-      const command = parseSessionCommand(input);if(this.runtimeBusy())throw new Error('E_RUN_ACTIVE'); let value:string | undefined; let preview:RecoveryComparison | undefined;
+      const command = parseSessionCommand(input);if(this.runtimeBusy()){if(!this.runtimeLease)throw new Error('E_RUN_ACTIVE');const policy=concurrentCommand(command.type);if(policy==='defer')throw new Error('E_RUN_HEAVY');if(policy==='transition'&&transitionBase!==this.runtimeLease.requestId)throw new Error('E_RUN_TRANSITION');if(['save','save-as','duplicate','checkpoint','check-resources','relink'].includes(command.type)&&this.document&&this.document.flow.project().assets.reduce((n,a)=>n+a.fingerprint.bytes,0)>RUN_FILE_BUDGET)throw new Error('E_RUN_HEAVY');} const transitionOwner=this.runtimeRoot;let value:string | undefined; let preview:RecoveryComparison | undefined;
       if(['sample','parts-start','parts-select','parts-remove','parts-adjust','parts-link','parts-reset','structure-start','structure-apply','structure-retry','correction-start','correction-apply','correction-retry','split-edit','split-prepare','split-apply','input-apply','prepare-motion'].includes(command.type))assertSimpleSafe(this.editable().flow.project());
       if(command.type.startsWith('detail-')){this.lastError=null;const c=command as Extract<SessionCommand,{type:`detail-${string}`}>;const d=this.editable();if(c.type==='detail-open')d.detail.open(c.location);else if(c.type==='detail-prepare')d.detail.prepare(c.operation,c.expectedRevision);else if(c.type==='detail-apply')await d.detail.apply(c.draftId,c.expectedRevision);else if(c.type==='detail-cancel')d.detail.cancel();else if(c.type==='detail-import'){if(!this.options.dialogs.chooseDetailTexture)throw new Error('E_DETAIL_IMPORT_UNAVAILABLE');if(c.expectedRevision!==d.flow.project().revision)throw new Error('E_DETAIL_STALE');const file=await this.options.dialogs.chooseDetailTexture();if(this.document!==d||c.expectedRevision!==d.flow.project().revision)throw new Error('E_DETAIL_STALE');if(file)d.detail.importTexture(file,c.partId,c.state,c.expectedRevision);}}
       else if(command.type.startsWith('split-')){const c=command as Extract<SessionCommand,{type:`split-${string}`}>;const d=this.editable();if(!d.split||d.flow.project().sourceType!=='split-image')throw new Error('E_SPLIT_ROUTE');if(d.input?.view().busy||d.structure?.view().busy||d.correction?.view().busy)throw new Error('E_SPLIT_BUSY');
@@ -199,12 +227,12 @@ export class ProjectSession {
       else if(command.type==='structure-start'||command.type==='structure-apply'||command.type==='structure-cancel'||command.type==='structure-retry'){const d=this.editable();if(!d.structure)throw new Error('E_INPUT_UNAVAILABLE');if(d.split?.view().busy||d.input?.view().busy||d.correction?.view().busy)throw new Error('E_INPUT_STRUCTURE_BUSY');if(command.type==='structure-start')d.structure.start(command.completion,command.expectedRevision);else if(command.type==='structure-apply')await d.structure.apply(command.expectedRevision);else if(command.type==='structure-retry')d.structure.retry(command.expectedRevision);else d.structure.cancel();}
       else if(command.type==='parts-start'||command.type==='parts-select'||command.type==='parts-remove'||command.type==='parts-adjust'||command.type==='parts-link'||command.type==='parts-reset'){const d=this.editable();const source=this.options.parts;if(!source)throw new Error('E_PARTS_UNAVAILABLE');const c=source.catalog;if(d.flow.project().revision!==command.expectedRevision)throw new Error('E_EDIT_STALE');if(['parts-start','parts-select','parts-remove'].includes(command.type))await this.checkpoint('파츠 변경 전');if(command.type==='parts-start')for(const a of c.assets){const bytes=source.bytes.get(a.id);if(!bytes)throw new Error('E_PARTS_RESOURCE');await this.cache.put(a,bytes);}if(this.document!==d||d.flow.project().revision!==command.expectedRevision)throw new Error('E_EDIT_STALE');d.history.change('파츠 조합',p=>{if(command.type==='parts-start')startAssembly(p,c);else if(command.type==='parts-select')selectItem(p,c,command.itemId);else if(command.type==='parts-remove')removeSlot(p,c,command.slot);else if(command.type==='parts-adjust')adjustPart(p,c,command.value);else if(command.type==='parts-link')linkEyes(p,c,command.linked,command.anchor);else resetAdjustment(p,c,command.key);});d.available=await this.cache.available(d.flow.project());this.changed();}
       else if (['import-image','input-cancel','input-retry','input-apply'].includes(command.type)) { const active=this.editable();if(active.split?.view().busy||active.structure?.view().busy||active.correction?.view().busy)throw new Error('E_INPUT_STRUCTURE_BUSY');const input=active.input;if(!input)throw new Error('E_INPUT_UNAVAILABLE');if(command.type==='import-image')await input.choose();else if(command.type==='input-cancel')input.cancel();else if(command.type==='input-retry')input.retry();else if(command.type==='input-apply')await input.apply(command.draftId,command.selection); }
-      else if (command.type === 'new') await this.newProject(command.name,command.sourceType);
-      else if (command.type === 'open') { const file = await this.options.dialogs.openProject(); if (file) await this.openFile(file); }
-      else if (command.type === 'recent') { const entry = this.catalog.recent().find(r => r.id === command.id); if (!entry) throw new Error('E_RECENT_UNKNOWN'); await this.openFile(entry.path); }
+      else if (command.type === 'new') await this.newProject(command.name,command.sourceType,transitionOwner);
+      else if (command.type === 'open') { const file = await this.options.dialogs.openProject(); if (file) await this.openFile(file,transitionOwner); }
+      else if (command.type === 'recent') { const entry = this.catalog.recent().find(r => r.id === command.id); if (!entry) throw new Error('E_RECENT_UNKNOWN'); await this.openFile(entry.path,transitionOwner); }
       else if (command.type === 'remove-recent') await this.catalog.removeRecent(command.id);
       else if (command.type === 'save' || command.type === 'save-as') await this.save(command.type === 'save-as');
-      else if (command.type === 'close') { const permit = await this.permission(); if (permit) await this.activate(null,null,null,permit); }
+      else if (command.type === 'close') { const permit = await this.permission(transitionOwner); if (permit) await this.activate(null,null,null,permit); }
       else if (command.type === 'begin-group') value = this.editable().history.begin(command.label);
       else if (command.type === 'end-group') { this.editable().history.finish(command.id,command.commit); this.changed(); }
       else if (command.type === 'edit') await this.edit(command);
@@ -230,17 +258,17 @@ export class ProjectSession {
       else if (command.type === 'checkpoint') await this.checkpoint('사용자 복구 지점');
       else if (command.type === 'relink') await this.relink(command.assetId);
       else if (command.type === 'preview-recovery') preview = await this.comparison(command.id);
-      else if (command.type === 'original') { const record = this.record(command.id); if (!record.sourcePath) throw new Error('E_RECOVERY_ORIGINAL'); if (await this.openFile(record.sourcePath)) await this.catalog.acknowledge(record.projectId); }
-      else if (command.type === 'recover') { const record = this.record(command.id); const bundle = await readBundle(this.catalog.file(record.id),false); if (!bundle.project) throw new Error('E_RECOVERY_VERSION'); const permit = await this.permission(); if (permit) await this.activate(bundle.project,bundle,null,permit,true); }
+      else if (command.type === 'original') { const record = this.record(command.id); if (!record.sourcePath) throw new Error('E_RECOVERY_ORIGINAL'); if (await this.openFile(record.sourcePath,transitionOwner)) await this.catalog.acknowledge(record.projectId); }
+      else if (command.type === 'recover') { const record = this.record(command.id); const bundle = await readBundle(this.catalog.file(record.id),false); if (!bundle.project) throw new Error('E_RECOVERY_VERSION'); const permit = await this.permission(transitionOwner); if (permit) await this.activate(bundle.project,bundle,null,permit,true); }
       else if (command.type === 'duplicate') {
-        const permit = await this.permission(); if (permit) { const d = this.editable(); const clone = duplicateProject(d.flow.project()); const target = await this.options.dialogs.saveProject(clone.displayName+'.2dsketch');
-          if (target) { if (d.upgradeSource && resolve(target).toLowerCase()===d.upgradeSource.toLowerCase()) throw new Error('E_SAVE_MIGRATION_TARGET'); if (!target.toLowerCase().endsWith('.2dsketch') || target.startsWith('\\\\')) throw new Error('E_SAVE_PATH'); const bytes = await encodeBundle(clone,await this.cache.bytes(clone),'manual'); let expected:string | null = null; try { expected = sha256(await readFile(target)); } catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; }
-            await atomicBundle(target,bytes,{ expectedHash:expected,backup:async old => { const b = await decodeBundle(old,false); if (!b.project) throw new Error('E_SAVE_ORIGINAL_VERSION'); await this.catalog.record(b.project,b.resources,'manual',target,'복제 전 정상본',old); } }); await this.activate((await decodeBundle(bytes,false)).project,await decodeBundle(bytes,false),resolve(target),permit); }
+        const permit = await this.permission(transitionOwner); if (permit) { const d = this.editable(); const clone = duplicateProject(d.flow.project()); const target = await this.options.dialogs.saveProject(clone.displayName+'.2dsketch');
+          if (target) {if(this.runtimeRoot!==transitionOwner)throw new Error('E_RUN_STALE'); if (d.upgradeSource && resolve(target).toLowerCase()===d.upgradeSource.toLowerCase()) throw new Error('E_SAVE_MIGRATION_TARGET'); if (!target.toLowerCase().endsWith('.2dsketch') || target.startsWith('\\\\')) throw new Error('E_SAVE_PATH'); const bytes = await encodeBundle(clone,await this.cache.bytes(clone),'manual'); let expected:string | null = null; try { expected = sha256(await readFile(target)); } catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; }
+            if(this.runtimeRoot!==transitionOwner)throw new Error('E_RUN_STALE');await atomicBundle(target,bytes,{ expectedHash:expected,backup:async old => { const b = await decodeBundle(old,false); if (!b.project) throw new Error('E_SAVE_ORIGINAL_VERSION'); await this.catalog.record(b.project,b.resources,'manual',target,'복제 전 정상본',old); } }); await this.activate((await decodeBundle(bytes,false)).project,await decodeBundle(bytes,false),resolve(target),permit); }
         }
       }
       this.emit(); return { view:this.view(),...(value ? { value } : {}),...(preview ? { preview } : {}) };
     } catch (error) { this.lastError = storageError(error); this.emit(); return { view:this.view() }; }
   }
   async requestClose():Promise<boolean> { const permit = await this.permission(); if (!permit) return false; if (this.autoPromise) { try { await this.autoPromise; } catch { /* explicit discard or successful manual save governs leaving */ } } if (this.document !== permit.doc || this.document && this.document.flow.project().revision !== permit.revision) return false; if (this.document && permit.discard) await this.catalog.acknowledge(this.document.flow.project().projectId); return true; }
-  async shutdown():Promise<void> {if(this.runtimeRequest)this.releaseRuntime(this.runtimeRequest); this.stopped = true; this.cancelTimer(); if (this.saving) await this.saving; if (this.autoPromise) { try { await this.autoPromise; } catch { /* shutdown follows an explicit save/discard guard */ } } if (this.document) { this.document.detail.dispose();this.document.split?.dispose();this.document.correction?.dispose();this.document.structure?.dispose();this.document.input?.dispose();await this.document.flow.close(); } this.listeners.clear(); this.grants.clear(); }
+  async shutdown():Promise<void> {if(this.runtimeRoot)this.stopRuntime(this.runtimeRoot); this.stopped = true; this.cancelTimer(); if (this.saving) await this.saving; if (this.autoPromise) { try { await this.autoPromise; } catch { /* shutdown follows an explicit save/discard guard */ } } if (this.document) { this.document.detail.dispose();this.document.split?.dispose();this.document.correction?.dispose();this.document.structure?.dispose();this.document.input?.dispose();await this.document.flow.close(); } this.listeners.clear(); this.grants.clear(); }
 }

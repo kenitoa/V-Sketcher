@@ -6,6 +6,8 @@ declare global {
     microphoneReviewPhase?:{phase:string;seconds:number;blocks:number;state:string;rms:number};
     prepareExecutionKeys?:()=>Promise<{registered:boolean;revision:number}>;
     executionKeyState?:()=>{hidden:boolean;neutral:boolean;active:boolean;lastAction:import('../../../packages/execution').RunAction|null};
+    runtimeChangesSelfCheck?:()=>Promise<Record<string,unknown>>;
+    runtimeChangesStop?:()=>Promise<void>;
     executionSelfCheck?:()=>Promise<Record<string,unknown>>;
     inputRecoverySelfCheck?:()=>Promise<Record<string,unknown>>;
     cameraLiveCheck?:(hint?:string|null)=>Promise<Record<string,unknown>>;

@@ -1,0 +1,1 @@
+{"passed":false,"state":"CANCELLED","reason":"Added save-and-transition race coverage: newer edits after a save snapshot keep the editor open; transition UI blocks queued edits until the chosen project is ready. Final gate restarted."}

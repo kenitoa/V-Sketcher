@@ -1,0 +1,1 @@
+{"passed":false,"code":"E_FOUNDATION_CHECK","stage":"runtime-changes-ui","detail":"E_RUNTIME_CHANGE_UI_TIMEOUT","diagnostic":{"runtimeChangeStage":"[data-run-edit]","state":"normal","change":"idle","error":"E_RUN_HEAVY","revision":2,"runRevision":1,"liveSurfaces":1,"camera":"idle","microphone":"idle"},"packaged":false}

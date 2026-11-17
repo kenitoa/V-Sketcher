@@ -10,6 +10,7 @@ import {assertLocation,assertOperation,type DetailLocation,type DetailOperation}
 export interface RecentView { id:string; displayName:string; openedAt:string; sourceType:string; }
 export interface RecoveryView { id:string; displayName:string; revision:number; createdAt:string; kind:string; reason:string; originalLabel:string | null; pending:boolean; }
 export interface SessionView { sequence:number; sessionId:string | null; mode:'empty' | 'editable' | 'read-only'; project:Project | null; label:string; dirty:boolean; saving:boolean; canUndo:boolean; canRedo:boolean;
+  execution:import('../execution/changes').ExecutionView|null;editingGroup:boolean;savedRevision:number|null;
   detail:(ReturnType<import('../detail-editor/session').DetailSession['view']>&{project:Project|null;scene:PreviewScene|null})|null;
   split:(ReturnType<import('../split-image/session').SplitSession['view']>&{project:Project|null;scene:PreviewScene|null})|null;
   correction:(ReturnType<import('../single-image/correction-session').CorrectionSession['view']>&{project:Project|null;scene:PreviewScene|null})|null;
