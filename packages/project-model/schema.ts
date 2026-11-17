@@ -39,8 +39,8 @@ const motion = object({ version:{ const:1 },faceWidth:positive,maxRollDegrees:{ 
   settings:object({ strength:{ type:'number',minimum:0,maximum:1 },smoothingMs:integer(1000),pose:array(object({ parameterId:id,value:number }),128) }),
   meshes:array(object({ partId:id,pivot:pair,yawParameterId:nullable(id),rollParameterId:nullable(id),curve:choice('linear','smoothstep'),
     vertices:{ ...array(object({ position:pair,weight:{ type:'number',minimum:0,maximum:1 },minimum:pair,maximum:pair }),1024),minItems:3 },triangles:{ ...array(integer(1023),6144),minItems:3 } }),64) });
-export const PROJECT_SCHEMA = { $schema:'https://json-schema.org/draft/2020-12/schema', $id:'https://2dsketcher.local/schema/project-1.6',
-  ...object({ projectId:id,schemaVersion:object({ major:{ const:1 },minor:{ enum:[0,1,2,3,4,5,6] } }),displayName:string(),sourceType:choice('parts','single-image','split-image'),
+export const PROJECT_SCHEMA = { $schema:'https://json-schema.org/draft/2020-12/schema', $id:'https://2dsketcher.local/schema/project-1.7',
+  ...object({ projectId:id,schemaVersion:object({ major:{ const:1 },minor:{ enum:[0,1,2,3,4,5,6,7] } }),displayName:string(),sourceType:choice('parts','single-image','split-image'),
     createdAt:{ ...string(24),pattern:'^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$' },modifiedAt:{ ...string(24),pattern:'^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$' },
     revision,savedRevision:nullable(revision),canvas:size,inputAssetIds:{ ...array(id),uniqueItems:true },assets:array(asset),parts:array(part,64),
     groups:array(object({ id,displayName:string(),parentGroupId:nullable(id),visible:boolean }),128),parameters:array(parameter,128),
@@ -54,6 +54,8 @@ export const PROJECT_SCHEMA = { $schema:'https://json-schema.org/draft/2020-12/s
     provenance:object({ preparation:string(512),limitations:array(string(512),128) }),derivedProjects:array(object({ projectId:id,relation:choice('3d','generated-variant') }),32) }) };
 // The optional motion extension is written only with minor 1; legacy 1.0 remains readable.
 ((PROJECT_SCHEMA as Record<string,unknown>).properties as Record<string,Schema>).motion = motion;
+const projectProperties=(PROJECT_SCHEMA as Schema).properties as Record<string,Schema>;
+projectProperties.detail=object({version:{const:1},partOrder:{...array(id,64),uniqueItems:true},meshOrder:{...array(id,64),uniqueItems:true},baselines:array(object({part,partIndex:integer(63),mesh:nullable(((motion.properties as Record<string,Schema>).meshes!.items as Schema)),meshIndex:integer(63),bindings:array(projectProperties.partBindings!.items as Schema,256)}),64),groups:array(projectProperties.groups!.items as Schema,128)});
 const INPUT_SCHEMA=(() => {
 const object=(properties:Record<string,unknown>) => ({ type:'object',additionalProperties:false,properties,required:Object.keys(properties) });
 const number={ type:'number' };const integer={ type:'integer',minimum:0,maximum:4096 };const size=object({ width:{ ...integer,minimum:1 },height:{ ...integer,minimum:1 } });

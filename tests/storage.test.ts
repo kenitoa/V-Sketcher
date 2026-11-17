@@ -37,7 +37,7 @@ test('T086: ZIP round trip contains all nine verified originals/generated textur
 });
 test('T082: newer minor is preserved read-only; unsupported major and corrupt ZIP fail without changing active document',async () => {
   const h = await service(); await h.s.newProject('keep','parts'); const id = h.s.view().project!.projectId; const bad = join(h.dir,'bad.2dsketch'); await writeFile(bad,Buffer.from('bad')); await assert.rejects(h.s.openFile(bad)); assert.equal(h.s.view().project!.projectId,id);
-  const future = await custom(h.f.p,h.f.bytes,(_e,_m,p) => { p.schemaVersion = { major:1,minor:7 }; p.futureField = { preserve:true }; }); const f = await decodeBundle(future); assert.equal(f.mode,'read-only'); assert.deepEqual((f.raw as Record<string,unknown>).futureField,{ preserve:true });
+  const future = await custom(h.f.p,h.f.bytes,(_e,_m,p) => { p.schemaVersion = { major:1,minor:8 }; p.futureField = { preserve:true }; }); const f = await decodeBundle(future); assert.equal(f.mode,'read-only'); assert.deepEqual((f.raw as Record<string,unknown>).futureField,{ preserve:true });
   const major = await custom(h.f.p,h.f.bytes,(_e,_m,p) => { p.schemaVersion = { major:2,minor:0 }; }); await assert.rejects(decodeBundle(major));
   const path = join(h.dir,'future.2dsketch'); await writeFile(path,future); h.setLeave('discard'); await h.s.openFile(path); const r = await h.s.dispatch({ type:'save' }); assert.equal(r.view.mode,'read-only'); assert.equal(sha256(await readFile(path)),sha256(future)); await h.s.shutdown();
 });

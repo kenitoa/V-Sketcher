@@ -1,3 +1,4 @@
+import {assertSimpleSafe} from '../detail-editor/model';
 import {randomUUID} from 'node:crypto';
 import {assertProject,type Project,type Asset,type CharacterPart} from '../project-model';
 import {authorRig} from '../motion';
@@ -17,7 +18,7 @@ export function proposal(input:Project,request:CorrectionRequest,analysis?:Struc
  report.completion='estimated';report.status=report.regions.every(r=>r.observed)?'ready':'partial';report.headGain=report.status==='ready'?.65:.35;report.maxRollDegrees=6*report.headGain;report.files=[];report.unconfirmed=[...report.unconfirmed.filter(v=>!FEATURE_KEYS.includes(v as FeatureKey)),...report.regions.filter(r=>!r.observed).map(r=>r.key)];
  for(const r of report.regions){if(r.rect.x+r.rect.width>input.canvas.width||r.rect.y+r.rect.height>input.canvas.height)throw new Error('E_CORRECTION_REGION');}
  const enabled=report.regions.filter(r=>r.enabled??r.observed);for(let i=0;i<enabled.length;i++)for(let j=i+1;j<enabled.length;j++){const a=enabled[i]!.rect,b=enabled[j]!.rect;if(a.x<b.x+b.width&&b.x<a.x+a.width&&a.y<b.y+b.height&&b.y<a.y+a.height)throw new Error('E_CORRECTION_OVERLAP');}
- assertReport(report);return {report,entries,keys,changes};
+ assertSimpleSafe(input); assertReport(report);return {report,entries,keys,changes};
 }
 export function rebuildCorrected(input:Project,report:StructureReport,entries:FeatureCorrection[],keys:FeatureKey[],files:ReadonlyMap<string,Buffer>):{project:Project;bytes:Map<string,Buffer>}{
  assertReport(report);if(!input.structure||!input.inputPreparation)throw new Error('E_CORRECTION_SOURCE');const p=structuredClone(input);p.schemaVersion.minor=Math.max(5,p.schemaVersion.minor);const source=p.assets.find(a=>a.id===p.inputPreparation!.selectedAssetId)!;const bytes=new Map<string,Buffer>();

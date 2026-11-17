@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "errors": [],
+  "phase": 17,
+  "completedTasks": 170,
+  "remainingTasks": 240,
+  "nodeGroups": 167,
+  "pythonGroups": 31,
+  "newDetailGroups": 20,
+  "newSplitGroups": 23,
+  "samePcReleaseRuns": 2,
+  "packagedPriorRouteUI": "NOT_RUN; full development regression retained",
+  "m2ExitApproved": false,
+  "m0": "HOLD",
+  "openM0Revalidations": 5,
+  "manifestSha256": "7eb7e2c21cc5b4b02489c506e2e540368da77107f918946f6b97635386e82919"
+}

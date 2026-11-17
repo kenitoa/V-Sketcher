@@ -11,8 +11,8 @@ export function impactedKeys(before:Project,after:Project,tx:Transaction): Set<D
     add('parameter',id); add('input',id); add('runtime',id); add('compatibility',id); add('export',id);
     for (const p of projects) for (const e of p.expressions) if (e.values.some(v => v.parameterId === id)) add('expression',e.id);
   };
-  const part = (id:string,appearance:boolean): void => {
-    const affected = new Set([id]); let changed = true;
+  const part = (id:string,appearance:boolean,descendants=true): void => {
+    const affected = new Set([id]); let changed = descendants;
     while (changed) { changed = false; for (const p of projects) for (const item of p.parts) if (item.parentId && affected.has(item.parentId) && !affected.has(item.id)) { affected.add(item.id); changed = true; } }
     for (const target of affected) {
       add('references',target); add('geometry',target); add('runtime',target); add('compatibility',target); add('export',target);
@@ -48,7 +48,8 @@ export function impactedKeys(before:Project,after:Project,tx:Transaction): Set<D
     else if (change.collection === 'project') {
       if (field === 'displayName') { add('export-names'); add('export'); }
       else if (field === 'runtimeProfile') { add('runtime'); add('input'); add('output'); }
-      else if(field==='motion'){const all=new Set([...before.motion?.meshes.map(m=>m.partId)??[],...after.motion?.meshes.map(m=>m.partId)??[]]);for(const id of all)if(JSON.stringify(before.motion?.meshes.find(m=>m.partId===id))!==JSON.stringify(after.motion?.meshes.find(m=>m.partId===id))||JSON.stringify(before.motion?.settings)!==JSON.stringify(after.motion?.settings)||before.motion?.maxRollDegrees!==after.motion?.maxRollDegrees)part(id,false);add('runtime');add('compatibility');add('export');}
+      else if(field==='motion'){const all=new Set([...before.motion?.meshes.map(m=>m.partId)??[],...after.motion?.meshes.map(m=>m.partId)??[]]);for(const id of all)if(JSON.stringify(before.motion?.meshes.find(m=>m.partId===id))!==JSON.stringify(after.motion?.meshes.find(m=>m.partId===id))||JSON.stringify(before.motion?.settings)!==JSON.stringify(after.motion?.settings)||before.motion?.maxRollDegrees!==after.motion?.maxRollDegrees)part(id,false,false);add('runtime');add('compatibility');add('export');}
+      else if(field==='detail')add('provenance');
       else if (field === 'provenance' || field === 'derivedProjects') add('provenance');
       else { add('analysis'); add('references'); add('geometry'); add('runtime'); add('compatibility'); add('export'); }
     }

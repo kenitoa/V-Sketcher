@@ -1,0 +1,43 @@
+{
+  "passed": true,
+  "routes": [
+    {
+      "route": "parts",
+      "passed": true,
+      "sourceBundleUnchanged": true,
+      "nonemptyAsymmetricLockedExpression": true,
+      "inputAndFallback": true,
+      "exportMapRetainedUnvalidated": true,
+      "nondefaultSettingsAndPose": true,
+      "otherMeshesAndAssets": true,
+      "selectedRestoreKeepsSettings": true,
+      "bundleRoundtrip": true
+    },
+    {
+      "route": "single-image",
+      "passed": true,
+      "sourceBundleUnchanged": true,
+      "nonemptyAsymmetricLockedExpression": true,
+      "inputAndFallback": true,
+      "exportMapRetainedUnvalidated": true,
+      "nondefaultSettingsAndPose": true,
+      "otherMeshesAndAssets": true,
+      "selectedRestoreKeepsSettings": true,
+      "bundleRoundtrip": true
+    },
+    {
+      "route": "split-image",
+      "passed": true,
+      "sourceBundleUnchanged": true,
+      "nonemptyAsymmetricLockedExpression": true,
+      "inputAndFallback": true,
+      "exportMapRetainedUnvalidated": true,
+      "nondefaultSettingsAndPose": true,
+      "otherMeshesAndAssets": true,
+      "selectedRestoreKeepsSettings": true,
+      "bundleRoundtrip": true
+    }
+  ],
+  "devicesOpened": false,
+  "scope": "Supplemental configured expression/input/export/settings preservation using actual three-route UI bundles and public detail model; no expression UI, device, broadcast or export compatibility approval"
+}

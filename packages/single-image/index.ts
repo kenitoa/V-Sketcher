@@ -1,3 +1,4 @@
+import {assertSimpleSafe} from '../detail-editor/model';
 import {randomUUID} from 'node:crypto';
 import {assertProject,type Project,type Asset,type CharacterPart} from '../project-model';
 import {authorRig,KEYS} from '../motion';
@@ -5,7 +6,7 @@ import {sha256} from '../project-storage/archive';
 import {assertReport,type StructureReport} from './types';
 export * from './types';
 export function structuredProject(input:Project,report:StructureReport,files:ReadonlyMap<string,Buffer>,early=false):{project:Project;bytes:Map<string,Buffer>} {
- assertReport(report);const p=structuredClone(input);const preparation=p.inputPreparation;if(!preparation||p.sourceType!=='single-image'||report.status==='failed'||!report.face)throw new Error('E_INPUT_STRUCTURE_FACE');
+ assertSimpleSafe(input); assertReport(report);const p=structuredClone(input);const preparation=p.inputPreparation;if(!preparation||p.sourceType!=='single-image'||report.status==='failed'||!report.face)throw new Error('E_INPUT_STRUCTURE_FACE');
  const source=p.assets.find(a=>a.id===preparation.selectedAssetId)!;if(!source)throw new Error('E_INPUT_STRUCTURE_SOURCE');const w=p.canvas.width,h=p.canvas.height;
  for(const r of [report.face,...report.regions.map(v=>v.rect)])if(r.x+r.width>w||r.y+r.height>h)throw new Error('E_INPUT_STRUCTURE_REPORT');
  p.schemaVersion.minor=Math.max(4,p.schemaVersion.minor);delete p.assembly;p.groups=[];p.parts=[];p.partBindings=[];p.parameters=[];p.inputBindings=[];p.expressions=[];delete p.motion;

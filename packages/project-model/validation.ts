@@ -22,7 +22,7 @@ export function validateProject(value: unknown): ValidationIssue[] {
   ids.add(p.projectId);
   const assets = unique(p.assets,'/assets'); const parts = unique(p.parts,'/parts'); const groups = unique(p.groups,'/groups');
   if(p.groups.some(g=>g.opacity!==undefined)&&p.schemaVersion.minor<6)issue('E_SPLIT_VERSION','/groups');
-  if(p.split){const d=p.split.draft;if(p.schemaVersion.minor<6||p.sourceType!=='split-image')issue('E_SPLIT_VERSION','/split');try{assertConfig(configuration(d));if(splitIssues(d).some(v=>v.level==='block'))issue('E_SPLIT_INCOMPLETE','/split');}catch{issue('E_SPLIT_MODEL','/split');}for(const l of d.layers){const a=assets.get(l.originalAssetId),b=assets.get(l.imageAssetId);if(!parts.has(l.id)||!a||!b||a.fingerprint.sha256!==l.sourceHash||b.fingerprint.sha256!==l.imageHash||b.dimensions.width!==l.image.width||b.dimensions.height!==l.image.height)issue('E_SPLIT_REFERENCE','/split/layers');}}
+  if(p.split){const d=p.split.draft;if(p.schemaVersion.minor<6||p.sourceType!=='split-image')issue('E_SPLIT_VERSION','/split');try{assertConfig(configuration(d));if(splitIssues(d).some(v=>v.level==='block'))issue('E_SPLIT_INCOMPLETE','/split');}catch{issue('E_SPLIT_MODEL','/split');}for(const l of d.layers){const a=assets.get(l.originalAssetId),b=assets.get(l.imageAssetId);if(!parts.has(l.id)&&!p.detail?.baselines.some(b=>b.part.id===l.id)||!a||!b||a.fingerprint.sha256!==l.sourceHash||b.fingerprint.sha256!==l.imageHash||b.dimensions.width!==l.image.width||b.dimensions.height!==l.image.height)issue('E_SPLIT_REFERENCE','/split/layers');}}
   if(p.structure){const s=p.structure;try{assertReport(s.report);}catch{issue('E_STRUCTURE_REPORT','/structure');}if(p.schemaVersion.minor<4||p.sourceType!=='single-image'||!p.inputPreparation||s.inputAssetId!==p.inputPreparation.selectedAssetId||!assets.has(s.inputAssetId)||s.inputRevision>p.revision)issue('E_STRUCTURE_REFERENCE','/structure');for(const r of s.report.regions)if(r.rect.x+r.rect.width>p.canvas.width||r.rect.y+r.rect.height>p.canvas.height)issue('E_STRUCTURE_REGION','/structure');}
   if(p.structure?.corrections){const c=p.structure.corrections;try{c.entries.forEach(e=>assertCorrection(e,p.canvas.width,p.canvas.height));assertReport(c.automatic);}catch{issue('E_CORRECTION_MODEL','/structure/corrections');}if(p.schemaVersion.minor<5||new Set(c.entries.map(e=>e.key)).size!==c.entries.length)issue('E_CORRECTION_MODEL','/structure/corrections');}
   if(p.structure?.report.regions.some(r=>r.masks!==undefined||r.order!==undefined)&&p.schemaVersion.minor<5)issue('E_CORRECTION_VERSION','/structure');
@@ -38,6 +38,16 @@ export function validateProject(value: unknown): ValidationIssue[] {
   if(p.parts.some(v=>(v.library||v.color)&&p.schemaVersion.minor<3))issue('E_PARTS_VERSION','/parts');
   const parameters = unique(p.parameters,'/parameters'); unique(p.partBindings,'/partBindings'); unique(p.inputBindings,'/inputBindings');
   const expressions = unique(p.expressions,'/expressions'); unique([p.runtimeProfile],'/runtimeProfile'); unique(p.broadcastProfiles,'/broadcastProfiles'); unique(p.exportProfiles,'/exportProfiles');
+  if(p.detail){
+    if(p.schemaVersion.minor<7)issue('E_DETAIL_VERSION','/detail');
+    const baselineIds=new Set(p.detail.baselines.map(b=>b.part.id));if([...p.detail.partOrder,...p.detail.meshOrder].some(id=>!parts.has(id)&&!baselineIds.has(id)))issue('E_DETAIL_BASELINE','/detail');if(baselineIds.size!==p.detail.baselines.length||new Set(p.detail.groups.map(g=>g.id)).size!==p.detail.groups.length)issue('E_DETAIL_BASELINE','/detail');
+    for(const b of p.detail.baselines){const v=b.part;try{inverse(v.localTransform);for(const t of v.textures)inverse(t.assetToLocal);}catch{issue('E_DETAIL_BASELINE','/detail');}
+      if(v.parentId&&!parts.has(v.parentId)&&!baselineIds.has(v.parentId)||v.groupId&&!groups.has(v.groupId)||b.mesh&&(b.mesh.partId!==v.id||b.mesh.triangles.length%3||b.mesh.triangles.some(i=>i>=b.mesh!.vertices.length)||b.mesh.yawParameterId&&parameters.get(b.mesh.yawParameterId)?.previewKey!=='head_yaw'||b.mesh.rollParameterId&&parameters.get(b.mesh.rollParameterId)?.previewKey!=='head_roll'))issue('E_DETAIL_BASELINE','/detail');
+      for(const t of v.textures)if(assets.get(t.assetId)?.version!==t.assetVersion)issue('E_DETAIL_BASELINE','/detail');
+      for(const binding of b.bindings)if(binding.partId!==v.id||!parameters.has(binding.parameterId)||binding.kind==='state-blend'&&[binding.mapping.minimumState,binding.mapping.maximumState,...binding.mapping.middleState?[binding.mapping.middleState]:[]].some(s=>!v.textures.some(t=>t.state===s)))issue('E_DETAIL_BASELINE','/detail');
+    }
+    for(const g of p.detail.groups)if(!groups.has(g.id)||g.parentGroupId&&!groups.has(g.parentGroupId))issue('E_DETAIL_BASELINE','/detail');
+  }
   const matrix = (m: Affine, location: string): void => { try { inverse(m); } catch { issue('E_TRANSFORM_INVALID',location); } };
   const graph = (edges: Map<string,string[]>, location: string): void => {
     const state = new Map<string,number>();

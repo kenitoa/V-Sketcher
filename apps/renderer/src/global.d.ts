@@ -2,6 +2,8 @@ import type { StudioInfo } from '../../../packages/contracts';
 import type { SessionCommand,SessionView,SessionReply } from '../../../packages/project-session/contracts';
 declare global {
   interface Window {
+    detailSelfCheck?:()=>Promise<Record<string,unknown>>;
+    detailExtremeData?:string;
     splitSelfCheck?:(rows:import('./split-self-check').SplitFixtureRow[])=>Promise<Record<string,unknown>>;
     splitExtremeData?:string;
     correctionSelfCheck?:()=>Promise<Record<string,unknown>>;

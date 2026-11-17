@@ -1,3 +1,4 @@
+import {assertSimpleSafe} from '../detail-editor/model';
 import {randomUUID} from 'node:crypto';
 import type {Project,Asset,Parameter,PreviewKey} from '../project-model/types';
 import {assertProject} from '../project-model/validation';
@@ -29,9 +30,9 @@ export function materials(d:SplitDraft,raw:ReadonlyMap<string,Buffer>,normal:Rea
  return {assets:[...assets.values()],bytes};
 }
 export function rigSignature(p:Project):string{return hash(Buffer.from(JSON.stringify(p.motion?{meshes:p.motion.meshes,faceWidth:p.motion.faceWidth,maxRollDegrees:p.motion.maxRollDegrees}:null)));}
-export function assertGuidanceCompatible(p:Project):void{if(p.split&&p.split.rigSignature!==rigSignature(p))throw new Error('E_SPLIT_ADVANCED_CONFLICT');}
+export function assertGuidanceCompatible(p:Project):void{assertSimpleSafe(p);if(p.split&&p.split.rigSignature!==rigSignature(p))throw new Error('E_SPLIT_ADVANCED_CONFLICT');}
 export function buildProject(input:Project,draft:SplitDraft,newAssets:Asset[]):Project{
- assertGuidanceCompatible(input);
+ assertSimpleSafe(input); assertGuidanceCompatible(input);
  if(issues(draft).some(v=>v.level==='block'))throw new Error('E_SPLIT_INCOMPLETE');const p=structuredClone(input),d=structuredClone(draft);p.schemaVersion.minor=Math.max(6,p.schemaVersion.minor);p.sourceType='split-image';p.canvas={...d.canvas};delete p.assembly;delete p.structure;delete p.inputPreparation;
  for(const a of newAssets){const old=p.assets.find(v=>v.id===a.id);if(old&&JSON.stringify(old)!==JSON.stringify(a))throw new Error('E_SPLIT_RESOURCE');if(!old)p.assets.push(a);}p.inputAssetIds=[...new Set(d.layers.map(l=>l.originalAssetId))];
  const ordered=[...d.layers].sort((a,b)=>a.z-b.z||(a.sourceId<b.sourceId?-1:a.sourceId>b.sourceId?1:0));
@@ -49,9 +50,9 @@ export function buildProject(input:Project,draft:SplitDraft,newAssets:Asset[]):P
  p.split.rigSignature=rigSignature(p);p.provenance={preparation:'Imported PNG parts with confirmed positions and roles; authored expression alternatives only',limitations:['Small planar head motion; no hidden artwork reconstruction or live tracking',...issues(d).filter(v=>v.level==='warning').map(v=>v.code)]};assertProject(p);return p;
 }
 export function draftFromProject(p:Project):SplitDraft{
- if(!p.split)throw new Error('E_SPLIT_SOURCE');const d=structuredClone(p.split.draft);d.id=randomUUID();d.canvas={...p.canvas};
+ if(!p.split)throw new Error('E_SPLIT_SOURCE');if(p.detail?.baselines.some(b=>{const current=p.parts.find(v=>v.id===b.part.id);return !current||JSON.stringify(current.textures)!==JSON.stringify(b.part.textures);}))throw new Error('E_SPLIT_DETAIL_SOURCE');const d=structuredClone(p.split.draft);d.id=randomUUID();d.canvas={...p.canvas};
  for(const l of d.layers){const part=p.parts.find(v=>v.id===l.id);if(!part)throw new Error('E_SPLIT_REFERENCE');let matrix=partWorldTransform(p,l.id);if(matrix.slice(0,4).some((v,i)=>Math.abs(v-[1,0,0,1][i]!)>1e-8))throw new Error('E_SPLIT_TRANSFORM');if(l.usage==='alternative'&&l.variantOf){const target=p.parts.find(v=>v.id===l.variantOf);const texture=target?.textures.find(t=>t.state===l.state);if(!target||!texture)throw new Error('E_SPLIT_REFERENCE');if(texture.assetToLocal.slice(0,4).some((v,i)=>Math.abs(v-[1,0,0,1][i]!)>1e-8))throw new Error('E_SPLIT_TRANSFORM');matrix=partWorldTransform(p,target.id);const q=transform(matrix,{x:texture.assetToLocal[4],y:texture.assetToLocal[5]});l.origin=[q.x,q.y];}else l.origin=[matrix[4],matrix[5]];
   l.name=part.displayName;l.role=part.role;l.side=part.side;l.parentId=part.parentId;l.groupId=part.groupId;l.opacity=part.opacity;l.visible=part.visible;l.z=part.drawOrder;
  }
- d.groups=p.groups.map(g=>({id:g.id,name:g.displayName,parentGroupId:g.parentGroupId,visible:g.visible,opacity:g.opacity??1}));configuration(d);return d;
+ d.groups=p.groups.map(g=>({id:g.id,name:g.displayName,parentGroupId:g.parentGroupId,visible:g.visible,opacity:g.opacity??1}));configuration(d);if(issues(d).some(v=>v.level==='block'))throw new Error('E_SPLIT_DETAIL_SOURCE');return d;
 }
