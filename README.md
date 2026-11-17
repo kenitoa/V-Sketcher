@@ -1,6 +1,6 @@
 # 2DSketcher
 
-Windows용 버추얼 캐릭터 제작 도구입니다. **0.18.0 미리보기**는 실행 캐릭터를 OBS 33.0.1 브라우저 소스에 투명 출력합니다. 실행 중 작업본 편집·검증한 실행본 적용·프로젝트 유지/전환과 출력 설정/복구를 제공합니다. 세 제작 경로·고급 원화·모델 1.9·WebGL2·내장 worker를 사용합니다. **T-190 실제 카메라·T-209 실제 전역 키 확인은 미완료**이며 [M0는 HOLD](docs/planning/05-m0-review.md)입니다. 독립 아바타 내보내기는 후속입니다.
+Windows용 버추얼 캐릭터 제작 도구입니다. **0.19.0 미리보기**는 PNG 저장과 버전별 외부 대상 사전검사를 제공합니다. 실행 캐릭터의 OBS 33.0.1 투명 출력, 실행 중 편집·적용·프로젝트 전환도 지원합니다. 세 제작 경로·고급 원화·모델 1.9·WebGL2·내장 worker를 사용합니다. **T-190 실제 카메라·T-209 실제 전역 키 확인은 미완료**이며 [M0는 HOLD](docs/planning/05-m0-review.md)입니다. 외부 아바타 파일 생성·독립 구동은 25단계입니다.
 
 개발 환경은 Windows x64, Python **3.14.10 x64**, Git입니다. 최초 준비에는 인터넷이 필요하며 Node와 Python 패키지는 프로젝트 안에 설치됩니다. PowerShell 실행 정책 변경과 전역 npm 설치는 필요하지 않습니다.
 
@@ -17,12 +17,14 @@ Windows 패키지와 격리 실행 검증:
 
 ```powershell
 tools/dev.cmd run make
-.local/toolchain/node-v24.22.3-win-x64/node.exe scripts/broadcast-package-check.mjs --evidence-dir=.local/qa-broadcast-new
+.local/toolchain/node-v24.22.3-win-x64/node.exe scripts/file-output-package-check.mjs --evidence-dir=.local/qa-file-output-new
 ```
 
 EXE는 `out/2DSketcher-win32-x64/2DSketcher.exe`, ZIP은 `out/make/zip/win32/x64/`에 생성됩니다. ZIP을 풀 때 폴더 전체를 유지해야 합니다. Electron과 Python·라이브러리·얼굴 모델이 포함되어 사용자의 Node/Python 설치를 요구하지 않습니다. 서명·설치 프로그램·공개 배포 승인을 완료한 제품은 아닙니다.
 
-패키지 검증은 새 프로필·한글/공백 경로·Windows 시스템만 남긴 PATH에서 기본/1080×720 두 번 실행합니다. 세 실제 제작 경로의 로컬 출력·알파·움직임/표정/숨김·동시 편집/저장/교체·입력/생산 중단·GPU 실패·설정/주소/연결 복구를 확인합니다. 실제 별도 OBS의 소스/장면 캡처 검증과 이전 기능 전체 개발 앱 회귀는 별도 기록입니다. **현재 PC의 OS/DLL/드라이버는 유지되므로 새 Windows 시험을 대신하지 않습니다.** 현재 결과는 `evidence/phase23/`, 이전 06~22 근거는 동결 보존합니다. 재실행은 새 폴더를 사용하세요. 파일 선택은 self-check adapter를 사용하고 개인 경로가 포함될 수 있는 개발 로그·임시 실행본은 `.local/`에 보관합니다.
+패키지 검증은 새 프로필·한글/공백 경로·Windows 시스템만 남긴 PATH에서 기본/1080×720 두 번 실행합니다. 세 실제 제작 경로의 PNG 미리보기/저장 일치·배경/표정/배치·정적 그림·실행 입력 고정과 호환 검사/설정 재사용을 확인합니다. 별도 Pillow 검사로 실제 저장한 14종의 크기·알파·배경 합성·변화를 확인합니다. 이전 편집/실행/방송 기능의 전체 개발 앱 회귀와 실제 별도 OBS 검증은 각각의 기록을 유지합니다. **현재 PC의 OS/DLL/드라이버는 유지되므로 새 Windows 시험을 대신하지 않습니다.** 현재 결과는 `evidence/phase24/`, 이전 06~23 근거는 동결 보존합니다. 재실행은 새 폴더를 사용하세요. 파일 선택은 self-check adapter를 사용하고 개인 경로가 포함될 수 있는 개발 로그·임시 실행본은 `.local/`에 보관합니다.
+
+**이미지 저장·외부 검사**에서 작업본 또는 실행본을 선택하세요. PNG 크기·투명/단색 배경·표정·배치/잘림을 정한 뒤 미리보기를 준비하면 같은 바이트로 저장합니다. 카메라·마이크·움직임이 없는 그림도 저장할 수 있습니다. 외부 대상은 **Inochi Session 0.8.7 / INP 사전검사**를 지원하며 프로젝트에 대상 설정을 기억합니다. 부위/참조/제어/표정·텍스처/이름 제한, 통과/경고/차단/오래된 결과와 원본을 보존한 변환 검토 사본을 제공합니다. 핵심 변형 손실은 차단하며, 경고 확인은 해당 검사 범위에만 유효합니다. INP 파일 쓰기와 외부 독립 구동은 아직 구현 범위에 포함되지 않습니다. [24단계 사용법·검증 범위](docs/planning/24-file-output.md), [저장·호환 검사 계약](docs/architecture/file-output.md).
 
 **실행 준비**에서 모드와 필요한 장치만 확인하고 시작하세요. **실행 유지·편집하기**로 돌아오면 작업본·저장본·실행본을 구분해 표시합니다. **변경 검사·준비 → 적용/취소**로 외형을 반영하며, 구조/프로젝트 변경은 실행 상태 재시작을 확인합니다. 새 준비가 실패하면 기존 캐릭터를 계속 표시합니다. 무거운 분석·가져오기·큰 파일은 실행을 중지한 뒤 처리합니다. [22단계 사용법·검증 범위](docs/planning/22-runtime-changes.md), [교체·소유권·고정 입력 계약](docs/architecture/runtime-changes.md).
 
@@ -42,7 +44,7 @@ EXE는 `out/2DSketcher-win32-x64/2DSketcher.exe`, ZIP은 `out/make/zip/win32/x64
 
 **움직임 시험**에서는 준비된 다섯 제어의 슬라이더·예제 재생·반복·중지를 사용할 수 있습니다. 시험 입력은 이력/파일을 바꾸지 않고, 명시적으로 저장한 세기·부드러움·기본 자세만 편집에 포함됩니다. 이전 1.0~1.8도 읽으며 모델을 업그레이드한 변환본은 다른 파일로 저장합니다.
 
-`.local/toolchain/node-v24.22.3-win-x64/node.exe scripts/verify-input-recovery.mjs`는 261개 검사 그룹과 실제 보정/보호/선택 적용 UI·자동 구조화/보정 GPU 각 25상태·파츠 64조합/1,472프레임·색상/alpha/금색 보존·기존 입력/움직임/편집/저장 회귀 검사를 실행합니다. self-check 창을 표시하며 배포 검사는 기본 창과 1080×720 창을 확인합니다. `run dev`의 “작업 상태 시험”은 고정 입력 모의 작업이고 release에는 시험 버튼이 없습니다. 독립 ART-01 평가·추적/방송·M0 성능·물리적 디스크 고갈/전원 차단 검증은 후속입니다.
+`.local/toolchain/node-v24.22.3-win-x64/node.exe scripts/verify-file-output.mjs`는 Node 295 + Python 36 = **331개 검사 그룹**, 기존 편집/입력/실행/방송 전체 개발 앱 회귀와 새 PNG·호환 검사 UI를 실행합니다. self-check 창을 표시하며 배포 검사는 기본 창과 1080×720 창을 확인합니다. `run dev`의 “작업 상태 시험”은 고정 입력 모의 작업이고 release에는 시험 버튼이 없습니다. 독립 ART-01 평가·실제 장치/전역 키·M0 성능·물리적 디스크 고갈/전원 차단 검증은 후속입니다.
 
 [개발 규칙](CONTRIBUTING.md) · [공통 모델](docs/architecture/project-model.md) · [작업/트랜잭션](docs/architecture/workflow.md) · [프로젝트 저장/복구](docs/architecture/project-session.md) · [공통 편집 화면](docs/architecture/common-editor.md) · [움직임 평가](docs/architecture/motion.md) · [자산 정책](docs/architecture/assets.md) · [11 완료 근거](docs/planning/11-common-motion.md)
 

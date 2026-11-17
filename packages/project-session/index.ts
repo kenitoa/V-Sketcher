@@ -93,6 +93,14 @@ export class ProjectSession {
     if(this.runtimeLease!==lease||this.retiredRuntime.size)throw new Error('E_RUN_STALE');for(const layer of scene.layers){layer.states=Object.fromEntries(Object.entries(layer.states).map(([k,v])=>[k,paths.get(v)!]));if(layer.geometry)layer.geometry=Object.fromEntries(Object.entries(layer.geometry).map(([k,v])=>[paths.get(k)!,v]));}scene.name='2DSketcher';delete scene.model;
     return {id:requestId,revision:lease.revision,scene,assets};
   }
+  async captureFileInput(source:'working'|'execution',projectId:string,revision:number):Promise<import('../image-export/service').FileInput>{
+    if(!['working','execution'].includes(source)||typeof projectId!=='string'||!Number.isSafeInteger(revision))throw new Error('E_EXPORT_REQUEST');
+    if(this.saving||this.document?.history.groupId||this.document?.flow.view().jobs.some(j=>['QUEUED','RUNNING','RESULT_READY','CANCEL_REQUESTED'].includes(j.state)))throw new Error('E_EXPORT_BUSY');
+    const basis=this.runtimeInputBasis(source,projectId,revision),project=structuredClone(source==='execution'?this.runtimeLease!.project:this.editable().flow.project());
+    const budget=this.runtimeBusy()?RUN_FILE_BUDGET:268435456;if(project.assets.reduce((n,a)=>n+a.fingerprint.bytes,0)>budget)throw new Error('E_EXPORT_BUDGET');
+    const resources=new Map<string,Buffer>();for(const asset of project.assets){const bytes=await this.cache.read(asset);if(bytes)resources.set(asset.id,bytes);}
+    if(this.runtimeInputBasis(source,projectId,revision).fingerprint!==basis.fingerprint)throw new Error('E_EXPORT_STALE');return {basis,project,resources};
+  }
   runtimeInputBasis(source:'working'|'execution',projectId:string,revision:number):InputBasis{if(!['working','execution'].includes(source))throw new Error('E_RUN_REQUEST');if(source==='execution'&&this.retiredRuntime.size)throw new Error('E_RUN_BUSY');const p=source==='execution'?this.runtimeLease?.project:this.document?.flow.project();if(!p||p.projectId!==projectId||p.revision!==revision)throw new Error('E_RUN_STALE');return {source,projectId,revision,fingerprint:sha256(Buffer.from(JSON.stringify(p)))};}
   async captureRuntimeInput(basis:InputBasis):Promise<{basis:InputBasis;project:Project;resources:Map<string,Buffer>}>{const actual=this.runtimeInputBasis(basis.source,basis.projectId,basis.revision);if(actual.fingerprint!==basis.fingerprint)throw new Error('E_RUN_STALE');const p=basis.source==='execution'?this.runtimeLease!.project:this.editable().flow.project(),project=freezeSnapshot(structuredClone(p));const resources=await this.cache.bytes(project);return {basis:actual,project,resources};}
   view():SessionView {
@@ -245,6 +253,7 @@ export class ProjectSession {
       else if (command.type === 'edit') await this.edit(command);
       else if (command.type === 'undo' || command.type === 'redo') { const d = this.editable(); if (command.type === 'undo') d.history.undo(); else d.history.redo(); this.changed(); }
       else if (command.type === 'sample') await this.sample();
+      else if(command.type==='export-profile'){const d=this.editable();if(d.flow.project().revision!==command.expectedRevision)throw new Error('E_EDIT_STALE');const old=d.flow.project().exportProfiles.find(p=>p.id===command.profile.id);if(command.profile.revision!==(old?old.revision+1:1))throw new Error('E_EXPORT_PROFILE');d.history.change('외부 대상 설정',p=>{p.exportProfiles=p.exportProfiles.filter(v=>v.id!==command.profile.id);p.exportProfiles.push(structuredClone(command.profile));});this.changed();}
       else if(command.type==='tracking-settings'){const d=this.editable();if(d.flow.project().revision!==command.expectedRevision)throw new Error('E_EDIT_STALE');d.history.change('Tracking mapping',p=>{p.schemaVersion.minor=Math.max(9,p.schemaVersion.minor);p.tracking=structuredClone(command.value);});this.changed();}
       else if(command.type==='expression-edit'){const d=this.editable();if(d.flow.project().revision!==command.expectedRevision)throw new Error('E_EDIT_STALE');await this.checkpoint('Before expression edit');if(this.document!==d||d.flow.project().revision!==command.expectedRevision)throw new Error('E_EDIT_STALE');d.history.change('Expression edit',p=>editExpressions(p,command.operation,randomUUID));this.changed();}
       else if (['prepare-motion','motion-settings','motion-parameter'].includes(command.type)) {

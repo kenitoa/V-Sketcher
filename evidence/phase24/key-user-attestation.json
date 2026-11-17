@@ -1,0 +1,32 @@
+{
+  "created": "2026-11-17T22:19:17.891205+00:00",
+  "source": "User reply to earlier prepared key-verification prompt",
+  "questionItemId": "call_c56d56f71e5b4cfc8adb262fa380265c",
+  "userReply": "두 키를 모두 눌렀고 창이 자동으로 닫힘",
+  "reportedBothKeysPressed": true,
+  "reportedWindowAutoClosed": true,
+  "classification": "USER_REPORTED_OBSERVATION",
+  "matchingSuccessfulCollectorFound": false,
+  "historicalCollectors": [
+    {
+      "run": "phase21-keys-01",
+      "sha256": "6c4967d7b7f5a4f0bb251ff0402051f6ac0a8e679baf7cc9020a3f9d1dedf61a",
+      "passed": false,
+      "actualGlobalCallbackOutsideMain": null
+    },
+    {
+      "run": "phase21-keys-02",
+      "sha256": "2d4faa6bcde886b1a1270592cff8897564496c0fece0081cef9bd57b2d3d09a3",
+      "passed": false,
+      "actualGlobalCallbackOutsideMain": false
+    },
+    {
+      "run": "phase21-keys-03",
+      "sha256": "2d4faa6bcde886b1a1270592cff8897564496c0fece0081cef9bd57b2d3d09a3",
+      "passed": false,
+      "actualGlobalCallbackOutsideMain": false
+    }
+  ],
+  "task209Complete": false,
+  "reason": "Prior collector reports remain failed/unobserved. This reply does not independently establish local F8 suppression, outside-main focus and global callback together. User observation is retained separately; no historical failure is relabeled."
+}

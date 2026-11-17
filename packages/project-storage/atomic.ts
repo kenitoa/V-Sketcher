@@ -16,7 +16,7 @@ async function currentHash(file:string):Promise<string | null> {
   try { const info = await lstat(file); if (!info.isFile() || info.isSymbolicLink()) throw new Error('E_SAVE_TARGET'); return sha256(await readFile(file)); }
   catch (error) { if ((error as NodeJS.ErrnoException).code === 'ENOENT') return null; throw error; }
 }
-async function lock(file:string):Promise<()=>Promise<void>> {
+export async function lock(file:string):Promise<()=>Promise<void>> {
   const path = file+'.lock'; const token = JSON.stringify({ magic:'2dsketch-writer-v1',pid:process.pid,nonce:randomUUID() });
   for (let attempt=0;attempt<2;attempt++) {
     try {

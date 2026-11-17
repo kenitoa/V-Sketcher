@@ -1,3 +1,5 @@
+import {checkFileOutputUI} from './file-output-self-check';
+import {FileOutputPanel} from './file-output-panel';
 import {broadcastCheck} from './broadcast-self-check';
 import {checkRuntimeChangesUI} from './runtime-changes-self-check';
 import {RunDock} from './run-dock';
@@ -57,6 +59,7 @@ const pause = (ms = 25):Promise<void> => new Promise(resolve => setTimeout(resol
 export function ProjectDesk({ onView }:{ onView:(view:SessionView)=>void }) {
   const [inputOpen,setInputOpen]=useState(false);
   const [cameraOpen,setCameraOpen]=useState(false);
+  const [fileOpen,setFileOpen]=useState(false);
   const [runOpen,setRunOpen]=useState(false),[quickRun,setQuickRun]=useState(false);
   const [transitionBusy,setTransitionBusy]=useState(false);
   const [transition,setTransition]=useState<{command:SessionCommand;resolve:(reply:SessionReply)=>void}|null>(null);
@@ -92,6 +95,7 @@ export function ProjectDesk({ onView }:{ onView:(view:SessionView)=>void }) {
   useEffect(()=>{window.correctionSelfCheck=()=>checkCorrectionUI({current:()=>latest.current,command,settled:()=>queue.current});return()=>{delete window.correctionSelfCheck;};},[]);
   useEffect(()=>{window.splitSelfCheck=rows=>checkSplitUI({current:()=>latest.current,command,settled:()=>queue.current},rows);return()=>{delete window.splitSelfCheck;};},[]);
   useEffect(()=>{window.microphoneLiveCheck=scripted=>checkMicrophoneLive({current:()=>latest.current,command,settled:()=>queue.current,mic:microphone},scripted??false);return()=>{delete window.microphoneLiveCheck;};},[]);
+  useEffect(()=>{window.fileOutputSelfCheck=()=>checkFileOutputUI({current:()=>latest.current,command,settled:()=>queue.current,runtime:run});return()=>{delete window.fileOutputSelfCheck;};},[]);
   useEffect(()=>{window.broadcastCheckStep=broadcastCheck({current:()=>latest.current,command,settled:()=>queue.current,runtime:run});return()=>{delete window.broadcastCheckStep;};},[]);
   useEffect(()=>{window.runtimeChangesSelfCheck=()=>checkRuntimeChangesUI({current:()=>latest.current,command,settled:()=>queue.current,runtime:run,camera,microphone});window.runtimeChangesStop=()=>run.stop();return()=>{delete window.runtimeChangesSelfCheck;delete window.runtimeChangesStop;};},[]);
   useEffect(()=>{window.prepareExecutionKeys=()=>prepareExecutionKeys({current:()=>latest.current,command,settled:()=>queue.current,runtime:run});window.executionKeyState=()=>({hidden:run.hidden,neutral:run.player.neutralHold,active:run.active,lastAction:run.lastAction});window.executionSelfCheck=()=>checkExecutionUI({current:()=>latest.current,command,settled:()=>queue.current,runtime:run});return()=>{delete window.executionSelfCheck;delete window.prepareExecutionKeys;delete window.executionKeyState;};},[]);
@@ -163,6 +167,7 @@ export function ProjectDesk({ onView }:{ onView:(view:SessionView)=>void }) {
   return <div className={`project-desk ${p ? 'editing' : ''}`} data-session-sequence={view?.sequence}>{dropError&&<p role="alert">{dropError}</p>}
     <div className="project-toolbar"><div className="project-context">{p ? <><strong>{p.displayName}</strong><span role="status">{view?.saving ? '저장 중' : view?.dirty ? '● 저장 안 됨' : '✓ 저장됨'}</span><small>{view?.label}</small></> : <span>나의 작업실</span>}</div><button data-new-project onClick={() => { setName('새 캐릭터'); setRoute('parts'); }}>새 프로젝트</button>{action('open','프로젝트 열기')}<button data-recovery onClick={() => { setRecoveries(true); setComparison(null); }}>복구본 {view?.recoveries.filter(r => r.pending).length || ''}</button><button data-help onClick={() => setHelp(true)}>도움말</button></div>
     {view&&<RunDock runtime={run} view={view} showPreview={!runOpen} open={()=>{setQuickRun(false);setRunOpen(true);}} save={()=>void command({type:'save'})} tracking={gain=>{queue.current=queue.current.then(()=>{const v=latest.current!;const value=structuredClone(v.project!.tracking??defaultTracking());value.channels.find(c=>c.key==='head_yaw')!.gain=gain;return commandDirect({type:'tracking-settings',expectedRevision:v.project!.revision,value});});}}/>}
+    {view&&(view.project||run.active)&&<button data-file-output-open onClick={()=>{end();setFileOpen(true);}}>이미지 저장·외부 대상</button>}
     {view?.errorCode && <Notice code={view.errorCode} onAction={a => {if(view.errorCode==='E_RUN_HEAVY'&&run.active){setRunOpen(true);return;} if (a === 'save-as' || a === 'open') void command({ type:a }); else if (a === 'resources') focusFix('[data-resource-fix]'); else if (a === 'parts') focusFix('[data-part-name]'); else setHelp(true); }}/ >}
     {view?.mode === 'read-only' && <section className="project-editor"><h2>{view.readOnlyName}</h2><p>이 앱보다 새로운 저장 형식입니다. 읽기 전용으로 열었으며 원본 파일은 그대로 유지합니다.</p>{action('close','프로젝트 닫기')}</section>}
     {p ? <>
@@ -181,6 +186,7 @@ export function ProjectDesk({ onView }:{ onView:(view:SessionView)=>void }) {
         </section></div>}
       {task && step !== 'review' && <TaskCard job={task} onCancel={() => void command({ type:'cancel-task',id:task.jobId })} onRetry={() => void command({ type:'retry-task',id:task.jobId })}/>}
     </> : view?.mode !== 'read-only' && <><section className="start-section"><div className="section-heading"><h2>어디에서 시작할까요?</h2></div><div className="routes">{routes.map((r,index) => <button data-create data-route={r.type} className="route" key={r.type} onClick={() => { setName('새 캐릭터'); setRoute(r.type); }}><span className="route-top"><span>✧</span><span>0{index+1}</span></span><strong>{r.title}</strong><span className="route-arrow">↗</span></button>)}</div></section><section className="recent"><h2>이어서 작업하기</h2>{recentList}</section></>}
+    {fileOpen&&view&&<FileOutputPanel view={view} runtime={run} command={command} close={()=>setFileOpen(false)} fix={issue=>{if(issue.category==='expression'){setExpressing(true);}else if(issue.fix){void command({type:'detail-open',location:issue.fix});}else setStep(issue.category==='resource'?'prepare':'motion');}}/>}
     {runOpen&&view&&(view.project||run.active)&&<RunPanel runtime={run} view={view} quick={quickRun} close={()=>setRunOpen(false)} fix={runFix}/>}
     {inputOpen&&view?.project&&<Modal titleId="input-title" className="camera-dialog" onClose={()=>setInputOpen(false)}><h2 id="input-title">마이크·입력 복구</h2><InputPanel mic={microphone} camera={camera} project={view.project} scene={view.scene} command={operation=>{queue.current=queue.current.then(()=>commandDirect({type:'expression-edit',expectedRevision:latest.current!.project!.revision,operation}));}}/><button data-input-close onClick={()=>setInputOpen(false)}>닫기 · 연결된 입력 유지</button></Modal>}
     {cameraOpen&&view?.project&&<Modal titleId="camera-title" className="camera-dialog" onClose={()=>setCameraOpen(false)}><h2 id="camera-title">카메라·추적 보정</h2><CameraPanel runtime={camera} project={view.project} scene={view.scene} save={value=>{queue.current=queue.current.then(()=>commandDirect({type:'tracking-settings',expectedRevision:latest.current!.project!.revision,value}));}}/><button data-camera-close onClick={()=>setCameraOpen(false)}>닫기 · 연결된 추적 유지</button></Modal>}

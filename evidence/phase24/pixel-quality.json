@@ -1,0 +1,226 @@
+{
+  "passed": true,
+  "method": "Independent Pillow/NumPy decode of actual PNGs; exact preview/save SHA256, alpha, background, expression and placement",
+  "checks": [
+    {
+      "name": "image-parts-transparent.png",
+      "sha256": "f17874931b51d946cce9b922bfb35f8d42bf4486252a2fde10f2b3579b789386",
+      "mode": "RGBA8",
+      "width": 512,
+      "height": 640,
+      "corner": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "passed": true
+    },
+    {
+      "name": "image-parts-background.png",
+      "sha256": "1e8655151fad47ca2c85cba93b214790cbf6c79d7fddf342e298c22178b00d4b",
+      "mode": "RGBA8",
+      "width": 512,
+      "height": 640,
+      "corner": [
+        225,
+        214,
+        239,
+        255
+      ],
+      "passed": true
+    },
+    {
+      "name": "image-parts-expression.png",
+      "sha256": "d32aa12929afe057b4f641b1351bcbf5eb74aa5c779704de11ca1c27b9de45cd",
+      "mode": "RGBA8",
+      "width": 512,
+      "height": 640,
+      "corner": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "passed": true
+    },
+    {
+      "name": "image-parts-placement.png",
+      "sha256": "2d7fe908a5bba0b6716fcb8f4ce6941451bb0de93f57c34e1f8910c1175d0dcf",
+      "mode": "RGBA8",
+      "width": 512,
+      "height": 640,
+      "corner": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "passed": true
+    },
+    {
+      "name": "image-single-image-transparent.png",
+      "sha256": "bd9e177d1b7c87c7f0e08afb8c0a0fabfbc3be17fe7ef82870a9562e55c19fc8",
+      "mode": "RGBA8",
+      "width": 512,
+      "height": 640,
+      "corner": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "passed": true
+    },
+    {
+      "name": "image-single-image-background.png",
+      "sha256": "60bee8d07f78b77c659a5a56312163f7847a8cf7109bfd09ef2d8d56a1047680",
+      "mode": "RGBA8",
+      "width": 512,
+      "height": 640,
+      "corner": [
+        225,
+        214,
+        239,
+        255
+      ],
+      "passed": true
+    },
+    {
+      "name": "image-single-image-expression.png",
+      "sha256": "16068dda29cd47252148e10a4d7973d2ef3745b0efb1614ab9f0f0e4fafafad6",
+      "mode": "RGBA8",
+      "width": 512,
+      "height": 640,
+      "corner": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "passed": true
+    },
+    {
+      "name": "image-single-image-placement.png",
+      "sha256": "6e24c2ebff1adda61dbc452a47eb3025fd3ededa45d386d9fb96c15102cce96a",
+      "mode": "RGBA8",
+      "width": 512,
+      "height": 640,
+      "corner": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "passed": true
+    },
+    {
+      "name": "image-split-image-transparent.png",
+      "sha256": "b55051aa2bf889e55295df08dd31be515438365bb29cbbeb6c844dd5febbc967",
+      "mode": "RGBA8",
+      "width": 512,
+      "height": 640,
+      "corner": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "passed": true
+    },
+    {
+      "name": "image-split-image-background.png",
+      "sha256": "e4f9482810cbefbad7a0a07545c3677f5e26d253a2ab53e3c0c8f10c5e844bb1",
+      "mode": "RGBA8",
+      "width": 512,
+      "height": 640,
+      "corner": [
+        225,
+        214,
+        239,
+        255
+      ],
+      "passed": true
+    },
+    {
+      "name": "image-split-image-expression.png",
+      "sha256": "8f002108de745f29cbe82bdecec169cd42993a4410e1a3803009462f94f89d18",
+      "mode": "RGBA8",
+      "width": 512,
+      "height": 640,
+      "corner": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "passed": true
+    },
+    {
+      "name": "image-split-image-placement.png",
+      "sha256": "4c130e6adcb1a187200204e7e1cc3b702a35e020ee1ae5c8c7d11e3de891e580",
+      "mode": "RGBA8",
+      "width": 512,
+      "height": 640,
+      "corner": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "passed": true
+    },
+    {
+      "name": "image-execution-frozen-live.png",
+      "sha256": "abe828eeb845c86674fee244d551dfe0ab8dabb22686d42f723a41ddf283783b",
+      "mode": "RGBA8",
+      "width": 512,
+      "height": 640,
+      "corner": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "passed": true
+    },
+    {
+      "name": "image-static-no-motion.png",
+      "sha256": "f485c205ec6916e06b8326c14ac4acaf38330bd5bbfe8ba67daeae37ff0a413d",
+      "mode": "RGBA8",
+      "width": 512,
+      "height": 640,
+      "corner": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "passed": true
+    }
+  ],
+  "composites": [
+    {
+      "route": "parts",
+      "sRGBStraightAlphaSourceOverWithin2": 1.0,
+      "expressionChangedPixels": 501,
+      "placementReducedArea": true,
+      "passed": true
+    },
+    {
+      "route": "single-image",
+      "sRGBStraightAlphaSourceOverWithin2": 1.0,
+      "expressionChangedPixels": 286,
+      "placementReducedArea": true,
+      "passed": true
+    },
+    {
+      "route": "split-image",
+      "sRGBStraightAlphaSourceOverWithin2": 1.0,
+      "expressionChangedPixels": 364,
+      "placementReducedArea": true,
+      "passed": true
+    }
+  ],
+  "rawDeviceDataIncluded": false
+}
