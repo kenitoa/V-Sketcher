@@ -27,7 +27,9 @@ declare global {
     structureSelfCheck?:()=>Promise<Record<string,unknown>>;
     structureExtremeData?:string;
     workflowLabCheck?: (options?:{ holdForCapture:boolean }) => Promise<Record<string,unknown>>;
-    studio: {avatar:import('../../../packages/avatar-export/types').AvatarAPI;image:import('../../../packages/image-export/types').ImageAPI;compatibility:import('../../../packages/export-check/types').CompatibilityAPI; broadcast:import('../../../packages/broadcast').BroadcastAPI;run:import('../../../packages/execution/api').RunAPI;microphone:import('../../../packages/input-control/api').MicrophoneAPI;tracking:import('../../../packages/tracking/api').TrackingAPI; info: () => Promise<StudioInfo>; health: () => Promise<{ ready: boolean }>; projects:{ dropImage:(file:File)=>Promise<SessionReply>;view:()=>Promise<SessionView>; command:(command:SessionCommand)=>Promise<SessionReply>; subscribe:(listener:(view:SessionView)=>void)=>()=>void } };
+    environmentLiveState?:Record<string,unknown>;environmentLiveCheck?:()=>Promise<Record<string,unknown>>;
+    environmentSelfCheck?:()=>Promise<Record<string,unknown>>;
+    studio: {settings:import('../../../packages/settings').SettingsAPI;avatar:import('../../../packages/avatar-export/types').AvatarAPI;image:import('../../../packages/image-export/types').ImageAPI;compatibility:import('../../../packages/export-check/types').CompatibilityAPI; broadcast:import('../../../packages/broadcast').BroadcastAPI;run:import('../../../packages/execution/api').RunAPI;microphone:import('../../../packages/input-control/api').MicrophoneAPI;tracking:import('../../../packages/tracking/api').TrackingAPI; info: () => Promise<StudioInfo>; health: () => Promise<{ ready: boolean }>; projects:{ dropImage:(file:File)=>Promise<SessionReply>;view:()=>Promise<SessionView>; command:(command:SessionCommand)=>Promise<SessionReply>; subscribe:(listener:(view:SessionView)=>void)=>()=>void } };
     projectSelfCheck?:()=>Promise<Record<string,unknown>>;
     projectSelfCheckCapture?:()=>Promise<void>;
     partsSelfCheck?:()=>Promise<Record<string,unknown>>;

@@ -14,10 +14,10 @@ export class MicrophoneMapper {
  map(rms:number,p:MicrophoneProfile,now:number):number|null{assertMicrophoneProfile(p);if(!Number.isFinite(rms)||rms<0||rms>1||!Number.isFinite(now)||now<0||this.previous!==null&&now<=this.previous)return null;const dt=this.previous===null?.05:Math.min(.1,(now-this.previous)/1000);this.previous=now;const floor=Math.min(.95,p.noiseFloor+p.margin),target=Math.max(0,Math.min(1,(rms-floor)/Math.max(.05,1-floor)*p.sensitivity*p.strength));const filtered=p.smoothingMs===0?target:this.value+(target-this.value)*(1-Math.exp(-dt/(p.smoothingMs/1000)));this.value+=Math.max(-8*dt,Math.min(8*dt,filtered-this.value));return this.value;}
 }
 export const inputTiming={cameraFreshMs:300,microphoneFreshMs:150,returnMs:500,recoverMs:250} as const;
-/** Establish epoch only once the audio engine delivers a callback, using current engine time (not queued message time). */
+/** Validate age against the live audio clock; UI and engine clocks can pause independently. */
 export class AudioClock {
- private offset:number|null=null;lastAgeMs:number|null=null;
- map(processingSeconds:number,contextSeconds:number,now:number):number|null {if(![processingSeconds,contextSeconds,now].every(Number.isFinite)||processingSeconds<0||contextSeconds<0||now<0)return null;this.offset??=now-contextSeconds*1000;const time=this.offset+processingSeconds*1000;this.lastAgeMs=now-time;return time>=0&&this.lastAgeMs>=-50&&this.lastAgeMs<=inputTiming.microphoneFreshMs?time:null;}
+ private previousProcessing=-1;private previousMapped=-1;lastAgeMs:number|null=null;
+ map(processingSeconds:number,contextSeconds:number,now:number):number|null {if(![processingSeconds,contextSeconds,now].every(Number.isFinite)||processingSeconds<0||contextSeconds<0||now<0||processingSeconds<=this.previousProcessing)return null;this.lastAgeMs=(contextSeconds-processingSeconds)*1000;const time=now-this.lastAgeMs;if(time<0||time<=this.previousMapped||this.lastAgeMs< -50||this.lastAgeMs>inputTiming.microphoneFreshMs)return null;this.previousProcessing=processingSeconds;this.previousMapped=time;return time;}
 }
 /** A delayed UI scheduler gets one short drain window; stale control packets remain excluded. */
 export class InputWatchdog {

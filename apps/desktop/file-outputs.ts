@@ -1,3 +1,4 @@
+import {join} from 'node:path';
 import {exportContentHash} from '../../packages/avatar-export/identity';
 import{ipcMain,dialog,type BrowserWindow}from'electron';
 import type{ProjectSession}from'../../packages/project-session';
@@ -10,11 +11,11 @@ import {installAvatarExports} from './avatar-exports';
 export class FileOutputs{
  readonly image:ImageExportService;readonly compatibility:CompatibilityService;
  readonly avatar:ReturnType<typeof installAvatarExports>;
- constructor(window:BrowserWindow,project:ProjectSession,trusted:(e:Electron.IpcMainInvokeEvent)=>void,modal:(value:boolean)=>void,choose?:(name:string)=>Promise<string|null>,avatarTest?:{choose:(name:string)=>Promise<string|null>;locate:()=>Promise<string|null>}){
+ constructor(window:BrowserWindow,project:ProjectSession,trusted:(e:Electron.IpcMainInvokeEvent)=>void,modal:(value:boolean)=>void,choose?:(name:string)=>Promise<string|null>,avatarTest?:{choose:(name:string)=>Promise<string|null>;locate:()=>Promise<string|null>},saveDirectory:()=>string=()=>'.'){
   const validate=(b:import('../../packages/execution/changes').InputBasis)=>{try{return project.runtimeInputBasis(b.source,b.projectId,b.revision).fingerprint===b.fingerprint;}catch{return false;}};
   const capture=project.captureFileInput.bind(project);
-  this.image=new ImageExportService({capture,validate,running:()=>project.runtimeBusy(),render:renderPNG,choose:async name=>{modal(true);try{if(choose)return await choose(name);const result=await dialog.showSaveDialog(window,{title:'정지 PNG 이미지 저장',defaultPath:name,filters:[{name:'PNG RGBA/sRGB',extensions:['png']}]});return result.canceled?null:result.filePath??null;}finally{modal(false);}}});this.compatibility=new CompatibilityService(capture,validate);
-  this.avatar=installAvatarExports(window,this.compatibility,validate,trusted,modal,avatarTest,()=>project.runtimeBusy(),(basis,content)=>{const p=project.view().project;return basis.source==='working'&&!!p&&p.projectId===basis.projectId&&p.revision===basis.revision&&exportContentHash(p)===content;});
+  this.image=new ImageExportService({capture,validate,running:()=>project.runtimeBusy(),render:renderPNG,choose:async name=>{modal(true);try{if(choose)return await choose(name);const result=await dialog.showSaveDialog(window,{title:'정지 PNG 이미지 저장',defaultPath:join(saveDirectory(),name),filters:[{name:'PNG RGBA/sRGB',extensions:['png']}]});return result.canceled?null:result.filePath??null;}finally{modal(false);}}});this.compatibility=new CompatibilityService(capture,validate);
+  this.avatar=installAvatarExports(window,this.compatibility,validate,trusted,modal,avatarTest,()=>project.runtimeBusy(),(basis,content)=>{const p=project.view().project;return basis.source==='working'&&!!p&&p.projectId===basis.projectId&&p.revision===basis.revision&&exportContentHash(p)===content;},saveDirectory);
   const error=(e:unknown,fallback:string)=>e instanceof Error&&/^E_[A-Z_]{1,48}$/.test(e.message)?e.message:fallback;
   ipcMain.handle('image-export:prepare',async(event,value:unknown)=>{trusted(event);try{if(!value||JSON.stringify(value).length>8192||Object.keys(value).sort().join(',')!=='id,live,projectId,revision,settings,source')throw new Error('E_IMAGE_REQUEST');return {ok:true,ticket:await this.image.prepare(value as ImageRequest)};}catch(e){return {ok:false,errorCode:error(e,'E_IMAGE_RENDER')};}});
   ipcMain.handle('image-export:save',async(event,id:unknown)=>{trusted(event);try{if(typeof id!=='string')throw new Error('E_IMAGE_REQUEST');const receipt=await this.image.save(id);return receipt?{ok:true,receipt}:{ok:true,cancelled:true};}catch(e){const code=(e as NodeJS.ErrnoException).code;return {ok:false,errorCode:code==='ENOSPC'?'E_IMAGE_SPACE':code==='EACCES'||code==='EPERM'?'E_IMAGE_PERMISSION':error(e,'E_IMAGE_WRITE')};}});

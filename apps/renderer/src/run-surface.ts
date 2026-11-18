@@ -2,9 +2,13 @@ import {AvatarRenderer} from '../../../packages/avatar-renderer';
 import type {RunLease} from '../../../packages/execution';
 import type {MotionPlayer} from '../../../packages/motion';
 import type {Parameters} from '../../../packages/scene-core';
+import {RenderMetrics} from '../../../packages/settings';
+import {environmentValue} from './environment-state';
 export interface PreparedSurface {id:string;canvas:HTMLCanvasElement;renderer:AvatarRenderer;alive:boolean;cancel:()=>void;painted:boolean|null;}
 /** The execution owns this surface, independently of editor/modal mount lifetimes. */
 export class RunSurface {
+ readonly metrics=new RenderMetrics();private lastPaint=0;
+ textureEstimateMiB():number|null{return this.current?.renderer.textureEstimateMiB()??null;}
  readonly element=document.createElement('div');private current:PreparedSurface|null=null;private pending=new Map<string,PreparedSurface>();private created=0;private disposed=0;
  constructor(){this.element.className='run-surface';}
  measure():Record<string,unknown>|null{return this.current&&this.current.painted===false?this.current.renderer.report():null;}
@@ -20,9 +24,9 @@ export class RunSurface {
  }
  commit(value:PreparedSurface,parameters:Parameters,hidden:boolean):void{if(!value.alive)throw new Error('E_RUN_RENDER');this.paint(value,parameters,hidden);const old=this.current;this.current=value;this.pending.delete(value.id);this.element.replaceChildren(value.canvas);if(old&&old!==value)this.destroy(old);}
  retag(lease:RunLease):void{if(this.current){this.current.id=lease.requestId;this.current.canvas.dataset.snapshotId=lease.requestId;this.current.canvas.dataset.runRevision=String(lease.revision);}}
- draw(parameters:Parameters,hidden:boolean):void{if(this.current)this.paint(this.current,parameters,hidden);}
- private paint(value:PreparedSurface,parameters:Parameters,hidden:boolean):void{const {renderer,canvas}=value;if(hidden){const gl=renderer.gl;gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT);}else renderer.draw(parameters);canvas.dataset.hidden=String(hidden);if(value.painted!==hidden){value.painted=hidden;canvas.dataset.visiblePixels=hidden?'0':String(renderer.report().visiblePixels);}}
+ draw(parameters:Parameters,hidden:boolean):void{const now=performance.now();if(this.current&&(this.current.painted!==hidden||now-this.lastPaint>=1000/environmentValue().previewFps-1)){this.lastPaint=now;const start=performance.now();this.paint(this.current,parameters,hidden);this.metrics.record(now,performance.now()-start);}}
+ private paint(value:PreparedSurface,parameters:Parameters,hidden:boolean):void{const {renderer,canvas}=value;const scale=environmentValue().previewScale,width=Math.round(640*scale),height=Math.round(800*scale);if(canvas.width!==width||canvas.height!==height){canvas.width=width;canvas.height=height;}if(hidden){const gl=renderer.gl;gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT);}else renderer.draw(parameters);canvas.dataset.hidden=String(hidden);if(value.painted!==hidden){value.painted=hidden;canvas.dataset.visiblePixels=hidden?'0':String(renderer.report().visiblePixels);}}
  discard(id:string):void{const value=this.pending.get(id);if(value){value.cancel();this.destroy(value);}}
  private destroy(value:PreparedSurface):void{if(!value.alive)return;value.alive=false;this.pending.delete(value.id);value.renderer.dispose();value.renderer.gl.getExtension('WEBGL_lose_context')?.loseContext();value.canvas.remove();this.disposed++;}
- clear():void{for(const value of [...this.pending.values()]){value.cancel();this.destroy(value);}if(this.current)this.destroy(this.current);this.current=null;this.element.replaceChildren();}
+ clear():void{this.metrics.reset();this.lastPaint=0;for(const value of [...this.pending.values()]){value.cancel();this.destroy(value);}if(this.current)this.destroy(this.current);this.current=null;this.element.replaceChildren();}
 }

@@ -1,3 +1,7 @@
+import {checkEnvironmentLive} from './environment-live-check';
+import {checkEnvironmentUI} from './environment-self-check';
+import {EnvironmentPanel} from './environment-panel';
+import {applyEnvironment} from './environment-state';
 import {checkAvatarExportUI} from './avatar-export-self-check';
 import {checkFileOutputUI} from './file-output-self-check';
 import {FileOutputPanel} from './file-output-panel';
@@ -58,6 +62,8 @@ export function ProjectPreview({ scene,label }:{ scene:PreviewScene | null; labe
 const routes:{ type:SourceType; title:string }[] = [{ type:'parts',title:'파츠로 시작' },{ type:'single-image',title:'그림 한 장' },{ type:'split-image',title:'분리된 그림' }];
 const pause = (ms = 25):Promise<void> => new Promise(resolve => setTimeout(resolve,ms));
 export function ProjectDesk({ onView }:{ onView:(view:SessionView)=>void }) {
+  const [environmentOpen,setEnvironmentOpen]=useState(false);
+  useEffect(()=>{const open=()=>setEnvironmentOpen(true);window.addEventListener('studio:settings',open);return()=>window.removeEventListener('studio:settings',open);},[]);
   const [inputOpen,setInputOpen]=useState(false);
   const [cameraOpen,setCameraOpen]=useState(false);
   const [fileOpen,setFileOpen]=useState(false);
@@ -82,6 +88,7 @@ export function ProjectDesk({ onView }:{ onView:(view:SessionView)=>void }) {
   const [microphone]=useState(()=>new MicrophoneRuntime(player));microphone.setProject(view?.project??null,view?.sessionId??'');
   const [run]=useState(()=>new RunRuntime(async()=>{camera.stop();await microphone.stop();await camera.stopped();player.stop();}));
   useEffect(()=>{void run.init();const keys=run.connectKeyboard();return()=>{keys();void run.dispose();};},[run]);
+  useEffect(()=>{const apply=(data:import('../../../packages/settings').SettingsView)=>{applyEnvironment(data.value);if(!data.value.cameraRequests){camera.stop();run.camera.stop();}if(!data.value.microphoneRequests){void microphone.stop();void run.microphone.stop();}};void window.studio.settings.view().then(apply);return window.studio.settings.subscribe(apply);},[]);
   const [,refreshRun]=useState(0);useEffect(()=>run.subscribe(()=>refreshRun(n=>n+1)),[run]);
   const [,refreshMicrophone]=useState(0);useEffect(()=>microphone.subscribe(()=>refreshMicrophone(v=>v+1)),[microphone]);useEffect(()=>()=>{void microphone.stop();},[microphone]);
   useEffect(()=>{const open=()=>{if(run.active){setRunOpen(true);return;}setInputOpen(false);setCameraOpen(true);};window.addEventListener('studio:camera',open);return()=>window.removeEventListener('studio:camera',open);},[]);
@@ -96,6 +103,8 @@ export function ProjectDesk({ onView }:{ onView:(view:SessionView)=>void }) {
   useEffect(()=>{window.correctionSelfCheck=()=>checkCorrectionUI({current:()=>latest.current,command,settled:()=>queue.current});return()=>{delete window.correctionSelfCheck;};},[]);
   useEffect(()=>{window.splitSelfCheck=rows=>checkSplitUI({current:()=>latest.current,command,settled:()=>queue.current},rows);return()=>{delete window.splitSelfCheck;};},[]);
   useEffect(()=>{window.microphoneLiveCheck=scripted=>checkMicrophoneLive({current:()=>latest.current,command,settled:()=>queue.current,mic:microphone},scripted??false);return()=>{delete window.microphoneLiveCheck;};},[]);
+  useEffect(()=>{window.environmentLiveCheck=()=>checkEnvironmentLive({current:()=>latest.current,command,run});return()=>{delete window.environmentLiveCheck;};},[]);
+  useEffect(()=>{window.environmentSelfCheck=()=>checkEnvironmentUI({current:()=>latest.current,command,settled:()=>queue.current,run,camera,microphone});return()=>{delete window.environmentSelfCheck;};},[]);
   useEffect(()=>{window.avatarExportSelfCheck=()=>checkAvatarExportUI({current:()=>latest.current,command,settled:()=>queue.current});return()=>{delete window.avatarExportSelfCheck;};},[]);
   useEffect(()=>{window.fileOutputSelfCheck=()=>checkFileOutputUI({current:()=>latest.current,command,settled:()=>queue.current,runtime:run});return()=>{delete window.fileOutputSelfCheck;};},[]);
   useEffect(()=>{window.broadcastCheckStep=broadcastCheck({current:()=>latest.current,command,settled:()=>queue.current,runtime:run});return()=>{delete window.broadcastCheckStep;};},[]);
@@ -197,6 +206,7 @@ export function ProjectDesk({ onView }:{ onView:(view:SessionView)=>void }) {
     {splitting&&view?.split?.draft&&<Modal titleId="split-title" className="split-dialog" onClose={()=>setSplitting(false)}><h2 id="split-title">분리 그림 · 배치와 연결</h2><SplitGuide key={view.split.draft.id} view={view} command={c=>void command(c)}/><button data-split-close onClick={()=>setSplitting(false)}>작업실로 돌아가기</button></Modal>}
     {correcting&&view?.project?.structure&&<Modal titleId="correction-title" className="correction-dialog" onClose={()=>setCorrecting(false)}><h2 id="correction-title">모양 고치기 · 보정과 재분석</h2><CorrectionPanel key={view.project.projectId} view={view} command={c=>void command(c)}/><button data-correction-close onClick={()=>setCorrecting(false)}>작업실로 돌아가기</button></Modal>}
     {transition&&<Modal titleId="run-transition-title" onClose={()=>void finishTransition('cancel')}><h2 id="run-transition-title" aria-busy={transitionBusy}>실행 중 프로젝트 전환</h2><p>현재 캐릭터를 계속 표시하며 파일과 미저장 변경을 확인합니다. 새 실행본은 구조·그림 검사 통과 후 교체하며 표정·추적 대상을 새로 시작합니다. 준비가 안 되면 기존 실행을 유지합니다.</p><button data-run-transition-keep disabled={transitionBusy} onClick={()=>void finishTransition('keep')}>실행 유지·편집만 전환</button><button data-run-transition-switch disabled={transitionBusy||transition.command.type==='close'} onClick={()=>void finishTransition('switch')}>검사 후 실행도 전환</button><button data-run-transition-cancel disabled={transitionBusy} onClick={()=>void finishTransition('cancel')}>취소</button></Modal>}
+    {environmentOpen&&<EnvironmentPanel view={view} run={run} camera={camera} microphone={microphone} close={()=>setEnvironmentOpen(false)} navigate={to=>{setEnvironmentOpen(false);if(to==='camera')setCameraOpen(true);else if(to==='microphone')setInputOpen(true);else void openRun();}}/>}
     {route && <Modal titleId="new-title" onClose={() => setRoute(null)}><h2 id="new-title">새 캐릭터 프로젝트</h2><div className="route-choice" role="group" aria-label="제작 경로 선택">{routes.map(r => <button data-new-route={r.type} key={r.type} aria-pressed={route === r.type} onClick={() => setRoute(r.type)}>{r.title}</button>)}</div><label>프로젝트 이름<input data-initial-focus value={name} maxLength={120} onChange={e => setName(e.target.value)}/></label><button className="primary" data-new-confirm onClick={() => { void command({ type:'new',name,sourceType:route }); setRoute(null); }}>초안 만들기</button><button data-new-cancel onClick={() => setRoute(null)}>취소</button></Modal>}
     {recentOpen && <Modal titleId="recent-title" onClose={() => setRecentOpen(false)} className="recent-dialog"><h2 id="recent-title">최근 프로젝트</h2><p>프로젝트를 선택하면 저장하지 않은 변경을 먼저 확인합니다.</p>{recentList}</Modal>}
     {help && <Modal titleId="help-title" onClose={() => setHelp(false)} className="help-dialog"><h2 id="help-title">작업실 도움말</h2><dl><dt>부위</dt><dd>눈·입·몸처럼 따로 선택하고 조절하는 그림 요소예요.</dd><dt>역할</dt><dd>부위가 눈인지 입인지 알려 주는 이름표예요. 변경 전 복구 지점을 보관합니다.</dd><dt>저장과 복구본</dt><dd>저장은 선택한 프로젝트 파일을 갱신해요. 복구본은 별도로 보관하며 저장 완료를 대신하지 않아요.</dd><dt>원본 보기</dt><dd>가져온 원본 그림을 현재 편집본과 같은 배율로 비교해요. 원본에는 편집을 적용하지 않아요.</dd><dt>화면 조작</dt><dd>휠·＋/−로 확대, 0으로 전체 맞춤. 화면 이동 버튼·가운데 버튼·Space 드래그로 이동해요. 미리보기 방향키로 부위를 선택하고 Shift 방향키로 화면을 이동해요.</dd><dt>키보드</dt><dd>Tab으로 이동, Enter/Space로 실행, Escape로 대화상자나 연속 조절을 취소해요. Ctrl+S 저장, Ctrl+Shift+S 다른 이름 저장, Ctrl+Z/Ctrl+Y 되돌리기/다시 실행.</dd></dl></Modal>}

@@ -71,6 +71,7 @@ export class AvatarRenderer {
       }
     } return null;
   }
+  textureEstimateMiB():number{return [...new Set(this.textures.values())].reduce((sum,t)=>sum+t.width*t.height*4,0)/1048576;}
   report():Record<string,unknown> { this.draw(this.current); const gl = this.gl; gl.finish(); const pixels = new Uint8Array(this.canvas.width*this.canvas.height*4); gl.readPixels(0,0,this.canvas.width,this.canvas.height,gl.RGBA,gl.UNSIGNED_BYTE,pixels); let visible = 0; let digest = 2166136261; for (let i=0;i<pixels.length;i++) { digest = Math.imul(digest^pixels[i]!,16777619); if (i%4===3 && pixels[i]!>0) visible++; }
     return { webgl2:true,version:gl.getParameter(gl.VERSION),renderer:gl.getParameter(gl.RENDERER),textureCount:new Set(this.textures.values()).size,layers:this.scene.layers.length,submittedFrames:this.frameCount,projectModel:this.scene.model ?? null,visiblePixels:visible,transparentPixels:this.canvas.width*this.canvas.height-visible,glError:gl.getError(),pixelHash:(digest>>>0).toString(16),meshLayers:this.scene.layers.filter(l => l.mesh).length,staticBufferUploads:this.uploads,scope:'Shared GPU triangle deformation and authored state blend; not automatic rigging, live tracking or M0 performance approval' };
   }

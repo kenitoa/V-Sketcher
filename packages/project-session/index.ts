@@ -35,6 +35,9 @@ export class ProjectSession {
   readonly cache:ResourceCache; readonly catalog:ProjectCatalog;
   private document:Document | null = null; private readOnly:LoadedBundle | null = null; private readOnlyLabel = '';
   private listeners = new Set<()=>void>(); private lastError:string | null = null; private saving:Promise<boolean> | null = null;
+  private recoveryPolicy:'standard'|'frequent'|'off'='standard';
+  async configureRecovery(policy:'standard'|'frequent'|'off'):Promise<void>{if(!['standard','frequent','off'].includes(policy))throw new Error('E_SETTINGS_VALUE');this.recoveryPolicy=policy;this.cancelTimer();if(this.autoPromise)await this.autoPromise.catch(()=>{});this.scheduleAuto();}
+  private recoveryIntervals():[number,number]{return this.recoveryPolicy==='frequent'?[5000,30000]:[15000,60000];}
   private autoPromise:Promise<void> | null = null; private timer:ReturnType<typeof setTimeout> | null = null; private lastEdit = 0; private lastAuto = 0;
   private retryAutoAt = 0;
   private readonly now:()=>number; private grants = new Map<string,Map<string,Project['assets'][number]>>(); private transitioning = false; private stopped = false;
@@ -175,13 +178,13 @@ export class ProjectSession {
   }
   private cancelTimer():void { if (this.timer) clearTimeout(this.timer); this.timer = null; }
   private scheduleAuto():void {
-    this.cancelTimer(); if (this.options.autoTimers === false || !this.document || !this.dirty() || this.stopped || this.document.recoveryKey === contentKey(this.document.flow.project())) return;
-    const delay = Math.max(0,Math.max(this.retryAutoAt,Math.min(this.lastEdit+15000,this.lastAuto+60000))-this.now());
+    this.cancelTimer(); if (this.recoveryPolicy==='off'||this.options.autoTimers === false || !this.document || !this.dirty() || this.stopped || this.document.recoveryKey === contentKey(this.document.flow.project())) return;
+    const delay = Math.max(0,Math.max(this.retryAutoAt,Math.min(this.lastEdit+this.recoveryIntervals()[0],this.lastAuto+this.recoveryIntervals()[1]))-this.now());
     this.timer = setTimeout(() => { this.timer = null; void this.autosaveDue().catch(error => { this.lastError = storageError(error); this.retryAutoAt = this.now()+30000; this.scheduleAuto(); this.emit(); }); },delay); this.timer.unref();
   }
   async autosaveDue(force = false):Promise<void> {
     if (this.autoPromise) return this.autoPromise; const d = this.document;
-    if (!d || !this.dirty(d) || d.recoveryKey === contentKey(d.flow.project()) || !force && this.now() < Math.min(this.lastEdit+15000,this.lastAuto+60000)) return;
+    if (!force&&this.recoveryPolicy==='off'||!d || !this.dirty(d) || d.recoveryKey === contentKey(d.flow.project()) || !force && this.now() < Math.min(this.lastEdit+this.recoveryIntervals()[0],this.lastAuto+this.recoveryIntervals()[1])) return;
     const snapshot = d.flow.project();
     this.autoPromise = (async () => { const resources = await this.cache.bytes(snapshot); const record = await this.catalog.record(snapshot,resources,'autosave',d.target,'자동 복구본'); if (this.document === d) { d.lastRecoveryAt = record.createdAt; d.recoveryKey = contentKey(snapshot); } this.lastAuto = this.now(); })().finally(() => { this.autoPromise = null; this.scheduleAuto(); this.emit(); });
     return this.autoPromise;

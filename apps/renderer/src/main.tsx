@@ -82,7 +82,7 @@ function Studio() {
     <aside className="sidebar"><div className="brand"><span className="brand-mark">S<span/></span><div>2D<span>SKETCHER</span></div></div>
       <nav aria-label="주 메뉴"><button className="nav active" aria-current="page" onClick={() => window.dispatchEvent(new Event('studio:home'))}><Icon kind="home"/>작업실</button>
         <button className="nav" onClick={() => window.dispatchEvent(new Event('studio:recent'))}><Icon kind="layers"/>내 프로젝트</button><button className="nav" onClick={()=>window.dispatchEvent(new Event('studio:parts'))}><Icon kind="parts"/>파츠 보관함</button></nav>
-      <div className="sidebar-bottom"><button data-about onClick={() => setAbout(true)} className="nav settings"><Icon kind="settings"/>앱 정보</button></div>
+      <div className="sidebar-bottom"><button data-open-settings onClick={()=>window.dispatchEvent(new Event('studio:settings'))} className="nav settings"><Icon kind="settings"/>환경 설정</button><button data-about onClick={() => setAbout(true)} className="nav settings"><Icon kind="settings"/>앱 정보</button></div>
     </aside>
     <main id="main-content" tabIndex={-1}><header className="topbar"><span>작업실 <span className="crumb">/</span> <strong>{sessionView?.project ? '캐릭터 편집' : '시작하기'}</strong></span><div><span className="version">{info?.version ? "v"+info.version : ""}</span><span className="avatar-letter">S</span></div></header>
       <div className="workspace">

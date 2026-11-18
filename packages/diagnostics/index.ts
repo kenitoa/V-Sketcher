@@ -14,7 +14,10 @@ export function safeEvent(event: string, input: Record<string, unknown> = {}): R
 }
 export class DiagnosticLog {
   constructor(private directory: string) { mkdirSync(directory, { recursive: true }); }
+  private enabled=true;
+  configure(enabled:boolean):void { this.enabled=enabled; }
   write(event: string, fields: Record<string, unknown> = {}): void {
+    if(!this.enabled)return;
     const file = join(this.directory, 'events.jsonl');
     if (existsSync(file) && statSync(file).size > 1024 * 1024) {
       for (let i = 3; i >= 1; i--) if (existsSync(join(this.directory, `events.${i}.jsonl`))) renameSync(join(this.directory, `events.${i}.jsonl`), join(this.directory, `events.${i + 1}.jsonl`));
