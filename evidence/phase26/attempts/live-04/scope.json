@@ -1,0 +1,11 @@
+{
+  "passed": false,
+  "status": "PREPARATION_TIMEOUT",
+  "measuredInputTrialStarted": false,
+  "reportedFaceVisibleByUser": true,
+  "reportedStartByUser": true,
+  "observedFaces": 0,
+  "acceptance": "No measured success; preserve user report separately from telemetry",
+  "rawCameraFramesStored": false,
+  "microphonePCMStored": false
+}

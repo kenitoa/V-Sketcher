@@ -1,0 +1,125 @@
+{
+  "phase": 30,
+  "localVerificationPassed": true,
+  "entirePhaseComplete": false,
+  "releaseDecision": "HOLD",
+  "m0": "HOLD",
+  "completedTasks": [
+    "T-292",
+    "T-293",
+    "T-294",
+    "T-300"
+  ],
+  "incompleteTasks": [
+    "T-291",
+    "T-295",
+    "T-296",
+    "T-297",
+    "T-298",
+    "T-299"
+  ],
+  "gate": {
+    "command": "tools\\dev.cmd run check",
+    "exitCode": 0,
+    "nodeTests": 338,
+    "pythonTests": 36,
+    "totalTests": 374,
+    "nodeFailures": 0,
+    "typecheck": true,
+    "ruff": true,
+    "generatedValidatorsCurrent": true,
+    "testBuild": true,
+    "normalLogsCopied": false,
+    "privateControllerLog": ".local/check30.log"
+  },
+  "candidate": {
+    "version": "0.22.0",
+    "sha256": "3bf0538da2c0864dea6048548940cb6ccce1b6e77a3ab193e23250da77c98ac1",
+    "bytes": 308869254,
+    "path": "out/make/zip/win32/x64/2DSketcher-win32-x64-0.22.0.zip",
+    "components": [
+      {
+        "path": "2DSketcher.exe",
+        "bytes": 250093568,
+        "sha256": "3d1e14d512373d91a66356e7b4d36345baefecbaf439726424aeb4f63ed9edd9"
+      },
+      {
+        "path": "resources/app.asar",
+        "bytes": 42756338,
+        "sha256": "c16e0f0ca5fe17dfc68ab920b2cf52e08d0353e936cc93f72937cd24a5329839"
+      },
+      {
+        "path": "resources/worker/worker.exe",
+        "bytes": 8810258,
+        "sha256": "b734cad79c96072cfcfee920b04c9b6a7f0aa47835216e02a8124666d86768b6"
+      },
+      {
+        "path": "resources/release/support.json",
+        "bytes": 1684,
+        "sha256": "9ebc18e3a992ca4da5d4c3c30cf1c4b13d61ae5e453850a8b5d664fc6a16c42b"
+      },
+      {
+        "path": "resources/release/USER-GUIDE.md",
+        "bytes": 9279,
+        "sha256": "034cc9a8e3c8c9c0dbbe2bf704f67eabf3cd3c678c9872ef890caa617bc72790"
+      },
+      {
+        "path": "resources/notices/dependency-inventory.json",
+        "bytes": 97138,
+        "sha256": "4eaa5fce585b8a37e7bfc5e28195d773ea27c71b2486c8175d8ad77707cea2cb"
+      },
+      {
+        "path": "resources/notices/model-source.json",
+        "bytes": 481,
+        "sha256": "3cbe671b9bf9b3e411b3d1eb3dc678ecf4320070ce568c492bd481fd4e408182"
+      }
+    ]
+  },
+  "requiredChecks": 51,
+  "blockingChecks": 49,
+  "productSourcePinsUnchanged": true,
+  "packagingChanged": false,
+  "publicDistributionApproved": false,
+  "signed": false,
+  "published": false,
+  "postReleaseFeedbackCount": 0,
+  "physicalDevicesOpened": false,
+  "rawMediaStored": false,
+  "privacyScan": [
+    "assets.json",
+    "avatar-pixels.json",
+    "candidate/avatar.json",
+    "candidate/broadcast.json",
+    "candidate/candidate.json",
+    "candidate/full.json",
+    "candidate/image.json",
+    "gate.json",
+    "image-pixels.json",
+    "known-incidents.json",
+    "readiness.json",
+    "review-attempt-01.json",
+    "signature.json",
+    "targets/failure.json",
+    "targets-02/external-run.json",
+    "targets-02/obs/obs-run.json",
+    "targets-02/packaged-broadcast.json",
+    "targets-02/parts-v1-quality.json",
+    "targets-02/parts-v2-quality.json",
+    "targets-02/progress.json",
+    "targets-02/single-image-v1-quality.json",
+    "targets-02/single-image-v2-quality.json",
+    "targets-02/split-image-v1-quality.json",
+    "targets-02/split-image-v2-quality.json",
+    "targets-02/target-scope.json"
+  ],
+  "sourceSha256": {
+    "tools/release-controls.mjs": "a6eb7b9bf6ff095c41428949b9109b46f8ee7b248358d307c841c5318e5535ef",
+    "scripts/release-candidate-check.mjs": "5453435a45d9bdfaf309905cd45e7c86ae96fc28b5ccd195e83a81f5d61d1ac4",
+    "scripts/release-external-check.mjs": "f3c9f114a64a21c04136f26d5f5cbaa6d61f2a332c27c973886a06276058a4dd",
+    "scripts/release-review.mjs": "417856f9f9e0462c6c3e24619279b1ca3a32839d7525631b7e5a7c4c8f3d1f7b",
+    "tests/release-controls.test.mjs": "160873ef24dcd2f0e10fe2c96c7253d0c67c079d7a978d66de2805d992a0746c",
+    "scripts/test.mjs": "d33d3f64efa07622580100c5bfabec776d93d3f05c02856acbe0792f7687959f",
+    "docs/planning/30-release-stabilization.md": "7fb24eb60c923ad3289d87e780e805e8f94be27389d01cd7e29a847d59642140",
+    "docs/user/incident-response.md": "b991d15950b6d70e69a722a921a353b4e699ca56c0cb27d4ab034ffb1af26f70"
+  }
+}

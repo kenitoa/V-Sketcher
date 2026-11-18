@@ -1,0 +1,21 @@
+{
+  "protocol": "29-observation-v1.0",
+  "participantId": null,
+  "consent": null,
+  "noviceEligible": null,
+  "build": null,
+  "environment": {"os": null, "cpu": null, "ramGiB": null, "gpu": null, "obs": null, "inochiSession": null, "cameraKind": null, "microphoneKind": null},
+  "firstRoute": null,
+  "firstUseWindowEndsAt": null,
+  "repeatWindowEndsAt": null,
+  "sessions": [],
+  "taskRecordShape": {
+    "route": null, "task": null, "revision": null, "startedAt": null, "endedAt": null,
+    "segments": [], "segmentShape": {"kind": "wait|active|blocked|pause", "seconds": null},
+    "milestones": {"autoResult": null, "firstMotion": null, "broadcastConfirmed": null, "exportRequested": null, "fileWritten": null, "independentRun": null},
+    "correctionActions": null, "uniqueCorrectedParts": null, "reanalyses": null,
+    "helpUsed": null, "interventions": [], "interventionShape": {"at": null, "kind": "hint|proxy_operation", "reason": null},
+    "result": "unobserved", "evidenceLevel": "unverified", "blockReason": null, "dropout": null, "changeIdForRetest": null
+  },
+  "note": "양식은 관측값이 아니다. 실제 관찰 전 null/빈 배열을 성공이나 0으로 바꾸지 않는다."
+}

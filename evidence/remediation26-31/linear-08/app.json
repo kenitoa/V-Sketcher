@@ -1,0 +1,1018 @@
+{
+  "passed": true,
+  "broadcast": {
+    "passed": true,
+    "routes": [
+      {
+        "route": "parts",
+        "passed": true,
+        "actualRoutePreparation": true,
+        "alpha": true,
+        "avatarOnly": true,
+        "motion": true,
+        "expression": true,
+        "hide": true,
+        "workingEditIsolated": true,
+        "workingSavePinned": true,
+        "executionReplacement": true,
+        "stalePublisherClears": true,
+        "inputLossFallback": true,
+        "physicalDevicesOpened": false,
+        "neutral": {
+          "ready": true,
+          "width": 1920,
+          "height": 1080,
+          "visiblePixels": 503562,
+          "transparentPixels": 1570038,
+          "partialAlphaPixels": 187753,
+          "pixelHash": 2852528294,
+          "canvasOnly": true,
+          "bodyText": "",
+          "nodeExposed": false,
+          "glError": 0
+        }
+      },
+      {
+        "route": "single-image",
+        "passed": true,
+        "actualRoutePreparation": true,
+        "alpha": true,
+        "avatarOnly": true,
+        "motion": true,
+        "expression": true,
+        "hide": true,
+        "workingEditIsolated": true,
+        "workingSavePinned": true,
+        "executionReplacement": true,
+        "stalePublisherClears": true,
+        "inputLossFallback": true,
+        "physicalDevicesOpened": false,
+        "neutral": {
+          "ready": true,
+          "width": 1920,
+          "height": 1080,
+          "visiblePixels": 611555,
+          "transparentPixels": 1462045,
+          "partialAlphaPixels": 611545,
+          "pixelHash": 2365972891,
+          "canvasOnly": true,
+          "bodyText": "",
+          "nodeExposed": false,
+          "glError": 0
+        }
+      },
+      {
+        "route": "split-image",
+        "passed": true,
+        "actualRoutePreparation": true,
+        "alpha": true,
+        "avatarOnly": true,
+        "motion": true,
+        "expression": true,
+        "hide": true,
+        "workingEditIsolated": true,
+        "workingSavePinned": true,
+        "executionReplacement": true,
+        "stalePublisherClears": true,
+        "inputLossFallback": true,
+        "physicalDevicesOpened": false,
+        "neutral": {
+          "ready": true,
+          "width": 1920,
+          "height": 1080,
+          "visiblePixels": 504213,
+          "transparentPixels": 1569387,
+          "partialAlphaPixels": 189171,
+          "pixelHash": 1898978825,
+          "canvasOnly": true,
+          "bodyText": "",
+          "nodeExposed": false,
+          "glError": 0
+        }
+      }
+    ],
+    "settingsRestore": true,
+    "rendererFailureKeepsRun": true,
+    "tokenRotation": true,
+    "restartReconnect": true,
+    "receiverSandbox": true,
+    "externalOBS": "NOT_RUN",
+    "osGlobalKeyDelivery": "NOT_RUN",
+    "physicalDevicesOpened": false,
+    "rawCameraFramesSaved": false,
+    "rawAudioSaved": false,
+    "m0": "HOLD"
+  },
+  "obs": {
+    "passed": true,
+    "scope": "same-project automated production-code paths, actual OBS, independent target tested after app exit; no live-participant acceptance",
+    "rows": [
+      {
+        "passed": true,
+        "route": "parts",
+        "version": 1,
+        "projectId": "07420864-9667-474d-b232-79ab38395a2f",
+        "createdBySameAppThreeRoutePreparation": true,
+        "sourceRevision": 8,
+        "savedRevision": 8,
+        "runRevision": 8,
+        "sourceAssetsUnchanged": true,
+        "sameProjectReopened": true,
+        "correctionApplied": true,
+        "roleCorrectionVerified": false,
+        "png": {
+          "name": "parts-v1.png",
+          "bytes": 1264489,
+          "sha256": "6ade598ea49f779a4cbf3d82121f24cd2c28b72880a5f27663f64868cc1a7916",
+          "basis": {
+            "source": "working",
+            "projectId": "07420864-9667-474d-b232-79ab38395a2f",
+            "revision": 8,
+            "fingerprint": "59a8a30128f17ec7861337a479a6203ac556dcaabd769892bb6edc2f9d7f20d6"
+          }
+        },
+        "avatar": {
+          "contentFingerprint": "841e25fcc141595541fbc6997d20ef3aef355a4e1f5e3cfebe1e02fb160c69fa",
+          "id": "99bc7000-2713-44c7-b576-dbdb77aacf03",
+          "name": "character-r8-6b05b422.inp",
+          "bytes": 10720301,
+          "sha256": "6b05b422193d30779e73c3f322f01d70b2f3b8cf129bfd6da9e12495ba6a25d1",
+          "basis": {
+            "source": "working",
+            "projectId": "07420864-9667-474d-b232-79ab38395a2f",
+            "revision": 8,
+            "fingerprint": "59a8a30128f17ec7861337a479a6203ac556dcaabd769892bb6edc2f9d7f20d6"
+          },
+          "created": "2026-11-18T17:13:05.854Z",
+          "targetVersion": "0.8.7",
+          "converterVersion": "0.3.0",
+          "state": "WRITTEN",
+          "newerEdits": false,
+          "confirmation": null,
+          "fileState": "PRESENT",
+          "current": true
+        },
+        "olderResultsStale": false,
+        "programmaticReview": true,
+        "humanObservation": false,
+        "physicalDevicesOpened": false,
+        "file": {
+          "contentFingerprint": "841e25fcc141595541fbc6997d20ef3aef355a4e1f5e3cfebe1e02fb160c69fa",
+          "id": "99bc7000-2713-44c7-b576-dbdb77aacf03",
+          "name": "avatar-parts-v1.inp",
+          "bytes": 10720301,
+          "sha256": "6b05b422193d30779e73c3f322f01d70b2f3b8cf129bfd6da9e12495ba6a25d1",
+          "basis": {
+            "source": "working",
+            "projectId": "07420864-9667-474d-b232-79ab38395a2f",
+            "revision": 8,
+            "fingerprint": "59a8a30128f17ec7861337a479a6203ac556dcaabd769892bb6edc2f9d7f20d6"
+          },
+          "created": "2026-11-18T17:13:05.854Z",
+          "targetVersion": "0.8.7",
+          "converterVersion": "0.3.0",
+          "state": "WRITTEN",
+          "newerEdits": false,
+          "confirmation": null,
+          "fileState": "PRESENT",
+          "current": true,
+          "route": "parts",
+          "version": 1
+        },
+        "obsImages": [
+          {
+            "pose": "neutral",
+            "file": "parts-v1-neutral-obs.png",
+            "sha256": "ed6a97b52539a9492b590a7d5f0441281df084d5d824934f483204d91a626f18",
+            "pixels": {
+              "passed": true,
+              "visiblePixels": 502853,
+              "transparentPixels": 1570747,
+              "bounds": [
+                638,
+                59,
+                1282,
+                1055
+              ],
+              "dimensions": [
+                1920,
+                1080
+              ],
+              "scope": "nonempty avatar and transparent background, not final art quality"
+            },
+            "sourceReadyBeforeCapture": true,
+            "sourceRevision": 8
+          },
+          {
+            "pose": "expression",
+            "file": "parts-v1-expression-obs.png",
+            "sha256": "494685d7d03d084707ccda0aa26946da162bc07faa25c90b54cf684c64096f76",
+            "pixels": {
+              "passed": true,
+              "visiblePixels": 502853,
+              "transparentPixels": 1570747,
+              "bounds": [
+                638,
+                59,
+                1282,
+                1055
+              ],
+              "dimensions": [
+                1920,
+                1080
+              ],
+              "scope": "nonempty avatar and transparent background, not final art quality"
+            },
+            "sourceReadyBeforeCapture": true,
+            "sourceRevision": 8
+          },
+          {
+            "pose": "motion",
+            "file": "parts-v1-motion-obs.png",
+            "sha256": "6f0bd6f90ac1a804452d99a7dae101ca5ca0c6497677f2ab85b23bc4c4032f04",
+            "pixels": {
+              "passed": true,
+              "visiblePixels": 503130,
+              "transparentPixels": 1570470,
+              "bounds": [
+                634,
+                45,
+                1282,
+                1055
+              ],
+              "dimensions": [
+                1920,
+                1080
+              ],
+              "scope": "nonempty avatar and transparent background, not final art quality"
+            },
+            "sourceReadyBeforeCapture": true,
+            "sourceRevision": 8
+          }
+        ],
+        "officialOBS": true
+      },
+      {
+        "passed": true,
+        "route": "parts",
+        "version": 2,
+        "projectId": "07420864-9667-474d-b232-79ab38395a2f",
+        "createdBySameAppThreeRoutePreparation": true,
+        "sourceRevision": 9,
+        "savedRevision": 9,
+        "runRevision": 9,
+        "sourceAssetsUnchanged": true,
+        "sameProjectReopened": true,
+        "correctionApplied": true,
+        "roleCorrectionVerified": false,
+        "png": {
+          "name": "parts-v2.png",
+          "bytes": 1264473,
+          "sha256": "09cc47b76a585bced1629c6e9c0cb05937515bd45d9f41f946fd24310390c03e",
+          "basis": {
+            "source": "working",
+            "projectId": "07420864-9667-474d-b232-79ab38395a2f",
+            "revision": 9,
+            "fingerprint": "e2a35c1542f7a57b927829a8161450fbca8ef3c562b84cdcbc56bae89bd99f63"
+          }
+        },
+        "avatar": {
+          "contentFingerprint": "155cadad5372027242e7ae02faf92cb8ecb3464588d80c245d5938159d0b5137",
+          "id": "4894e9c7-e95e-4cf5-bb60-eaab1c57059d",
+          "name": "character-r9-93fa07fd.inp",
+          "bytes": 10720301,
+          "sha256": "93fa07fd6c4607e847f455458c188dd8fb98c16c1c68ebc46db1dc19e4371cd8",
+          "basis": {
+            "source": "working",
+            "projectId": "07420864-9667-474d-b232-79ab38395a2f",
+            "revision": 9,
+            "fingerprint": "e2a35c1542f7a57b927829a8161450fbca8ef3c562b84cdcbc56bae89bd99f63"
+          },
+          "created": "2026-11-18T17:13:55.334Z",
+          "targetVersion": "0.8.7",
+          "converterVersion": "0.3.0",
+          "state": "WRITTEN",
+          "newerEdits": false,
+          "confirmation": null,
+          "fileState": "PRESENT",
+          "current": true
+        },
+        "olderResultsStale": true,
+        "programmaticReview": true,
+        "humanObservation": false,
+        "physicalDevicesOpened": false,
+        "file": {
+          "contentFingerprint": "155cadad5372027242e7ae02faf92cb8ecb3464588d80c245d5938159d0b5137",
+          "id": "4894e9c7-e95e-4cf5-bb60-eaab1c57059d",
+          "name": "avatar-parts-v2.inp",
+          "bytes": 10720301,
+          "sha256": "93fa07fd6c4607e847f455458c188dd8fb98c16c1c68ebc46db1dc19e4371cd8",
+          "basis": {
+            "source": "working",
+            "projectId": "07420864-9667-474d-b232-79ab38395a2f",
+            "revision": 9,
+            "fingerprint": "e2a35c1542f7a57b927829a8161450fbca8ef3c562b84cdcbc56bae89bd99f63"
+          },
+          "created": "2026-11-18T17:13:55.334Z",
+          "targetVersion": "0.8.7",
+          "converterVersion": "0.3.0",
+          "state": "WRITTEN",
+          "newerEdits": false,
+          "confirmation": null,
+          "fileState": "PRESENT",
+          "current": true,
+          "route": "parts",
+          "version": 2
+        },
+        "obsImages": [
+          {
+            "pose": "neutral",
+            "file": "parts-v2-neutral-obs.png",
+            "sha256": "772e1ea49892af1a5c61800f092f7a311e21305aeeafe17b78375eb3937a8586",
+            "pixels": {
+              "passed": true,
+              "visiblePixels": 502853,
+              "transparentPixels": 1570747,
+              "bounds": [
+                638,
+                59,
+                1282,
+                1055
+              ],
+              "dimensions": [
+                1920,
+                1080
+              ],
+              "scope": "nonempty avatar and transparent background, not final art quality"
+            },
+            "sourceReadyBeforeCapture": true,
+            "sourceRevision": 9
+          },
+          {
+            "pose": "expression",
+            "file": "parts-v2-expression-obs.png",
+            "sha256": "207d5165deb5b9ba5578c7abf0849f96f8b612eacb5890c4de34d5d6200bf367",
+            "pixels": {
+              "passed": true,
+              "visiblePixels": 502853,
+              "transparentPixels": 1570747,
+              "bounds": [
+                638,
+                59,
+                1282,
+                1055
+              ],
+              "dimensions": [
+                1920,
+                1080
+              ],
+              "scope": "nonempty avatar and transparent background, not final art quality"
+            },
+            "sourceReadyBeforeCapture": true,
+            "sourceRevision": 9
+          },
+          {
+            "pose": "motion",
+            "file": "parts-v2-motion-obs.png",
+            "sha256": "6bdc21372b4907c9b81778de7d19ce0f6c3e538a0e5c76947711155a1a77e446",
+            "pixels": {
+              "passed": true,
+              "visiblePixels": 503140,
+              "transparentPixels": 1570460,
+              "bounds": [
+                634,
+                45,
+                1282,
+                1055
+              ],
+              "dimensions": [
+                1920,
+                1080
+              ],
+              "scope": "nonempty avatar and transparent background, not final art quality"
+            },
+            "sourceReadyBeforeCapture": true,
+            "sourceRevision": 9
+          }
+        ],
+        "officialOBS": true
+      },
+      {
+        "passed": true,
+        "route": "single-image",
+        "version": 1,
+        "projectId": "99324128-9ba1-45f6-bb8a-05f3ea5b2785",
+        "createdBySameAppThreeRoutePreparation": true,
+        "sourceRevision": 10,
+        "savedRevision": 10,
+        "runRevision": 10,
+        "sourceAssetsUnchanged": true,
+        "sameProjectReopened": true,
+        "correctionApplied": true,
+        "roleCorrectionVerified": false,
+        "png": {
+          "name": "single-image-v1.png",
+          "bytes": 1464927,
+          "sha256": "c5222589cd909a63c228acc5803135a1ddd2c58fbbb4eda0a22543aba770e052",
+          "basis": {
+            "source": "working",
+            "projectId": "99324128-9ba1-45f6-bb8a-05f3ea5b2785",
+            "revision": 10,
+            "fingerprint": "1214046d0f4a24029501bf841f065522414c80a56b8a7894fb6b2eefeb71e2b6"
+          }
+        },
+        "avatar": {
+          "contentFingerprint": "8fd3978916b8c5b0375979e861695e31d0eb2b4a2f569b688660c8df0ef18dd3",
+          "id": "133975e8-8a0c-4584-978d-870dc3f44960",
+          "name": "character-r10-8733c949.inp",
+          "bytes": 28616512,
+          "sha256": "8733c949fa7a6ca82eec065858847890f416ed7d74df695d2b02a808eda32fbb",
+          "basis": {
+            "source": "working",
+            "projectId": "99324128-9ba1-45f6-bb8a-05f3ea5b2785",
+            "revision": 10,
+            "fingerprint": "1214046d0f4a24029501bf841f065522414c80a56b8a7894fb6b2eefeb71e2b6"
+          },
+          "created": "2026-11-18T17:14:33.754Z",
+          "targetVersion": "0.8.7",
+          "converterVersion": "0.3.0",
+          "state": "WRITTEN",
+          "newerEdits": false,
+          "confirmation": null,
+          "fileState": "PRESENT",
+          "current": true
+        },
+        "olderResultsStale": false,
+        "programmaticReview": true,
+        "humanObservation": false,
+        "physicalDevicesOpened": false,
+        "file": {
+          "contentFingerprint": "8fd3978916b8c5b0375979e861695e31d0eb2b4a2f569b688660c8df0ef18dd3",
+          "id": "133975e8-8a0c-4584-978d-870dc3f44960",
+          "name": "avatar-single-image-v1.inp",
+          "bytes": 28616512,
+          "sha256": "8733c949fa7a6ca82eec065858847890f416ed7d74df695d2b02a808eda32fbb",
+          "basis": {
+            "source": "working",
+            "projectId": "99324128-9ba1-45f6-bb8a-05f3ea5b2785",
+            "revision": 10,
+            "fingerprint": "1214046d0f4a24029501bf841f065522414c80a56b8a7894fb6b2eefeb71e2b6"
+          },
+          "created": "2026-11-18T17:14:33.754Z",
+          "targetVersion": "0.8.7",
+          "converterVersion": "0.3.0",
+          "state": "WRITTEN",
+          "newerEdits": false,
+          "confirmation": null,
+          "fileState": "PRESENT",
+          "current": true,
+          "route": "single-image",
+          "version": 1
+        },
+        "obsImages": [
+          {
+            "pose": "neutral",
+            "file": "single-image-v1-neutral-obs.png",
+            "sha256": "a933be093ed7c570b474e28ea1418ffe7473379fe44bffee0a8839940f65e4a8",
+            "pixels": {
+              "passed": true,
+              "visiblePixels": 610999,
+              "transparentPixels": 1462601,
+              "bounds": [
+                421,
+                8,
+                1475,
+                1080
+              ],
+              "dimensions": [
+                1920,
+                1080
+              ],
+              "scope": "nonempty avatar and transparent background, not final art quality"
+            },
+            "sourceReadyBeforeCapture": true,
+            "sourceRevision": 10
+          },
+          {
+            "pose": "expression",
+            "file": "single-image-v1-expression-obs.png",
+            "sha256": "a860b4ee11cc1b1be93b03ed71ee90218cbd99a0ac4bbc5a5aaf2fb2ef30f13e",
+            "pixels": {
+              "passed": true,
+              "visiblePixels": 610999,
+              "transparentPixels": 1462601,
+              "bounds": [
+                421,
+                8,
+                1475,
+                1080
+              ],
+              "dimensions": [
+                1920,
+                1080
+              ],
+              "scope": "nonempty avatar and transparent background, not final art quality"
+            },
+            "sourceReadyBeforeCapture": true,
+            "sourceRevision": 10
+          },
+          {
+            "pose": "motion",
+            "file": "single-image-v1-motion-obs.png",
+            "sha256": "af5af72c0df6c40cca6c488d2c49b669b4d09770a6a8cf52c17f6799eb455c87",
+            "pixels": {
+              "passed": true,
+              "visiblePixels": 611244,
+              "transparentPixels": 1462356,
+              "bounds": [
+                421,
+                9,
+                1475,
+                1080
+              ],
+              "dimensions": [
+                1920,
+                1080
+              ],
+              "scope": "nonempty avatar and transparent background, not final art quality"
+            },
+            "sourceReadyBeforeCapture": true,
+            "sourceRevision": 10
+          }
+        ],
+        "officialOBS": true
+      },
+      {
+        "passed": true,
+        "route": "single-image",
+        "version": 2,
+        "projectId": "99324128-9ba1-45f6-bb8a-05f3ea5b2785",
+        "createdBySameAppThreeRoutePreparation": true,
+        "sourceRevision": 12,
+        "savedRevision": 12,
+        "runRevision": 12,
+        "sourceAssetsUnchanged": true,
+        "sameProjectReopened": true,
+        "correctionApplied": true,
+        "roleCorrectionVerified": false,
+        "png": {
+          "name": "single-image-v2.png",
+          "bytes": 1464468,
+          "sha256": "622f6b724cdb0158e84a57d0ba30f0588b37101ae4ad23e6f98e9f70017af95b",
+          "basis": {
+            "source": "working",
+            "projectId": "99324128-9ba1-45f6-bb8a-05f3ea5b2785",
+            "revision": 12,
+            "fingerprint": "0f5222014f4353abb29fac38a7d9841669ce800726c4fb7a5b78ebfa1e287865"
+          }
+        },
+        "avatar": {
+          "contentFingerprint": "c5e40751761ab163293360391b47257a1d5a1c079b6d2cbe37d7d10782ad69d7",
+          "id": "fca30c0b-c6e0-4a07-9059-1ea28bcacece",
+          "name": "character-r12-002f10b3.inp",
+          "bytes": 28616594,
+          "sha256": "002f10b3eab057762a39ea4c516984c244e118dcbfdcf0360b11ea59efbc338a",
+          "basis": {
+            "source": "working",
+            "projectId": "99324128-9ba1-45f6-bb8a-05f3ea5b2785",
+            "revision": 12,
+            "fingerprint": "0f5222014f4353abb29fac38a7d9841669ce800726c4fb7a5b78ebfa1e287865"
+          },
+          "created": "2026-11-18T17:15:05.788Z",
+          "targetVersion": "0.8.7",
+          "converterVersion": "0.3.0",
+          "state": "WRITTEN",
+          "newerEdits": false,
+          "confirmation": null,
+          "fileState": "PRESENT",
+          "current": true
+        },
+        "olderResultsStale": true,
+        "programmaticReview": true,
+        "humanObservation": false,
+        "physicalDevicesOpened": false,
+        "file": {
+          "contentFingerprint": "c5e40751761ab163293360391b47257a1d5a1c079b6d2cbe37d7d10782ad69d7",
+          "id": "fca30c0b-c6e0-4a07-9059-1ea28bcacece",
+          "name": "avatar-single-image-v2.inp",
+          "bytes": 28616594,
+          "sha256": "002f10b3eab057762a39ea4c516984c244e118dcbfdcf0360b11ea59efbc338a",
+          "basis": {
+            "source": "working",
+            "projectId": "99324128-9ba1-45f6-bb8a-05f3ea5b2785",
+            "revision": 12,
+            "fingerprint": "0f5222014f4353abb29fac38a7d9841669ce800726c4fb7a5b78ebfa1e287865"
+          },
+          "created": "2026-11-18T17:15:05.788Z",
+          "targetVersion": "0.8.7",
+          "converterVersion": "0.3.0",
+          "state": "WRITTEN",
+          "newerEdits": false,
+          "confirmation": null,
+          "fileState": "PRESENT",
+          "current": true,
+          "route": "single-image",
+          "version": 2
+        },
+        "obsImages": [
+          {
+            "pose": "neutral",
+            "file": "single-image-v2-neutral-obs.png",
+            "sha256": "a5744270f4312535ac6f6add621cd7cf4621c99dd29ad0cbe35296a9c03f99cc",
+            "pixels": {
+              "passed": true,
+              "visiblePixels": 610985,
+              "transparentPixels": 1462615,
+              "bounds": [
+                423,
+                8,
+                1477,
+                1080
+              ],
+              "dimensions": [
+                1920,
+                1080
+              ],
+              "scope": "nonempty avatar and transparent background, not final art quality"
+            },
+            "sourceReadyBeforeCapture": true,
+            "sourceRevision": 12
+          },
+          {
+            "pose": "expression",
+            "file": "single-image-v2-expression-obs.png",
+            "sha256": "94d7a33191769b82cab4ebebb21bdf717907aad282b83fe8331edaca2ba69d45",
+            "pixels": {
+              "passed": true,
+              "visiblePixels": 610985,
+              "transparentPixels": 1462615,
+              "bounds": [
+                423,
+                8,
+                1477,
+                1080
+              ],
+              "dimensions": [
+                1920,
+                1080
+              ],
+              "scope": "nonempty avatar and transparent background, not final art quality"
+            },
+            "sourceReadyBeforeCapture": true,
+            "sourceRevision": 12
+          },
+          {
+            "pose": "motion",
+            "file": "single-image-v2-motion-obs.png",
+            "sha256": "45768e74914dd2cd4cd9e12ac34c6247e187b6c08f0f36ae37d75e7bf5b7845a",
+            "pixels": {
+              "passed": true,
+              "visiblePixels": 611033,
+              "transparentPixels": 1462567,
+              "bounds": [
+                423,
+                9,
+                1477,
+                1080
+              ],
+              "dimensions": [
+                1920,
+                1080
+              ],
+              "scope": "nonempty avatar and transparent background, not final art quality"
+            },
+            "sourceReadyBeforeCapture": true,
+            "sourceRevision": 12
+          }
+        ],
+        "officialOBS": true
+      },
+      {
+        "passed": true,
+        "route": "split-image",
+        "version": 1,
+        "projectId": "7192c7cf-eb10-4775-a56a-fde4ff66ce56",
+        "createdBySameAppThreeRoutePreparation": true,
+        "sourceRevision": 11,
+        "savedRevision": 11,
+        "runRevision": 11,
+        "sourceAssetsUnchanged": true,
+        "sameProjectReopened": true,
+        "correctionApplied": true,
+        "roleCorrectionVerified": true,
+        "png": {
+          "name": "split-image-v1.png",
+          "bytes": 1240058,
+          "sha256": "4e827b84da6ce94f12f37aa0c58489cd77fccfa91cbb5dcb4ccfb503f2fba427",
+          "basis": {
+            "source": "working",
+            "projectId": "7192c7cf-eb10-4775-a56a-fde4ff66ce56",
+            "revision": 11,
+            "fingerprint": "326bb8f998a9e73ac23a1458e81fed7c6e3cc37fd8f0cc9a274f15242eeb8703"
+          }
+        },
+        "avatar": {
+          "contentFingerprint": "b48511fe47ebea62f357164a83bfad6a16f414e76a14096e5810ccc42ec957c8",
+          "id": "f57675d2-8268-4f34-8330-70fe91581e2f",
+          "name": "character-r11-6a6e97af.inp",
+          "bytes": 4150645,
+          "sha256": "6a6e97afc4bb67870a51c5581e336fa206dfe1d74d64ab410d72b8b0da0001da",
+          "basis": {
+            "source": "working",
+            "projectId": "7192c7cf-eb10-4775-a56a-fde4ff66ce56",
+            "revision": 11,
+            "fingerprint": "326bb8f998a9e73ac23a1458e81fed7c6e3cc37fd8f0cc9a274f15242eeb8703"
+          },
+          "created": "2026-11-18T17:15:40.800Z",
+          "targetVersion": "0.8.7",
+          "converterVersion": "0.3.0",
+          "state": "WRITTEN",
+          "newerEdits": false,
+          "confirmation": null,
+          "fileState": "PRESENT",
+          "current": true
+        },
+        "olderResultsStale": false,
+        "programmaticReview": true,
+        "humanObservation": false,
+        "physicalDevicesOpened": false,
+        "file": {
+          "contentFingerprint": "b48511fe47ebea62f357164a83bfad6a16f414e76a14096e5810ccc42ec957c8",
+          "id": "f57675d2-8268-4f34-8330-70fe91581e2f",
+          "name": "avatar-split-image-v1.inp",
+          "bytes": 4150645,
+          "sha256": "6a6e97afc4bb67870a51c5581e336fa206dfe1d74d64ab410d72b8b0da0001da",
+          "basis": {
+            "source": "working",
+            "projectId": "7192c7cf-eb10-4775-a56a-fde4ff66ce56",
+            "revision": 11,
+            "fingerprint": "326bb8f998a9e73ac23a1458e81fed7c6e3cc37fd8f0cc9a274f15242eeb8703"
+          },
+          "created": "2026-11-18T17:15:40.800Z",
+          "targetVersion": "0.8.7",
+          "converterVersion": "0.3.0",
+          "state": "WRITTEN",
+          "newerEdits": false,
+          "confirmation": null,
+          "fileState": "PRESENT",
+          "current": true,
+          "route": "split-image",
+          "version": 1
+        },
+        "obsImages": [
+          {
+            "pose": "neutral",
+            "file": "split-image-v1-neutral-obs.png",
+            "sha256": "c6581b67a6a86a4979e63f8a4e3a4790fde43953a89a485c141819e685d93078",
+            "pixels": {
+              "passed": true,
+              "visiblePixels": 503435,
+              "transparentPixels": 1570165,
+              "bounds": [
+                638,
+                59,
+                1282,
+                1055
+              ],
+              "dimensions": [
+                1920,
+                1080
+              ],
+              "scope": "nonempty avatar and transparent background, not final art quality"
+            },
+            "sourceReadyBeforeCapture": true,
+            "sourceRevision": 11
+          },
+          {
+            "pose": "expression",
+            "file": "split-image-v1-expression-obs.png",
+            "sha256": "a18938e0804396ce52185f78571cef512aecaff3592034f590067cb996488fce",
+            "pixels": {
+              "passed": true,
+              "visiblePixels": 503435,
+              "transparentPixels": 1570165,
+              "bounds": [
+                638,
+                59,
+                1282,
+                1055
+              ],
+              "dimensions": [
+                1920,
+                1080
+              ],
+              "scope": "nonempty avatar and transparent background, not final art quality"
+            },
+            "sourceReadyBeforeCapture": true,
+            "sourceRevision": 11
+          },
+          {
+            "pose": "motion",
+            "file": "split-image-v1-motion-obs.png",
+            "sha256": "552a580b438110d674ce83cc8ffb5e148e11f426ce15a12ca25b1eb0d6e8ae74",
+            "pixels": {
+              "passed": true,
+              "visiblePixels": 503993,
+              "transparentPixels": 1569607,
+              "bounds": [
+                636,
+                55,
+                1282,
+                1055
+              ],
+              "dimensions": [
+                1920,
+                1080
+              ],
+              "scope": "nonempty avatar and transparent background, not final art quality"
+            },
+            "sourceReadyBeforeCapture": true,
+            "sourceRevision": 11
+          }
+        ],
+        "officialOBS": true
+      },
+      {
+        "passed": true,
+        "route": "split-image",
+        "version": 2,
+        "projectId": "7192c7cf-eb10-4775-a56a-fde4ff66ce56",
+        "createdBySameAppThreeRoutePreparation": true,
+        "sourceRevision": 15,
+        "savedRevision": 15,
+        "runRevision": 15,
+        "sourceAssetsUnchanged": true,
+        "sameProjectReopened": true,
+        "correctionApplied": true,
+        "roleCorrectionVerified": true,
+        "png": {
+          "name": "split-image-v2.png",
+          "bytes": 1239793,
+          "sha256": "297313b6eec08511b432da9679eb571d56bdd48c9f2e9c093b465800d69c76e5",
+          "basis": {
+            "source": "working",
+            "projectId": "7192c7cf-eb10-4775-a56a-fde4ff66ce56",
+            "revision": 15,
+            "fingerprint": "7fca25c2049eadb0f924b11b3e7d3d9fe3a8433c161651d3bc0afacc803f85ec"
+          }
+        },
+        "avatar": {
+          "contentFingerprint": "8ce3c3b06e945bff3891b3036c0c216dba90c971a3d54420732b8d509a3434fb",
+          "id": "f1c010ec-d46f-42b9-90f8-b272cc546b51",
+          "name": "character-r15-078bbcc8.inp",
+          "bytes": 4150645,
+          "sha256": "078bbcc8c70a2e3f0787d86cf2fde9c9d1e6055c86eab03be2fe276ce5a98fdd",
+          "basis": {
+            "source": "working",
+            "projectId": "7192c7cf-eb10-4775-a56a-fde4ff66ce56",
+            "revision": 15,
+            "fingerprint": "7fca25c2049eadb0f924b11b3e7d3d9fe3a8433c161651d3bc0afacc803f85ec"
+          },
+          "created": "2026-11-18T17:16:11.631Z",
+          "targetVersion": "0.8.7",
+          "converterVersion": "0.3.0",
+          "state": "WRITTEN",
+          "newerEdits": false,
+          "confirmation": null,
+          "fileState": "PRESENT",
+          "current": true
+        },
+        "olderResultsStale": true,
+        "programmaticReview": true,
+        "humanObservation": false,
+        "physicalDevicesOpened": false,
+        "file": {
+          "contentFingerprint": "8ce3c3b06e945bff3891b3036c0c216dba90c971a3d54420732b8d509a3434fb",
+          "id": "f1c010ec-d46f-42b9-90f8-b272cc546b51",
+          "name": "avatar-split-image-v2.inp",
+          "bytes": 4150645,
+          "sha256": "078bbcc8c70a2e3f0787d86cf2fde9c9d1e6055c86eab03be2fe276ce5a98fdd",
+          "basis": {
+            "source": "working",
+            "projectId": "7192c7cf-eb10-4775-a56a-fde4ff66ce56",
+            "revision": 15,
+            "fingerprint": "7fca25c2049eadb0f924b11b3e7d3d9fe3a8433c161651d3bc0afacc803f85ec"
+          },
+          "created": "2026-11-18T17:16:11.631Z",
+          "targetVersion": "0.8.7",
+          "converterVersion": "0.3.0",
+          "state": "WRITTEN",
+          "newerEdits": false,
+          "confirmation": null,
+          "fileState": "PRESENT",
+          "current": true,
+          "route": "split-image",
+          "version": 2
+        },
+        "obsImages": [
+          {
+            "pose": "neutral",
+            "file": "split-image-v2-neutral-obs.png",
+            "sha256": "921c79b1db5514f1e5c45c4aee75f252f7cd5183c229f8ec7c7827b1a6be7f4e",
+            "pixels": {
+              "passed": true,
+              "visiblePixels": 503627,
+              "transparentPixels": 1569973,
+              "bounds": [
+                638,
+                59,
+                1282,
+                1055
+              ],
+              "dimensions": [
+                1920,
+                1080
+              ],
+              "scope": "nonempty avatar and transparent background, not final art quality"
+            },
+            "sourceReadyBeforeCapture": true,
+            "sourceRevision": 15
+          },
+          {
+            "pose": "expression",
+            "file": "split-image-v2-expression-obs.png",
+            "sha256": "844efcf95c9401c0389f37e76f0c7aadb8f02a3cdb945999664e724702316a1c",
+            "pixels": {
+              "passed": true,
+              "visiblePixels": 503627,
+              "transparentPixels": 1569973,
+              "bounds": [
+                638,
+                59,
+                1282,
+                1055
+              ],
+              "dimensions": [
+                1920,
+                1080
+              ],
+              "scope": "nonempty avatar and transparent background, not final art quality"
+            },
+            "sourceReadyBeforeCapture": true,
+            "sourceRevision": 15
+          },
+          {
+            "pose": "motion",
+            "file": "split-image-v2-motion-obs.png",
+            "sha256": "a05d3c816a04e864b389035db642b00e072cde28b8b0261ac1451181836c9837",
+            "pixels": {
+              "passed": true,
+              "visiblePixels": 503854,
+              "transparentPixels": 1569746,
+              "bounds": [
+                638,
+                55,
+                1282,
+                1055
+              ],
+              "dimensions": [
+                1920,
+                1080
+              ],
+              "scope": "nonempty avatar and transparent background, not final art quality"
+            },
+            "sourceReadyBeforeCapture": true,
+            "sourceRevision": 15
+          }
+        ],
+        "officialOBS": true
+      }
+    ],
+    "physicalDevicesOpened": false,
+    "streamingStarted": false,
+    "recordingStarted": false,
+    "existingUserScenesModified": false,
+    "m0": "HOLD"
+  },
+  "appVersion": "0.22.1",
+  "channel": "release",
+  "packaged": false,
+  "windowSize": [
+    1380,
+    900
+  ],
+  "worker": {
+    "workerVersion": "0.1.0",
+    "python": "3.14.10",
+    "frozen": false,
+    "dependencyFilesInsideBundle": false,
+    "modelSha256": "64184e229b263107bc2b804c6625db1341ff2bb731874b0bcc2fe6544e0bc9ff",
+    "modelLoaded": true,
+    "cameraOpened": false,
+    "microphoneOpened": false,
+    "dependencies": {
+      "numpy": "2.5.5",
+      "opencv": "5.0.0",
+      "mediapipe": "1.2.3",
+      "sounddevice": "0.5.6",
+      "pillow": "13.0.0"
+    }
+  },
+  "workerStopped": true,
+  "protections": {
+    "sandbox": true,
+    "contextIsolation": true,
+    "nodeIntegration": false,
+    "externalNetworkBlocked": true
+  }
+}

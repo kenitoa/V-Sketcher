@@ -1,0 +1,39 @@
+{
+  "format": "2DSketcher-diagnostic-1",
+  "versions": {
+    "app": "0.21.0",
+    "project": "1.9",
+    "electron": "45.3.3",
+    "chromium": "156.0.8078.100",
+    "tracking": "MediaPipe 1.2.3",
+    "checker": "1.1.0",
+    "converter": "0.3.0",
+    "broadcast": "OBS Studio 33.0.1",
+    "avatar": "Inochi Session 0.8.7 / SDK 0.8.6"
+  },
+  "processing": "LOCAL",
+  "networkTransmission": false,
+  "assetTraining": false,
+  "states": {
+    "run": "limited",
+    "camera": "idle",
+    "microphone": "idle"
+  },
+  "measurements": {
+    "submittedFps": 27.425437093035526,
+    "cpuSubmissionP95Ms": 1,
+    "endToEndLatency": "UNMEASURED",
+    "textureAllocationEstimateMiB": 6.1746826171875
+  },
+  "excluded": [
+    "project names and identifiers",
+    "artwork and file names",
+    "camera frames",
+    "microphone PCM",
+    "device identifiers and names",
+    "personal paths",
+    "broadcast addresses and tokens",
+    "raw errors",
+    "event logs"
+  ]
+}

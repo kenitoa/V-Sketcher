@@ -1,0 +1,65 @@
+{
+  "type": "summary",
+  "passed": true,
+  "code": null,
+  "frames": 667,
+  "framesWithFace": 43,
+  "microphoneBlocks": 859,
+  "maximumRMS": 0.0018312315223738551,
+  "controlRanges": {
+    "yaw": [
+      -0.06278862773473004,
+      0.22800671230740374
+    ],
+    "roll": [
+      0,
+      0.34036470141739283
+    ],
+    "mouth": [
+      0.0005729193981096614,
+      0.05493694567121565
+    ],
+    "blinkLeft": [
+      0,
+      0.7027866840362549
+    ],
+    "blinkRight": [
+      0,
+      0.697485089302063
+    ],
+    "chest": [
+      -0.048330238372424325,
+      0.28148047169031865
+    ],
+    "leftUpperArm": [
+      0,
+      0
+    ],
+    "leftLowerArm": [
+      0,
+      0
+    ],
+    "rightUpperArm": [
+      0,
+      0
+    ],
+    "rightLowerArm": [
+      0,
+      0
+    ]
+  },
+  "bodyObservedFrames": {
+    "chest": 466,
+    "leftUpperArm": 0,
+    "leftLowerArm": 0,
+    "rightUpperArm": 0,
+    "rightLowerArm": 0
+  },
+  "bodyMotionAccepted": false,
+  "bodyTrackingScope": "confidence-gated image-plane shoulder roll and arm angles; not 3D body reconstruction",
+  "seconds": 56.04433409997728,
+  "resourcesReleased": true,
+  "framesStored": false,
+  "pcmStored": false,
+  "sourceIdentityComparedWith2DBrowser": false
+}

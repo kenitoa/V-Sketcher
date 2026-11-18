@@ -1,0 +1,23 @@
+{
+  "vertices": 7859,
+  "triangles": 15552,
+  "depthRange": 0.38676881790161133,
+  "joints": 19,
+  "morphTargets": 3,
+  "sourceSha256": "1599b359b246e226fee73fa9c644972f58b727b158e8e47fdc87bf4c976d9121",
+  "textureSize": [
+    1254,
+    1254
+  ],
+  "buildMs": 943.0454999674112,
+  "observedViews": [
+    "front"
+  ],
+  "estimatedViews": [
+    "side",
+    "rear"
+  ],
+  "actualGroundTruthSideRear": false,
+  "defaultVisibleArtwork": "existing premium reference",
+  "researchOnly": true
+}

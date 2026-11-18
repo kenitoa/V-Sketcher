@@ -1,0 +1,54 @@
+{
+  "passed": true,
+  "results": [
+    {
+      "name": "actual-path-error-preserves-normal",
+      "passed": true
+    },
+    {
+      "name": "actual-readonly-error-retry-and-save-as",
+      "passed": true
+    },
+    {
+      "name": "controlled-ENOSPC-at-six-boundaries",
+      "passed": true,
+      "physicalDiskFull": false
+    },
+    {
+      "name": "actual-recovery-budget-exhaustion",
+      "passed": true
+    },
+    {
+      "name": "actual-process-kill-save-boundaries",
+      "passed": true,
+      "crashes": 21,
+      "repeats": 3,
+      "powerLossTested": false
+    },
+    {
+      "name": "actual-process-kill-edit-recovery",
+      "passed": true,
+      "repeats": 3
+    },
+    {
+      "name": "actual-process-kill-export",
+      "passed": true,
+      "crashes": 9,
+      "input": "previously verified native INP; not new external acceptance"
+    },
+    {
+      "name": "actual-analysis-worker-kill-and-real-retry",
+      "passed": true,
+      "rawUserMediaUsed": false
+    },
+    {
+      "name": "actual-missing-move-relink-and-future-versions",
+      "passed": true
+    }
+  ],
+  "physicalDiskFullVerified": false,
+  "wholeElectronProcessKilled": false,
+  "ownedProductProcessesTerminated": true,
+  "hardwarePowerLossTested": false,
+  "m0": "HOLD"
+}

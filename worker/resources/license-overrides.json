@@ -1,0 +1,10 @@
+{
+  "flatbuffers": {
+    "version": "25.12.19",
+    "path": "worker/resources/third-party/flatbuffers/LICENSE",
+    "source": "https://raw.githubusercontent.com/google/flatbuffers/v25.12.19/LICENSE",
+    "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "retrieved": "2026-11-18",
+    "reason": "Installed wheel omits license text; pinned upstream license retained in bundled notices"
+  }
+}

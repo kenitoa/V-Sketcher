@@ -1,0 +1,103 @@
+{
+  "type": "summary",
+  "passed": false,
+  "code": null,
+  "frames": 542,
+  "framesWithFace": 0,
+  "microphoneBlocks": 861,
+  "maximumRMS": 0.002647825051099062,
+  "controlRanges": {
+    "yaw": [
+      0,
+      0
+    ],
+    "roll": [
+      0,
+      0
+    ],
+    "mouth": [
+      0.0010837953595910221,
+      0.07943475153297186
+    ],
+    "blinkLeft": [
+      0,
+      0
+    ],
+    "blinkRight": [
+      0,
+      0
+    ],
+    "chest": [
+      0,
+      0
+    ],
+    "leftUpperArm": [
+      0,
+      0
+    ],
+    "leftLowerArm": [
+      0,
+      0
+    ],
+    "rightUpperArm": [
+      0,
+      0
+    ],
+    "rightLowerArm": [
+      0,
+      0
+    ]
+  },
+  "bodyObservedFrames": {
+    "chest": 0,
+    "leftUpperArm": 0,
+    "leftLowerArm": 0,
+    "rightUpperArm": 0,
+    "rightLowerArm": 0
+  },
+  "bodyMotionAccepted": false,
+  "bodyJointDiagnostics": {
+    "leftShoulder": {
+      "noPose": 542,
+      "outsideFrame": 0,
+      "lowConfidence": 0,
+      "observed": 0
+    },
+    "rightShoulder": {
+      "noPose": 542,
+      "outsideFrame": 0,
+      "lowConfidence": 0,
+      "observed": 0
+    },
+    "leftElbow": {
+      "noPose": 542,
+      "outsideFrame": 0,
+      "lowConfidence": 0,
+      "observed": 0
+    },
+    "rightElbow": {
+      "noPose": 542,
+      "outsideFrame": 0,
+      "lowConfidence": 0,
+      "observed": 0
+    },
+    "leftWrist": {
+      "noPose": 542,
+      "outsideFrame": 0,
+      "lowConfidence": 0,
+      "observed": 0
+    },
+    "rightWrist": {
+      "noPose": 542,
+      "outsideFrame": 0,
+      "lowConfidence": 0,
+      "observed": 0
+    }
+  },
+  "bodyTrackingScope": "confidence-gated image-plane shoulder roll and arm angles; not 3D body reconstruction",
+  "seconds": 56.22749130008742,
+  "resourcesReleased": true,
+  "framesStored": false,
+  "pcmStored": false,
+  "sourceIdentityComparedWith2DBrowser": false
+}

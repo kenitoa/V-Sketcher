@@ -1,0 +1,838 @@
+{
+  "inventoryPassed": true,
+  "initialFeatures": 46,
+  "longTermFeatures": 6,
+  "features": [
+    {
+      "feature": "F-PRJ-001",
+      "scope": "INITIAL",
+      "acceptance": [
+        "AC-08",
+        "AC-14"
+      ],
+      "scenarios": [
+        "FT-09",
+        "FT-10",
+        "FT-17"
+      ],
+      "automatedEvidenceSection": "projects",
+      "acceptanceStatus": "REVIEW_REQUIRED"
+    },
+    {
+      "feature": "F-PRJ-002",
+      "scope": "INITIAL",
+      "acceptance": [
+        "AC-08",
+        "AC-14"
+      ],
+      "scenarios": [
+        "FT-09",
+        "FT-10",
+        "FT-17"
+      ],
+      "automatedEvidenceSection": "projects",
+      "acceptanceStatus": "REVIEW_REQUIRED"
+    },
+    {
+      "feature": "F-PRJ-003",
+      "scope": "INITIAL",
+      "acceptance": [
+        "AC-08",
+        "AC-14"
+      ],
+      "scenarios": [
+        "FT-09",
+        "FT-10",
+        "FT-17"
+      ],
+      "automatedEvidenceSection": "projects",
+      "acceptanceStatus": "REVIEW_REQUIRED"
+    },
+    {
+      "feature": "F-PRJ-004",
+      "scope": "INITIAL",
+      "acceptance": [
+        "AC-08",
+        "AC-14"
+      ],
+      "scenarios": [
+        "FT-09",
+        "FT-10",
+        "FT-17"
+      ],
+      "automatedEvidenceSection": "projects",
+      "acceptanceStatus": "REVIEW_REQUIRED"
+    },
+    {
+      "feature": "F-PRJ-005",
+      "scope": "INITIAL",
+      "acceptance": [
+        "AC-08",
+        "AC-14"
+      ],
+      "scenarios": [
+        "FT-09",
+        "FT-10",
+        "FT-17"
+      ],
+      "automatedEvidenceSection": "projects",
+      "acceptanceStatus": "REVIEW_REQUIRED"
+    },
+    {
+      "feature": "F-PRJ-006",
+      "scope": "INITIAL",
+      "acceptance": [
+        "AC-08",
+        "AC-14"
+      ],
+      "scenarios": [
+        "FT-09",
+        "FT-10",
+        "FT-17"
+      ],
+      "automatedEvidenceSection": "projects",
+      "acceptanceStatus": "REVIEW_REQUIRED"
+    },
+    {
+      "feature": "F-INP-001",
+      "scope": "INITIAL",
+      "acceptance": [
+        "AC-02",
+        "AC-04",
+        "AC-14"
+      ],
+      "scenarios": [
+        "FT-02",
+        "FT-05",
+        "FT-16",
+        "FT-18"
+      ],
+      "automatedEvidenceSection": "input",
+      "acceptanceStatus": "REVIEW_REQUIRED"
+    },
+    {
+      "feature": "F-INP-002",
+      "scope": "INITIAL",
+      "acceptance": [
+        "AC-02",
+        "AC-04",
+        "AC-14"
+      ],
+      "scenarios": [
+        "FT-02",
+        "FT-05",
+        "FT-16",
+        "FT-18"
+      ],
+      "automatedEvidenceSection": "input",
+      "acceptanceStatus": "REVIEW_REQUIRED"
+    },
+    {
+      "feature": "F-INP-003",
+      "scope": "INITIAL",
+      "acceptance": [
+        "AC-02",
+        "AC-04",
+        "AC-14"
+      ],
+      "scenarios": [
+        "FT-02",
+        "FT-05",
+        "FT-16",
+        "FT-18"
+      ],
+      "automatedEvidenceSection": "input",
+      "acceptanceStatus": "REVIEW_REQUIRED"
+    },
+    {
+      "feature": "F-PAR-001",
+      "scope": "INITIAL",
+      "acceptance": [
+        "AC-01",
+        "AC-05",
+        "AC-12"
+      ],
+      "scenarios": [
+        "FT-01",
+        "FT-20"
+      ],
+      "automatedEvidenceSection": "parts",
+      "acceptanceStatus": "REVIEW_REQUIRED"
+    },
+    {
+      "feature": "F-PAR-002",
+      "scope": "INITIAL",
+      "acceptance": [
+        "AC-01",
+        "AC-05",
+        "AC-12"
+      ],
+      "scenarios": [
+        "FT-01",
+        "FT-20"
+      ],
+      "automatedEvidenceSection": "parts",
+      "acceptanceStatus": "REVIEW_REQUIRED"
+    },
+    {
+      "feature": "F-PAR-003",
+      "scope": "INITIAL",
+      "acceptance": [
+        "AC-01",
+        "AC-05",
+        "AC-12"
+      ],
+      "scenarios": [
+        "FT-01",
+        "FT-20"
+      ],
+      "automatedEvidenceSection": "parts",
+      "acceptanceStatus": "REVIEW_REQUIRED"
+    },
+    {
+      "feature": "F-PAR-004",
+      "scope": "INITIAL",
+      "acceptance": [
+        "AC-01",
+        "AC-05",
+        "AC-12"
+      ],
+      "scenarios": [
+        "FT-01",
+        "FT-20"
+      ],
+      "automatedEvidenceSection": "parts",
+      "acceptanceStatus": "REVIEW_REQUIRED"
+    },
+    {
+      "feature": "F-IMG-001",
+      "scope": "INITIAL",
+      "acceptance": [
+        "AC-02",
+        "AC-03",
+        "AC-14"
+      ],
+      "scenarios": [
+        "FT-02",
+        "FT-03",
+        "FT-04",
+        "FT-16",
+        "FT-18"
+      ],
+      "automatedEvidenceSection": "structure/corrections",
+      "acceptanceStatus": "REVIEW_REQUIRED"
+    },
+    {
+      "feature": "F-IMG-002",
+      "scope": "INITIAL",
+      "acceptance": [
+        "AC-02",
+        "AC-03",
+        "AC-14"
+      ],
+      "scenarios": [
+        "FT-02",
+        "FT-03",
+        "FT-04",
+        "FT-16",
+        "FT-18"
+      ],
+      "automatedEvidenceSection": "structure/corrections",
+      "acceptanceStatus": "REVIEW_REQUIRED"
+    },
+    {
+      "feature": "F-IMG-003",
+      "scope": "INITIAL",
+      "acceptance": [
+        "AC-02",
+        "AC-03",
+        "AC-14"
+      ],
+      "scenarios": [
+        "FT-02",
+        "FT-03",
+        "FT-04",
+        "FT-16",
+        "FT-18"
+      ],
+      "automatedEvidenceSection": "structure/corrections",
+      "acceptanceStatus": "REVIEW_REQUIRED"
+    },
+    {
+      "feature": "F-IMG-004",
+      "scope": "INITIAL",
+      "acceptance": [
+        "AC-02",
+        "AC-03",
+        "AC-14"
+      ],
+      "scenarios": [
+        "FT-02",
+        "FT-03",
+        "FT-04",
+        "FT-16",
+        "FT-18"
+      ],
+      "automatedEvidenceSection": "structure/corrections",
+      "acceptanceStatus": "REVIEW_REQUIRED"
+    },
+    {
+      "feature": "F-LYR-001",
+      "scope": "INITIAL",
+      "acceptance": [
+        "AC-04",
+        "AC-12"
+      ],
+      "scenarios": [
+        "FT-05",
+        "FT-20"
+      ],
+      "automatedEvidenceSection": "split",
+      "acceptanceStatus": "REVIEW_REQUIRED"
+    },
+    {
+      "feature": "F-LYR-002",
+      "scope": "INITIAL",
+      "acceptance": [
+        "AC-04",
+        "AC-12"
+      ],
+      "scenarios": [
+        "FT-05",
+        "FT-20"
+      ],
+      "automatedEvidenceSection": "split",
+      "acceptanceStatus": "REVIEW_REQUIRED"
+    },
+    {
+      "feature": "F-LYR-003",
+      "scope": "INITIAL",
+      "acceptance": [
+        "AC-04",
+        "AC-12"
+      ],
+      "scenarios": [
+        "FT-05",
+        "FT-20"
+      ],
+      "automatedEvidenceSection": "split",
+      "acceptanceStatus": "REVIEW_REQUIRED"
+    },
+    {
+      "feature": "F-EDT-001",
+      "scope": "INITIAL",
+      "acceptance": [
+        "AC-01",
+        "AC-03",
+        "AC-04",
+        "AC-14"
+      ],
+      "scenarios": [
+        "FT-03",
+        "FT-05",
+        "FT-18",
+        "FT-20"
+      ],
+      "automatedEvidenceSection": "detail",
+      "acceptanceStatus": "REVIEW_REQUIRED"
+    },
+    {
+      "feature": "F-EDT-002",
+      "scope": "INITIAL",
+      "acceptance": [
+        "AC-01",
+        "AC-03",
+        "AC-04",
+        "AC-14"
+      ],
+      "scenarios": [
+        "FT-03",
+        "FT-05",
+        "FT-18",
+        "FT-20"
+      ],
+      "automatedEvidenceSection": "detail",
+      "acceptanceStatus": "REVIEW_REQUIRED"
+    },
+    {
+      "feature": "F-MOT-001",
+      "scope": "INITIAL",
+      "acceptance": [
+        "AC-05",
+        "AC-07"
+      ],
+      "scenarios": [
+        "FT-06",
+        "FT-08"
+      ],
+      "automatedEvidenceSection": "expressions/inputRecovery",
+      "acceptanceStatus": "REVIEW_REQUIRED"
+    },
+    {
+      "feature": "F-MOT-002",
+      "scope": "INITIAL",
+      "acceptance": [
+        "AC-05",
+        "AC-07"
+      ],
+      "scenarios": [
+        "FT-06",
+        "FT-08"
+      ],
+      "automatedEvidenceSection": "expressions/inputRecovery",
+      "acceptanceStatus": "REVIEW_REQUIRED"
+    },
+    {
+      "feature": "F-MOT-003",
+      "scope": "INITIAL",
+      "acceptance": [
+        "AC-05",
+        "AC-07"
+      ],
+      "scenarios": [
+        "FT-06",
+        "FT-08"
+      ],
+      "automatedEvidenceSection": "expressions/inputRecovery",
+      "acceptanceStatus": "REVIEW_REQUIRED"
+    },
+    {
+      "feature": "F-MOT-004",
+      "scope": "INITIAL",
+      "acceptance": [
+        "AC-05",
+        "AC-07"
+      ],
+      "scenarios": [
+        "FT-06",
+        "FT-08"
+      ],
+      "automatedEvidenceSection": "expressions/inputRecovery",
+      "acceptanceStatus": "REVIEW_REQUIRED"
+    },
+    {
+      "feature": "F-MOT-005",
+      "scope": "INITIAL",
+      "acceptance": [
+        "AC-05",
+        "AC-07"
+      ],
+      "scenarios": [
+        "FT-06",
+        "FT-08"
+      ],
+      "automatedEvidenceSection": "expressions/inputRecovery",
+      "acceptanceStatus": "REVIEW_REQUIRED"
+    },
+    {
+      "feature": "F-TRK-001",
+      "scope": "INITIAL",
+      "acceptance": [
+        "AC-06",
+        "AC-07"
+      ],
+      "scenarios": [
+        "FT-07",
+        "FT-08"
+      ],
+      "automatedEvidenceSection": "tracking/inputRecovery",
+      "acceptanceStatus": "REVIEW_REQUIRED"
+    },
+    {
+      "feature": "F-TRK-002",
+      "scope": "INITIAL",
+      "acceptance": [
+        "AC-06",
+        "AC-07"
+      ],
+      "scenarios": [
+        "FT-07",
+        "FT-08"
+      ],
+      "automatedEvidenceSection": "tracking/inputRecovery",
+      "acceptanceStatus": "REVIEW_REQUIRED"
+    },
+    {
+      "feature": "F-TRK-003",
+      "scope": "INITIAL",
+      "acceptance": [
+        "AC-06",
+        "AC-07"
+      ],
+      "scenarios": [
+        "FT-07",
+        "FT-08"
+      ],
+      "automatedEvidenceSection": "tracking/inputRecovery",
+      "acceptanceStatus": "REVIEW_REQUIRED"
+    },
+    {
+      "feature": "F-TRK-004",
+      "scope": "INITIAL",
+      "acceptance": [
+        "AC-06",
+        "AC-07"
+      ],
+      "scenarios": [
+        "FT-07",
+        "FT-08"
+      ],
+      "automatedEvidenceSection": "tracking/inputRecovery",
+      "acceptanceStatus": "REVIEW_REQUIRED"
+    },
+    {
+      "feature": "F-RUN-001",
+      "scope": "INITIAL",
+      "acceptance": [
+        "AC-05",
+        "AC-08",
+        "AC-09",
+        "AC-10"
+      ],
+      "scenarios": [
+        "FT-06",
+        "FT-09",
+        "FT-11",
+        "FT-12",
+        "FT-19"
+      ],
+      "automatedEvidenceSection": "execution/runtimeChanges",
+      "acceptanceStatus": "REVIEW_REQUIRED"
+    },
+    {
+      "feature": "F-RUN-002",
+      "scope": "INITIAL",
+      "acceptance": [
+        "AC-05",
+        "AC-08",
+        "AC-09",
+        "AC-10"
+      ],
+      "scenarios": [
+        "FT-06",
+        "FT-09",
+        "FT-11",
+        "FT-12",
+        "FT-19"
+      ],
+      "automatedEvidenceSection": "execution/runtimeChanges",
+      "acceptanceStatus": "REVIEW_REQUIRED"
+    },
+    {
+      "feature": "F-RUN-003",
+      "scope": "INITIAL",
+      "acceptance": [
+        "AC-05",
+        "AC-08",
+        "AC-09",
+        "AC-10"
+      ],
+      "scenarios": [
+        "FT-06",
+        "FT-09",
+        "FT-11",
+        "FT-12",
+        "FT-19"
+      ],
+      "automatedEvidenceSection": "execution/runtimeChanges",
+      "acceptanceStatus": "REVIEW_REQUIRED"
+    },
+    {
+      "feature": "F-RUN-004",
+      "scope": "INITIAL",
+      "acceptance": [
+        "AC-05",
+        "AC-08",
+        "AC-09",
+        "AC-10"
+      ],
+      "scenarios": [
+        "FT-06",
+        "FT-09",
+        "FT-11",
+        "FT-12",
+        "FT-19"
+      ],
+      "automatedEvidenceSection": "execution/runtimeChanges",
+      "acceptanceStatus": "REVIEW_REQUIRED"
+    },
+    {
+      "feature": "F-BRD-001",
+      "scope": "INITIAL",
+      "acceptance": [
+        "AC-09",
+        "AC-10"
+      ],
+      "scenarios": [
+        "FT-11",
+        "FT-12",
+        "FT-19"
+      ],
+      "automatedEvidenceSection": "broadcast",
+      "acceptanceStatus": "REVIEW_REQUIRED"
+    },
+    {
+      "feature": "F-BRD-002",
+      "scope": "INITIAL",
+      "acceptance": [
+        "AC-09",
+        "AC-10"
+      ],
+      "scenarios": [
+        "FT-11",
+        "FT-12",
+        "FT-19"
+      ],
+      "automatedEvidenceSection": "broadcast",
+      "acceptanceStatus": "REVIEW_REQUIRED"
+    },
+    {
+      "feature": "F-BRD-003",
+      "scope": "INITIAL",
+      "acceptance": [
+        "AC-09",
+        "AC-10"
+      ],
+      "scenarios": [
+        "FT-11",
+        "FT-12",
+        "FT-19"
+      ],
+      "automatedEvidenceSection": "broadcast",
+      "acceptanceStatus": "REVIEW_REQUIRED"
+    },
+    {
+      "feature": "F-EXP-001",
+      "scope": "INITIAL",
+      "acceptance": [
+        "AC-11",
+        "AC-12",
+        "AC-13"
+      ],
+      "scenarios": [
+        "FT-13",
+        "FT-14",
+        "FT-15",
+        "FT-18",
+        "FT-20"
+      ],
+      "automatedEvidenceSection": "image/avatar",
+      "acceptanceStatus": "REVIEW_REQUIRED"
+    },
+    {
+      "feature": "F-EXP-002",
+      "scope": "INITIAL",
+      "acceptance": [
+        "AC-11",
+        "AC-12",
+        "AC-13"
+      ],
+      "scenarios": [
+        "FT-13",
+        "FT-14",
+        "FT-15",
+        "FT-18",
+        "FT-20"
+      ],
+      "automatedEvidenceSection": "image/avatar",
+      "acceptanceStatus": "REVIEW_REQUIRED"
+    },
+    {
+      "feature": "F-EXP-003",
+      "scope": "INITIAL",
+      "acceptance": [
+        "AC-11",
+        "AC-12",
+        "AC-13"
+      ],
+      "scenarios": [
+        "FT-13",
+        "FT-14",
+        "FT-15",
+        "FT-18",
+        "FT-20"
+      ],
+      "automatedEvidenceSection": "image/avatar",
+      "acceptanceStatus": "REVIEW_REQUIRED"
+    },
+    {
+      "feature": "F-EXP-004",
+      "scope": "INITIAL",
+      "acceptance": [
+        "AC-11",
+        "AC-12",
+        "AC-13"
+      ],
+      "scenarios": [
+        "FT-13",
+        "FT-14",
+        "FT-15",
+        "FT-18",
+        "FT-20"
+      ],
+      "automatedEvidenceSection": "image/avatar",
+      "acceptanceStatus": "REVIEW_REQUIRED"
+    },
+    {
+      "feature": "F-EXP-005",
+      "scope": "INITIAL",
+      "acceptance": [
+        "AC-11",
+        "AC-12",
+        "AC-13"
+      ],
+      "scenarios": [
+        "FT-13",
+        "FT-14",
+        "FT-15",
+        "FT-18",
+        "FT-20"
+      ],
+      "automatedEvidenceSection": "image/avatar",
+      "acceptanceStatus": "REVIEW_REQUIRED"
+    },
+    {
+      "feature": "F-SET-001",
+      "scope": "INITIAL",
+      "acceptance": [
+        "AC-06",
+        "AC-07",
+        "AC-10",
+        "AC-14",
+        "AC-15"
+      ],
+      "scenarios": [
+        "FT-07",
+        "FT-08",
+        "FT-12",
+        "FT-17",
+        "FT-21"
+      ],
+      "automatedEvidenceSection": "settings",
+      "acceptanceStatus": "REVIEW_REQUIRED"
+    },
+    {
+      "feature": "F-SET-002",
+      "scope": "INITIAL",
+      "acceptance": [
+        "AC-06",
+        "AC-07",
+        "AC-10",
+        "AC-14",
+        "AC-15"
+      ],
+      "scenarios": [
+        "FT-07",
+        "FT-08",
+        "FT-12",
+        "FT-17",
+        "FT-21"
+      ],
+      "automatedEvidenceSection": "settings",
+      "acceptanceStatus": "REVIEW_REQUIRED"
+    },
+    {
+      "feature": "F-SET-003",
+      "scope": "INITIAL",
+      "acceptance": [
+        "AC-06",
+        "AC-07",
+        "AC-10",
+        "AC-14",
+        "AC-15"
+      ],
+      "scenarios": [
+        "FT-07",
+        "FT-08",
+        "FT-12",
+        "FT-17",
+        "FT-21"
+      ],
+      "automatedEvidenceSection": "settings",
+      "acceptanceStatus": "REVIEW_REQUIRED"
+    },
+    {
+      "feature": "F-3D-001",
+      "scope": "MANDATORY_LONG_TERM",
+      "scenario": "FT-22"
+    },
+    {
+      "feature": "F-3D-002",
+      "scope": "MANDATORY_LONG_TERM",
+      "scenario": "FT-22"
+    },
+    {
+      "feature": "F-3D-003",
+      "scope": "MANDATORY_LONG_TERM",
+      "scenario": "FT-22"
+    },
+    {
+      "feature": "F-GEN-001",
+      "scope": "MANDATORY_LONG_TERM",
+      "scenario": "FT-23"
+    },
+    {
+      "feature": "F-GEN-002",
+      "scope": "MANDATORY_LONG_TERM",
+      "scenario": "FT-23"
+    },
+    {
+      "feature": "F-GEN-003",
+      "scope": "MANDATORY_LONG_TERM",
+      "scenario": "FT-23"
+    }
+  ],
+  "acceptance": [
+    "AC-01",
+    "AC-02",
+    "AC-03",
+    "AC-04",
+    "AC-05",
+    "AC-06",
+    "AC-07",
+    "AC-08",
+    "AC-09",
+    "AC-10",
+    "AC-11",
+    "AC-12",
+    "AC-13",
+    "AC-14",
+    "AC-15"
+  ],
+  "scenarios": [
+    "FT-01",
+    "FT-02",
+    "FT-03",
+    "FT-04",
+    "FT-05",
+    "FT-06",
+    "FT-07",
+    "FT-08",
+    "FT-09",
+    "FT-10",
+    "FT-11",
+    "FT-12",
+    "FT-13",
+    "FT-14",
+    "FT-15",
+    "FT-16",
+    "FT-17",
+    "FT-18",
+    "FT-19",
+    "FT-20",
+    "FT-21",
+    "FT-22",
+    "FT-23"
+  ],
+  "unresolvedAcceptance": {
+    "AC-06": "T-190 real human camera tracking/calibration not passed",
+    "AC-07": "Physical unplug and human/noise environments not fully observed",
+    "AC-09": "Fresh actual OBS receipt required for all three routes",
+    "AC-10": "T-274/276 duration and end-to-end performance not measured",
+    "AC-11": "Fresh official independent runtime receipt required",
+    "AC-14": "T-271/272 physical storage and abnormal termination pending",
+    "AC-15": "T-281/282 novice observation not performed"
+  },
+  "m0": "HOLD",
+  "releasePassed": false
+}

@@ -1,0 +1,443 @@
+{
+  "passed": true,
+  "workerStopped": true,
+  "avatarExport": {
+    "files": [
+      {
+        "contentFingerprint": "841e25fcc141595541fbc6997d20ef3aef355a4e1f5e3cfebe1e02fb160c69fa",
+        "id": "99bc7000-2713-44c7-b576-dbdb77aacf03",
+        "name": "avatar-parts-v1.inp",
+        "bytes": 10720301,
+        "sha256": "6b05b422193d30779e73c3f322f01d70b2f3b8cf129bfd6da9e12495ba6a25d1",
+        "basis": {
+          "source": "working",
+          "projectId": "07420864-9667-474d-b232-79ab38395a2f",
+          "revision": 8,
+          "fingerprint": "59a8a30128f17ec7861337a479a6203ac556dcaabd769892bb6edc2f9d7f20d6"
+        },
+        "created": "2026-11-18T17:13:05.854Z",
+        "targetVersion": "0.8.7",
+        "converterVersion": "0.3.0",
+        "state": "WRITTEN",
+        "newerEdits": false,
+        "confirmation": null,
+        "fileState": "PRESENT",
+        "current": true,
+        "route": "parts",
+        "version": 1
+      },
+      {
+        "contentFingerprint": "155cadad5372027242e7ae02faf92cb8ecb3464588d80c245d5938159d0b5137",
+        "id": "4894e9c7-e95e-4cf5-bb60-eaab1c57059d",
+        "name": "avatar-parts-v2.inp",
+        "bytes": 10720301,
+        "sha256": "93fa07fd6c4607e847f455458c188dd8fb98c16c1c68ebc46db1dc19e4371cd8",
+        "basis": {
+          "source": "working",
+          "projectId": "07420864-9667-474d-b232-79ab38395a2f",
+          "revision": 9,
+          "fingerprint": "e2a35c1542f7a57b927829a8161450fbca8ef3c562b84cdcbc56bae89bd99f63"
+        },
+        "created": "2026-11-18T17:13:55.334Z",
+        "targetVersion": "0.8.7",
+        "converterVersion": "0.3.0",
+        "state": "WRITTEN",
+        "newerEdits": false,
+        "confirmation": null,
+        "fileState": "PRESENT",
+        "current": true,
+        "route": "parts",
+        "version": 2
+      },
+      {
+        "contentFingerprint": "8fd3978916b8c5b0375979e861695e31d0eb2b4a2f569b688660c8df0ef18dd3",
+        "id": "133975e8-8a0c-4584-978d-870dc3f44960",
+        "name": "avatar-single-image-v1.inp",
+        "bytes": 28616512,
+        "sha256": "8733c949fa7a6ca82eec065858847890f416ed7d74df695d2b02a808eda32fbb",
+        "basis": {
+          "source": "working",
+          "projectId": "99324128-9ba1-45f6-bb8a-05f3ea5b2785",
+          "revision": 10,
+          "fingerprint": "1214046d0f4a24029501bf841f065522414c80a56b8a7894fb6b2eefeb71e2b6"
+        },
+        "created": "2026-11-18T17:14:33.754Z",
+        "targetVersion": "0.8.7",
+        "converterVersion": "0.3.0",
+        "state": "WRITTEN",
+        "newerEdits": false,
+        "confirmation": null,
+        "fileState": "PRESENT",
+        "current": true,
+        "route": "single-image",
+        "version": 1
+      },
+      {
+        "contentFingerprint": "c5e40751761ab163293360391b47257a1d5a1c079b6d2cbe37d7d10782ad69d7",
+        "id": "fca30c0b-c6e0-4a07-9059-1ea28bcacece",
+        "name": "avatar-single-image-v2.inp",
+        "bytes": 28616594,
+        "sha256": "002f10b3eab057762a39ea4c516984c244e118dcbfdcf0360b11ea59efbc338a",
+        "basis": {
+          "source": "working",
+          "projectId": "99324128-9ba1-45f6-bb8a-05f3ea5b2785",
+          "revision": 12,
+          "fingerprint": "0f5222014f4353abb29fac38a7d9841669ce800726c4fb7a5b78ebfa1e287865"
+        },
+        "created": "2026-11-18T17:15:05.788Z",
+        "targetVersion": "0.8.7",
+        "converterVersion": "0.3.0",
+        "state": "WRITTEN",
+        "newerEdits": false,
+        "confirmation": null,
+        "fileState": "PRESENT",
+        "current": true,
+        "route": "single-image",
+        "version": 2
+      },
+      {
+        "contentFingerprint": "b48511fe47ebea62f357164a83bfad6a16f414e76a14096e5810ccc42ec957c8",
+        "id": "f57675d2-8268-4f34-8330-70fe91581e2f",
+        "name": "avatar-split-image-v1.inp",
+        "bytes": 4150645,
+        "sha256": "6a6e97afc4bb67870a51c5581e336fa206dfe1d74d64ab410d72b8b0da0001da",
+        "basis": {
+          "source": "working",
+          "projectId": "7192c7cf-eb10-4775-a56a-fde4ff66ce56",
+          "revision": 11,
+          "fingerprint": "326bb8f998a9e73ac23a1458e81fed7c6e3cc37fd8f0cc9a274f15242eeb8703"
+        },
+        "created": "2026-11-18T17:15:40.800Z",
+        "targetVersion": "0.8.7",
+        "converterVersion": "0.3.0",
+        "state": "WRITTEN",
+        "newerEdits": false,
+        "confirmation": null,
+        "fileState": "PRESENT",
+        "current": true,
+        "route": "split-image",
+        "version": 1
+      },
+      {
+        "contentFingerprint": "8ce3c3b06e945bff3891b3036c0c216dba90c971a3d54420732b8d509a3434fb",
+        "id": "f1c010ec-d46f-42b9-90f8-b272cc546b51",
+        "name": "avatar-split-image-v2.inp",
+        "bytes": 4150645,
+        "sha256": "078bbcc8c70a2e3f0787d86cf2fde9c9d1e6055c86eab03be2fe276ce5a98fdd",
+        "basis": {
+          "source": "working",
+          "projectId": "7192c7cf-eb10-4775-a56a-fde4ff66ce56",
+          "revision": 15,
+          "fingerprint": "7fca25c2049eadb0f924b11b3e7d3d9fe3a8433c161651d3bc0afacc803f85ec"
+        },
+        "created": "2026-11-18T17:16:11.631Z",
+        "targetVersion": "0.8.7",
+        "converterVersion": "0.3.0",
+        "state": "WRITTEN",
+        "newerEdits": false,
+        "confirmation": null,
+        "fileState": "PRESENT",
+        "current": true,
+        "route": "split-image",
+        "version": 2
+      }
+    ],
+    "images": [
+      {
+        "route": "parts",
+        "label": "neutral",
+        "original": "parts-neutral-original.png",
+        "converted": "parts-neutral-converted.png",
+        "target": "parts-neutral-target.png"
+      },
+      {
+        "route": "parts",
+        "label": "eyes-closed",
+        "original": "parts-eyes-closed-original.png",
+        "converted": "parts-eyes-closed-converted.png",
+        "target": "parts-eyes-closed-target.png"
+      },
+      {
+        "route": "parts",
+        "label": "middle",
+        "original": "parts-middle-original.png",
+        "converted": "parts-middle-converted.png",
+        "target": "parts-middle-target.png"
+      },
+      {
+        "route": "parts",
+        "label": "mouth-open",
+        "original": "parts-mouth-open-original.png",
+        "converted": "parts-mouth-open-converted.png",
+        "target": "parts-mouth-open-target.png"
+      },
+      {
+        "route": "parts",
+        "label": "head-negative",
+        "original": "parts-head-negative-original.png",
+        "converted": "parts-head-negative-converted.png",
+        "target": "parts-head-negative-target.png"
+      },
+      {
+        "route": "parts",
+        "label": "head-positive",
+        "original": "parts-head-positive-original.png",
+        "converted": "parts-head-positive-converted.png",
+        "target": "parts-head-positive-target.png"
+      },
+      {
+        "route": "parts",
+        "label": "expression",
+        "original": "parts-expression-original.png",
+        "converted": "parts-expression-converted.png",
+        "target": "parts-expression-target.png"
+      },
+      {
+        "route": "parts",
+        "label": "v2-neutral",
+        "original": "parts-v2-neutral-original.png",
+        "converted": "parts-v2-neutral-converted.png",
+        "target": "parts-v2-neutral-target.png"
+      },
+      {
+        "route": "parts",
+        "label": "v2-eyes-closed",
+        "original": "parts-v2-eyes-closed-original.png",
+        "converted": "parts-v2-eyes-closed-converted.png",
+        "target": "parts-v2-eyes-closed-target.png"
+      },
+      {
+        "route": "parts",
+        "label": "v2-middle",
+        "original": "parts-v2-middle-original.png",
+        "converted": "parts-v2-middle-converted.png",
+        "target": "parts-v2-middle-target.png"
+      },
+      {
+        "route": "parts",
+        "label": "v2-mouth-open",
+        "original": "parts-v2-mouth-open-original.png",
+        "converted": "parts-v2-mouth-open-converted.png",
+        "target": "parts-v2-mouth-open-target.png"
+      },
+      {
+        "route": "parts",
+        "label": "v2-head-negative",
+        "original": "parts-v2-head-negative-original.png",
+        "converted": "parts-v2-head-negative-converted.png",
+        "target": "parts-v2-head-negative-target.png"
+      },
+      {
+        "route": "parts",
+        "label": "v2-head-positive",
+        "original": "parts-v2-head-positive-original.png",
+        "converted": "parts-v2-head-positive-converted.png",
+        "target": "parts-v2-head-positive-target.png"
+      },
+      {
+        "route": "parts",
+        "label": "v2-expression",
+        "original": "parts-v2-expression-original.png",
+        "converted": "parts-v2-expression-converted.png",
+        "target": "parts-v2-expression-target.png"
+      },
+      {
+        "route": "single-image",
+        "label": "neutral",
+        "original": "single-image-neutral-original.png",
+        "converted": "single-image-neutral-converted.png",
+        "target": "single-image-neutral-target.png"
+      },
+      {
+        "route": "single-image",
+        "label": "eyes-closed",
+        "original": "single-image-eyes-closed-original.png",
+        "converted": "single-image-eyes-closed-converted.png",
+        "target": "single-image-eyes-closed-target.png"
+      },
+      {
+        "route": "single-image",
+        "label": "middle",
+        "original": "single-image-middle-original.png",
+        "converted": "single-image-middle-converted.png",
+        "target": "single-image-middle-target.png"
+      },
+      {
+        "route": "single-image",
+        "label": "mouth-open",
+        "original": "single-image-mouth-open-original.png",
+        "converted": "single-image-mouth-open-converted.png",
+        "target": "single-image-mouth-open-target.png"
+      },
+      {
+        "route": "single-image",
+        "label": "head-negative",
+        "original": "single-image-head-negative-original.png",
+        "converted": "single-image-head-negative-converted.png",
+        "target": "single-image-head-negative-target.png"
+      },
+      {
+        "route": "single-image",
+        "label": "head-positive",
+        "original": "single-image-head-positive-original.png",
+        "converted": "single-image-head-positive-converted.png",
+        "target": "single-image-head-positive-target.png"
+      },
+      {
+        "route": "single-image",
+        "label": "expression",
+        "original": "single-image-expression-original.png",
+        "converted": "single-image-expression-converted.png",
+        "target": "single-image-expression-target.png"
+      },
+      {
+        "route": "single-image",
+        "label": "v2-neutral",
+        "original": "single-image-v2-neutral-original.png",
+        "converted": "single-image-v2-neutral-converted.png",
+        "target": "single-image-v2-neutral-target.png"
+      },
+      {
+        "route": "single-image",
+        "label": "v2-eyes-closed",
+        "original": "single-image-v2-eyes-closed-original.png",
+        "converted": "single-image-v2-eyes-closed-converted.png",
+        "target": "single-image-v2-eyes-closed-target.png"
+      },
+      {
+        "route": "single-image",
+        "label": "v2-middle",
+        "original": "single-image-v2-middle-original.png",
+        "converted": "single-image-v2-middle-converted.png",
+        "target": "single-image-v2-middle-target.png"
+      },
+      {
+        "route": "single-image",
+        "label": "v2-mouth-open",
+        "original": "single-image-v2-mouth-open-original.png",
+        "converted": "single-image-v2-mouth-open-converted.png",
+        "target": "single-image-v2-mouth-open-target.png"
+      },
+      {
+        "route": "single-image",
+        "label": "v2-head-negative",
+        "original": "single-image-v2-head-negative-original.png",
+        "converted": "single-image-v2-head-negative-converted.png",
+        "target": "single-image-v2-head-negative-target.png"
+      },
+      {
+        "route": "single-image",
+        "label": "v2-head-positive",
+        "original": "single-image-v2-head-positive-original.png",
+        "converted": "single-image-v2-head-positive-converted.png",
+        "target": "single-image-v2-head-positive-target.png"
+      },
+      {
+        "route": "single-image",
+        "label": "v2-expression",
+        "original": "single-image-v2-expression-original.png",
+        "converted": "single-image-v2-expression-converted.png",
+        "target": "single-image-v2-expression-target.png"
+      },
+      {
+        "route": "split-image",
+        "label": "neutral",
+        "original": "split-image-neutral-original.png",
+        "converted": "split-image-neutral-converted.png",
+        "target": "split-image-neutral-target.png"
+      },
+      {
+        "route": "split-image",
+        "label": "eyes-closed",
+        "original": "split-image-eyes-closed-original.png",
+        "converted": "split-image-eyes-closed-converted.png",
+        "target": "split-image-eyes-closed-target.png"
+      },
+      {
+        "route": "split-image",
+        "label": "middle",
+        "original": "split-image-middle-original.png",
+        "converted": "split-image-middle-converted.png",
+        "target": "split-image-middle-target.png"
+      },
+      {
+        "route": "split-image",
+        "label": "mouth-open",
+        "original": "split-image-mouth-open-original.png",
+        "converted": "split-image-mouth-open-converted.png",
+        "target": "split-image-mouth-open-target.png"
+      },
+      {
+        "route": "split-image",
+        "label": "head-negative",
+        "original": "split-image-head-negative-original.png",
+        "converted": "split-image-head-negative-converted.png",
+        "target": "split-image-head-negative-target.png"
+      },
+      {
+        "route": "split-image",
+        "label": "head-positive",
+        "original": "split-image-head-positive-original.png",
+        "converted": "split-image-head-positive-converted.png",
+        "target": "split-image-head-positive-target.png"
+      },
+      {
+        "route": "split-image",
+        "label": "expression",
+        "original": "split-image-expression-original.png",
+        "converted": "split-image-expression-converted.png",
+        "target": "split-image-expression-target.png"
+      },
+      {
+        "route": "split-image",
+        "label": "v2-neutral",
+        "original": "split-image-v2-neutral-original.png",
+        "converted": "split-image-v2-neutral-converted.png",
+        "target": "split-image-v2-neutral-target.png"
+      },
+      {
+        "route": "split-image",
+        "label": "v2-eyes-closed",
+        "original": "split-image-v2-eyes-closed-original.png",
+        "converted": "split-image-v2-eyes-closed-converted.png",
+        "target": "split-image-v2-eyes-closed-target.png"
+      },
+      {
+        "route": "split-image",
+        "label": "v2-middle",
+        "original": "split-image-v2-middle-original.png",
+        "converted": "split-image-v2-middle-converted.png",
+        "target": "split-image-v2-middle-target.png"
+      },
+      {
+        "route": "split-image",
+        "label": "v2-mouth-open",
+        "original": "split-image-v2-mouth-open-original.png",
+        "converted": "split-image-v2-mouth-open-converted.png",
+        "target": "split-image-v2-mouth-open-target.png"
+      },
+      {
+        "route": "split-image",
+        "label": "v2-head-negative",
+        "original": "split-image-v2-head-negative-original.png",
+        "converted": "split-image-v2-head-negative-converted.png",
+        "target": "split-image-v2-head-negative-target.png"
+      },
+      {
+        "route": "split-image",
+        "label": "v2-head-positive",
+        "original": "split-image-v2-head-positive-original.png",
+        "converted": "split-image-v2-head-positive-converted.png",
+        "target": "split-image-v2-head-positive-target.png"
+      },
+      {
+        "route": "split-image",
+        "label": "v2-expression",
+        "original": "split-image-v2-expression-original.png",
+        "converted": "split-image-v2-expression-converted.png",
+        "target": "split-image-v2-expression-target.png"
+      }
+    ]
+  },
+  "appVersion": "0.22.1"
+}

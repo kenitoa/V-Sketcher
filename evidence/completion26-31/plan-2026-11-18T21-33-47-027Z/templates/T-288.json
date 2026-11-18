@@ -1,0 +1,17 @@
+{
+  "format": "2dsketcher-completion/1",
+  "candidate": {
+    "version": "0.22.1",
+    "sha256": "e5e4f3a5820d4a3563dfcce9b8cba3eccc1ce50d8673db0cb45a0c4030590ad3"
+  },
+  "taskId": "T-288",
+  "kind": "cleanWindows",
+  "origin": null,
+  "collectedAt": null,
+  "review": {
+    "verdict": null,
+    "role": null
+  },
+  "artifacts": [],
+  "measurements": {}
+}

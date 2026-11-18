@@ -1,0 +1,63 @@
+{
+  "connectionRegressionVisualReviewPassed": true,
+  "productArtworkAcceptance": false,
+  "normalPhysicalMotionAcceptance": false,
+  "rows": [
+    {
+      "route": "parts",
+      "version": 1,
+      "file": "parts-v1-neutral-obs.png",
+      "sha256": "ed6a97b52539a9492b590a7d5f0441281df084d5d824934f483204d91a626f18",
+      "avatarPresent": true,
+      "headAndTorsoAligned": true,
+      "knownRectangularPatchSeams": false
+    },
+    {
+      "route": "parts",
+      "version": 2,
+      "file": "parts-v2-neutral-obs.png",
+      "sha256": "772e1ea49892af1a5c61800f092f7a311e21305aeeafe17b78375eb3937a8586",
+      "avatarPresent": true,
+      "headAndTorsoAligned": true,
+      "knownRectangularPatchSeams": false
+    },
+    {
+      "route": "single-image",
+      "version": 1,
+      "file": "single-image-v1-neutral-obs.png",
+      "sha256": "a933be093ed7c570b474e28ea1418ffe7473379fe44bffee0a8839940f65e4a8",
+      "avatarPresent": true,
+      "headAndTorsoAligned": true,
+      "knownRectangularPatchSeams": true
+    },
+    {
+      "route": "single-image",
+      "version": 2,
+      "file": "single-image-v2-neutral-obs.png",
+      "sha256": "a5744270f4312535ac6f6add621cd7cf4621c99dd29ad0cbe35296a9c03f99cc",
+      "avatarPresent": true,
+      "headAndTorsoAligned": true,
+      "knownRectangularPatchSeams": true
+    },
+    {
+      "route": "split-image",
+      "version": 1,
+      "file": "split-image-v1-neutral-obs.png",
+      "sha256": "c6581b67a6a86a4979e63f8a4e3a4790fde43953a89a485c141819e685d93078",
+      "avatarPresent": true,
+      "headAndTorsoAligned": true,
+      "knownRectangularPatchSeams": false
+    },
+    {
+      "route": "split-image",
+      "version": 2,
+      "file": "split-image-v2-neutral-obs.png",
+      "sha256": "921c79b1db5514f1e5c45c4aee75f252f7cd5183c229f8ec7c7827b1a6be7f4e",
+      "avatarPresent": true,
+      "headAndTorsoAligned": true,
+      "knownRectangularPatchSeams": false
+    }
+  ],
+  "partsV1VisualBasis": "identical SHA-256 to visually inspected linear-07/parts-v1-neutral-obs.png",
+  "knownQualityGate": "Single-image eye/mouth patch seams remain visible; existing T-190/T-209 and M0 HOLD remain open. This review accepts workflow connectivity only."
+}

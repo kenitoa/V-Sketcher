@@ -1,0 +1,94 @@
+{
+  "passed": true,
+  "target": "Official portable Blender",
+  "version": "4.5.3 LTS",
+  "sourceSha256": "94ffb92eee35edb9aa69320705296f8a9d1885f8c5618f1ef100ec5db888fba5",
+  "sourceUnchanged": true,
+  "meshCount": 2,
+  "armatureCount": 1,
+  "boneCount": 19,
+  "shapeKeys": [
+    "Basis",
+    "aa",
+    "blinkLeft",
+    "blinkRight"
+  ],
+  "bodyWeightedVertices": {
+    "chest": 4998,
+    "leftUpperArm": 602,
+    "leftLowerArm": 812,
+    "rightUpperArm": 582,
+    "rightLowerArm": 804
+  },
+  "materials": [
+    "EstimatedBack",
+    "ObservedFront"
+  ],
+  "imageCount": 2,
+  "views": [
+    {
+      "view": "front",
+      "sha256": "0733cb96237a1c2cc20009b568d81b865de383d0ac4a210d2e74092f43d4abae",
+      "renderMs": 5797.956000082195
+    },
+    {
+      "view": "side",
+      "sha256": "62d70622333e1a3950dafb06b456f7c2072d95f71420b0bc540a0d2198ae729f",
+      "renderMs": 555.6361000053585
+    },
+    {
+      "view": "rear",
+      "sha256": "77363044f753c96ea1d36d97f8ec12815eaf7e62935af09a10fe50a500c31801",
+      "renderMs": 582.8731000656262
+    },
+    {
+      "view": "threequarter",
+      "sha256": "cb13dd50d64bf814753011e214a5b4a82446692decf82f1bc3b5e57778b73f9a",
+      "renderMs": 582.4638999765739
+    },
+    {
+      "view": "blink",
+      "sha256": "b85022147b706a8343bcff7f37b99b0725181db85a1bce72032acf1e429b75ea",
+      "renderMs": 581.0204999288544
+    },
+    {
+      "view": "mouth",
+      "sha256": "d583ffc7146359545523405207bbb72967ac1b35aba2c70e802e35ce47695e3b",
+      "renderMs": 557.2374999755993
+    },
+    {
+      "view": "head",
+      "sha256": "2a9cdcf0f563faf214d0d4d3389442fa4e7c6e3dcb75b42e7008cdd4a958c469",
+      "renderMs": 559.5488999970257
+    },
+    {
+      "view": "chest",
+      "sha256": "3968e79097cfe6f24a85f1707a5b9c17fdae08c0ca48a90b5ac2ccecc1df10e8",
+      "renderMs": 507.7228000154719
+    },
+    {
+      "view": "leftUpperArm",
+      "sha256": "7a86dd8e7ce9b413a2ee6aac2d8f283fb8e269f1cc6016aa26a548fae2bd9783",
+      "renderMs": 537.3739999486133
+    },
+    {
+      "view": "leftLowerArm",
+      "sha256": "11ed22f184c9ba69601f0ce97087443160382818f57bea097cad8cf30599831d",
+      "renderMs": 592.527800006792
+    },
+    {
+      "view": "rightUpperArm",
+      "sha256": "ad7bbe77bfdcd432f0a39f60a74d3235139a8a82c20b3c268e7e94e181ca7083",
+      "renderMs": 480.91209994163364
+    },
+    {
+      "view": "rightLowerArm",
+      "sha256": "9c774ebf1585daa88950517493e495ba4e4731505a111cf73e480eb4ae56cbc6",
+      "renderMs": 577.2111000260338
+    }
+  ],
+  "ourAppRequired": false,
+  "ourFrameServerRequired": false,
+  "physicalDevicesOpened": false,
+  "productionQualityAcceptance": false
+}

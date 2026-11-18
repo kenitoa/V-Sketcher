@@ -1,0 +1,42 @@
+{
+  "created": "2026-11-18T06:39:21.142518+00:00",
+  "automatedIntegrationPassed": true,
+  "nodeTestGroups": 328,
+  "pythonTestGroups": 36,
+  "completedTasks": [
+    261,
+    266,
+    268,
+    269
+  ],
+  "pendingTasks": [
+    262,
+    263,
+    264,
+    265,
+    267,
+    270
+  ],
+  "actualOBSAllRoutes": true,
+  "officialIndependentTargetSixRuns": true,
+  "phase27Complete": false,
+  "m0": "HOLD",
+  "blockers": [
+    "T-260 predecessor review remains incomplete",
+    "One project identity through preparation, reopen, live run, OBS, PNG and external export needs a linear scenario",
+    "T-190 real human camera calibration and T-209 OS global keys remain pending",
+    "Human voice/noise and physical device unplug observation remain pending",
+    "AC-10 duration/performance and AC-15 novice observation remain separate gates"
+  ],
+  "evidenceSha256": {
+    "verification.json": "1e0a341d1016b9b53e3d1a6d462d7279bb1cf8d50f65e7cc5777e320bac8bc14",
+    "coverage.json": "80bd1e5c0da0911c4f4aa0cda2b4200e92d1c38f063648fe3aa3613fa3b7bedd",
+    "development-run.json": "817ecd0f151b95664200c461f91429a7180581e74aca29bebb903ea75e8ecec7",
+    "image-pixel-quality.json": "9b2d81f1727cf079b78d14bead422269a8c52fcc1e112caaea4faa97d999350f",
+    "avatar-pixel-quality.json": "3ef55c2cc44621d60ae2a9616779887f29d3ac9eb2f73d447e2100031ede254a",
+    "obs-03/obs-run.json": "03e79496b709d93109baa7016e769d17109f50cc8f12626161eb37185f9496a2",
+    "obs-03/pixel-quality.json": "a0d741fb0182ec5c2c68f42497cd79937ec2ce848cdeefba9f6cfed27eb20322",
+    "external-03/external-run.json": "898ae6f9a82ee58ea8b3b9ccdbeaaa206e445677ec2209505e49d81c1d8d6048",
+    "camera-path-comparison.json": "6ab117967704a6ea0177f2a1ea541963fff17993f4a850a281291dbab2c6a15b"
+  }
+}

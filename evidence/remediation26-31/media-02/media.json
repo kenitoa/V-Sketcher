@@ -1,0 +1,943 @@
+{
+  "passed": true,
+  "controls": [
+    {
+      "backend": "development",
+      "passed": true,
+      "source": "NASA public-domain image via canvas MediaStream; not a live participant",
+      "singleFaces": 1,
+      "multipleFaces": 2,
+      "blankFaces": 0,
+      "actualCameraRuntime": true,
+      "actualWorkerProtocol": true,
+      "resourcesReleased": true
+    },
+    {
+      "backend": "packaged",
+      "passed": true,
+      "source": "NASA public-domain image via canvas MediaStream; not a live participant",
+      "singleFaces": 1,
+      "multipleFaces": 2,
+      "blankFaces": 0,
+      "actualCameraRuntime": true,
+      "actualWorkerProtocol": true,
+      "resourcesReleased": true
+    }
+  ],
+  "cycles": [
+    {
+      "cycle": 1,
+      "backend": "development",
+      "cameraFrames": 5,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 869840,
+        "cpuNormalizedPercent": 0
+      }
+    },
+    {
+      "cycle": 2,
+      "backend": "development",
+      "cameraFrames": 4,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 877768,
+        "cpuNormalizedPercent": 1.1328629601484228
+      }
+    },
+    {
+      "cycle": 3,
+      "backend": "development",
+      "cameraFrames": 5,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 878708,
+        "cpuNormalizedPercent": 0.7788091816689451
+      }
+    },
+    {
+      "cycle": 4,
+      "backend": "development",
+      "cameraFrames": 5,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 878892,
+        "cpuNormalizedPercent": 0.8000439969982269
+      }
+    },
+    {
+      "cycle": 5,
+      "backend": "development",
+      "cameraFrames": 5,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 877988,
+        "cpuNormalizedPercent": 0.5720406816990093
+      }
+    },
+    {
+      "cycle": 6,
+      "backend": "development",
+      "cameraFrames": 4,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 875144,
+        "cpuNormalizedPercent": 0.6865599891759213
+      }
+    },
+    {
+      "cycle": 7,
+      "backend": "development",
+      "cameraFrames": 5,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 875944,
+        "cpuNormalizedPercent": 0.6478891257998141
+      }
+    },
+    {
+      "cycle": 8,
+      "backend": "development",
+      "cameraFrames": 5,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 874788,
+        "cpuNormalizedPercent": 0.9239275069853508
+      }
+    },
+    {
+      "cycle": 9,
+      "backend": "development",
+      "cameraFrames": 5,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 874416,
+        "cpuNormalizedPercent": 0.4852364568646254
+      }
+    },
+    {
+      "cycle": 10,
+      "backend": "development",
+      "cameraFrames": 4,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 874824,
+        "cpuNormalizedPercent": 0.8632903468382556
+      }
+    },
+    {
+      "cycle": 11,
+      "backend": "development",
+      "cameraFrames": 5,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 876768,
+        "cpuNormalizedPercent": 0.6602221789601604
+      }
+    },
+    {
+      "cycle": 12,
+      "backend": "development",
+      "cameraFrames": 5,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 875824,
+        "cpuNormalizedPercent": 0.6952428815679107
+      }
+    },
+    {
+      "cycle": 13,
+      "backend": "development",
+      "cameraFrames": 5,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 877192,
+        "cpuNormalizedPercent": 0.7407584860586843
+      }
+    },
+    {
+      "cycle": 14,
+      "backend": "development",
+      "cameraFrames": 4,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 877972,
+        "cpuNormalizedPercent": 0.4410080121562218
+      }
+    },
+    {
+      "cycle": 15,
+      "backend": "development",
+      "cameraFrames": 4,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 877316,
+        "cpuNormalizedPercent": 0.7447394657299857
+      }
+    },
+    {
+      "cycle": 16,
+      "backend": "development",
+      "cameraFrames": 3,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 866696,
+        "cpuNormalizedPercent": 0.4721679304404414
+      }
+    },
+    {
+      "cycle": 17,
+      "backend": "development",
+      "cameraFrames": 4,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 876676,
+        "cpuNormalizedPercent": 0.6119294752689277
+      }
+    },
+    {
+      "cycle": 18,
+      "backend": "development",
+      "cameraFrames": 4,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 876988,
+        "cpuNormalizedPercent": 0.5081254403159482
+      }
+    },
+    {
+      "cycle": 19,
+      "backend": "development",
+      "cameraFrames": 4,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 877344,
+        "cpuNormalizedPercent": 0.4639218252550674
+      }
+    },
+    {
+      "cycle": 20,
+      "backend": "development",
+      "cameraFrames": 5,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 878728,
+        "cpuNormalizedPercent": 0.4686571382001397
+      }
+    },
+    {
+      "cycle": 21,
+      "backend": "development",
+      "cameraFrames": 5,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 880632,
+        "cpuNormalizedPercent": 0.7128274539794979
+      }
+    },
+    {
+      "cycle": 22,
+      "backend": "development",
+      "cameraFrames": 5,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 879944,
+        "cpuNormalizedPercent": 0.47289344188963
+      }
+    },
+    {
+      "cycle": 23,
+      "backend": "development",
+      "cameraFrames": 5,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 880368,
+        "cpuNormalizedPercent": 0.8459224952484026
+      }
+    },
+    {
+      "cycle": 24,
+      "backend": "development",
+      "cameraFrames": 4,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 882156,
+        "cpuNormalizedPercent": 0.7071412416584347
+      }
+    },
+    {
+      "cycle": 25,
+      "backend": "development",
+      "cameraFrames": 4,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 882504,
+        "cpuNormalizedPercent": 0.6981135241998182
+      }
+    },
+    {
+      "cycle": 26,
+      "backend": "development",
+      "cameraFrames": 4,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 881776,
+        "cpuNormalizedPercent": 0.4208532577447203
+      }
+    },
+    {
+      "cycle": 27,
+      "backend": "development",
+      "cameraFrames": 5,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 882316,
+        "cpuNormalizedPercent": 0.6802643526241294
+      }
+    },
+    {
+      "cycle": 28,
+      "backend": "development",
+      "cameraFrames": 5,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 884108,
+        "cpuNormalizedPercent": 0.4567820311490835
+      }
+    },
+    {
+      "cycle": 29,
+      "backend": "development",
+      "cameraFrames": 5,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 883504,
+        "cpuNormalizedPercent": 0.7200493620764779
+      }
+    },
+    {
+      "cycle": 30,
+      "backend": "development",
+      "cameraFrames": 5,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 874040,
+        "cpuNormalizedPercent": 0.6009742927294656
+      }
+    },
+    {
+      "cycle": 31,
+      "backend": "packaged",
+      "cameraFrames": 3,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 884224,
+        "cpuNormalizedPercent": 0.5401021585306709
+      }
+    },
+    {
+      "cycle": 32,
+      "backend": "packaged",
+      "cameraFrames": 4,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 885952,
+        "cpuNormalizedPercent": 0.5061849172718421
+      }
+    },
+    {
+      "cycle": 33,
+      "backend": "packaged",
+      "cameraFrames": 5,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 887300,
+        "cpuNormalizedPercent": 0.8342829781342013
+      }
+    },
+    {
+      "cycle": 34,
+      "backend": "packaged",
+      "cameraFrames": 5,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 887080,
+        "cpuNormalizedPercent": 0.9159594396232382
+      }
+    },
+    {
+      "cycle": 35,
+      "backend": "packaged",
+      "cameraFrames": 5,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 886892,
+        "cpuNormalizedPercent": 0.5029913122903409
+      }
+    },
+    {
+      "cycle": 36,
+      "backend": "packaged",
+      "cameraFrames": 5,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 887396,
+        "cpuNormalizedPercent": 0.8533017814956702
+      }
+    },
+    {
+      "cycle": 37,
+      "backend": "packaged",
+      "cameraFrames": 5,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 888476,
+        "cpuNormalizedPercent": 0.47506535543269357
+      }
+    },
+    {
+      "cycle": 38,
+      "backend": "packaged",
+      "cameraFrames": 4,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 889752,
+        "cpuNormalizedPercent": 0.6752651333799942
+      }
+    },
+    {
+      "cycle": 39,
+      "backend": "packaged",
+      "cameraFrames": 6,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 889412,
+        "cpuNormalizedPercent": 0.7381272284064967
+      }
+    },
+    {
+      "cycle": 40,
+      "backend": "packaged",
+      "cameraFrames": 4,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 890244,
+        "cpuNormalizedPercent": 0.7638932355105775
+      }
+    },
+    {
+      "cycle": 41,
+      "backend": "packaged",
+      "cameraFrames": 3,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 889588,
+        "cpuNormalizedPercent": 0.43428100334879194
+      }
+    },
+    {
+      "cycle": 42,
+      "backend": "packaged",
+      "cameraFrames": 4,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 890232,
+        "cpuNormalizedPercent": 0.6910892301733094
+      }
+    },
+    {
+      "cycle": 43,
+      "backend": "packaged",
+      "cameraFrames": 3,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 890556,
+        "cpuNormalizedPercent": 0.6753477288344973
+      }
+    },
+    {
+      "cycle": 44,
+      "backend": "packaged",
+      "cameraFrames": 3,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 891132,
+        "cpuNormalizedPercent": 0.63849550671576
+      }
+    },
+    {
+      "cycle": 45,
+      "backend": "packaged",
+      "cameraFrames": 3,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 891768,
+        "cpuNormalizedPercent": 0.4435214642284046
+      }
+    },
+    {
+      "cycle": 46,
+      "backend": "packaged",
+      "cameraFrames": 3,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 891840,
+        "cpuNormalizedPercent": 0.693460918554139
+      }
+    },
+    {
+      "cycle": 47,
+      "backend": "packaged",
+      "cameraFrames": 4,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 893788,
+        "cpuNormalizedPercent": 0.5202022334049942
+      }
+    },
+    {
+      "cycle": 48,
+      "backend": "packaged",
+      "cameraFrames": 3,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 894592,
+        "cpuNormalizedPercent": 0.48385716078522756
+      }
+    },
+    {
+      "cycle": 49,
+      "backend": "packaged",
+      "cameraFrames": 4,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 895548,
+        "cpuNormalizedPercent": 0.46940001937571674
+      }
+    },
+    {
+      "cycle": 50,
+      "backend": "packaged",
+      "cameraFrames": 4,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 895052,
+        "cpuNormalizedPercent": 0.4689260107515574
+      }
+    },
+    {
+      "cycle": 51,
+      "backend": "packaged",
+      "cameraFrames": 3,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 888700,
+        "cpuNormalizedPercent": 0.4566045592186115
+      }
+    },
+    {
+      "cycle": 52,
+      "backend": "packaged",
+      "cameraFrames": 4,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 887364,
+        "cpuNormalizedPercent": 0.6151856181963541
+      }
+    },
+    {
+      "cycle": 53,
+      "backend": "packaged",
+      "cameraFrames": 14,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 890000,
+        "cpuNormalizedPercent": 0.9896703944889269
+      }
+    },
+    {
+      "cycle": 54,
+      "backend": "packaged",
+      "cameraFrames": 6,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 887376,
+        "cpuNormalizedPercent": 0.5864694322299467
+      }
+    },
+    {
+      "cycle": 55,
+      "backend": "packaged",
+      "cameraFrames": 4,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 898968,
+        "cpuNormalizedPercent": 0.5289178309060456
+      }
+    },
+    {
+      "cycle": 56,
+      "backend": "packaged",
+      "cameraFrames": 4,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 886508,
+        "cpuNormalizedPercent": 0.5459702598642402
+      }
+    },
+    {
+      "cycle": 57,
+      "backend": "packaged",
+      "cameraFrames": 4,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 879308,
+        "cpuNormalizedPercent": 0.5779275791520995
+      }
+    },
+    {
+      "cycle": 58,
+      "backend": "packaged",
+      "cameraFrames": 4,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 881616,
+        "cpuNormalizedPercent": 0.5293172918757917
+      }
+    },
+    {
+      "cycle": 59,
+      "backend": "packaged",
+      "cameraFrames": 4,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 861912,
+        "cpuNormalizedPercent": 0.49031080624743995
+      }
+    },
+    {
+      "cycle": 60,
+      "backend": "packaged",
+      "cameraFrames": 4,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 872980,
+        "cpuNormalizedPercent": 0.5457120077558439
+      }
+    }
+  ],
+  "physicalDeviceCycles": 60,
+  "projectGenerationChanges": 60,
+  "physicalCameraFramesStored": false,
+  "microphonePCMStored": false,
+  "liveParticipantMotionValidated": false,
+  "physicalUSBUnplugPerformed": false,
+  "cleanWindowsOS": false,
+  "scope": "Actual product camera/microphone classes, real repeated open/close and worker positive controls; not human motion, noise classification or USB removal acceptance",
+  "protections": {
+    "sandbox": true,
+    "contextIsolation": true,
+    "nodeIntegration": false,
+    "externalNetworkBlocked": true
+  }
+}

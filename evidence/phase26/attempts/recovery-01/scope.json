@@ -1,0 +1,5 @@
+{
+  "passed": true,
+  "scope": "Targeted input-recovery UI on three actual creation routes with synthetic media; not physical-device acceptance",
+  "originalFailurePreserved": "../full-01/report.json"
+}

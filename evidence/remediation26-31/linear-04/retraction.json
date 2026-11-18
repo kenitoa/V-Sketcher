@@ -1,0 +1,9 @@
+{
+  "overallRunPassed": false,
+  "affectedArtifact": "avatar/parts-v1.json",
+  "fieldNotAcceptedAsEvidence": "correctionApplied",
+  "reason": "The harness attempted a forbidden library-part translation and did not check the command error before saving. The project revision and export-content fingerprint did not change.",
+  "useForCompletion": false,
+  "oldArtifactsPreserved": true,
+  "followup": "Use permitted opacity editing, check each command reply, and require a real revision increase in a fresh run."
+}

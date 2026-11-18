@@ -1,0 +1,124 @@
+{
+  "passed": true,
+  "route": "parts",
+  "version": 2,
+  "projectId": "7f061efc-f684-4b96-a778-30eebbc5fd51",
+  "createdBySameAppThreeRoutePreparation": true,
+  "sourceRevision": 6,
+  "savedRevision": 6,
+  "runRevision": 6,
+  "sourceAssetsUnchanged": true,
+  "sameProjectReopened": true,
+  "correctionApplied": true,
+  "roleCorrectionVerified": false,
+  "png": {
+    "name": "parts-v2.png",
+    "bytes": 1268552,
+    "sha256": "820e824f0c78ea952ec7ab11e29c298453493ef4e299fba04ded7e986d130c95",
+    "basis": {
+      "source": "working",
+      "projectId": "7f061efc-f684-4b96-a778-30eebbc5fd51",
+      "revision": 6,
+      "fingerprint": "ebd7c3a77e3e3740c6ac3dd0b02d418125195cf45493bf1e542a314715dee7f8"
+    }
+  },
+  "avatar": {
+    "contentFingerprint": "1a4582818ad361e74c8942d17e5b8f6c4c16b986a27f7cc2e2329136960f53c3",
+    "id": "f61c1c83-68ed-4e3a-bb23-9d76c2f0635b",
+    "name": "character-r6-459828ec.inp",
+    "bytes": 10717956,
+    "sha256": "459828ec8a0fa9edf876192d55f89126fa27ec9bccdd7890d6148e40937590b5",
+    "basis": {
+      "source": "working",
+      "projectId": "7f061efc-f684-4b96-a778-30eebbc5fd51",
+      "revision": 6,
+      "fingerprint": "ebd7c3a77e3e3740c6ac3dd0b02d418125195cf45493bf1e542a314715dee7f8"
+    },
+    "created": "2026-11-18T16:37:56.747Z",
+    "targetVersion": "0.8.7",
+    "converterVersion": "0.3.0",
+    "state": "WRITTEN",
+    "newerEdits": false,
+    "confirmation": null,
+    "fileState": "PRESENT",
+    "current": true
+  },
+  "olderResultsStale": true,
+  "programmaticReview": true,
+  "humanObservation": false,
+  "physicalDevicesOpened": false,
+  "images": [
+    {
+      "route": "parts",
+      "label": "v2-neutral",
+      "original": "parts-v2-neutral-original.png",
+      "converted": "parts-v2-neutral-converted.png",
+      "target": "parts-v2-neutral-target.png"
+    },
+    {
+      "route": "parts",
+      "label": "v2-eyes-closed",
+      "original": "parts-v2-eyes-closed-original.png",
+      "converted": "parts-v2-eyes-closed-converted.png",
+      "target": "parts-v2-eyes-closed-target.png"
+    },
+    {
+      "route": "parts",
+      "label": "v2-middle",
+      "original": "parts-v2-middle-original.png",
+      "converted": "parts-v2-middle-converted.png",
+      "target": "parts-v2-middle-target.png"
+    },
+    {
+      "route": "parts",
+      "label": "v2-mouth-open",
+      "original": "parts-v2-mouth-open-original.png",
+      "converted": "parts-v2-mouth-open-converted.png",
+      "target": "parts-v2-mouth-open-target.png"
+    },
+    {
+      "route": "parts",
+      "label": "v2-head-negative",
+      "original": "parts-v2-head-negative-original.png",
+      "converted": "parts-v2-head-negative-converted.png",
+      "target": "parts-v2-head-negative-target.png"
+    },
+    {
+      "route": "parts",
+      "label": "v2-head-positive",
+      "original": "parts-v2-head-positive-original.png",
+      "converted": "parts-v2-head-positive-converted.png",
+      "target": "parts-v2-head-positive-target.png"
+    },
+    {
+      "route": "parts",
+      "label": "v2-expression",
+      "original": "parts-v2-expression-original.png",
+      "converted": "parts-v2-expression-converted.png",
+      "target": "parts-v2-expression-target.png"
+    }
+  ],
+  "file": {
+    "contentFingerprint": "1a4582818ad361e74c8942d17e5b8f6c4c16b986a27f7cc2e2329136960f53c3",
+    "id": "f61c1c83-68ed-4e3a-bb23-9d76c2f0635b",
+    "name": "avatar-parts-v2.inp",
+    "bytes": 10717956,
+    "sha256": "459828ec8a0fa9edf876192d55f89126fa27ec9bccdd7890d6148e40937590b5",
+    "basis": {
+      "source": "working",
+      "projectId": "7f061efc-f684-4b96-a778-30eebbc5fd51",
+      "revision": 6,
+      "fingerprint": "ebd7c3a77e3e3740c6ac3dd0b02d418125195cf45493bf1e542a314715dee7f8"
+    },
+    "created": "2026-11-18T16:37:56.747Z",
+    "targetVersion": "0.8.7",
+    "converterVersion": "0.3.0",
+    "state": "WRITTEN",
+    "newerEdits": false,
+    "confirmation": null,
+    "fileState": "PRESENT",
+    "current": true,
+    "route": "parts",
+    "version": 2
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "passed": false,
+  "code": "E_MEDIA_WAIT",
+  "physicalCameraFramesStored": false,
+  "microphonePCMStored": false,
+  "protections": {
+    "sandbox": true,
+    "contextIsolation": true,
+    "nodeIntegration": false,
+    "externalNetworkBlocked": true
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "command": "tools\\dev.cmd run check",
+  "nodeTests": 338,
+  "pythonTests": 43,
+  "total": 381,
+  "typecheck": true,
+  "workerStaticCheck": true,
+  "testBuild": true,
+  "rawLogPublished": false,
+  "knownWarnings": [
+    "Vite chunk-size advisory",
+    "existing module-type advisory"
+  ],
+  "packagedCheckRequiredForThisChange": false,
+  "packagingChangedBy31": false
+}

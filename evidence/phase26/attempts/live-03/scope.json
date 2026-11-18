@@ -1,0 +1,9 @@
+{
+  "state": "PROCESS_INTERRUPTED",
+  "recordedMeasurementStarted": false,
+  "processAliveAtResume": false,
+  "acceptedAsPass": false,
+  "rawCameraFramesStored": false,
+  "microphonePCMStored": false,
+  "note": "Last progress was stale after the user interrupted the agent turn; it is not a completed live trial"
+}

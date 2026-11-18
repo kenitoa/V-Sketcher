@@ -1,0 +1,124 @@
+{
+  "passed": true,
+  "route": "single-image",
+  "version": 2,
+  "projectId": "e4fd84cf-a90d-43a2-b683-f8e19f4c7619",
+  "createdBySameAppThreeRoutePreparation": true,
+  "sourceRevision": 9,
+  "savedRevision": 9,
+  "runRevision": 9,
+  "sourceAssetsUnchanged": true,
+  "sameProjectReopened": true,
+  "correctionApplied": true,
+  "roleCorrectionVerified": false,
+  "png": {
+    "name": "single-image-v2.png",
+    "bytes": 1454148,
+    "sha256": "2a304b0a15d10b9286c39ca722ffb1bad28a4e3bf2a4f4b9c793649d7591ab34",
+    "basis": {
+      "source": "working",
+      "projectId": "e4fd84cf-a90d-43a2-b683-f8e19f4c7619",
+      "revision": 9,
+      "fingerprint": "9bf1d663380ef994e8935ed511c8a418aa1ff848946eda2fa536fb8853e93852"
+    }
+  },
+  "avatar": {
+    "contentFingerprint": "0a4652533e2b89596dfaf0238dc0b370e5a4c7a15ba839c309a706ecf0f46d4b",
+    "id": "ba0aa7ec-9f6b-4630-a021-efba89e1ef53",
+    "name": "character-r9-b81d606c.inp",
+    "bytes": 28614223,
+    "sha256": "b81d606c957754dbdfddc652cf272a90158f9b0c70e91dc95f92f4739647b653",
+    "basis": {
+      "source": "working",
+      "projectId": "e4fd84cf-a90d-43a2-b683-f8e19f4c7619",
+      "revision": 9,
+      "fingerprint": "9bf1d663380ef994e8935ed511c8a418aa1ff848946eda2fa536fb8853e93852"
+    },
+    "created": "2026-11-18T16:38:47.514Z",
+    "targetVersion": "0.8.7",
+    "converterVersion": "0.3.0",
+    "state": "WRITTEN",
+    "newerEdits": false,
+    "confirmation": null,
+    "fileState": "PRESENT",
+    "current": true
+  },
+  "olderResultsStale": true,
+  "programmaticReview": true,
+  "humanObservation": false,
+  "physicalDevicesOpened": false,
+  "images": [
+    {
+      "route": "single-image",
+      "label": "v2-neutral",
+      "original": "single-image-v2-neutral-original.png",
+      "converted": "single-image-v2-neutral-converted.png",
+      "target": "single-image-v2-neutral-target.png"
+    },
+    {
+      "route": "single-image",
+      "label": "v2-eyes-closed",
+      "original": "single-image-v2-eyes-closed-original.png",
+      "converted": "single-image-v2-eyes-closed-converted.png",
+      "target": "single-image-v2-eyes-closed-target.png"
+    },
+    {
+      "route": "single-image",
+      "label": "v2-middle",
+      "original": "single-image-v2-middle-original.png",
+      "converted": "single-image-v2-middle-converted.png",
+      "target": "single-image-v2-middle-target.png"
+    },
+    {
+      "route": "single-image",
+      "label": "v2-mouth-open",
+      "original": "single-image-v2-mouth-open-original.png",
+      "converted": "single-image-v2-mouth-open-converted.png",
+      "target": "single-image-v2-mouth-open-target.png"
+    },
+    {
+      "route": "single-image",
+      "label": "v2-head-negative",
+      "original": "single-image-v2-head-negative-original.png",
+      "converted": "single-image-v2-head-negative-converted.png",
+      "target": "single-image-v2-head-negative-target.png"
+    },
+    {
+      "route": "single-image",
+      "label": "v2-head-positive",
+      "original": "single-image-v2-head-positive-original.png",
+      "converted": "single-image-v2-head-positive-converted.png",
+      "target": "single-image-v2-head-positive-target.png"
+    },
+    {
+      "route": "single-image",
+      "label": "v2-expression",
+      "original": "single-image-v2-expression-original.png",
+      "converted": "single-image-v2-expression-converted.png",
+      "target": "single-image-v2-expression-target.png"
+    }
+  ],
+  "file": {
+    "contentFingerprint": "0a4652533e2b89596dfaf0238dc0b370e5a4c7a15ba839c309a706ecf0f46d4b",
+    "id": "ba0aa7ec-9f6b-4630-a021-efba89e1ef53",
+    "name": "avatar-single-image-v2.inp",
+    "bytes": 28614223,
+    "sha256": "b81d606c957754dbdfddc652cf272a90158f9b0c70e91dc95f92f4739647b653",
+    "basis": {
+      "source": "working",
+      "projectId": "e4fd84cf-a90d-43a2-b683-f8e19f4c7619",
+      "revision": 9,
+      "fingerprint": "9bf1d663380ef994e8935ed511c8a418aa1ff848946eda2fa536fb8853e93852"
+    },
+    "created": "2026-11-18T16:38:47.514Z",
+    "targetVersion": "0.8.7",
+    "converterVersion": "0.3.0",
+    "state": "WRITTEN",
+    "newerEdits": false,
+    "confirmation": null,
+    "fileState": "PRESENT",
+    "current": true,
+    "route": "single-image",
+    "version": 2
+  }
+}

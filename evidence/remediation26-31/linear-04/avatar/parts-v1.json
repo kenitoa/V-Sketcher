@@ -1,0 +1,124 @@
+{
+  "passed": true,
+  "route": "parts",
+  "version": 1,
+  "projectId": "8766ec1e-581a-4b7c-a30a-ea3fe646ab7f",
+  "createdBySameAppThreeRoutePreparation": true,
+  "sourceRevision": 4,
+  "savedRevision": 4,
+  "runRevision": 4,
+  "sourceAssetsUnchanged": true,
+  "sameProjectReopened": true,
+  "correctionApplied": true,
+  "roleCorrectionVerified": false,
+  "png": {
+    "name": "parts-v1.png",
+    "bytes": 1270529,
+    "sha256": "f989e4732e7bf3538333ed98bef4eaafb629b54cc9d5b794fc56b78f353db006",
+    "basis": {
+      "source": "working",
+      "projectId": "8766ec1e-581a-4b7c-a30a-ea3fe646ab7f",
+      "revision": 4,
+      "fingerprint": "228c70ce5f3d9bb8948e9c64bf5e2492578ac3502b355344a4069fde63fd0624"
+    }
+  },
+  "avatar": {
+    "contentFingerprint": "f40e3ea7c89ea2231951fb523d50dac335dedc759fdf8231342b845857e4d5ab",
+    "id": "ac39449d-01e9-467f-9a74-f8414565e58c",
+    "name": "character-r4-7d42d827.inp",
+    "bytes": 10717955,
+    "sha256": "7d42d8273231eda993e05bc12ed105684eeede6a17c257e4cc8e9a2a08e66699",
+    "basis": {
+      "source": "working",
+      "projectId": "8766ec1e-581a-4b7c-a30a-ea3fe646ab7f",
+      "revision": 4,
+      "fingerprint": "228c70ce5f3d9bb8948e9c64bf5e2492578ac3502b355344a4069fde63fd0624"
+    },
+    "created": "2026-11-18T16:30:36.510Z",
+    "targetVersion": "0.8.7",
+    "converterVersion": "0.3.0",
+    "state": "WRITTEN",
+    "newerEdits": false,
+    "confirmation": null,
+    "fileState": "PRESENT",
+    "current": true
+  },
+  "olderResultsStale": false,
+  "programmaticReview": true,
+  "humanObservation": false,
+  "physicalDevicesOpened": false,
+  "images": [
+    {
+      "route": "parts",
+      "label": "neutral",
+      "original": "parts-neutral-original.png",
+      "converted": "parts-neutral-converted.png",
+      "target": "parts-neutral-target.png"
+    },
+    {
+      "route": "parts",
+      "label": "eyes-closed",
+      "original": "parts-eyes-closed-original.png",
+      "converted": "parts-eyes-closed-converted.png",
+      "target": "parts-eyes-closed-target.png"
+    },
+    {
+      "route": "parts",
+      "label": "middle",
+      "original": "parts-middle-original.png",
+      "converted": "parts-middle-converted.png",
+      "target": "parts-middle-target.png"
+    },
+    {
+      "route": "parts",
+      "label": "mouth-open",
+      "original": "parts-mouth-open-original.png",
+      "converted": "parts-mouth-open-converted.png",
+      "target": "parts-mouth-open-target.png"
+    },
+    {
+      "route": "parts",
+      "label": "head-negative",
+      "original": "parts-head-negative-original.png",
+      "converted": "parts-head-negative-converted.png",
+      "target": "parts-head-negative-target.png"
+    },
+    {
+      "route": "parts",
+      "label": "head-positive",
+      "original": "parts-head-positive-original.png",
+      "converted": "parts-head-positive-converted.png",
+      "target": "parts-head-positive-target.png"
+    },
+    {
+      "route": "parts",
+      "label": "expression",
+      "original": "parts-expression-original.png",
+      "converted": "parts-expression-converted.png",
+      "target": "parts-expression-target.png"
+    }
+  ],
+  "file": {
+    "contentFingerprint": "f40e3ea7c89ea2231951fb523d50dac335dedc759fdf8231342b845857e4d5ab",
+    "id": "ac39449d-01e9-467f-9a74-f8414565e58c",
+    "name": "avatar-parts-v1.inp",
+    "bytes": 10717955,
+    "sha256": "7d42d8273231eda993e05bc12ed105684eeede6a17c257e4cc8e9a2a08e66699",
+    "basis": {
+      "source": "working",
+      "projectId": "8766ec1e-581a-4b7c-a30a-ea3fe646ab7f",
+      "revision": 4,
+      "fingerprint": "228c70ce5f3d9bb8948e9c64bf5e2492578ac3502b355344a4069fde63fd0624"
+    },
+    "created": "2026-11-18T16:30:36.510Z",
+    "targetVersion": "0.8.7",
+    "converterVersion": "0.3.0",
+    "state": "WRITTEN",
+    "newerEdits": false,
+    "confirmation": null,
+    "fileState": "PRESENT",
+    "current": true,
+    "route": "parts",
+    "version": 1
+  }
+}

@@ -1,0 +1,87 @@
+{
+  "passed": true,
+  "route": "split-image",
+  "version": 1,
+  "method": "Official Session target-only OBS PNG; fixed 0.5 target camera; direct 1024px mipmapped reference; nearest reference classification",
+  "threshold": "Mean RGB error <=4/255 and >=96% pixels within12/255; every pose must occur as nearest reference",
+  "roi": [
+    296,
+    202,
+    728,
+    841
+  ],
+  "classifiedPoses": [
+    "expression",
+    "eyes-closed",
+    "head-negative",
+    "head-positive",
+    "middle",
+    "mouth-open",
+    "neutral"
+  ],
+  "checks": [
+    {
+      "label": "neutral",
+      "meanRGBError": 0.0014780038254216658,
+      "fractionWithin12": 1.0,
+      "classifiedAs": "neutral",
+      "sha256": "97c0ad4b8f9a6256d20b19748a967be1f208db45a8364bc804f4eb481f3ab592",
+      "passed": true,
+      "image": "split-image-v1-neutral.png"
+    },
+    {
+      "label": "eyes-closed",
+      "meanRGBError": 0.0012944608667091713,
+      "fractionWithin12": 1.0,
+      "classifiedAs": "eyes-closed",
+      "sha256": "183e94b66b6b4b9a5863be49b80517b052b59df554752cfba76ab0b53c736e34",
+      "passed": true,
+      "image": "split-image-v1-eyes-closed.png"
+    },
+    {
+      "label": "middle",
+      "meanRGBError": 0.0016096234471299677,
+      "fractionWithin12": 0.9999710195328348,
+      "classifiedAs": "middle",
+      "sha256": "98102da3b5d26335a0def17644819c1b34be3b11510046090428b0b230610775",
+      "passed": true,
+      "image": "split-image-v1-middle.png"
+    },
+    {
+      "label": "mouth-open",
+      "meanRGBError": 0.0014780038254216658,
+      "fractionWithin12": 1.0,
+      "classifiedAs": "mouth-open",
+      "sha256": "2639c2f3780b92b094bc9e78863ef2e3d4ded768bb94bde48a6a5215768cdb5a",
+      "passed": true,
+      "image": "split-image-v1-mouth-open.png"
+    },
+    {
+      "label": "head-negative",
+      "meanRGBError": 0.020782617515794355,
+      "fractionWithin12": 0.9999818872080218,
+      "classifiedAs": "head-negative",
+      "sha256": "a6c4cfb6e104e010c030e5d648a69dacfcb38142ad3780d32b53c0feb31c7c9b",
+      "passed": true,
+      "image": "split-image-v1-head-negative.png"
+    },
+    {
+      "label": "head-positive",
+      "meanRGBError": 0.020729486659324947,
+      "fractionWithin12": 0.9999855097664174,
+      "classifiedAs": "head-positive",
+      "sha256": "44f5a11b078058ba6f6436efc18346a99c2610faa3e9c653f35044b01837f298",
+      "passed": true,
+      "image": "split-image-v1-head-positive.png"
+    },
+    {
+      "label": "expression",
+      "meanRGBError": 0.0014127977743001218,
+      "fractionWithin12": 1.0,
+      "classifiedAs": "expression",
+      "sha256": "6a38ed8aaee6b9dd8f7df5c29590d237d4b50df4a87fff7a12af940b68e54e07",
+      "passed": true,
+      "image": "split-image-v1-expression.png"
+    }
+  ]
+}

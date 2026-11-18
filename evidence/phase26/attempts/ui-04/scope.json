@@ -1,0 +1,4 @@
+{
+  "passed": true,
+  "scope": "Final settings UI preflight after clock-gap fix, bounded settings replacement and global-key modal-context guard; synthetic media only"
+}

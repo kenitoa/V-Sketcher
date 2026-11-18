@@ -1,0 +1,145 @@
+{
+  "passed": true,
+  "controls": [
+    {
+      "backend": "development",
+      "passed": true,
+      "source": "NASA public-domain image via canvas MediaStream; not a live participant",
+      "singleFaces": 1,
+      "multipleFaces": 2,
+      "blankFaces": 0,
+      "actualCameraRuntime": true,
+      "actualWorkerProtocol": true,
+      "resourcesReleased": true
+    },
+    {
+      "backend": "packaged",
+      "passed": true,
+      "source": "NASA public-domain image via canvas MediaStream; not a live participant",
+      "singleFaces": 1,
+      "multipleFaces": 2,
+      "blankFaces": 0,
+      "actualCameraRuntime": true,
+      "actualWorkerProtocol": true,
+      "resourcesReleased": true
+    }
+  ],
+  "cycles": [
+    {
+      "cycle": 1,
+      "backend": "development",
+      "cameraFrames": 13,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "sourceClass": "hardware-like",
+      "sourceLabelStored": false,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 922012,
+        "cpuNormalizedPercent": 0
+      }
+    },
+    {
+      "cycle": 2,
+      "backend": "development",
+      "cameraFrames": 5,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "sourceClass": "hardware-like",
+      "sourceLabelStored": false,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 919500,
+        "cpuNormalizedPercent": 0.709858991013477
+      }
+    },
+    {
+      "cycle": 3,
+      "backend": "development",
+      "cameraFrames": 6,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "sourceClass": "hardware-like",
+      "sourceLabelStored": false,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 931120,
+        "cpuNormalizedPercent": 0.7200004453917968
+      }
+    },
+    {
+      "cycle": 4,
+      "backend": "packaged",
+      "cameraFrames": 6,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "sourceClass": "hardware-like",
+      "sourceLabelStored": false,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 930768,
+        "cpuNormalizedPercent": 0.8006892502384504
+      }
+    },
+    {
+      "cycle": 5,
+      "backend": "packaged",
+      "cameraFrames": 5,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "sourceClass": "hardware-like",
+      "sourceLabelStored": false,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 931872,
+        "cpuNormalizedPercent": 0.5871439057306396
+      }
+    },
+    {
+      "cycle": 6,
+      "backend": "packaged",
+      "cameraFrames": 4,
+      "framesWithDetectedFace": 0,
+      "microphoneBlocks": 3,
+      "sourceClass": "hardware-like",
+      "sourceLabelStored": false,
+      "passed": true,
+      "liveTracksAfterStop": 0,
+      "audioContextAfterStop": false,
+      "resourceSample": {
+        "processes": 6,
+        "workingSetKiB": 931552,
+        "cpuNormalizedPercent": 0.9338163471884929
+      }
+    }
+  ],
+  "physicalDeviceCycles": 6,
+  "projectGenerationChanges": 6,
+  "physicalCameraFramesStored": false,
+  "microphonePCMStored": false,
+  "liveParticipantMotionValidated": false,
+  "physicalUSBUnplugPerformed": false,
+  "cleanWindowsOS": false,
+  "scope": "Actual product camera/microphone classes, real repeated open/close and worker positive controls; not human motion, noise classification or USB removal acceptance",
+  "protections": {
+    "sandbox": true,
+    "contextIsolation": true,
+    "nodeIntegration": false,
+    "externalNetworkBlocked": true
+  }
+}

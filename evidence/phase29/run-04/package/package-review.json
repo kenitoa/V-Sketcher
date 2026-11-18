@@ -1,0 +1,38 @@
+{
+  "passed": true,
+  "appVersion": "0.22.0",
+  "oldVersion": "0.21.0",
+  "realZipExtraction": true,
+  "sideBySideUpdate": true,
+  "oldBundleUnchanged": true,
+  "userProjectPreserved": true,
+  "removalRefusesAddedAsset": true,
+  "bothAppFoldersRemovedWithoutRecursiveDelete": true,
+  "sharedProfilePreserved": true,
+  "developerToolsOnPath": false,
+  "frozenWorker": true,
+  "cleanWindowsOS": false,
+  "crossVersionProjectMigration": false,
+  "previousVersionWasNotRerun": true,
+  "packagedRuns": [
+    {
+      "label": "after",
+      "passed": true,
+      "windowSize": [
+        1380,
+        900
+      ]
+    },
+    {
+      "label": "repeat",
+      "passed": true,
+      "windowSize": [
+        1080,
+        720
+      ]
+    }
+  ],
+  "publicDistributionApproved": false,
+  "limitedTrialDistributed": false,
+  "m0": "HOLD"
+}

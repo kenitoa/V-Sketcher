@@ -1,0 +1,46 @@
+{
+  "passed": true,
+  "candidate": "TripoSR",
+  "sourceCommit": "107cefdc244c39106fa830359024f6a2f1c78871",
+  "modelRevision": "5b521936b01fbe1890f6f9baed0254ab6351c04a",
+  "sourceSha256": "1599b359b246e226fee73fa9c644972f58b727b158e8e47fdc87bf4c976d9121",
+  "sourceImagesUploaded": false,
+  "loadAndVerifySeconds": 31.97899450000841,
+  "inferenceSeconds": 4.39813620003406,
+  "extractionSeconds": 3.050733199925162,
+  "wallSeconds": 40.43064520007465,
+  "peakVRAMAllocatedBytes": 2494078464,
+  "peakVRAMReservedBytes": 3164602368,
+  "gpu": "NVIDIA GeForce RTX 4050 Laptop GPU",
+  "torchVersion": "2.5.1+cu124",
+  "transformersVersion": "4.44.2",
+  "resolution": 256,
+  "chunkSize": 8192,
+  "vertices": 77597,
+  "triangles": 155168,
+  "bounds": [
+    [
+      -0.2910991907119751,
+      -0.4058269262313843,
+      -0.48782506585121155
+    ],
+    [
+      0.26908767223358154,
+      0.4209442138671875,
+      0.5080413818359375
+    ]
+  ],
+  "watertight": false,
+  "rig": false,
+  "expressions": false,
+  "sideRearGroundTruth": false,
+  "adaptations": [
+    "Transformers 4.44.2 for Python 3.12 wheels",
+    "scikit-image CPU marching cubes instead of torchmcubes CUDA extension",
+    "RGBA input bypasses unused rembg dependency",
+    "local pinned DINO config; network connections disabled during inference"
+  ],
+  "upstreamSourceModified": false,
+  "researchOnly": true,
+  "productionQualityAccepted": false
+}

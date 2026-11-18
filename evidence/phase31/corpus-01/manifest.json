@@ -1,0 +1,294 @@
+{
+  "version": 1,
+  "scope": "rights-traceable exploratory corpus; not release-quality coverage",
+  "assets": [
+    {
+      "file": "assets/product/preview/1599b359b246e226fee73fa9c644972f58b727b158e8e47fdc87bf4c976d9121.png",
+      "sha256": "1599b359b246e226fee73fa9c644972f58b727b158e8e47fdc87bf4c976d9121",
+      "role": "front input",
+      "origin": "project-generated premium reference",
+      "publicRedistributionApproved": false
+    },
+    {
+      "file": "assets/product/preview/b39a598b59775823efab0224203483c629b207a2de7f5666d13c01dd5125f12e.png",
+      "sha256": "b39a598b59775823efab0224203483c629b207a2de7f5666d13c01dd5125f12e",
+      "role": "existing aligned expression/appearance comparison",
+      "origin": "project-generated premium reference",
+      "publicRedistributionApproved": false
+    },
+    {
+      "file": "assets/product/preview/b52e002d4325ce9c2aa228deda4735f89e58c5abd356afbacb3198581669b29a.png",
+      "sha256": "b52e002d4325ce9c2aa228deda4735f89e58c5abd356afbacb3198581669b29a",
+      "role": "existing aligned expression/appearance comparison",
+      "origin": "project-generated premium reference",
+      "publicRedistributionApproved": false
+    },
+    {
+      "file": "assets/product/preview/8c6bf06622b67105d5c11e2064eb2292590262a3f6362529734af62163816172.png",
+      "sha256": "8c6bf06622b67105d5c11e2064eb2292590262a3f6362529734af62163816172",
+      "role": "existing aligned expression/appearance comparison",
+      "origin": "project-generated premium reference",
+      "publicRedistributionApproved": false
+    },
+    {
+      "file": "assets/product/preview/e3d22c95fb4a4da724806ed682e27578f9a8e8ccc9813475cf0a463f2e1f0c01.png",
+      "sha256": "e3d22c95fb4a4da724806ed682e27578f9a8e8ccc9813475cf0a463f2e1f0c01",
+      "role": "existing aligned expression/appearance comparison",
+      "origin": "project-generated premium reference",
+      "publicRedistributionApproved": false
+    },
+    {
+      "file": "assets/product/preview/3fe2220caee156e9bfc47e5f0e170fc7bd2ac28b890fb8995498fb9f5c8f13ca.png",
+      "sha256": "3fe2220caee156e9bfc47e5f0e170fc7bd2ac28b890fb8995498fb9f5c8f13ca",
+      "role": "existing aligned expression/appearance comparison",
+      "origin": "project-generated premium reference",
+      "publicRedistributionApproved": false
+    },
+    {
+      "file": "assets/product/preview/1821b8eaaa6c828c66396e04e7f115c93787e3fa154f26529c88585c3f61ec98.png",
+      "sha256": "1821b8eaaa6c828c66396e04e7f115c93787e3fa154f26529c88585c3f61ec98",
+      "role": "existing aligned expression/appearance comparison",
+      "origin": "project-generated premium reference",
+      "publicRedistributionApproved": false
+    },
+    {
+      "file": "assets/product/preview/955e597230d4cdd15cd64c09ecf8f48686bbd5702f32e429109d581d68d6f442.png",
+      "sha256": "955e597230d4cdd15cd64c09ecf8f48686bbd5702f32e429109d581d68d6f442",
+      "role": "existing aligned expression/appearance comparison",
+      "origin": "project-generated premium reference",
+      "publicRedistributionApproved": false
+    },
+    {
+      "file": "assets/product/preview/e78602d341961d5562555fc95caf5f7538c9e00c1f281d26e71657f04e78132a.png",
+      "sha256": "e78602d341961d5562555fc95caf5f7538c9e00c1f281d26e71657f04e78132a",
+      "role": "existing aligned expression/appearance comparison",
+      "origin": "project-generated premium reference",
+      "publicRedistributionApproved": false
+    }
+  ],
+  "sourceRecord": "experiments/phase04/assets/premium/generation-prompts.md",
+  "annotation": {
+    "sourceSha256": "1599b359b246e226fee73fa9c644972f58b727b158e8e47fdc87bf4c976d9121",
+    "method": "reference-specific visual annotation; not automatic recognition",
+    "coordinateSystem": "normalized image coordinates, character left appears at image right",
+    "eyes": [
+      [
+        0.545,
+        0.227
+      ],
+      [
+        0.44,
+        0.227
+      ]
+    ],
+    "mouth": [
+      0.495,
+      0.303
+    ],
+    "neck": [
+      0.5,
+      0.395
+    ],
+    "chest": [
+      0.5,
+      0.48
+    ],
+    "leftShoulder": [
+      0.67,
+      0.46
+    ],
+    "leftElbow": [
+      0.7,
+      0.68
+    ],
+    "rightShoulder": [
+      0.32,
+      0.46
+    ],
+    "rightElbow": [
+      0.28,
+      0.68
+    ],
+    "unsupported": [
+      "hands",
+      "fingers",
+      "legs",
+      "feet",
+      "observed side/back anatomy"
+    ],
+    "limitations": [
+      "Elbows under clothing are estimated",
+      "Sleeves and hair overlap; the shell is not a separated character mesh",
+      "Anatomical rest pose and VRM full-body retargeting are not accepted"
+    ]
+  },
+  "sourceRecognition": {
+    "sourceSha256": "1599b359b246e226fee73fa9c644972f58b727b158e8e47fdc87bf4c976d9121",
+    "sourceIsProjectArtwork": true,
+    "faceCount": 0,
+    "bodyCount": 0,
+    "faceLandmarks": 0,
+    "poseModelSha256": "59929e1d1ee95287735ddd833b19cf4ac46d29bc7afddbbf6753c459690d574a",
+    "parts": {
+      "head": {
+        "state": "not-detected"
+      },
+      "leftShoulder": {
+        "state": "not-observed",
+        "confidence": 0
+      },
+      "rightShoulder": {
+        "state": "not-observed",
+        "confidence": 0
+      },
+      "leftElbow": {
+        "state": "not-observed",
+        "confidence": 0
+      },
+      "rightElbow": {
+        "state": "not-observed",
+        "confidence": 0
+      },
+      "leftWrist": {
+        "state": "not-observed",
+        "confidence": 0
+      },
+      "rightWrist": {
+        "state": "not-observed",
+        "confidence": 0
+      },
+      "leftHip": {
+        "state": "not-observed",
+        "confidence": 0
+      },
+      "rightHip": {
+        "state": "not-observed",
+        "confidence": 0
+      }
+    },
+    "faceRegions": {}
+  },
+  "controlCases": [
+    {
+      "name": "neutral",
+      "controls": {},
+      "expected": "no motion"
+    },
+    {
+      "name": "yaw--0.4",
+      "controls": {
+        "yaw": -0.4
+      },
+      "expected": "only this part and its descendants, with declared skin blending"
+    },
+    {
+      "name": "yaw-0.4",
+      "controls": {
+        "yaw": 0.4
+      },
+      "expected": "only this part and its descendants, with declared skin blending"
+    },
+    {
+      "name": "blinkLeft-1",
+      "controls": {
+        "blinkLeft": 1
+      },
+      "expected": "only this part and its descendants, with declared skin blending"
+    },
+    {
+      "name": "blinkRight-1",
+      "controls": {
+        "blinkRight": 1
+      },
+      "expected": "only this part and its descendants, with declared skin blending"
+    },
+    {
+      "name": "mouth-1",
+      "controls": {
+        "mouth": 1
+      },
+      "expected": "only this part and its descendants, with declared skin blending"
+    },
+    {
+      "name": "chest--0.2",
+      "controls": {
+        "chest": -0.2
+      },
+      "expected": "only this part and its descendants, with declared skin blending"
+    },
+    {
+      "name": "chest-0.2",
+      "controls": {
+        "chest": 0.2
+      },
+      "expected": "only this part and its descendants, with declared skin blending"
+    },
+    {
+      "name": "leftUpperArm--0.3",
+      "controls": {
+        "leftUpperArm": -0.3
+      },
+      "expected": "only this part and its descendants, with declared skin blending"
+    },
+    {
+      "name": "leftUpperArm-0.3",
+      "controls": {
+        "leftUpperArm": 0.3
+      },
+      "expected": "only this part and its descendants, with declared skin blending"
+    },
+    {
+      "name": "leftLowerArm--0.3",
+      "controls": {
+        "leftLowerArm": -0.3
+      },
+      "expected": "only this part and its descendants, with declared skin blending"
+    },
+    {
+      "name": "leftLowerArm-0.3",
+      "controls": {
+        "leftLowerArm": 0.3
+      },
+      "expected": "only this part and its descendants, with declared skin blending"
+    },
+    {
+      "name": "rightUpperArm--0.3",
+      "controls": {
+        "rightUpperArm": -0.3
+      },
+      "expected": "only this part and its descendants, with declared skin blending"
+    },
+    {
+      "name": "rightUpperArm-0.3",
+      "controls": {
+        "rightUpperArm": 0.3
+      },
+      "expected": "only this part and its descendants, with declared skin blending"
+    },
+    {
+      "name": "rightLowerArm--0.3",
+      "controls": {
+        "rightLowerArm": -0.3
+      },
+      "expected": "only this part and its descendants, with declared skin blending"
+    },
+    {
+      "name": "rightLowerArm-0.3",
+      "controls": {
+        "rightLowerArm": 0.3
+      },
+      "expected": "only this part and its descendants, with declared skin blending"
+    }
+  ],
+  "realSideRearGroundTruthAvailable": false,
+  "independentFinished3DReferenceAvailable": false,
+  "missingForRelease": [
+    "12 rights-cleared characters",
+    "same-character real side/rear views or 3D references",
+    "independent quality ratings",
+    "novice completion observations"
+  ],
+  "humanFramesStored": false,
+  "humanPCMStored": false,
+  "productTrainingPermission": false
+}

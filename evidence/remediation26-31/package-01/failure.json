@@ -1,0 +1,1 @@
+{"passed":false,"code":"E_ASAR_QUERY_PATH","scope":"Post-check used forward slashes with the Windows ASAR API; both fresh packaged settings runs passed. Their results remain valid only for the inventoried bytes.","packagedFunctionalityPassed":true,"oldReportsPreserved":true}

@@ -1,0 +1,84 @@
+{
+  "passed": true,
+  "obsVersion": "33.0.1",
+  "obsWebSocketVersion": "5.7.6",
+  "sourceType": "browser_source",
+  "dimensions": [
+    1920,
+    1080
+  ],
+  "routes": [
+    {
+      "route": "parts",
+      "passed": true,
+      "images": [
+        {
+          "state": "neutral",
+          "file": "parts-neutral.png",
+          "sha256": "792a1443a300f18fa44fc1ab634244dbddac1b3b83b49f1cf8cde3e5311cfc36"
+        },
+        {
+          "state": "expression",
+          "file": "parts-expression.png",
+          "sha256": "a76c6d1cd87de55aa6635d3eaa753d5a64121790d6027b959e201a85e61e485c"
+        },
+        {
+          "state": "motion",
+          "file": "parts-motion.png",
+          "sha256": "5feeaf70176fa56a9cb1ce0af981338865d19102109ffd7a9a9693bdb8f87786"
+        }
+      ],
+      "input": "example playback; physical devices NOT_RUN"
+    },
+    {
+      "route": "single-image",
+      "passed": true,
+      "images": [
+        {
+          "state": "neutral",
+          "file": "single-image-neutral.png",
+          "sha256": "6f2d30cbbc2e35da2036da5bd0baba5ebd831a8e6a5d65502ef60e9e5083181a"
+        },
+        {
+          "state": "expression",
+          "file": "single-image-expression.png",
+          "sha256": "3a543b95b832412f92b24528ea3790ebe23f6773dbbfe4a1d32f9fe1be56d364"
+        },
+        {
+          "state": "motion",
+          "file": "single-image-motion.png",
+          "sha256": "18002595ca560d33b9c9951c2479032024be57b435835a6996e6b9a9b632d7ec"
+        }
+      ],
+      "input": "example playback; physical devices NOT_RUN"
+    },
+    {
+      "route": "split-image",
+      "passed": true,
+      "images": [
+        {
+          "state": "neutral",
+          "file": "split-image-neutral.png",
+          "sha256": "d0a44070fcceab8167c7908a653ba2896cc4412ea6ea9c0c580b0cf2ff7aba28"
+        },
+        {
+          "state": "expression",
+          "file": "split-image-expression.png",
+          "sha256": "e6de624e5eb142ad4482be10d0771777973ec8e6033abc4d3fb120891bf89fcd"
+        },
+        {
+          "state": "motion",
+          "file": "split-image-motion.png",
+          "sha256": "206295715845e9201e2f32fcc306a55c5f061ad0d312995b3214f39387bdc4cd"
+        }
+      ],
+      "input": "example playback; physical devices NOT_RUN"
+    }
+  ],
+  "physicalDevicesOpened": false,
+  "streamingStarted": false,
+  "recordingStarted": false,
+  "existingUserScenesModified": false,
+  "m0": "HOLD",
+  "scope": "actual OBS screenshots of three new route preparations; separate from lifecycle suites"
+}

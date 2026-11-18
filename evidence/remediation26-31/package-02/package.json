@@ -1,0 +1,22 @@
+{
+  "passed": true,
+  "appVersion": "0.22.1",
+  "patch": "bounded recovery journal rename retry",
+  "twoFreshPackagedSettingsRuns": true,
+  "reusedValidReportsFrom": "evidence/remediation26-31/package-01/settings",
+  "allInventoriedPackageBytesRechecked": true,
+  "unicodeSpacePaths": true,
+  "developerToolsOnPath": false,
+  "cleanWindowsOS": false,
+  "compiledJournalSha256": "4f7001c5dba5559bcc2ebd646b6559634465be75a645baa7f5270715400b3513",
+  "zip": {
+    "file": "out/make/zip/win32/x64/2DSketcher-win32-x64-0.22.1.zip",
+    "sha256": "e5e4f3a5820d4a3563dfcce9b8cba3eccc1ce50d8673db0cb45a0c4030590ad3"
+  },
+  "originalFrozenZipPreserved": true,
+  "fixturesBundled": false,
+  "signature": "NotSigned",
+  "published": false,
+  "signed": false,
+  "releaseDecision": "HOLD"
+}

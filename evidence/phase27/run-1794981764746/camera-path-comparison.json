@@ -1,0 +1,36 @@
+{
+  "issue": "INT27-CAM-01",
+  "appCameraAcceptancePassed": false,
+  "userReport": "Real human face clearly visible in first app preview",
+  "firstAppRun": {
+    "status": "cancelled",
+    "faces": 0,
+    "camera": "open",
+    "processedFrames": 91,
+    "previewBrightness": 126.34403862847222,
+    "inferenceMs": 3.70410003233701,
+    "microphone": "open",
+    "audioBlocks": 315
+  },
+  "nativeComparison": {
+    "passed": true,
+    "source": "DirectShow index 0; identity not assumed equal to browser selection",
+    "frames": 185,
+    "framesWithRawFaces": 185,
+    "framesWithValidFaces": 185,
+    "maxRawFaces": 1,
+    "medianBrightness": 139.39074978298612,
+    "medianStd": 73.1793559901565,
+    "sourceSize": [
+      640,
+      480
+    ],
+    "framesSaved": false,
+    "microphoneOpened": false
+  },
+  "samePhysicalCameraIdentityConfirmed": false,
+  "rawFramesSaved": false,
+  "rawAudioSaved": false,
+  "cause": "UNRESOLVED: explicit browser device selection / frame path comparison required",
+  "m0": "HOLD"
+}

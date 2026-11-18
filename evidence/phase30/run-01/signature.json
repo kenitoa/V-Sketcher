@@ -1,0 +1,6 @@
+{
+    "status":  "NotSigned",
+    "exeSha256":  "3d1e14d512373d91a66356e7b4d36345baefecbaf439726424aeb4f63ed9edd9",
+    "file":  "out/2DSketcher-win32-x64/2DSketcher.exe",
+    "signingPerformed":  false
+}

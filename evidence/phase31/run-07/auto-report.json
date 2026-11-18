@@ -1,0 +1,164 @@
+{
+  "passed": true,
+  "mode": "auto",
+  "loaded": true,
+  "independentVRM": false,
+  "threeRevision": "187",
+  "meshCount": 2,
+  "boneCount": 19,
+  "morphCounts": [
+    3,
+    3
+  ],
+  "depth": 0.6016404032707214,
+  "triangles": 15552,
+  "renderFrames": 487,
+  "drawWallP95Ms": 0.7000000476837158,
+  "glError": 0,
+  "backend": "ANGLE (Intel, Intel(R) UHD Graphics (0x0000A7A8) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+  "controls": {
+    "width": 1,
+    "depth": 0.18,
+    "upper": 1,
+    "tint": 0
+  },
+  "physicalDevicesOpened": false,
+  "bodyWeightsVerified": true,
+  "motionProof": [
+    {
+      "name": "chest",
+      "maxDisplacementByDominantBone": {
+        "head": 0.052119662825847686,
+        "chest": 0.2769760806929202,
+        "rightUpperArm": 0.15546844315872654,
+        "leftUpperArm": 0.1581506036044922,
+        "rightLowerArm": 0.28247238956233717,
+        "leftLowerArm": 0.2823010022768359
+      }
+    },
+    {
+      "name": "leftUpperArm",
+      "maxDisplacementByDominantBone": {
+        "head": 0,
+        "chest": 0.0820942083952355,
+        "rightUpperArm": 0,
+        "leftUpperArm": 0.10265497512667855,
+        "rightLowerArm": 0,
+        "leftLowerArm": 0.2534667598898936
+      }
+    },
+    {
+      "name": "leftLowerArm",
+      "maxDisplacementByDominantBone": {
+        "head": 0,
+        "chest": 0.048614170208484485,
+        "rightUpperArm": 0,
+        "leftUpperArm": 0.0026630339515904974,
+        "rightLowerArm": 0,
+        "leftLowerArm": 0.1429013683561599
+      }
+    },
+    {
+      "name": "rightUpperArm",
+      "maxDisplacementByDominantBone": {
+        "head": 0,
+        "chest": 0.0778664731788406,
+        "rightUpperArm": 0.101359952714224,
+        "leftUpperArm": 0,
+        "rightLowerArm": 0.2531105783502053,
+        "leftLowerArm": 0
+      }
+    },
+    {
+      "name": "rightLowerArm",
+      "maxDisplacementByDominantBone": {
+        "head": 0,
+        "chest": 0.04689690481646765,
+        "rightUpperArm": 0.0038688100733470935,
+        "leftUpperArm": 0,
+        "rightLowerArm": 0.14368534839236566,
+        "leftLowerArm": 0
+      }
+    }
+  ],
+  "controlsVerified": true,
+  "exportVerified": true,
+  "syntheticInputResetVerified": true,
+  "shots": [
+    {
+      "name": "auto-front",
+      "sha256": "32fc431ed6094316b6929ae902215dc998d00574d092b31d0f1b37f02c8264a5"
+    },
+    {
+      "name": "auto-side",
+      "sha256": "0938c24e8fb72b52af83338aac55b491ff715aedd02bcf917280812ac7fe1882"
+    },
+    {
+      "name": "auto-rear",
+      "sha256": "6a1817973143ce663868a9aee05a22247c0d986141a70db549df81ac401062d4"
+    },
+    {
+      "name": "auto-threequarter",
+      "sha256": "7af97019a396b5324e8ceadec0114692f86a71a6a9c1aac4215fe857c89a9bd9"
+    },
+    {
+      "name": "auto-head",
+      "sha256": "25f5088393a1812eb0c4fc1661c35af8fece288f8c725cfcbd37333e4efb8b27"
+    },
+    {
+      "name": "auto-blink",
+      "sha256": "038aaaaa0ffc54ab11d2ccd4ce5e498939bbb692029797861332894a5d2ee98a"
+    },
+    {
+      "name": "auto-mouth",
+      "sha256": "1c18713f9d6785ffd496d9346a277a7048cd60c09cbc812fb1821930bbac2508"
+    },
+    {
+      "name": "auto-neutral",
+      "sha256": "32fc431ed6094316b6929ae902215dc998d00574d092b31d0f1b37f02c8264a5"
+    },
+    {
+      "name": "auto-chest",
+      "sha256": "8422be4482116e3e3432f6817fd65fa25f8a91e9e8aedfd40324acc2dabf06e9"
+    },
+    {
+      "name": "auto-leftUpperArm",
+      "sha256": "c2e3f8076078502edeaa813a0de64cd9ecc9c3808c1b0c544a75b3c64ba4bd7c"
+    },
+    {
+      "name": "auto-leftLowerArm",
+      "sha256": "89b140d78549feffb195b79713bf03288ff1a3324f6f77102335c561f43c3671"
+    },
+    {
+      "name": "auto-rightUpperArm",
+      "sha256": "45b7c51e5db82d320b8144dafc7d89eb983eacf4fc5fffe860828d59afb24322"
+    },
+    {
+      "name": "auto-rightLowerArm",
+      "sha256": "fd81eb2c71fc0e26b19d88afc9a6fdc91c857cd454b043a8fa6662ae1d17060e"
+    },
+    {
+      "name": "auto-synthetic-input",
+      "sha256": "fbaeb441741cade483456c877f79cf62d2a27db91e1b5bb8cbd40dcf0ade323e"
+    },
+    {
+      "name": "auto-synthetic-stopped",
+      "sha256": "32fc431ed6094316b6929ae902215dc998d00574d092b31d0f1b37f02c8264a5"
+    },
+    {
+      "name": "auto-corrected",
+      "sha256": "159b775488dd49b2b9006da3ad3d5968a54ff95b67a52e6cdccd2746816eb664"
+    },
+    {
+      "name": "auto-reset",
+      "sha256": "32fc431ed6094316b6929ae902215dc998d00574d092b31d0f1b37f02c8264a5"
+    }
+  ],
+  "protections": {
+    "sandbox": true,
+    "contextIsolation": true,
+    "nodeIntegration": false,
+    "externalNetworkBlocked": true
+  },
+  "productionQualityAcceptance": false
+}

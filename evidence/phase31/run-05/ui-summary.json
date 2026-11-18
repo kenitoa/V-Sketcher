@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "sourceSha256": "1599b359b246e226fee73fa9c644972f58b727b158e8e47fdc87bf4c976d9121",
+  "sourceUnchanged": true,
+  "prototypeOnly": true,
+  "physicalDevicesOpened": false,
+  "sourceWasPremium": true,
+  "independentVRMLoader": true,
+  "correctionExportValidated": true,
+  "sideRearGroundTruth": false,
+  "threeVersion": "0.187.0"
+}

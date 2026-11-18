@@ -1,0 +1,124 @@
+{
+  "passed": true,
+  "route": "split-image",
+  "version": 1,
+  "projectId": "7192c7cf-eb10-4775-a56a-fde4ff66ce56",
+  "createdBySameAppThreeRoutePreparation": true,
+  "sourceRevision": 11,
+  "savedRevision": 11,
+  "runRevision": 11,
+  "sourceAssetsUnchanged": true,
+  "sameProjectReopened": true,
+  "correctionApplied": true,
+  "roleCorrectionVerified": true,
+  "png": {
+    "name": "split-image-v1.png",
+    "bytes": 1240058,
+    "sha256": "4e827b84da6ce94f12f37aa0c58489cd77fccfa91cbb5dcb4ccfb503f2fba427",
+    "basis": {
+      "source": "working",
+      "projectId": "7192c7cf-eb10-4775-a56a-fde4ff66ce56",
+      "revision": 11,
+      "fingerprint": "326bb8f998a9e73ac23a1458e81fed7c6e3cc37fd8f0cc9a274f15242eeb8703"
+    }
+  },
+  "avatar": {
+    "contentFingerprint": "b48511fe47ebea62f357164a83bfad6a16f414e76a14096e5810ccc42ec957c8",
+    "id": "f57675d2-8268-4f34-8330-70fe91581e2f",
+    "name": "character-r11-6a6e97af.inp",
+    "bytes": 4150645,
+    "sha256": "6a6e97afc4bb67870a51c5581e336fa206dfe1d74d64ab410d72b8b0da0001da",
+    "basis": {
+      "source": "working",
+      "projectId": "7192c7cf-eb10-4775-a56a-fde4ff66ce56",
+      "revision": 11,
+      "fingerprint": "326bb8f998a9e73ac23a1458e81fed7c6e3cc37fd8f0cc9a274f15242eeb8703"
+    },
+    "created": "2026-11-18T17:15:40.800Z",
+    "targetVersion": "0.8.7",
+    "converterVersion": "0.3.0",
+    "state": "WRITTEN",
+    "newerEdits": false,
+    "confirmation": null,
+    "fileState": "PRESENT",
+    "current": true
+  },
+  "olderResultsStale": false,
+  "programmaticReview": true,
+  "humanObservation": false,
+  "physicalDevicesOpened": false,
+  "images": [
+    {
+      "route": "split-image",
+      "label": "neutral",
+      "original": "split-image-neutral-original.png",
+      "converted": "split-image-neutral-converted.png",
+      "target": "split-image-neutral-target.png"
+    },
+    {
+      "route": "split-image",
+      "label": "eyes-closed",
+      "original": "split-image-eyes-closed-original.png",
+      "converted": "split-image-eyes-closed-converted.png",
+      "target": "split-image-eyes-closed-target.png"
+    },
+    {
+      "route": "split-image",
+      "label": "middle",
+      "original": "split-image-middle-original.png",
+      "converted": "split-image-middle-converted.png",
+      "target": "split-image-middle-target.png"
+    },
+    {
+      "route": "split-image",
+      "label": "mouth-open",
+      "original": "split-image-mouth-open-original.png",
+      "converted": "split-image-mouth-open-converted.png",
+      "target": "split-image-mouth-open-target.png"
+    },
+    {
+      "route": "split-image",
+      "label": "head-negative",
+      "original": "split-image-head-negative-original.png",
+      "converted": "split-image-head-negative-converted.png",
+      "target": "split-image-head-negative-target.png"
+    },
+    {
+      "route": "split-image",
+      "label": "head-positive",
+      "original": "split-image-head-positive-original.png",
+      "converted": "split-image-head-positive-converted.png",
+      "target": "split-image-head-positive-target.png"
+    },
+    {
+      "route": "split-image",
+      "label": "expression",
+      "original": "split-image-expression-original.png",
+      "converted": "split-image-expression-converted.png",
+      "target": "split-image-expression-target.png"
+    }
+  ],
+  "file": {
+    "contentFingerprint": "b48511fe47ebea62f357164a83bfad6a16f414e76a14096e5810ccc42ec957c8",
+    "id": "f57675d2-8268-4f34-8330-70fe91581e2f",
+    "name": "avatar-split-image-v1.inp",
+    "bytes": 4150645,
+    "sha256": "6a6e97afc4bb67870a51c5581e336fa206dfe1d74d64ab410d72b8b0da0001da",
+    "basis": {
+      "source": "working",
+      "projectId": "7192c7cf-eb10-4775-a56a-fde4ff66ce56",
+      "revision": 11,
+      "fingerprint": "326bb8f998a9e73ac23a1458e81fed7c6e3cc37fd8f0cc9a274f15242eeb8703"
+    },
+    "created": "2026-11-18T17:15:40.800Z",
+    "targetVersion": "0.8.7",
+    "converterVersion": "0.3.0",
+    "state": "WRITTEN",
+    "newerEdits": false,
+    "confirmation": null,
+    "fileState": "PRESENT",
+    "current": true,
+    "route": "split-image",
+    "version": 1
+  }
+}

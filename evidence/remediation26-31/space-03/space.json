@@ -1,0 +1,120 @@
+{
+  "passed": true,
+  "tests": [
+    {
+      "kind": "new",
+      "attempt": 1,
+      "passed": true,
+      "actualOSCode": "ENOSPC",
+      "productCode": "E_SAVE_SPACE",
+      "lastNormalPreserved": true,
+      "previousRecoveryPreserved": false,
+      "partialNewFileNotPublished": true,
+      "retryAfterFreeSpace": true,
+      "saveToOtherWindowsLocation": true
+    },
+    {
+      "kind": "new",
+      "attempt": 2,
+      "passed": true,
+      "actualOSCode": "ENOSPC",
+      "productCode": "E_SAVE_SPACE",
+      "lastNormalPreserved": true,
+      "previousRecoveryPreserved": false,
+      "partialNewFileNotPublished": true,
+      "retryAfterFreeSpace": true,
+      "saveToOtherWindowsLocation": true
+    },
+    {
+      "kind": "new",
+      "attempt": 3,
+      "passed": true,
+      "actualOSCode": "ENOSPC",
+      "productCode": "E_SAVE_SPACE",
+      "lastNormalPreserved": true,
+      "previousRecoveryPreserved": false,
+      "partialNewFileNotPublished": true,
+      "retryAfterFreeSpace": true,
+      "saveToOtherWindowsLocation": true
+    },
+    {
+      "kind": "existing",
+      "attempt": 1,
+      "passed": true,
+      "actualOSCode": "ENOSPC",
+      "productCode": "E_SAVE_SPACE",
+      "lastNormalPreserved": true,
+      "previousRecoveryPreserved": false,
+      "partialNewFileNotPublished": false,
+      "retryAfterFreeSpace": true,
+      "saveToOtherWindowsLocation": true
+    },
+    {
+      "kind": "existing",
+      "attempt": 2,
+      "passed": true,
+      "actualOSCode": "ENOSPC",
+      "productCode": "E_SAVE_SPACE",
+      "lastNormalPreserved": true,
+      "previousRecoveryPreserved": false,
+      "partialNewFileNotPublished": false,
+      "retryAfterFreeSpace": true,
+      "saveToOtherWindowsLocation": true
+    },
+    {
+      "kind": "existing",
+      "attempt": 3,
+      "passed": true,
+      "actualOSCode": "ENOSPC",
+      "productCode": "E_SAVE_SPACE",
+      "lastNormalPreserved": true,
+      "previousRecoveryPreserved": false,
+      "partialNewFileNotPublished": false,
+      "retryAfterFreeSpace": true,
+      "saveToOtherWindowsLocation": true
+    },
+    {
+      "kind": "autosave",
+      "attempt": 1,
+      "passed": true,
+      "actualOSCode": "ENOSPC",
+      "productCode": "E_SAVE_SPACE",
+      "lastNormalPreserved": true,
+      "previousRecoveryPreserved": true,
+      "partialNewFileNotPublished": false,
+      "retryAfterFreeSpace": true,
+      "saveToOtherWindowsLocation": true
+    },
+    {
+      "kind": "autosave",
+      "attempt": 2,
+      "passed": true,
+      "actualOSCode": "ENOSPC",
+      "productCode": "E_SAVE_SPACE",
+      "lastNormalPreserved": true,
+      "previousRecoveryPreserved": true,
+      "partialNewFileNotPublished": false,
+      "retryAfterFreeSpace": true,
+      "saveToOtherWindowsLocation": true
+    },
+    {
+      "kind": "autosave",
+      "attempt": 3,
+      "passed": true,
+      "actualOSCode": "ENOSPC",
+      "productCode": "E_SAVE_SPACE",
+      "lastNormalPreserved": true,
+      "previousRecoveryPreserved": true,
+      "partialNewFileNotPublished": false,
+      "retryAfterFreeSpace": true,
+      "saveToOtherWindowsLocation": true
+    }
+  ],
+  "filesystem": "owned WSL2 32 MiB tmpfs accessed by Windows Node over local WSL filesystem bridge",
+  "actualFilesystemExhaustion": true,
+  "faultInjectionUsed": false,
+  "normalWindowsDriveFilled": false,
+  "hostSecuritySettingsChanged": false,
+  "existingDistroModified": false,
+  "scope": "actual space exhaustion and retry; not NTFS crash durability or clean Windows support"
+}

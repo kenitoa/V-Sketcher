@@ -1,0 +1,70 @@
+{
+  "runs": [
+    {
+      "route": "parts",
+      "resultVersion": 1,
+      "sourceSha256": "6b05b422193d30779e73c3f322f01d70b2f3b8cf129bfd6da9e12495ba6a25d1",
+      "movedUnicodeAndSpacePath": true,
+      "externalFileUnchanged": true,
+      "appProcessExited": true,
+      "workerStopped": true,
+      "captureFrames": 62,
+      "qualityPassed": true
+    },
+    {
+      "route": "parts",
+      "resultVersion": 2,
+      "sourceSha256": "93fa07fd6c4607e847f455458c188dd8fb98c16c1c68ebc46db1dc19e4371cd8",
+      "movedUnicodeAndSpacePath": true,
+      "externalFileUnchanged": true,
+      "appProcessExited": true,
+      "workerStopped": true,
+      "captureFrames": 61,
+      "qualityPassed": true
+    },
+    {
+      "route": "single-image",
+      "resultVersion": 1,
+      "sourceSha256": "8733c949fa7a6ca82eec065858847890f416ed7d74df695d2b02a808eda32fbb",
+      "movedUnicodeAndSpacePath": true,
+      "externalFileUnchanged": true,
+      "appProcessExited": true,
+      "workerStopped": true,
+      "captureFrames": 45,
+      "qualityPassed": true
+    },
+    {
+      "route": "single-image",
+      "resultVersion": 2,
+      "sourceSha256": "002f10b3eab057762a39ea4c516984c244e118dcbfdcf0360b11ea59efbc338a",
+      "movedUnicodeAndSpacePath": true,
+      "externalFileUnchanged": true,
+      "appProcessExited": true,
+      "workerStopped": true,
+      "captureFrames": 47,
+      "qualityPassed": true
+    },
+    {
+      "route": "split-image",
+      "resultVersion": 1,
+      "sourceSha256": "6a6e97afc4bb67870a51c5581e336fa206dfe1d74d64ab410d72b8b0da0001da",
+      "movedUnicodeAndSpacePath": true,
+      "externalFileUnchanged": true,
+      "appProcessExited": true,
+      "workerStopped": true,
+      "captureFrames": 41,
+      "qualityPassed": true
+    },
+    {
+      "route": "split-image",
+      "resultVersion": 2,
+      "sourceSha256": "078bbcc8c70a2e3f0787d86cf2fde9c9d1e6055c86eab03be2fe276ce5a98fdd",
+      "movedUnicodeAndSpacePath": true,
+      "externalFileUnchanged": true,
+      "appProcessExited": true,
+      "workerStopped": true,
+      "captureFrames": 43,
+      "qualityPassed": true
+    }
+  ]
+}

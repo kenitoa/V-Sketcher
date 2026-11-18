@@ -1,0 +1,5 @@
+{
+  "passed": true,
+  "scope": "Targeted three-route synthetic-media recovery after live-audio-clock age fix; not physical-device acceptance",
+  "newClockGapUnitPassed": true
+}

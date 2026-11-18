@@ -1,0 +1,15 @@
+{
+  "sourceSha256": "1599b359b246e226fee73fa9c644972f58b727b158e8e47fdc87bf4c976d9121",
+  "method": "reference-specific visual annotation; not automatic recognition",
+  "coordinateSystem": "normalized image coordinates, character left appears at image right",
+  "eyes": [[0.545, 0.227], [0.440, 0.227]],
+  "mouth": [0.495, 0.303],
+  "neck": [0.50, 0.395],
+  "chest": [0.50, 0.48],
+  "leftShoulder": [0.67, 0.46],
+  "leftElbow": [0.70, 0.68],
+  "rightShoulder": [0.32, 0.46],
+  "rightElbow": [0.28, 0.68],
+  "unsupported": ["hands", "fingers", "legs", "feet", "observed side/back anatomy"],
+  "limitations": ["Elbows under clothing are estimated", "Sleeves and hair overlap; the shell is not a separated character mesh", "Anatomical rest pose and VRM full-body retargeting are not accepted"]
+}

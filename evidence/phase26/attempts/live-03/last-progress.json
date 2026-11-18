@@ -1,0 +1,1 @@
+{"phase":"prepare","ready":false,"faces":0,"camera":"failed","blocks":805,"cameraError":"E_TRACKING_RESULT","microphoneError":null,"microphone":"open","microphoneDiagnostics":{"received":805,"accepted":805,"stale":0,"muted":0,"ageMs":16.86666671434068,"contextState":"running","trackState":"live","trackMuted":false},"microphoneFailure":null}

@@ -1,0 +1,124 @@
+{
+  "passed": true,
+  "route": "single-image",
+  "version": 1,
+  "projectId": "eebeb37f-af0b-45aa-a75f-7a62a2a16954",
+  "createdBySameAppThreeRoutePreparation": true,
+  "sourceRevision": 9,
+  "savedRevision": 9,
+  "runRevision": 9,
+  "sourceAssetsUnchanged": true,
+  "sameProjectReopened": true,
+  "correctionApplied": true,
+  "roleCorrectionVerified": false,
+  "png": {
+    "name": "single-image-v1.png",
+    "bytes": 1465860,
+    "sha256": "43aed16b4272d3e58135094bb6bd5c6b369e5b843bf1b179720632e69dec248a",
+    "basis": {
+      "source": "working",
+      "projectId": "eebeb37f-af0b-45aa-a75f-7a62a2a16954",
+      "revision": 9,
+      "fingerprint": "7742bd0fb7feec1ab1962537dd1d1645adf3be584ee97c3bcf9175c9e0ec5f3d"
+    }
+  },
+  "avatar": {
+    "contentFingerprint": "f65a4ce282c0d5e3339bdcbadaf0e9d37bfd4ec2277b974ed3fa4c94410c3a43",
+    "id": "bd69f2e1-aa31-4c6d-97f0-82a78edc5807",
+    "name": "character-r9-e473f5fc.inp",
+    "bytes": 28616411,
+    "sha256": "e473f5fce3052e8111819cd3853eaccf0d97c7b12d957bb1ba800fef2b0cc4e2",
+    "basis": {
+      "source": "working",
+      "projectId": "eebeb37f-af0b-45aa-a75f-7a62a2a16954",
+      "revision": 9,
+      "fingerprint": "7742bd0fb7feec1ab1962537dd1d1645adf3be584ee97c3bcf9175c9e0ec5f3d"
+    },
+    "created": "2026-11-18T16:46:22.443Z",
+    "targetVersion": "0.8.7",
+    "converterVersion": "0.3.0",
+    "state": "WRITTEN",
+    "newerEdits": false,
+    "confirmation": null,
+    "fileState": "PRESENT",
+    "current": true
+  },
+  "olderResultsStale": false,
+  "programmaticReview": true,
+  "humanObservation": false,
+  "physicalDevicesOpened": false,
+  "images": [
+    {
+      "route": "single-image",
+      "label": "neutral",
+      "original": "single-image-neutral-original.png",
+      "converted": "single-image-neutral-converted.png",
+      "target": "single-image-neutral-target.png"
+    },
+    {
+      "route": "single-image",
+      "label": "eyes-closed",
+      "original": "single-image-eyes-closed-original.png",
+      "converted": "single-image-eyes-closed-converted.png",
+      "target": "single-image-eyes-closed-target.png"
+    },
+    {
+      "route": "single-image",
+      "label": "middle",
+      "original": "single-image-middle-original.png",
+      "converted": "single-image-middle-converted.png",
+      "target": "single-image-middle-target.png"
+    },
+    {
+      "route": "single-image",
+      "label": "mouth-open",
+      "original": "single-image-mouth-open-original.png",
+      "converted": "single-image-mouth-open-converted.png",
+      "target": "single-image-mouth-open-target.png"
+    },
+    {
+      "route": "single-image",
+      "label": "head-negative",
+      "original": "single-image-head-negative-original.png",
+      "converted": "single-image-head-negative-converted.png",
+      "target": "single-image-head-negative-target.png"
+    },
+    {
+      "route": "single-image",
+      "label": "head-positive",
+      "original": "single-image-head-positive-original.png",
+      "converted": "single-image-head-positive-converted.png",
+      "target": "single-image-head-positive-target.png"
+    },
+    {
+      "route": "single-image",
+      "label": "expression",
+      "original": "single-image-expression-original.png",
+      "converted": "single-image-expression-converted.png",
+      "target": "single-image-expression-target.png"
+    }
+  ],
+  "file": {
+    "contentFingerprint": "f65a4ce282c0d5e3339bdcbadaf0e9d37bfd4ec2277b974ed3fa4c94410c3a43",
+    "id": "bd69f2e1-aa31-4c6d-97f0-82a78edc5807",
+    "name": "avatar-single-image-v1.inp",
+    "bytes": 28616411,
+    "sha256": "e473f5fce3052e8111819cd3853eaccf0d97c7b12d957bb1ba800fef2b0cc4e2",
+    "basis": {
+      "source": "working",
+      "projectId": "eebeb37f-af0b-45aa-a75f-7a62a2a16954",
+      "revision": 9,
+      "fingerprint": "7742bd0fb7feec1ab1962537dd1d1645adf3be584ee97c3bcf9175c9e0ec5f3d"
+    },
+    "created": "2026-11-18T16:46:22.443Z",
+    "targetVersion": "0.8.7",
+    "converterVersion": "0.3.0",
+    "state": "WRITTEN",
+    "newerEdits": false,
+    "confirmation": null,
+    "fileState": "PRESENT",
+    "current": true,
+    "route": "single-image",
+    "version": 1
+  }
+}

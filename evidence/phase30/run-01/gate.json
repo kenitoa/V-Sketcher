@@ -1,0 +1,14 @@
+{
+  "command": "tools\\dev.cmd run check",
+  "exitCode": 0,
+  "nodeTests": 338,
+  "pythonTests": 36,
+  "totalTests": 374,
+  "nodeFailures": 0,
+  "typecheck": true,
+  "ruff": true,
+  "generatedValidatorsCurrent": true,
+  "testBuild": true,
+  "normalLogsCopied": false,
+  "privateControllerLog": ".local/check30.log"
+}

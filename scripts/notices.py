@@ -1,6 +1,6 @@
 """Preserve exact installed license texts and classify build/runtime dependency inventory."""
 from pathlib import Path
-import importlib.metadata as meta,json,shutil
+import importlib.metadata as meta,json,shutil,hashlib
 ROOT=Path(__file__).resolve().parent.parent
 def run():
     out=ROOT/'dist/notices';out.mkdir(parents=True,exist_ok=True)
@@ -12,6 +12,8 @@ def run():
     for name in ['catalog.json','generation-record.json','USAGE.md']:
         shutil.copyfile(ROOT/'assets/product/parts'/name,out/('parts-'+name))
     shutil.copyfile(ROOT/'assets/product/split/manifest.json',out/'split-provenance.json')
+    overrides=json.loads((ROOT/'worker/resources/license-overrides.json').read_text(encoding='utf-8'))
+    shutil.copyfile(ROOT/'worker/resources/license-overrides.json',out/'license-overrides.json')
     python=[]
     for dist in meta.distributions():
         name=dist.metadata['Name'];item={'name':name,'version':dist.version,'license':dist.metadata.get('License-Expression') or dist.metadata.get('License'),'scope':'installed build environment; bundled use verified separately'}
@@ -21,6 +23,13 @@ def run():
             if any(word in path.name.lower() for word in ['license','copying','notice']) and path.suffix.lower() not in ['.py','.pyc','.dll','.pyd']:
                 source=Path(dist.locate_file(file))
                 if source.is_file() and source.stat().st_size<5*1024*1024:shutil.copyfile(source,target/path.name)
+        override=overrides.get(name.lower().replace('_','-'))
+        if override:
+            if dist.version!=override['version']:raise ValueError('E_NOTICE_VERSION')
+            source=ROOT/override['path']
+            if hashlib.sha256(source.read_bytes()).hexdigest()!=override['sha256']:raise ValueError('E_NOTICE_HASH')
+            shutil.copyfile(source,target/'LICENSE')
+            item['licenseTextSource']=override['source'];item['licenseTextSha256']=override['sha256']
         python.append(item)
     lock=json.loads((ROOT/'package-lock.json').read_text(encoding='utf-8'));npm=[]
     for key,item in lock.get('packages',{}).items():

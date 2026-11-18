@@ -1,0 +1,1 @@
+{"passed":false,"code":"E_3D_LAUNCH_ENVIRONMENT","physicalDevicesOpened":false,"detail":"Inherited Electron Node-mode variable prevented the GUI launcher; fixed in a separate launcher."}

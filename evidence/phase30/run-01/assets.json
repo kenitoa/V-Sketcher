@@ -1,0 +1,128 @@
+{
+  "candidateSha256": "3bf0538da2c0864dea6048548940cb6ccce1b6e77a3ab193e23250da77c98ac1",
+  "assets": [
+    {
+      "path": "preview/1599b359b246e226fee73fa9c644972f58b727b158e8e47fdc87bf4c976d9121.png",
+      "sha256": "1599b359b246e226fee73fa9c644972f58b727b158e8e47fdc87bf4c976d9121",
+      "bytes": 1997359
+    },
+    {
+      "path": "preview/b39a598b59775823efab0224203483c629b207a2de7f5666d13c01dd5125f12e.png",
+      "sha256": "b39a598b59775823efab0224203483c629b207a2de7f5666d13c01dd5125f12e",
+      "bytes": 18706
+    },
+    {
+      "path": "preview/b52e002d4325ce9c2aa228deda4735f89e58c5abd356afbacb3198581669b29a.png",
+      "sha256": "b52e002d4325ce9c2aa228deda4735f89e58c5abd356afbacb3198581669b29a",
+      "bytes": 16777
+    },
+    {
+      "path": "preview/8c6bf06622b67105d5c11e2064eb2292590262a3f6362529734af62163816172.png",
+      "sha256": "8c6bf06622b67105d5c11e2064eb2292590262a3f6362529734af62163816172",
+      "bytes": 18583
+    },
+    {
+      "path": "preview/e3d22c95fb4a4da724806ed682e27578f9a8e8ccc9813475cf0a463f2e1f0c01.png",
+      "sha256": "e3d22c95fb4a4da724806ed682e27578f9a8e8ccc9813475cf0a463f2e1f0c01",
+      "bytes": 16212
+    },
+    {
+      "path": "preview/3fe2220caee156e9bfc47e5f0e170fc7bd2ac28b890fb8995498fb9f5c8f13ca.png",
+      "sha256": "3fe2220caee156e9bfc47e5f0e170fc7bd2ac28b890fb8995498fb9f5c8f13ca",
+      "bytes": 9004
+    },
+    {
+      "path": "preview/1821b8eaaa6c828c66396e04e7f115c93787e3fa154f26529c88585c3f61ec98.png",
+      "sha256": "1821b8eaaa6c828c66396e04e7f115c93787e3fa154f26529c88585c3f61ec98",
+      "bytes": 9775
+    },
+    {
+      "path": "preview/955e597230d4cdd15cd64c09ecf8f48686bbd5702f32e429109d581d68d6f442.png",
+      "sha256": "955e597230d4cdd15cd64c09ecf8f48686bbd5702f32e429109d581d68d6f442",
+      "bytes": 2103970
+    },
+    {
+      "path": "preview/e78602d341961d5562555fc95caf5f7538c9e00c1f281d26e71657f04e78132a.png",
+      "sha256": "e78602d341961d5562555fc95caf5f7538c9e00c1f281d26e71657f04e78132a",
+      "bytes": 1991436
+    },
+    {
+      "path": "parts/face-a.png",
+      "sha256": "6891f6971c5f4ec07148a9d7180009607d7345937156fa6b81da74901c0425c4",
+      "bytes": 471604
+    },
+    {
+      "path": "parts/face-b.png",
+      "sha256": "d9be1c41a70e9dfc2d48f9dc26be2ccb87c034571e7204b58959eb450eb961d7",
+      "bytes": 488930
+    },
+    {
+      "path": "parts/hair-a-back.png",
+      "sha256": "a4da80250030a919da27504ec22712147c43e6077554ecb57b52775674fc71c2",
+      "bytes": 2068360
+    },
+    {
+      "path": "parts/hair-a-front-v2.png",
+      "sha256": "a78922f88eaf7b97c64724d0e1430c6c62623ec30e47d1e14501e0d9d02c8dfd",
+      "bytes": 1098581
+    },
+    {
+      "path": "parts/hair-b-back.png",
+      "sha256": "8f6cc816d03983bac2c4a2122315ada1d2601cbb8a2837b168b4dec2c275ef49",
+      "bytes": 1376130
+    },
+    {
+      "path": "parts/hair-b-front-v2.png",
+      "sha256": "923c69fa9bf7018e6bd69ba583b862cb6d619befd6a8a8ca70b669564fc8487f",
+      "bytes": 902824
+    },
+    {
+      "path": "parts/eyes-a-clean.png",
+      "sha256": "252bc12ddc88d5f628d6f4c604cea67b800df8723809c3faea391e7be3e1fa8c",
+      "bytes": 1620331
+    },
+    {
+      "path": "parts/eyes-b-clean.png",
+      "sha256": "0ccab24e82009f6973ad23ba7402c968ebf6813fb62af4b599119889bf4960f3",
+      "bytes": 1685354
+    },
+    {
+      "path": "parts/mouth-a-clean.png",
+      "sha256": "52ca10e0471ea24e5c25a0502eea8b32f72fa74c633d49e66a17c6809283b164",
+      "bytes": 1043589
+    },
+    {
+      "path": "parts/mouth-b-clean.png",
+      "sha256": "1b7ac1a2a7ec6333579afc306c9a35cea33a96d0525a7436796eb16b0ff81d17",
+      "bytes": 1125634
+    },
+    {
+      "path": "parts/outfit-a.png",
+      "sha256": "9c99ce47dc816756e8d587064b96c415dad58cb21cdee0c5b0e07d655fb06731",
+      "bytes": 2308585
+    },
+    {
+      "path": "parts/outfit-b.png",
+      "sha256": "9a0c1e93020a0fb22301cb4e5192e38e059ca27095abd729158b1285ca93921b",
+      "bytes": 1887268
+    },
+    {
+      "path": "parts/accessory-on.png",
+      "sha256": "918c8134202d0ca9a8f8cea799f3f3cbc4b72aa43fa5cd2d531f033dca603fa4",
+      "bytes": 773603
+    }
+  ],
+  "premiumPartsPngs": 13,
+  "model": {
+    "id": "face-landmarker-float16-v1",
+    "sha256": "64184e229b263107bc2b804c6625db1341ff2bb731874b0bcc2fe6544e0bc9ff",
+    "loadedByFrozenWorker": true
+  },
+  "versions": {
+    "app": "0.22.0",
+    "electron": "45.3.3",
+    "node": "24.22.3",
+    "python": "3.14.10"
+  },
+  "publicDistributionRightsApproved": false
+}

@@ -1,0 +1,77 @@
+{
+  "passed": false,
+  "mode": "auto",
+  "loaded": true,
+  "independentVRM": false,
+  "threeRevision": "187",
+  "meshCount": 2,
+  "boneCount": 19,
+  "morphCounts": [
+    3,
+    3
+  ],
+  "depth": 0.6016404032707214,
+  "triangles": 15552,
+  "renderFrames": 10,
+  "drawWallP95Ms": 387.89999997615814,
+  "glError": 0,
+  "backend": "ANGLE (Intel, Intel(R) UHD Graphics (0x0000A7A8) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+  "controls": {
+    "width": 1,
+    "depth": 0.18,
+    "upper": 1,
+    "tint": 0
+  },
+  "physicalDevicesOpened": false,
+  "controlsVerified": true,
+  "exportVerified": true,
+  "shots": [
+    {
+      "name": "auto-front",
+      "sha256": "ca1ab4d95e25ea3e00d2ca5a56a69a2084522cb3da7a6965db9d1b4cf74cc24c"
+    },
+    {
+      "name": "auto-side",
+      "sha256": "ca1ab4d95e25ea3e00d2ca5a56a69a2084522cb3da7a6965db9d1b4cf74cc24c"
+    },
+    {
+      "name": "auto-rear",
+      "sha256": "79c049c66134a7cdb209bfd6ff2e18efa2dc3ad4701c429d4d66d1dbf70904b5"
+    },
+    {
+      "name": "auto-threequarter",
+      "sha256": "79c049c66134a7cdb209bfd6ff2e18efa2dc3ad4701c429d4d66d1dbf70904b5"
+    },
+    {
+      "name": "auto-head",
+      "sha256": "79c049c66134a7cdb209bfd6ff2e18efa2dc3ad4701c429d4d66d1dbf70904b5"
+    },
+    {
+      "name": "auto-blink",
+      "sha256": "1dc95a8a7f7405cdae35f91af0bbec4a47e5b6ed007ccdfe3f3de3a71dac8168"
+    },
+    {
+      "name": "auto-mouth",
+      "sha256": "1dc95a8a7f7405cdae35f91af0bbec4a47e5b6ed007ccdfe3f3de3a71dac8168"
+    },
+    {
+      "name": "auto-neutral",
+      "sha256": "1dc95a8a7f7405cdae35f91af0bbec4a47e5b6ed007ccdfe3f3de3a71dac8168"
+    },
+    {
+      "name": "auto-corrected",
+      "sha256": "c8d938b67beea3b64f668c964e2d34cd4682fe84613ccd8f76316528b1c94b2d"
+    },
+    {
+      "name": "auto-reset",
+      "sha256": "52f00d5646a361448d67d3d8cecd97f94f6fa3ec2aaf52a877623a6c19b1cf2c"
+    }
+  ],
+  "protections": {
+    "sandbox": true,
+    "contextIsolation": true,
+    "nodeIntegration": false,
+    "externalNetworkBlocked": true
+  },
+  "productionQualityAcceptance": false
+}

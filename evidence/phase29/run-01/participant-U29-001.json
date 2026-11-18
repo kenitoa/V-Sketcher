@@ -1,0 +1,16 @@
+{
+  "protocol": "29-observation-v1.0",
+  "participantId": "U29-001",
+  "noviceEligible": true,
+  "consent": true,
+  "consentEvidence": "2026-11-18 conversation: 초보자이며 익명 기록에 동의함",
+  "firstRoute": "parts",
+  "status": "awaiting_task_start",
+  "evidenceLevel": "self_report",
+  "sessions": [],
+  "firstUseWindowEndsAt": null,
+  "repeatWindowEndsAt": null,
+  "faceFramesStored": false,
+  "microphonePCMStored": false,
+  "developerProxyCountsAsSuccess": false
+}

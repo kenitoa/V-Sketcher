@@ -1,0 +1,649 @@
+{
+  "passed": true,
+  "scope": "same-project automated production-code paths, actual OBS, independent target tested after app exit; no live-participant acceptance",
+  "rows": [
+    {
+      "passed": true,
+      "route": "parts",
+      "version": 1,
+      "projectId": "9441925b-bf9c-4ba8-8871-feadb8f765f8",
+      "createdBySameAppThreeRoutePreparation": true,
+      "sourceRevision": 7,
+      "savedRevision": 7,
+      "runRevision": 7,
+      "sourceAssetsUnchanged": true,
+      "sameProjectReopened": true,
+      "correctionApplied": true,
+      "roleCorrectionVerified": false,
+      "png": {
+        "name": "parts-v1.png",
+        "bytes": 1265726,
+        "sha256": "0acb71eac2c6001e5163b395e0b28dbdec7b2b6cfa16eee23c11913e22b6e0f3",
+        "basis": {
+          "source": "working",
+          "projectId": "9441925b-bf9c-4ba8-8871-feadb8f765f8",
+          "revision": 7,
+          "fingerprint": "b648976005bafbd7217d92e312cb076a75d966ab77424a804af3c2c400ae43c4"
+        }
+      },
+      "avatar": {
+        "contentFingerprint": "d70cf1575ff118f300aecc2495d6162eed04b8b777e09ed8134d31ac4b97a29f",
+        "id": "554f5b37-ed41-4f4c-9107-8a8794dfd598",
+        "name": "character-r7-ed29bb38.inp",
+        "bytes": 10720301,
+        "sha256": "ed29bb3880159f07456b28898f9d117f5e235006dff3147d35bdf45e84a3aaf0",
+        "basis": {
+          "source": "working",
+          "projectId": "9441925b-bf9c-4ba8-8871-feadb8f765f8",
+          "revision": 7,
+          "fingerprint": "b648976005bafbd7217d92e312cb076a75d966ab77424a804af3c2c400ae43c4"
+        },
+        "created": "2026-11-18T16:45:11.687Z",
+        "targetVersion": "0.8.7",
+        "converterVersion": "0.3.0",
+        "state": "WRITTEN",
+        "newerEdits": false,
+        "confirmation": null,
+        "fileState": "PRESENT",
+        "current": true
+      },
+      "olderResultsStale": false,
+      "programmaticReview": true,
+      "humanObservation": false,
+      "physicalDevicesOpened": false,
+      "file": {
+        "contentFingerprint": "d70cf1575ff118f300aecc2495d6162eed04b8b777e09ed8134d31ac4b97a29f",
+        "id": "554f5b37-ed41-4f4c-9107-8a8794dfd598",
+        "name": "avatar-parts-v1.inp",
+        "bytes": 10720301,
+        "sha256": "ed29bb3880159f07456b28898f9d117f5e235006dff3147d35bdf45e84a3aaf0",
+        "basis": {
+          "source": "working",
+          "projectId": "9441925b-bf9c-4ba8-8871-feadb8f765f8",
+          "revision": 7,
+          "fingerprint": "b648976005bafbd7217d92e312cb076a75d966ab77424a804af3c2c400ae43c4"
+        },
+        "created": "2026-11-18T16:45:11.687Z",
+        "targetVersion": "0.8.7",
+        "converterVersion": "0.3.0",
+        "state": "WRITTEN",
+        "newerEdits": false,
+        "confirmation": null,
+        "fileState": "PRESENT",
+        "current": true,
+        "route": "parts",
+        "version": 1
+      },
+      "obsImages": [
+        {
+          "pose": "neutral",
+          "file": "parts-v1-neutral-obs.png",
+          "sha256": "673b1f8dc4985bdb24b1ebfd9591d49ef40efb12de1a8336e0a7b91e1d15bf87"
+        },
+        {
+          "pose": "expression",
+          "file": "parts-v1-expression-obs.png",
+          "sha256": "a24f8739f486c241a564a5a298a88a4a1e482b0d1fd0dfc2ec7e614e78d3cf98"
+        },
+        {
+          "pose": "motion",
+          "file": "parts-v1-motion-obs.png",
+          "sha256": "ae9a9075e13a8df6bc25293e3d83ccceb52ea00308188cd06d74bb0599a2891a"
+        }
+      ],
+      "officialOBS": true
+    },
+    {
+      "passed": true,
+      "route": "parts",
+      "version": 2,
+      "projectId": "9441925b-bf9c-4ba8-8871-feadb8f765f8",
+      "createdBySameAppThreeRoutePreparation": true,
+      "sourceRevision": 8,
+      "savedRevision": 8,
+      "runRevision": 8,
+      "sourceAssetsUnchanged": true,
+      "sameProjectReopened": true,
+      "correctionApplied": true,
+      "roleCorrectionVerified": false,
+      "png": {
+        "name": "parts-v2.png",
+        "bytes": 1268552,
+        "sha256": "820e824f0c78ea952ec7ab11e29c298453493ef4e299fba04ded7e986d130c95",
+        "basis": {
+          "source": "working",
+          "projectId": "9441925b-bf9c-4ba8-8871-feadb8f765f8",
+          "revision": 8,
+          "fingerprint": "803f13898719d20833585307eefa5c97655c158cfd84734ab81fdc5a993b91ca"
+        }
+      },
+      "avatar": {
+        "contentFingerprint": "e6d7d5146631b71f3d26ac3ef8452c1f0040b081bf78f78529a7bf58e19a8079",
+        "id": "baa27a88-ed8a-4360-8c9e-69056d902823",
+        "name": "character-r8-c206cebb.inp",
+        "bytes": 10720301,
+        "sha256": "c206cebbda0ba561f94da34e8768f46c1b2b1a1624a78a698253a306192c5ac6",
+        "basis": {
+          "source": "working",
+          "projectId": "9441925b-bf9c-4ba8-8871-feadb8f765f8",
+          "revision": 8,
+          "fingerprint": "803f13898719d20833585307eefa5c97655c158cfd84734ab81fdc5a993b91ca"
+        },
+        "created": "2026-11-18T16:45:52.803Z",
+        "targetVersion": "0.8.7",
+        "converterVersion": "0.3.0",
+        "state": "WRITTEN",
+        "newerEdits": false,
+        "confirmation": null,
+        "fileState": "PRESENT",
+        "current": true
+      },
+      "olderResultsStale": true,
+      "programmaticReview": true,
+      "humanObservation": false,
+      "physicalDevicesOpened": false,
+      "file": {
+        "contentFingerprint": "e6d7d5146631b71f3d26ac3ef8452c1f0040b081bf78f78529a7bf58e19a8079",
+        "id": "baa27a88-ed8a-4360-8c9e-69056d902823",
+        "name": "avatar-parts-v2.inp",
+        "bytes": 10720301,
+        "sha256": "c206cebbda0ba561f94da34e8768f46c1b2b1a1624a78a698253a306192c5ac6",
+        "basis": {
+          "source": "working",
+          "projectId": "9441925b-bf9c-4ba8-8871-feadb8f765f8",
+          "revision": 8,
+          "fingerprint": "803f13898719d20833585307eefa5c97655c158cfd84734ab81fdc5a993b91ca"
+        },
+        "created": "2026-11-18T16:45:52.803Z",
+        "targetVersion": "0.8.7",
+        "converterVersion": "0.3.0",
+        "state": "WRITTEN",
+        "newerEdits": false,
+        "confirmation": null,
+        "fileState": "PRESENT",
+        "current": true,
+        "route": "parts",
+        "version": 2
+      },
+      "obsImages": [
+        {
+          "pose": "neutral",
+          "file": "parts-v2-neutral-obs.png",
+          "sha256": "673b1f8dc4985bdb24b1ebfd9591d49ef40efb12de1a8336e0a7b91e1d15bf87"
+        },
+        {
+          "pose": "expression",
+          "file": "parts-v2-expression-obs.png",
+          "sha256": "3f1f15e2505875e3d4658297107f2811a27cc277ff440ed98b8dcc17d702e30e"
+        },
+        {
+          "pose": "motion",
+          "file": "parts-v2-motion-obs.png",
+          "sha256": "a11f7acad6853b2526503ad749f5b4f0f3a35404f03f3a1d00b4b765dea1cf27"
+        }
+      ],
+      "officialOBS": true
+    },
+    {
+      "passed": true,
+      "route": "single-image",
+      "version": 1,
+      "projectId": "eebeb37f-af0b-45aa-a75f-7a62a2a16954",
+      "createdBySameAppThreeRoutePreparation": true,
+      "sourceRevision": 9,
+      "savedRevision": 9,
+      "runRevision": 9,
+      "sourceAssetsUnchanged": true,
+      "sameProjectReopened": true,
+      "correctionApplied": true,
+      "roleCorrectionVerified": false,
+      "png": {
+        "name": "single-image-v1.png",
+        "bytes": 1465860,
+        "sha256": "43aed16b4272d3e58135094bb6bd5c6b369e5b843bf1b179720632e69dec248a",
+        "basis": {
+          "source": "working",
+          "projectId": "eebeb37f-af0b-45aa-a75f-7a62a2a16954",
+          "revision": 9,
+          "fingerprint": "7742bd0fb7feec1ab1962537dd1d1645adf3be584ee97c3bcf9175c9e0ec5f3d"
+        }
+      },
+      "avatar": {
+        "contentFingerprint": "f65a4ce282c0d5e3339bdcbadaf0e9d37bfd4ec2277b974ed3fa4c94410c3a43",
+        "id": "bd69f2e1-aa31-4c6d-97f0-82a78edc5807",
+        "name": "character-r9-e473f5fc.inp",
+        "bytes": 28616411,
+        "sha256": "e473f5fce3052e8111819cd3853eaccf0d97c7b12d957bb1ba800fef2b0cc4e2",
+        "basis": {
+          "source": "working",
+          "projectId": "eebeb37f-af0b-45aa-a75f-7a62a2a16954",
+          "revision": 9,
+          "fingerprint": "7742bd0fb7feec1ab1962537dd1d1645adf3be584ee97c3bcf9175c9e0ec5f3d"
+        },
+        "created": "2026-11-18T16:46:22.443Z",
+        "targetVersion": "0.8.7",
+        "converterVersion": "0.3.0",
+        "state": "WRITTEN",
+        "newerEdits": false,
+        "confirmation": null,
+        "fileState": "PRESENT",
+        "current": true
+      },
+      "olderResultsStale": false,
+      "programmaticReview": true,
+      "humanObservation": false,
+      "physicalDevicesOpened": false,
+      "file": {
+        "contentFingerprint": "f65a4ce282c0d5e3339bdcbadaf0e9d37bfd4ec2277b974ed3fa4c94410c3a43",
+        "id": "bd69f2e1-aa31-4c6d-97f0-82a78edc5807",
+        "name": "avatar-single-image-v1.inp",
+        "bytes": 28616411,
+        "sha256": "e473f5fce3052e8111819cd3853eaccf0d97c7b12d957bb1ba800fef2b0cc4e2",
+        "basis": {
+          "source": "working",
+          "projectId": "eebeb37f-af0b-45aa-a75f-7a62a2a16954",
+          "revision": 9,
+          "fingerprint": "7742bd0fb7feec1ab1962537dd1d1645adf3be584ee97c3bcf9175c9e0ec5f3d"
+        },
+        "created": "2026-11-18T16:46:22.443Z",
+        "targetVersion": "0.8.7",
+        "converterVersion": "0.3.0",
+        "state": "WRITTEN",
+        "newerEdits": false,
+        "confirmation": null,
+        "fileState": "PRESENT",
+        "current": true,
+        "route": "single-image",
+        "version": 1
+      },
+      "obsImages": [
+        {
+          "pose": "neutral",
+          "file": "single-image-v1-neutral-obs.png",
+          "sha256": "4829f50a374087a66b8d66925bc5d9440c31522a2c05e5193608cd89b37e95d3"
+        },
+        {
+          "pose": "expression",
+          "file": "single-image-v1-expression-obs.png",
+          "sha256": "9d044ba6c80b5572bb3370109a6d632a2d5a9cffb2e5426fbcb5d8c1213efe7e"
+        },
+        {
+          "pose": "motion",
+          "file": "single-image-v1-motion-obs.png",
+          "sha256": "0312eceb22edd08736c72379dd127f968cfdb40ea01d7e0b5b8f4891e15a78d1"
+        }
+      ],
+      "officialOBS": true
+    },
+    {
+      "passed": true,
+      "route": "single-image",
+      "version": 2,
+      "projectId": "eebeb37f-af0b-45aa-a75f-7a62a2a16954",
+      "createdBySameAppThreeRoutePreparation": true,
+      "sourceRevision": 11,
+      "savedRevision": 11,
+      "runRevision": 11,
+      "sourceAssetsUnchanged": true,
+      "sameProjectReopened": true,
+      "correctionApplied": true,
+      "roleCorrectionVerified": false,
+      "png": {
+        "name": "single-image-v2.png",
+        "bytes": 1454148,
+        "sha256": "2a304b0a15d10b9286c39ca722ffb1bad28a4e3bf2a4f4b9c793649d7591ab34",
+        "basis": {
+          "source": "working",
+          "projectId": "eebeb37f-af0b-45aa-a75f-7a62a2a16954",
+          "revision": 11,
+          "fingerprint": "1318dbab83a624cc2aa5389d38b7c526e686e02dfeedb120e6ec8acf1582d8bc"
+        }
+      },
+      "avatar": {
+        "contentFingerprint": "a39bd2c5fc2168ea4ec9b2aa454f0994101659d18262e5034b95bbf03d241872",
+        "id": "31b2a029-658a-4225-b49f-037ca7111537",
+        "name": "character-r11-9a5db6fc.inp",
+        "bytes": 28616569,
+        "sha256": "9a5db6fc8151addb36d88c7d852f469e14d5bbcb79041c4dcf2cc2acebb98b73",
+        "basis": {
+          "source": "working",
+          "projectId": "eebeb37f-af0b-45aa-a75f-7a62a2a16954",
+          "revision": 11,
+          "fingerprint": "1318dbab83a624cc2aa5389d38b7c526e686e02dfeedb120e6ec8acf1582d8bc"
+        },
+        "created": "2026-11-18T16:46:46.529Z",
+        "targetVersion": "0.8.7",
+        "converterVersion": "0.3.0",
+        "state": "WRITTEN",
+        "newerEdits": false,
+        "confirmation": null,
+        "fileState": "PRESENT",
+        "current": true
+      },
+      "olderResultsStale": true,
+      "programmaticReview": true,
+      "humanObservation": false,
+      "physicalDevicesOpened": false,
+      "file": {
+        "contentFingerprint": "a39bd2c5fc2168ea4ec9b2aa454f0994101659d18262e5034b95bbf03d241872",
+        "id": "31b2a029-658a-4225-b49f-037ca7111537",
+        "name": "avatar-single-image-v2.inp",
+        "bytes": 28616569,
+        "sha256": "9a5db6fc8151addb36d88c7d852f469e14d5bbcb79041c4dcf2cc2acebb98b73",
+        "basis": {
+          "source": "working",
+          "projectId": "eebeb37f-af0b-45aa-a75f-7a62a2a16954",
+          "revision": 11,
+          "fingerprint": "1318dbab83a624cc2aa5389d38b7c526e686e02dfeedb120e6ec8acf1582d8bc"
+        },
+        "created": "2026-11-18T16:46:46.529Z",
+        "targetVersion": "0.8.7",
+        "converterVersion": "0.3.0",
+        "state": "WRITTEN",
+        "newerEdits": false,
+        "confirmation": null,
+        "fileState": "PRESENT",
+        "current": true,
+        "route": "single-image",
+        "version": 2
+      },
+      "obsImages": [
+        {
+          "pose": "neutral",
+          "file": "single-image-v2-neutral-obs.png",
+          "sha256": "d34d4cbc244eac7653a5610b61f549448ef093c7516a473503644f31a4a3245e"
+        },
+        {
+          "pose": "expression",
+          "file": "single-image-v2-expression-obs.png",
+          "sha256": "db9ac73766aab0d04bf9355a48a66e1babef1d52e78b283168c0836d3c9f3675"
+        },
+        {
+          "pose": "motion",
+          "file": "single-image-v2-motion-obs.png",
+          "sha256": "8a1b4443daedee5cffdd16091e2057dad1d53ac5293cfbcae93c4344674bdce4"
+        }
+      ],
+      "officialOBS": true
+    },
+    {
+      "passed": true,
+      "route": "split-image",
+      "version": 1,
+      "projectId": "f21c428a-fcf9-4913-9c42-0867741260d8",
+      "createdBySameAppThreeRoutePreparation": true,
+      "sourceRevision": 10,
+      "savedRevision": 10,
+      "runRevision": 10,
+      "sourceAssetsUnchanged": true,
+      "sameProjectReopened": true,
+      "correctionApplied": true,
+      "roleCorrectionVerified": true,
+      "png": {
+        "name": "split-image-v1.png",
+        "bytes": 1426521,
+        "sha256": "d203e2f03311e2b947906e533a973d1daeb56e9573c11fd7c193f3070f007a8d",
+        "basis": {
+          "source": "working",
+          "projectId": "f21c428a-fcf9-4913-9c42-0867741260d8",
+          "revision": 10,
+          "fingerprint": "8da36a35fb4d0a34849c4e4583c0d03c90216249e6c9506ce4599e9b2de04680"
+        }
+      },
+      "avatar": {
+        "contentFingerprint": "038f4cc43c53419d027570e9adcacb159161267667971b7f3a1b1325b1bc4e94",
+        "id": "91254733-4c60-4e8c-ba7e-fdf4416ee450",
+        "name": "character-r10-8bf32f7a.inp",
+        "bytes": 4150410,
+        "sha256": "8bf32f7a622c48a6ae9326fdb593176f346cb86a8a332913bef9215940e4c5cb",
+        "basis": {
+          "source": "working",
+          "projectId": "f21c428a-fcf9-4913-9c42-0867741260d8",
+          "revision": 10,
+          "fingerprint": "8da36a35fb4d0a34849c4e4583c0d03c90216249e6c9506ce4599e9b2de04680"
+        },
+        "created": "2026-11-18T16:47:12.598Z",
+        "targetVersion": "0.8.7",
+        "converterVersion": "0.3.0",
+        "state": "WRITTEN",
+        "newerEdits": false,
+        "confirmation": null,
+        "fileState": "PRESENT",
+        "current": true
+      },
+      "olderResultsStale": false,
+      "programmaticReview": true,
+      "humanObservation": false,
+      "physicalDevicesOpened": false,
+      "file": {
+        "contentFingerprint": "038f4cc43c53419d027570e9adcacb159161267667971b7f3a1b1325b1bc4e94",
+        "id": "91254733-4c60-4e8c-ba7e-fdf4416ee450",
+        "name": "avatar-split-image-v1.inp",
+        "bytes": 4150410,
+        "sha256": "8bf32f7a622c48a6ae9326fdb593176f346cb86a8a332913bef9215940e4c5cb",
+        "basis": {
+          "source": "working",
+          "projectId": "f21c428a-fcf9-4913-9c42-0867741260d8",
+          "revision": 10,
+          "fingerprint": "8da36a35fb4d0a34849c4e4583c0d03c90216249e6c9506ce4599e9b2de04680"
+        },
+        "created": "2026-11-18T16:47:12.598Z",
+        "targetVersion": "0.8.7",
+        "converterVersion": "0.3.0",
+        "state": "WRITTEN",
+        "newerEdits": false,
+        "confirmation": null,
+        "fileState": "PRESENT",
+        "current": true,
+        "route": "split-image",
+        "version": 1
+      },
+      "obsImages": [
+        {
+          "pose": "neutral",
+          "file": "split-image-v1-neutral-obs.png",
+          "sha256": "01b97ca14d571c2a6289d639cd7fbd1f6efdea4f3b062399663cc5c3e0ba8654"
+        },
+        {
+          "pose": "expression",
+          "file": "split-image-v1-expression-obs.png",
+          "sha256": "e2c010a021bf51c30ef171a65ccb25049031be0b8ffdab4b8df07b9710064ce5"
+        },
+        {
+          "pose": "motion",
+          "file": "split-image-v1-motion-obs.png",
+          "sha256": "b19f1daf62ec90d4e75ff7361638a2efbf09d436db23bb9f650aa7de16bce49c"
+        }
+      ],
+      "officialOBS": true
+    },
+    {
+      "passed": true,
+      "route": "split-image",
+      "version": 2,
+      "projectId": "f21c428a-fcf9-4913-9c42-0867741260d8",
+      "createdBySameAppThreeRoutePreparation": true,
+      "sourceRevision": 14,
+      "savedRevision": 14,
+      "runRevision": 14,
+      "sourceAssetsUnchanged": true,
+      "sameProjectReopened": true,
+      "correctionApplied": true,
+      "roleCorrectionVerified": true,
+      "png": {
+        "name": "split-image-v2.png",
+        "bytes": 1429530,
+        "sha256": "c420f9ad48a93a3d40d0fd7d364946dfc565111dafe1bf6389285d1cf258413c",
+        "basis": {
+          "source": "working",
+          "projectId": "f21c428a-fcf9-4913-9c42-0867741260d8",
+          "revision": 14,
+          "fingerprint": "c9990050902ce8ea3ef5ca5950e3223f0e15d32ebf58e7da94a825e219b3de8f"
+        }
+      },
+      "avatar": {
+        "contentFingerprint": "c4bca9906ba0870fcf5132cf6f6cb3786bf8cb8b4692bf33cb5ecc5abedeb138",
+        "id": "6e4281ff-167f-46fd-a1ba-19e64384bcb5",
+        "name": "character-r14-995194ea.inp",
+        "bytes": 4150509,
+        "sha256": "995194ea66575e004aae540bb1cde250666b25c465d8a890a324845d726a0839",
+        "basis": {
+          "source": "working",
+          "projectId": "f21c428a-fcf9-4913-9c42-0867741260d8",
+          "revision": 14,
+          "fingerprint": "c9990050902ce8ea3ef5ca5950e3223f0e15d32ebf58e7da94a825e219b3de8f"
+        },
+        "created": "2026-11-18T16:47:35.585Z",
+        "targetVersion": "0.8.7",
+        "converterVersion": "0.3.0",
+        "state": "WRITTEN",
+        "newerEdits": false,
+        "confirmation": null,
+        "fileState": "PRESENT",
+        "current": true
+      },
+      "olderResultsStale": true,
+      "programmaticReview": true,
+      "humanObservation": false,
+      "physicalDevicesOpened": false,
+      "file": {
+        "contentFingerprint": "c4bca9906ba0870fcf5132cf6f6cb3786bf8cb8b4692bf33cb5ecc5abedeb138",
+        "id": "6e4281ff-167f-46fd-a1ba-19e64384bcb5",
+        "name": "avatar-split-image-v2.inp",
+        "bytes": 4150509,
+        "sha256": "995194ea66575e004aae540bb1cde250666b25c465d8a890a324845d726a0839",
+        "basis": {
+          "source": "working",
+          "projectId": "f21c428a-fcf9-4913-9c42-0867741260d8",
+          "revision": 14,
+          "fingerprint": "c9990050902ce8ea3ef5ca5950e3223f0e15d32ebf58e7da94a825e219b3de8f"
+        },
+        "created": "2026-11-18T16:47:35.585Z",
+        "targetVersion": "0.8.7",
+        "converterVersion": "0.3.0",
+        "state": "WRITTEN",
+        "newerEdits": false,
+        "confirmation": null,
+        "fileState": "PRESENT",
+        "current": true,
+        "route": "split-image",
+        "version": 2
+      },
+      "obsImages": [
+        {
+          "pose": "neutral",
+          "file": "split-image-v2-neutral-obs.png",
+          "sha256": "0c817a025767dc3a5adf5c548bb8813881dda9b2877ee98bad04e0a4bb074df0"
+        },
+        {
+          "pose": "expression",
+          "file": "split-image-v2-expression-obs.png",
+          "sha256": "6cb4aed12190d1770a691c3ddb2e98eb021c726b161dc1584416f6ce5505bf6e"
+        },
+        {
+          "pose": "motion",
+          "file": "split-image-v2-motion-obs.png",
+          "sha256": "8655b10be9b87913bd73578ec0e243d59a031e753b34193bba1d51c86e219a26"
+        }
+      ],
+      "officialOBS": true
+    }
+  ],
+  "physicalDevicesOpened": false,
+  "streamingStarted": false,
+  "recordingStarted": false,
+  "existingUserScenesModified": false,
+  "m0": "HOLD",
+  "independentTarget": {
+    "passed": true,
+    "target": "Official Inochi Session",
+    "targetVersion": "0.8.7",
+    "sdkVersion": "0.8.6",
+    "targetExecutableSha256": "5c905b9d9b38118b5699ed414fc1bc2848b87ad0e24858e45ad5759d4c64c17e",
+    "officialArchiveSha256": "66340da0e38f1489ce0ccd454abce7672004b3f74944af79ab01c35b0df0cd8f",
+    "obsVersion": "33.0.1",
+    "obsWebSocketVersion": "5.7.6",
+    "method": "AUTOMATED_TARGET_ONLY_CAPTURE_AFTER_PRODUCT_EXIT",
+    "programmaticTargetInput": false,
+    "nativeEmbeddedAnimations": true,
+    "ourAppRequired": false,
+    "ourFrameServerRequired": false,
+    "streamingStarted": false,
+    "recordingStarted": false,
+    "existingUserScenesModified": false,
+    "physicalDevicesOpened": false,
+    "m0": "HOLD",
+    "runs": [
+      {
+        "route": "parts",
+        "resultVersion": 1,
+        "sourceSha256": "ed29bb3880159f07456b28898f9d117f5e235006dff3147d35bdf45e84a3aaf0",
+        "movedUnicodeAndSpacePath": true,
+        "externalFileUnchanged": true,
+        "appProcessExited": true,
+        "workerStopped": true,
+        "captureFrames": 57,
+        "qualityPassed": true
+      },
+      {
+        "route": "parts",
+        "resultVersion": 2,
+        "sourceSha256": "c206cebbda0ba561f94da34e8768f46c1b2b1a1624a78a698253a306192c5ac6",
+        "movedUnicodeAndSpacePath": true,
+        "externalFileUnchanged": true,
+        "appProcessExited": true,
+        "workerStopped": true,
+        "captureFrames": 59,
+        "qualityPassed": true
+      },
+      {
+        "route": "single-image",
+        "resultVersion": 1,
+        "sourceSha256": "e473f5fce3052e8111819cd3853eaccf0d97c7b12d957bb1ba800fef2b0cc4e2",
+        "movedUnicodeAndSpacePath": true,
+        "externalFileUnchanged": true,
+        "appProcessExited": true,
+        "workerStopped": true,
+        "captureFrames": 45,
+        "qualityPassed": true
+      },
+      {
+        "route": "single-image",
+        "resultVersion": 2,
+        "sourceSha256": "9a5db6fc8151addb36d88c7d852f469e14d5bbcb79041c4dcf2cc2acebb98b73",
+        "movedUnicodeAndSpacePath": true,
+        "externalFileUnchanged": true,
+        "appProcessExited": true,
+        "workerStopped": true,
+        "captureFrames": 45,
+        "qualityPassed": true
+      },
+      {
+        "route": "split-image",
+        "resultVersion": 1,
+        "sourceSha256": "8bf32f7a622c48a6ae9326fdb593176f346cb86a8a332913bef9215940e4c5cb",
+        "movedUnicodeAndSpacePath": true,
+        "externalFileUnchanged": true,
+        "appProcessExited": true,
+        "workerStopped": true,
+        "captureFrames": 36,
+        "qualityPassed": true
+      },
+      {
+        "route": "split-image",
+        "resultVersion": 2,
+        "sourceSha256": "995194ea66575e004aae540bb1cde250666b25c465d8a890a324845d726a0839",
+        "movedUnicodeAndSpacePath": true,
+        "externalFileUnchanged": true,
+        "appProcessExited": true,
+        "workerStopped": true,
+        "captureFrames": 37,
+        "qualityPassed": true
+      }
+    ]
+  },
+  "sameProjectForBothVersions": true,
+  "allSourceRevisionsCorrelated": true,
+  "normalCameraAndMicrophoneAcceptance": false,
+  "noviceObservation": false
+}

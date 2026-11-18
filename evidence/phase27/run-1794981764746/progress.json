@@ -1,0 +1,40 @@
+{
+  "stages": [
+    {
+      "stage": "required-check",
+      "passed": true
+    },
+    {
+      "stage": "full-regression",
+      "passed": true
+    },
+    {
+      "stage": "broadcast",
+      "passed": true
+    },
+    {
+      "stage": "image",
+      "passed": true
+    },
+    {
+      "stage": "image-pixels",
+      "passed": true
+    },
+    {
+      "stage": "avatar",
+      "passed": true
+    },
+    {
+      "stage": "avatar-pixels",
+      "passed": true
+    },
+    {
+      "stage": "settings",
+      "passed": true
+    },
+    {
+      "stage": "coverage",
+      "passed": true
+    }
+  ]
+}

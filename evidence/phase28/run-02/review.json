@@ -1,0 +1,97 @@
+{
+  "boundedChecksPassed": true,
+  "tasks": {
+    "T-271": "PARTIAL: actual permission/path/budget errors and controlled ENOSPC; physical filesystem exhaustion NOT_RUN",
+    "T-272": "PASS: 34 owned product-code/worker process terminations and recovery/retry; whole Electron/OS power loss NOT_RUN",
+    "T-273": "PASS: actual missing resource, hash relink, portable bundle move and future versions",
+    "T-274": "NOT_RUN: each route two hours with actual camera/microphone/OBS recording required",
+    "T-275": "PARTIAL: 60 host-service cycles and 12 WebGL allocation cycles; physical devices/long-duration accumulation NOT_RUN",
+    "T-276": "NOT_RUN for input-to-OBS latency; render wall/frame-interval diagnostics only",
+    "T-277": "PARTIAL: one-scene 36-second bounded render/load sweep; full input set and concurrent OBS/device load NOT_RUN",
+    "T-278": "PASS in current local boundaries: log/diagnostic/HTTP canaries and output protections; no human media collected",
+    "T-279": "PASS current private build inventory/notices/package bytes; public distribution approval remains false",
+    "T-280": "BLOCKED: prior stage, real tracking, endurance, full latency/load and release approvals unresolved"
+  },
+  "completedTasks": [
+    272,
+    273,
+    278,
+    279
+  ],
+  "phase28Complete": false,
+  "releaseDecision": "HOLD",
+  "m0": "HOLD",
+  "privacyJSONFilesScanned": [
+    "cycles-privacy.json",
+    "environment.json",
+    "notices.json",
+    "package-license.json",
+    "progress.json",
+    "storage.json",
+    "verification.json",
+    "gpu/gpu.json",
+    "package/package-audit.json",
+    "package/packaged-run-1.json",
+    "package/packaged-run-2.json",
+    "package/packaged-1/minimal-diagnostic.json",
+    "package/packaged-2/minimal-diagnostic.json"
+  ],
+  "webglDiagnostics": [
+    {
+      "width": 1280,
+      "height": 720,
+      "fps": 15,
+      "stress": false,
+      "durationMs": 12000.799999952316,
+      "completedFrames": 180,
+      "completedFps": 14.99900006672182,
+      "completionWallP95Ms": 1.1999999284744263,
+      "completionWallMaxMs": 1.7000000476837158,
+      "frameIntervalP95Ms": 79.20000004768372,
+      "stallsOver100ms": 0,
+      "textureEstimateMiB": 6.1746826171875
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "fps": 30,
+      "stress": false,
+      "durationMs": 12000.700000047684,
+      "completedFrames": 360,
+      "completedFps": 29.998250101958185,
+      "completionWallP95Ms": 0.8000000715255737,
+      "completionWallMaxMs": 2.3000000715255737,
+      "frameIntervalP95Ms": 47.60000002384186,
+      "stallsOver100ms": 0,
+      "textureEstimateMiB": 6.1746826171875
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "fps": 30,
+      "stress": true,
+      "durationMs": 12000.599999904633,
+      "completedFrames": 360,
+      "completedFps": 29.998500075234645,
+      "completionWallP95Ms": 8.700000047683716,
+      "completionWallMaxMs": 11.600000023841858,
+      "frameIntervalP95Ms": 35.10000002384186,
+      "stallsOver100ms": 0,
+      "textureEstimateMiB": 6.1746826171875
+    }
+  ],
+  "enduranceRequiredMsPerRoute": 7200000,
+  "enduranceActualCompletedRuns": 0,
+  "sensorToOBSLatency": "NOT_RUN",
+  "cleanWindowsVerified": false,
+  "publicDistributionApproved": false,
+  "evidenceSha256": {
+    "verification.json": "d8c10f960e73b855755e7d219970c9d181f8b1591837be6971d82dc419d261d2",
+    "storage.json": "a96aca368a7f639a95c7c7e0e3f5465c476773e9c1e2e11e0a4e64933233c52b",
+    "cycles-privacy.json": "e7fdf50f836dc750ca35a0a5a129f82cb0922e30ebf4ea42948056642f2b2f97",
+    "gpu/gpu.json": "f6d6460a409224597b73945b7c97576c33533112704767c9c6dc990fb74d26fa",
+    "notices.json": "349d6cb180e61ab9bc876264dd8d7bedb446d1ddab0cc08e2ea8246672926316",
+    "package-license.json": "7881039742999418fe2b5846951355306bfa350a55f6283abcfcb99e82475477",
+    "package/package-audit.json": "416239ea5aa794baeb847e1c35f7f2c0c05d85b3e7467dcdc6fd193de8c87aaa"
+  }
+}

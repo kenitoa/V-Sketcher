@@ -17,6 +17,11 @@ node_modules/
 dist/
 out/
 coverage/
+# Integration test profiles contain private machine settings, never review artifacts.
+/evidence/phase27/**/profile/
+/evidence/phase27/**/profile-*/
+/evidence/phase29/**/profile/
+/evidence/phase29/**/profile-*/
 .ruff_cache/
 *.log
 .env

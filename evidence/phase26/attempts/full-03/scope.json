@@ -1,0 +1,9 @@
+{
+  "passed": false,
+  "requiredLocalGatePassed": true,
+  "nodeGroups": 327,
+  "pythonGroups": 36,
+  "failure": "E_INPUT_EXPRESSION_RELEASE",
+  "observed": "Microphone track live and context running, 599 accepted then 17 stale packets with fixed-epoch age about 799ms; watchdog stopped input",
+  "correction": "Validate packet age against current audio-engine time and reject duplicate/nonmonotonic packets; independent clock-gap regression added"
+}

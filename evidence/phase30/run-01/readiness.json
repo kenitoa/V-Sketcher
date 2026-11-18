@@ -1,0 +1,1210 @@
+{
+  "candidate": {
+    "version": "0.22.0",
+    "sha256": "3bf0538da2c0864dea6048548940cb6ccce1b6e77a3ab193e23250da77c98ac1"
+  },
+  "decision": "HOLD",
+  "blockers": [
+    "AC-01",
+    "AC-02",
+    "AC-03",
+    "AC-04",
+    "AC-05",
+    "AC-06",
+    "AC-07",
+    "AC-08",
+    "AC-09",
+    "AC-10",
+    "AC-12",
+    "AC-14",
+    "AC-15",
+    "M0-R01",
+    "M0-R02",
+    "M0-R03",
+    "M0-R04",
+    "M0-R05",
+    "PERF-01",
+    "PERF-02",
+    "PERF-03",
+    "PERF-04",
+    "PERF-05",
+    "PERF-06",
+    "PERF-07",
+    "RUN-01",
+    "RUN-02",
+    "RUN-03",
+    "RUN-04",
+    "RUN-05",
+    "DATA-01",
+    "ART-01",
+    "ART-02",
+    "ART-03",
+    "OUT-01",
+    "OUT-02",
+    "OUT-03",
+    "UX-M0",
+    "UX-01",
+    "UX-02",
+    "UX-03",
+    "UX-04",
+    "UX-05",
+    "UX-06",
+    "CLEAN-WINDOWS",
+    "SIGNATURE",
+    "DISTRIBUTION-RIGHTS",
+    "CONTROLLED-TRIAL",
+    "PREDECESSOR-29"
+  ],
+  "checks": [
+    {
+      "id": "AC-01",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/planning/05-release-gates.md",
+          "sha256": "f442c5fbd586a26bf76624b3bca642dcf0acf1937826af63158b3fc48189591a"
+        },
+        {
+          "path": "evidence/phase27/run-1794981764746/review.json",
+          "sha256": "e588489ce1e8bb74445d2fa1e28e7a3b87a422e4aaafc8649966fe99736e00a0"
+        },
+        {
+          "path": "evidence/phase30/run-01/candidate/full.json",
+          "sha256": "0029182cd787f34ce22af298611a53f20ba28fb3c480cb0b15fdef07f4777146"
+        }
+      ],
+      "candidateBound": false
+    },
+    {
+      "id": "AC-02",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/planning/05-release-gates.md",
+          "sha256": "f442c5fbd586a26bf76624b3bca642dcf0acf1937826af63158b3fc48189591a"
+        },
+        {
+          "path": "evidence/phase27/run-1794981764746/review.json",
+          "sha256": "e588489ce1e8bb74445d2fa1e28e7a3b87a422e4aaafc8649966fe99736e00a0"
+        },
+        {
+          "path": "evidence/phase30/run-01/candidate/full.json",
+          "sha256": "0029182cd787f34ce22af298611a53f20ba28fb3c480cb0b15fdef07f4777146"
+        }
+      ],
+      "candidateBound": false
+    },
+    {
+      "id": "AC-03",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/planning/05-release-gates.md",
+          "sha256": "f442c5fbd586a26bf76624b3bca642dcf0acf1937826af63158b3fc48189591a"
+        },
+        {
+          "path": "evidence/phase27/run-1794981764746/review.json",
+          "sha256": "e588489ce1e8bb74445d2fa1e28e7a3b87a422e4aaafc8649966fe99736e00a0"
+        },
+        {
+          "path": "evidence/phase30/run-01/candidate/full.json",
+          "sha256": "0029182cd787f34ce22af298611a53f20ba28fb3c480cb0b15fdef07f4777146"
+        }
+      ],
+      "candidateBound": false
+    },
+    {
+      "id": "AC-04",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/planning/05-release-gates.md",
+          "sha256": "f442c5fbd586a26bf76624b3bca642dcf0acf1937826af63158b3fc48189591a"
+        },
+        {
+          "path": "evidence/phase27/run-1794981764746/review.json",
+          "sha256": "e588489ce1e8bb74445d2fa1e28e7a3b87a422e4aaafc8649966fe99736e00a0"
+        },
+        {
+          "path": "evidence/phase30/run-01/candidate/full.json",
+          "sha256": "0029182cd787f34ce22af298611a53f20ba28fb3c480cb0b15fdef07f4777146"
+        }
+      ],
+      "candidateBound": false
+    },
+    {
+      "id": "AC-05",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/planning/05-release-gates.md",
+          "sha256": "f442c5fbd586a26bf76624b3bca642dcf0acf1937826af63158b3fc48189591a"
+        },
+        {
+          "path": "evidence/phase27/run-1794981764746/review.json",
+          "sha256": "e588489ce1e8bb74445d2fa1e28e7a3b87a422e4aaafc8649966fe99736e00a0"
+        },
+        {
+          "path": "evidence/phase30/run-01/candidate/full.json",
+          "sha256": "0029182cd787f34ce22af298611a53f20ba28fb3c480cb0b15fdef07f4777146"
+        }
+      ],
+      "candidateBound": false
+    },
+    {
+      "id": "AC-06",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "path": "docs/planning/05-release-gates.md",
+          "sha256": "f442c5fbd586a26bf76624b3bca642dcf0acf1937826af63158b3fc48189591a"
+        },
+        {
+          "path": "evidence/phase27/run-1794981764746/review.json",
+          "sha256": "e588489ce1e8bb74445d2fa1e28e7a3b87a422e4aaafc8649966fe99736e00a0"
+        },
+        {
+          "path": "evidence/phase30/run-01/candidate/full.json",
+          "sha256": "0029182cd787f34ce22af298611a53f20ba28fb3c480cb0b15fdef07f4777146"
+        }
+      ],
+      "candidateBound": false
+    },
+    {
+      "id": "AC-07",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/planning/05-release-gates.md",
+          "sha256": "f442c5fbd586a26bf76624b3bca642dcf0acf1937826af63158b3fc48189591a"
+        },
+        {
+          "path": "evidence/phase27/run-1794981764746/review.json",
+          "sha256": "e588489ce1e8bb74445d2fa1e28e7a3b87a422e4aaafc8649966fe99736e00a0"
+        },
+        {
+          "path": "evidence/phase30/run-01/candidate/full.json",
+          "sha256": "0029182cd787f34ce22af298611a53f20ba28fb3c480cb0b15fdef07f4777146"
+        }
+      ],
+      "candidateBound": false
+    },
+    {
+      "id": "AC-08",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/planning/05-release-gates.md",
+          "sha256": "f442c5fbd586a26bf76624b3bca642dcf0acf1937826af63158b3fc48189591a"
+        },
+        {
+          "path": "evidence/phase27/run-1794981764746/review.json",
+          "sha256": "e588489ce1e8bb74445d2fa1e28e7a3b87a422e4aaafc8649966fe99736e00a0"
+        },
+        {
+          "path": "evidence/phase30/run-01/candidate/full.json",
+          "sha256": "0029182cd787f34ce22af298611a53f20ba28fb3c480cb0b15fdef07f4777146"
+        }
+      ],
+      "candidateBound": false
+    },
+    {
+      "id": "AC-09",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/planning/05-release-gates.md",
+          "sha256": "f442c5fbd586a26bf76624b3bca642dcf0acf1937826af63158b3fc48189591a"
+        },
+        {
+          "path": "evidence/phase27/run-1794981764746/review.json",
+          "sha256": "e588489ce1e8bb74445d2fa1e28e7a3b87a422e4aaafc8649966fe99736e00a0"
+        },
+        {
+          "path": "evidence/phase30/run-01/candidate/full.json",
+          "sha256": "0029182cd787f34ce22af298611a53f20ba28fb3c480cb0b15fdef07f4777146"
+        }
+      ],
+      "candidateBound": false
+    },
+    {
+      "id": "AC-10",
+      "status": "NOT_RUN",
+      "evidence": [
+        {
+          "path": "docs/planning/05-release-gates.md",
+          "sha256": "f442c5fbd586a26bf76624b3bca642dcf0acf1937826af63158b3fc48189591a"
+        },
+        {
+          "path": "evidence/phase27/run-1794981764746/review.json",
+          "sha256": "e588489ce1e8bb74445d2fa1e28e7a3b87a422e4aaafc8649966fe99736e00a0"
+        },
+        {
+          "path": "evidence/phase30/run-01/candidate/full.json",
+          "sha256": "0029182cd787f34ce22af298611a53f20ba28fb3c480cb0b15fdef07f4777146"
+        }
+      ],
+      "candidateBound": false
+    },
+    {
+      "id": "AC-11",
+      "status": "PASS",
+      "evidence": [
+        {
+          "path": "evidence/phase30/run-01/candidate/avatar.json",
+          "sha256": "264efca6aeacc4dfba862ac5ed80d666892943dafaef1c9f3e0ecd3a731411b7"
+        },
+        {
+          "path": "evidence/phase30/run-01/avatar-pixels.json",
+          "sha256": "3ef55c2cc44621d60ae2a9616779887f29d3ac9eb2f73d447e2100031ede254a"
+        },
+        {
+          "path": "evidence/phase30/run-01/targets-02/external-run.json",
+          "sha256": "cf0661241502064e7cfcca74d8aec9234aad340136a541b665d3ee9a960616ce"
+        },
+        {
+          "path": "evidence/phase30/run-01/targets-02/target-scope.json",
+          "sha256": "1d3de92be31a4611ddead9be8bf7002a9d3833d2ef5a152d2f08d84c1f39b0be"
+        }
+      ],
+      "candidateBound": true
+    },
+    {
+      "id": "AC-12",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/planning/05-release-gates.md",
+          "sha256": "f442c5fbd586a26bf76624b3bca642dcf0acf1937826af63158b3fc48189591a"
+        },
+        {
+          "path": "evidence/phase27/run-1794981764746/review.json",
+          "sha256": "e588489ce1e8bb74445d2fa1e28e7a3b87a422e4aaafc8649966fe99736e00a0"
+        },
+        {
+          "path": "evidence/phase30/run-01/candidate/full.json",
+          "sha256": "0029182cd787f34ce22af298611a53f20ba28fb3c480cb0b15fdef07f4777146"
+        }
+      ],
+      "candidateBound": false
+    },
+    {
+      "id": "AC-13",
+      "status": "PASS",
+      "evidence": [
+        {
+          "path": "evidence/phase30/run-01/candidate/image.json",
+          "sha256": "87a9e20e52823c45567ad9a20392f7ddc1d5c07183b5584591e09c274be98660"
+        },
+        {
+          "path": "evidence/phase30/run-01/image-pixels.json",
+          "sha256": "54b8bc7a261aa3219e0964303729711d54fbe63fae2ba9dda38e7e6b293f8018"
+        }
+      ],
+      "candidateBound": true
+    },
+    {
+      "id": "AC-14",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/planning/05-release-gates.md",
+          "sha256": "f442c5fbd586a26bf76624b3bca642dcf0acf1937826af63158b3fc48189591a"
+        },
+        {
+          "path": "evidence/phase27/run-1794981764746/review.json",
+          "sha256": "e588489ce1e8bb74445d2fa1e28e7a3b87a422e4aaafc8649966fe99736e00a0"
+        },
+        {
+          "path": "evidence/phase30/run-01/candidate/full.json",
+          "sha256": "0029182cd787f34ce22af298611a53f20ba28fb3c480cb0b15fdef07f4777146"
+        }
+      ],
+      "candidateBound": false
+    },
+    {
+      "id": "AC-15",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "path": "docs/planning/05-release-gates.md",
+          "sha256": "f442c5fbd586a26bf76624b3bca642dcf0acf1937826af63158b3fc48189591a"
+        },
+        {
+          "path": "evidence/phase29/run-05/review.json",
+          "sha256": "3c72d0283878674aea237c3d7b400ce617d376eb8f6aa59f914257333ac50afa"
+        },
+        {
+          "path": "evidence/phase29/run-01/participant-U29-001-result.json",
+          "sha256": "009a599807cb17241e20068e50a5c3edf6a75cd4b8424b8edbd74f39f5498979"
+        }
+      ],
+      "candidateBound": false
+    },
+    {
+      "id": "M0-R01",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "path": "docs/planning/05-m0-review.md",
+          "sha256": "1e4c2f4f685caaa0e443caef9b960e868106bfbcfdc85f7f5163f9d8c85e7862"
+        }
+      ],
+      "candidateBound": false
+    },
+    {
+      "id": "M0-R02",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "path": "docs/planning/05-m0-review.md",
+          "sha256": "1e4c2f4f685caaa0e443caef9b960e868106bfbcfdc85f7f5163f9d8c85e7862"
+        }
+      ],
+      "candidateBound": false
+    },
+    {
+      "id": "M0-R03",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "path": "docs/planning/05-m0-review.md",
+          "sha256": "1e4c2f4f685caaa0e443caef9b960e868106bfbcfdc85f7f5163f9d8c85e7862"
+        }
+      ],
+      "candidateBound": false
+    },
+    {
+      "id": "M0-R04",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "path": "docs/planning/05-m0-review.md",
+          "sha256": "1e4c2f4f685caaa0e443caef9b960e868106bfbcfdc85f7f5163f9d8c85e7862"
+        }
+      ],
+      "candidateBound": false
+    },
+    {
+      "id": "M0-R05",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "path": "docs/planning/05-m0-review.md",
+          "sha256": "1e4c2f4f685caaa0e443caef9b960e868106bfbcfdc85f7f5163f9d8c85e7862"
+        }
+      ],
+      "candidateBound": false
+    },
+    {
+      "id": "PERF-01",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/planning/05-release-gates.md",
+          "sha256": "f442c5fbd586a26bf76624b3bca642dcf0acf1937826af63158b3fc48189591a"
+        },
+        {
+          "path": "evidence/phase28/run-02/review.json",
+          "sha256": "24ebcf5100c7a62333ec4940b187fd32e8e9fbb1c40e03e618f10db9fa06b662"
+        },
+        {
+          "path": "evidence/phase30/run-01/candidate/full.json",
+          "sha256": "0029182cd787f34ce22af298611a53f20ba28fb3c480cb0b15fdef07f4777146"
+        }
+      ],
+      "candidateBound": false
+    },
+    {
+      "id": "PERF-02",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/planning/05-release-gates.md",
+          "sha256": "f442c5fbd586a26bf76624b3bca642dcf0acf1937826af63158b3fc48189591a"
+        },
+        {
+          "path": "evidence/phase28/run-02/review.json",
+          "sha256": "24ebcf5100c7a62333ec4940b187fd32e8e9fbb1c40e03e618f10db9fa06b662"
+        },
+        {
+          "path": "evidence/phase30/run-01/candidate/full.json",
+          "sha256": "0029182cd787f34ce22af298611a53f20ba28fb3c480cb0b15fdef07f4777146"
+        }
+      ],
+      "candidateBound": false
+    },
+    {
+      "id": "PERF-03",
+      "status": "NOT_RUN",
+      "evidence": [
+        {
+          "path": "docs/planning/05-release-gates.md",
+          "sha256": "f442c5fbd586a26bf76624b3bca642dcf0acf1937826af63158b3fc48189591a"
+        },
+        {
+          "path": "evidence/phase28/run-02/review.json",
+          "sha256": "24ebcf5100c7a62333ec4940b187fd32e8e9fbb1c40e03e618f10db9fa06b662"
+        },
+        {
+          "path": "evidence/phase30/run-01/candidate/full.json",
+          "sha256": "0029182cd787f34ce22af298611a53f20ba28fb3c480cb0b15fdef07f4777146"
+        }
+      ],
+      "candidateBound": false
+    },
+    {
+      "id": "PERF-04",
+      "status": "NOT_RUN",
+      "evidence": [
+        {
+          "path": "docs/planning/05-release-gates.md",
+          "sha256": "f442c5fbd586a26bf76624b3bca642dcf0acf1937826af63158b3fc48189591a"
+        },
+        {
+          "path": "evidence/phase28/run-02/review.json",
+          "sha256": "24ebcf5100c7a62333ec4940b187fd32e8e9fbb1c40e03e618f10db9fa06b662"
+        },
+        {
+          "path": "evidence/phase30/run-01/candidate/full.json",
+          "sha256": "0029182cd787f34ce22af298611a53f20ba28fb3c480cb0b15fdef07f4777146"
+        }
+      ],
+      "candidateBound": false
+    },
+    {
+      "id": "PERF-05",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/planning/05-release-gates.md",
+          "sha256": "f442c5fbd586a26bf76624b3bca642dcf0acf1937826af63158b3fc48189591a"
+        },
+        {
+          "path": "evidence/phase28/run-02/review.json",
+          "sha256": "24ebcf5100c7a62333ec4940b187fd32e8e9fbb1c40e03e618f10db9fa06b662"
+        },
+        {
+          "path": "evidence/phase30/run-01/candidate/full.json",
+          "sha256": "0029182cd787f34ce22af298611a53f20ba28fb3c480cb0b15fdef07f4777146"
+        }
+      ],
+      "candidateBound": false
+    },
+    {
+      "id": "PERF-06",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/planning/05-release-gates.md",
+          "sha256": "f442c5fbd586a26bf76624b3bca642dcf0acf1937826af63158b3fc48189591a"
+        },
+        {
+          "path": "evidence/phase28/run-02/review.json",
+          "sha256": "24ebcf5100c7a62333ec4940b187fd32e8e9fbb1c40e03e618f10db9fa06b662"
+        },
+        {
+          "path": "evidence/phase30/run-01/candidate/full.json",
+          "sha256": "0029182cd787f34ce22af298611a53f20ba28fb3c480cb0b15fdef07f4777146"
+        }
+      ],
+      "candidateBound": false
+    },
+    {
+      "id": "PERF-07",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/planning/05-release-gates.md",
+          "sha256": "f442c5fbd586a26bf76624b3bca642dcf0acf1937826af63158b3fc48189591a"
+        },
+        {
+          "path": "evidence/phase28/run-02/review.json",
+          "sha256": "24ebcf5100c7a62333ec4940b187fd32e8e9fbb1c40e03e618f10db9fa06b662"
+        },
+        {
+          "path": "evidence/phase30/run-01/candidate/full.json",
+          "sha256": "0029182cd787f34ce22af298611a53f20ba28fb3c480cb0b15fdef07f4777146"
+        }
+      ],
+      "candidateBound": false
+    },
+    {
+      "id": "RUN-01",
+      "status": "NOT_RUN",
+      "evidence": [
+        {
+          "path": "docs/planning/05-release-gates.md",
+          "sha256": "f442c5fbd586a26bf76624b3bca642dcf0acf1937826af63158b3fc48189591a"
+        },
+        {
+          "path": "evidence/phase28/run-02/review.json",
+          "sha256": "24ebcf5100c7a62333ec4940b187fd32e8e9fbb1c40e03e618f10db9fa06b662"
+        },
+        {
+          "path": "evidence/phase30/run-01/candidate/full.json",
+          "sha256": "0029182cd787f34ce22af298611a53f20ba28fb3c480cb0b15fdef07f4777146"
+        }
+      ],
+      "candidateBound": false
+    },
+    {
+      "id": "RUN-02",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/planning/05-release-gates.md",
+          "sha256": "f442c5fbd586a26bf76624b3bca642dcf0acf1937826af63158b3fc48189591a"
+        },
+        {
+          "path": "evidence/phase28/run-02/review.json",
+          "sha256": "24ebcf5100c7a62333ec4940b187fd32e8e9fbb1c40e03e618f10db9fa06b662"
+        },
+        {
+          "path": "evidence/phase30/run-01/candidate/full.json",
+          "sha256": "0029182cd787f34ce22af298611a53f20ba28fb3c480cb0b15fdef07f4777146"
+        }
+      ],
+      "candidateBound": false
+    },
+    {
+      "id": "RUN-03",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/planning/05-release-gates.md",
+          "sha256": "f442c5fbd586a26bf76624b3bca642dcf0acf1937826af63158b3fc48189591a"
+        },
+        {
+          "path": "evidence/phase28/run-02/review.json",
+          "sha256": "24ebcf5100c7a62333ec4940b187fd32e8e9fbb1c40e03e618f10db9fa06b662"
+        },
+        {
+          "path": "evidence/phase30/run-01/candidate/full.json",
+          "sha256": "0029182cd787f34ce22af298611a53f20ba28fb3c480cb0b15fdef07f4777146"
+        }
+      ],
+      "candidateBound": false
+    },
+    {
+      "id": "RUN-04",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/planning/05-release-gates.md",
+          "sha256": "f442c5fbd586a26bf76624b3bca642dcf0acf1937826af63158b3fc48189591a"
+        },
+        {
+          "path": "evidence/phase28/run-02/review.json",
+          "sha256": "24ebcf5100c7a62333ec4940b187fd32e8e9fbb1c40e03e618f10db9fa06b662"
+        },
+        {
+          "path": "evidence/phase30/run-01/candidate/full.json",
+          "sha256": "0029182cd787f34ce22af298611a53f20ba28fb3c480cb0b15fdef07f4777146"
+        }
+      ],
+      "candidateBound": false
+    },
+    {
+      "id": "RUN-05",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/planning/05-release-gates.md",
+          "sha256": "f442c5fbd586a26bf76624b3bca642dcf0acf1937826af63158b3fc48189591a"
+        },
+        {
+          "path": "evidence/phase28/run-02/review.json",
+          "sha256": "24ebcf5100c7a62333ec4940b187fd32e8e9fbb1c40e03e618f10db9fa06b662"
+        },
+        {
+          "path": "evidence/phase30/run-01/candidate/full.json",
+          "sha256": "0029182cd787f34ce22af298611a53f20ba28fb3c480cb0b15fdef07f4777146"
+        }
+      ],
+      "candidateBound": false
+    },
+    {
+      "id": "DATA-01",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/planning/05-release-gates.md",
+          "sha256": "f442c5fbd586a26bf76624b3bca642dcf0acf1937826af63158b3fc48189591a"
+        },
+        {
+          "path": "evidence/phase28/run-02/review.json",
+          "sha256": "24ebcf5100c7a62333ec4940b187fd32e8e9fbb1c40e03e618f10db9fa06b662"
+        },
+        {
+          "path": "evidence/phase30/run-01/candidate/full.json",
+          "sha256": "0029182cd787f34ce22af298611a53f20ba28fb3c480cb0b15fdef07f4777146"
+        }
+      ],
+      "candidateBound": false
+    },
+    {
+      "id": "ART-01",
+      "status": "NOT_RUN",
+      "evidence": [
+        {
+          "path": "docs/planning/05-release-gates.md",
+          "sha256": "f442c5fbd586a26bf76624b3bca642dcf0acf1937826af63158b3fc48189591a"
+        },
+        {
+          "path": "evidence/phase27/run-1794981764746/review.json",
+          "sha256": "e588489ce1e8bb74445d2fa1e28e7a3b87a422e4aaafc8649966fe99736e00a0"
+        },
+        {
+          "path": "evidence/phase30/run-01/candidate/full.json",
+          "sha256": "0029182cd787f34ce22af298611a53f20ba28fb3c480cb0b15fdef07f4777146"
+        }
+      ],
+      "candidateBound": false
+    },
+    {
+      "id": "ART-02",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/planning/05-release-gates.md",
+          "sha256": "f442c5fbd586a26bf76624b3bca642dcf0acf1937826af63158b3fc48189591a"
+        },
+        {
+          "path": "evidence/phase27/run-1794981764746/review.json",
+          "sha256": "e588489ce1e8bb74445d2fa1e28e7a3b87a422e4aaafc8649966fe99736e00a0"
+        },
+        {
+          "path": "evidence/phase30/run-01/candidate/full.json",
+          "sha256": "0029182cd787f34ce22af298611a53f20ba28fb3c480cb0b15fdef07f4777146"
+        }
+      ],
+      "candidateBound": false
+    },
+    {
+      "id": "ART-03",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/planning/05-release-gates.md",
+          "sha256": "f442c5fbd586a26bf76624b3bca642dcf0acf1937826af63158b3fc48189591a"
+        },
+        {
+          "path": "evidence/phase27/run-1794981764746/review.json",
+          "sha256": "e588489ce1e8bb74445d2fa1e28e7a3b87a422e4aaafc8649966fe99736e00a0"
+        },
+        {
+          "path": "evidence/phase30/run-01/candidate/full.json",
+          "sha256": "0029182cd787f34ce22af298611a53f20ba28fb3c480cb0b15fdef07f4777146"
+        }
+      ],
+      "candidateBound": false
+    },
+    {
+      "id": "OUT-01",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/planning/05-release-gates.md",
+          "sha256": "f442c5fbd586a26bf76624b3bca642dcf0acf1937826af63158b3fc48189591a"
+        },
+        {
+          "path": "evidence/phase27/run-1794981764746/review.json",
+          "sha256": "e588489ce1e8bb74445d2fa1e28e7a3b87a422e4aaafc8649966fe99736e00a0"
+        },
+        {
+          "path": "evidence/phase30/run-01/candidate/full.json",
+          "sha256": "0029182cd787f34ce22af298611a53f20ba28fb3c480cb0b15fdef07f4777146"
+        }
+      ],
+      "candidateBound": false
+    },
+    {
+      "id": "OUT-02",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/planning/05-release-gates.md",
+          "sha256": "f442c5fbd586a26bf76624b3bca642dcf0acf1937826af63158b3fc48189591a"
+        },
+        {
+          "path": "evidence/phase27/run-1794981764746/review.json",
+          "sha256": "e588489ce1e8bb74445d2fa1e28e7a3b87a422e4aaafc8649966fe99736e00a0"
+        },
+        {
+          "path": "evidence/phase30/run-01/candidate/full.json",
+          "sha256": "0029182cd787f34ce22af298611a53f20ba28fb3c480cb0b15fdef07f4777146"
+        }
+      ],
+      "candidateBound": false
+    },
+    {
+      "id": "OUT-03",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/planning/05-release-gates.md",
+          "sha256": "f442c5fbd586a26bf76624b3bca642dcf0acf1937826af63158b3fc48189591a"
+        },
+        {
+          "path": "evidence/phase27/run-1794981764746/review.json",
+          "sha256": "e588489ce1e8bb74445d2fa1e28e7a3b87a422e4aaafc8649966fe99736e00a0"
+        },
+        {
+          "path": "evidence/phase30/run-01/candidate/full.json",
+          "sha256": "0029182cd787f34ce22af298611a53f20ba28fb3c480cb0b15fdef07f4777146"
+        }
+      ],
+      "candidateBound": false
+    },
+    {
+      "id": "UX-M0",
+      "status": "NOT_RUN",
+      "evidence": [
+        {
+          "path": "docs/planning/05-release-gates.md",
+          "sha256": "f442c5fbd586a26bf76624b3bca642dcf0acf1937826af63158b3fc48189591a"
+        },
+        {
+          "path": "evidence/phase29/run-05/review.json",
+          "sha256": "3c72d0283878674aea237c3d7b400ce617d376eb8f6aa59f914257333ac50afa"
+        },
+        {
+          "path": "evidence/phase29/run-01/participant-U29-001-result.json",
+          "sha256": "009a599807cb17241e20068e50a5c3edf6a75cd4b8424b8edbd74f39f5498979"
+        }
+      ],
+      "candidateBound": false
+    },
+    {
+      "id": "UX-01",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/planning/05-release-gates.md",
+          "sha256": "f442c5fbd586a26bf76624b3bca642dcf0acf1937826af63158b3fc48189591a"
+        },
+        {
+          "path": "evidence/phase29/run-05/review.json",
+          "sha256": "3c72d0283878674aea237c3d7b400ce617d376eb8f6aa59f914257333ac50afa"
+        },
+        {
+          "path": "evidence/phase29/run-01/participant-U29-001-result.json",
+          "sha256": "009a599807cb17241e20068e50a5c3edf6a75cd4b8424b8edbd74f39f5498979"
+        }
+      ],
+      "candidateBound": false
+    },
+    {
+      "id": "UX-02",
+      "status": "NOT_RUN",
+      "evidence": [
+        {
+          "path": "docs/planning/05-release-gates.md",
+          "sha256": "f442c5fbd586a26bf76624b3bca642dcf0acf1937826af63158b3fc48189591a"
+        },
+        {
+          "path": "evidence/phase29/run-05/review.json",
+          "sha256": "3c72d0283878674aea237c3d7b400ce617d376eb8f6aa59f914257333ac50afa"
+        },
+        {
+          "path": "evidence/phase29/run-01/participant-U29-001-result.json",
+          "sha256": "009a599807cb17241e20068e50a5c3edf6a75cd4b8424b8edbd74f39f5498979"
+        }
+      ],
+      "candidateBound": false
+    },
+    {
+      "id": "UX-03",
+      "status": "NOT_RUN",
+      "evidence": [
+        {
+          "path": "docs/planning/05-release-gates.md",
+          "sha256": "f442c5fbd586a26bf76624b3bca642dcf0acf1937826af63158b3fc48189591a"
+        },
+        {
+          "path": "evidence/phase29/run-05/review.json",
+          "sha256": "3c72d0283878674aea237c3d7b400ce617d376eb8f6aa59f914257333ac50afa"
+        },
+        {
+          "path": "evidence/phase29/run-01/participant-U29-001-result.json",
+          "sha256": "009a599807cb17241e20068e50a5c3edf6a75cd4b8424b8edbd74f39f5498979"
+        }
+      ],
+      "candidateBound": false
+    },
+    {
+      "id": "UX-04",
+      "status": "NOT_RUN",
+      "evidence": [
+        {
+          "path": "docs/planning/05-release-gates.md",
+          "sha256": "f442c5fbd586a26bf76624b3bca642dcf0acf1937826af63158b3fc48189591a"
+        },
+        {
+          "path": "evidence/phase29/run-05/review.json",
+          "sha256": "3c72d0283878674aea237c3d7b400ce617d376eb8f6aa59f914257333ac50afa"
+        },
+        {
+          "path": "evidence/phase29/run-01/participant-U29-001-result.json",
+          "sha256": "009a599807cb17241e20068e50a5c3edf6a75cd4b8424b8edbd74f39f5498979"
+        }
+      ],
+      "candidateBound": false
+    },
+    {
+      "id": "UX-05",
+      "status": "NOT_RUN",
+      "evidence": [
+        {
+          "path": "docs/planning/05-release-gates.md",
+          "sha256": "f442c5fbd586a26bf76624b3bca642dcf0acf1937826af63158b3fc48189591a"
+        },
+        {
+          "path": "evidence/phase29/run-05/review.json",
+          "sha256": "3c72d0283878674aea237c3d7b400ce617d376eb8f6aa59f914257333ac50afa"
+        },
+        {
+          "path": "evidence/phase29/run-01/participant-U29-001-result.json",
+          "sha256": "009a599807cb17241e20068e50a5c3edf6a75cd4b8424b8edbd74f39f5498979"
+        }
+      ],
+      "candidateBound": false
+    },
+    {
+      "id": "UX-06",
+      "status": "NOT_RUN",
+      "evidence": [
+        {
+          "path": "docs/planning/05-release-gates.md",
+          "sha256": "f442c5fbd586a26bf76624b3bca642dcf0acf1937826af63158b3fc48189591a"
+        },
+        {
+          "path": "evidence/phase29/run-05/review.json",
+          "sha256": "3c72d0283878674aea237c3d7b400ce617d376eb8f6aa59f914257333ac50afa"
+        },
+        {
+          "path": "evidence/phase29/run-01/participant-U29-001-result.json",
+          "sha256": "009a599807cb17241e20068e50a5c3edf6a75cd4b8424b8edbd74f39f5498979"
+        }
+      ],
+      "candidateBound": false
+    },
+    {
+      "id": "CLEAN-WINDOWS",
+      "status": "NOT_RUN",
+      "evidence": [
+        {
+          "path": "docs/planning/05-release-gates.md",
+          "sha256": "f442c5fbd586a26bf76624b3bca642dcf0acf1937826af63158b3fc48189591a"
+        },
+        {
+          "path": "evidence/phase27/run-1794981764746/review.json",
+          "sha256": "e588489ce1e8bb74445d2fa1e28e7a3b87a422e4aaafc8649966fe99736e00a0"
+        },
+        {
+          "path": "evidence/phase30/run-01/candidate/full.json",
+          "sha256": "0029182cd787f34ce22af298611a53f20ba28fb3c480cb0b15fdef07f4777146"
+        }
+      ],
+      "candidateBound": false
+    },
+    {
+      "id": "SIGNATURE",
+      "status": "FAIL",
+      "evidence": [
+        {
+          "path": "evidence/phase30/run-01/signature.json",
+          "sha256": "304f44519ec2ab76f63f13374934a1dff857602805124241fdfdbe4406a60947"
+        }
+      ],
+      "candidateBound": true
+    },
+    {
+      "id": "DISTRIBUTION-RIGHTS",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "path": "docs/planning/05-release-gates.md",
+          "sha256": "f442c5fbd586a26bf76624b3bca642dcf0acf1937826af63158b3fc48189591a"
+        },
+        {
+          "path": "evidence/phase27/run-1794981764746/review.json",
+          "sha256": "e588489ce1e8bb74445d2fa1e28e7a3b87a422e4aaafc8649966fe99736e00a0"
+        },
+        {
+          "path": "evidence/phase30/run-01/candidate/full.json",
+          "sha256": "0029182cd787f34ce22af298611a53f20ba28fb3c480cb0b15fdef07f4777146"
+        }
+      ],
+      "candidateBound": false
+    },
+    {
+      "id": "CONTROLLED-TRIAL",
+      "status": "NOT_RUN",
+      "evidence": [
+        {
+          "path": "docs/planning/05-release-gates.md",
+          "sha256": "f442c5fbd586a26bf76624b3bca642dcf0acf1937826af63158b3fc48189591a"
+        },
+        {
+          "path": "evidence/phase27/run-1794981764746/review.json",
+          "sha256": "e588489ce1e8bb74445d2fa1e28e7a3b87a422e4aaafc8649966fe99736e00a0"
+        },
+        {
+          "path": "evidence/phase30/run-01/candidate/full.json",
+          "sha256": "0029182cd787f34ce22af298611a53f20ba28fb3c480cb0b15fdef07f4777146"
+        }
+      ],
+      "candidateBound": false
+    },
+    {
+      "id": "PREDECESSOR-29",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "path": "docs/planning/05-release-gates.md",
+          "sha256": "f442c5fbd586a26bf76624b3bca642dcf0acf1937826af63158b3fc48189591a"
+        },
+        {
+          "path": "evidence/phase29/run-05/review.json",
+          "sha256": "3c72d0283878674aea237c3d7b400ce617d376eb8f6aa59f914257333ac50afa"
+        },
+        {
+          "path": "evidence/phase29/run-01/participant-U29-001-result.json",
+          "sha256": "009a599807cb17241e20068e50a5c3edf6a75cd4b8424b8edbd74f39f5498979"
+        }
+      ],
+      "candidateBound": false
+    }
+  ],
+  "publicDistributionApproved": false,
+  "published": false,
+  "targets": [
+    {
+      "id": "PERF-01",
+      "contractRow": "| PERF-01 GPU 렌더 능력 | 1080p에서 **실제 완료 렌더 ≥30FPS**, p95 렌더 작업 ≤33.3ms | 30 제한을 풀어 GPU 완료까지의 시간을 측정하는 능력 시험과 고정 30Hz 실행을 분리. rAF 호출·OBS 인코더 프레임만 세지 않음 |",
+      "measurement": "See cited bounded evidence; full target not demonstrated",
+      "status": "PARTIAL"
+    },
+    {
+      "id": "PERF-02",
+      "contractRow": "| PERF-02 실제 30Hz 전달 | 30FPS 설정, source의 실제 새 완료 frame sequence 누락 ≤1%, 100ms 초과 끊김 0회/60초 | 고정 30Hz 예상 frame count와 실제 source 완료 ID·OBS 수신을 대조. 29.7 등의 원래 FPS는 그대로 보고하고 30으로 올려 쓰지 않음. 정지 포즈라도 새 렌더는 셀 수 있지만 이전 캔버스 복제/인코더 반복은 source 새 프레임이 아님 |",
+      "measurement": "See cited bounded evidence; full target not demonstrated",
+      "status": "PARTIAL"
+    },
+    {
+      "id": "PERF-03",
+      "contractRow": "| PERF-03 소프트웨어 지연 | 실제 카메라 프레임 획득 완료→새 제어를 반영한 OBS source draw 완료 ACK **p95 ≤200ms** | 동일 monotonic 기준으로 worker/main/browser 타임스탬프를 보정. GPU 완료·frame ID와 연결. 센서 노출·화면 scanout·네트워크 인코딩 지연 제외를 명시. 캡처/추론/IPC/렌더/소스 소비를 분해 보고 |",
+      "measurement": "See cited bounded evidence; full target not demonstrated",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "PERF-04",
+      "contractRow": "| PERF-04 실제 체감 지연 | 실제 움직임/동기 기준 표식→OBS 화면 변화 **p95 ≤200ms** | 120FPS 이상 동기 촬영 등 독립 계측으로 최소 30개 반응 사건×3회. 장비/표식/반응 판정 규칙 사전 고정. PERF-03 또는 PNG 발행 ACK를 이 측정으로 대체하지 않음 |",
+      "measurement": "See cited bounded evidence; full target not demonstrated",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "PERF-05",
+      "contractRow": "| PERF-05 자원 | 앱+worker 프로세스 트리 RSS 합 ≤2GiB, OBS RSS ≤1GiB, 앱 트리 CPU p95 ≤논리 코어 전체의 30% | 1초 표본. RSS 합에는 공유 페이지 중복이 있음을 표시. CPU는 1코어=100% 값을 논리 코어 수로 나눈 정규화와 원자료를 모두 보존 |",
+      "measurement": "See cited bounded evidence; full target not demonstrated",
+      "status": "PARTIAL"
+    },
+    {
+      "id": "PERF-06",
+      "contractRow": "| PERF-06 GPU 예산 | 앱의 resident 텍스처·버퍼 계산 예산 ≤512MiB | 해상도·상태·mipmap·버퍼 할당으로 추적하고 실제 GPU/adapter 수치도 가능한 범위에서 기록. 시스템 전체 GPU 값을 앱 전용 사용량으로 표기하지 않음 |",
+      "measurement": "See cited bounded evidence; full target not demonstrated",
+      "status": "PARTIAL"
+    },
+    {
+      "id": "PERF-07",
+      "contractRow": "| PERF-07 초기 분석/상호작용 | 지원 입력의 분석 p95 ≤30초, 취소 UI 반응 ≤200ms, 파일/분석 작업 중 실행 제어 유지 | 경로별 입력 10개×3회, cold/warm 분리. 디코드/준비/모델 시간을 분리. 전체 사용자 작업 시간과 자동 대기 구간을 섞지 않음 |",
+      "measurement": "See cited bounded evidence; full target not demonstrated",
+      "status": "PARTIAL"
+    },
+    {
+      "id": "RUN-01",
+      "contractRow": "| RUN-01 2시간 | 경로당 대표 고급 장면 1개를 **2시간씩**, 실제 카메라·마이크·OBS 로컬 기록 동시 실행. 비정상 종료·손상·장치 복구 실패 0 | 10분 워밍업 뒤 메모리 기준, 종료 전 증가 ≤10% 또는 128MiB 중 큰 값. CPU/GPU/온도/프레임을 기록. 표정·소스 재연결·저장을 주기적으로 실행 |",
+      "measurement": "See cited bounded evidence; full target not demonstrated",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "RUN-02",
+      "contractRow": "| RUN-02 손실/복귀 | 얼굴/장치 손실 감지 ≤500ms, 유효 입력 부재 뒤 1.5초 안에 중립 또는 선택 마이크 대체. 유효 입력 복귀 뒤 1초 안에 안정 반응 | 장치 조합마다 얼굴 가림/화면 이탈 10회, 실제 카메라 분리/재연결 10회, 마이크 분리/변경 10회. 프레임 차이와 최대 속도/점프 기록. 핸들 해제 실험과 물리 분리를 구분 |",
+      "measurement": "See cited bounded evidence; full target not demonstrated",
+      "status": "PARTIAL"
+    },
+    {
+      "id": "RUN-03",
+      "contractRow": "| RUN-03 권한/점유 | 접근 거부·다른 프로그램 점유·장치 없음에서 UI 응답/원본 유지. 복구 또는 대체 경로 명확 | Windows 접근 권한 거부/허용, OBS/다른 앱 동시 점유, 시작 전/실행 중 분리를 별도로 확인. 보안 설정을 제품이 임의 변경하지 않음 |",
+      "measurement": "See cited bounded evidence; full target not demonstrated",
+      "status": "PARTIAL"
+    },
+    {
+      "id": "RUN-04",
+      "contractRow": "| RUN-04 음성 반응 | 두 마이크 각각 quiet/speech/keyboard·clap·지속 소음 20초×3회. 조용한 구간 mouth>0.1 시간 ≤1%, 소음 false-open ≤5%, 확인된 발화 onset 반응 ≥90%·p95 ≤200ms | 소음 보정·gain과 필요시 VAD 후보 비교. 참여자/관찰자가 발화 구간을 표시하고 원음은 기본 저장하지 않음. RMS 문턱 통과율을 음성 분류 정확도로 바꾸지 않음 |",
+      "measurement": "See cited bounded evidence; full target not demonstrated",
+      "status": "PARTIAL"
+    },
+    {
+      "id": "RUN-05",
+      "contractRow": "| RUN-05 단축키 | 앱 초점·OBS 초점·문자/IME 입력·등록 충돌·해제/재시작에서 동작과 실패 표시 일치 | 로컬/선택 전역 각각 10회. 타 앱 키 훔침·예약 키 우회 금지. 실패 때 화면 버튼으로 같은 기능 사용 |",
+      "measurement": "See cited bounded evidence; full target not demonstrated",
+      "status": "PARTIAL"
+    },
+    {
+      "id": "DATA-01",
+      "contractRow": "| DATA-01 정상본 보호 | 저장·취소·전환·충돌·누락/손상·자산 이동·상위 버전에서 기존 정상본 손실 0 | 저장 5지점 실패 주입, 새 저장/기존 저장/자동 복구 각각 3회. 실제 부족한 공간·제품 프로세스 종료·개발 도구 없는 기기에서 재열기 포함. 위험한 디스크 채우기/전원 차단 대신 별도 안전 시험 환경 사용 |",
+      "measurement": "See cited bounded evidence; full target not demonstrated",
+      "status": "PARTIAL"
+    },
+    {
+      "id": "ART-01",
+      "contractRow": "| ART-01 원화 보존 | 얼굴 인상, 선/눈/입, 머리카락 가닥, 의상/장식, 알파 경계, 동적 자연스러움 각각 **5점 중 중앙값 ≥4**, 어느 평가자도 중대한 결함 보고 없음 | 원본/중립/기본·극단 움직임/표정을 블라인드 비교. 독립 평가자 3명. 고급 정상 입력 30개, 새 라이브러리의 실제 조합 자료. 모델/해상도 이름으로 품질 합격 대체 금지 |",
+      "measurement": "See cited bounded evidence; full target not demonstrated",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "ART-02",
+      "contractRow": "| ART-02 파츠 조합 | DEC-04의 유효 64조합 모두 교체 후 역할·좌표·z·기본 움직임 유지. 심한 가림/겹침/찢김/투명 사각형 0 | 각 조합 중립+단일 제어 min/max 10상태+고개 3×3 격자+기본 표정 3개. 자동 무결성/경계 검사와 사람 시각 검토를 구분. 도형은 구조 회귀에만 사용 |",
+      "measurement": "See cited bounded evidence; full target not demonstrated",
+      "status": "PARTIAL"
+    },
+    {
+      "id": "ART-03",
+      "contractRow": "| ART-03 자동 준비/보정 | 세 경로마다 지원 조건의 눈·입·고개가 준비되고 모르는 영역은 명확히 보류. 원본이 추정 그림으로 조용히 바뀌지 않음 | M0에는 경로별 고급 3개와 제한 입력 1개 이상. 완전 가림·잘림·배경·복수 인물·이름 불명확 사례를 정상/제한/차단 기대값으로 사전 기록 |",
+      "measurement": "See cited bounded evidence; full target not demonstrated",
+      "status": "PARTIAL"
+    },
+    {
+      "id": "OUT-01",
+      "contractRow": "| OUT-01 OBS | 실제 두 배경에서 바깥 알파가 배경색과 일치, 내부 경계/색 중대한 결함 0, 편집 UI/원본 카메라·원음 혼입 0 | PNG/canvas 메타데이터와 실제 OBS 합성 둘 다 검사. 앱/OBS 재실행·소스 숨김/다시 표시 10회. 새 WebGL 경로로 다시 수행 |",
+      "measurement": "See cited bounded evidence; full target not demonstrated",
+      "status": "PARTIAL"
+    },
+    {
+      "id": "OUT-02",
+      "contractRow": "| OUT-02 INP | 현재 리비전·텍스처·기본 눈/입/고개/표정이 대상에서 사용 가능. 앱/서버 종료 후 로드·동작, 핵심 기능 조용한 손실 0 | 경로별 고급 정상 3개를 3회 재내보내기·직접 로드. 중립/극단/고개 joint·표정 비교. 모델/대상/adapter 버전과 hash 보존 |",
+      "measurement": "See cited bounded evidence; full target not demonstrated",
+      "status": "PARTIAL"
+    },
+    {
+      "id": "OUT-03",
+      "contractRow": "| OUT-03 표현 차이 | 내부/외부 같은 원본 크기의 기준점 위치 차이 p95 ≤2px/1080 출력 상당, 주요 외형/알파 중대한 차이 0 | 출력별 범위·곡선·알파/색 변환을 명시. 이미지 차이는 정렬/투명도를 고려해 보고. 수치 통과여도 얼굴·선화가 훼손되면 ART-01 실패. 허용 밖 손실은 명시적 제한 프로필 또는 차단 |",
+      "measurement": "See cited bounded evidence; full target not demonstrated",
+      "status": "PARTIAL"
+    },
+    {
+      "id": "UX-M0",
+      "contractRow": "| UX-M0 탐색 | 실제 초보자 최소 3명, 첫 경로를 서로 다르게 배정. 경로별 1명 이상이 전문 용어/JSON 수기 작성/진행자 대리 조작 없이 지원 입력→보정→실행의 최소 흐름을 완주. 정성 기술 탐색이며 사용자 성공률 통계로 일반화하지 않음 |",
+      "measurement": "See cited bounded evidence; full target not demonstrated",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "UX-01",
+      "contractRow": "| UX-01 출시 표본 | 처음 쓰는 초보자 **30명**, 최초 경로 파츠/한 장/분리 각 10명. 경로별 첫 사용 집합과 7일 관찰창 종료 여부를 고정. 나중 경로의 학습 효과를 최초 사용 데이터로 섞지 않음 |",
+      "measurement": "See cited bounded evidence; full target not demonstrated",
+      "status": "PARTIAL"
+    },
+    {
+      "id": "UX-02",
+      "contractRow": "| UX-02 첫 움직임 | 경로별 첫 움직임 도달 ≥8/10, 사전 설치 과제 시간 중앙값 ≤10분. 눈·입·고개 확인 종류 및 미완료를 함께 보고 |",
+      "measurement": "See cited bounded evidence; full target not demonstrated",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "UX-03",
+      "contractRow": "| UX-03 방송 | 경로별 실제 OBS 미리보기에서 투명도·움직임·UI 제외 확인 ≥8/10, 사전 설치 과제 시간 중앙값 ≤20분. 설치 포함 전체 경과 시간은 별도로 보고 |",
+      "measurement": "See cited bounded evidence; full target not demonstrated",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "UX-04",
+      "contractRow": "| UX-04 외부 | 참여자별 첫 내보내기/독립 사용 완주 ≥8/10, 원래 M-03의 전체 시도 성공률도 별도 보고. 파일 생성과 대상 직접 사용을 구분 |",
+      "measurement": "See cited bounded evidence; full target not demonstrated",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "UX-05",
+      "contractRow": "| UX-05 보정 부담 | 경로별 보정 행동 중앙값 ≤3회, p90 ≤8회, 대리 조작 없는 성공. 재분석 뒤 최초 보정 부담을 지우지 않음 |",
+      "measurement": "See cited bounded evidence; full target not demonstrated",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "UX-06",
+      "contractRow": "| UX-06 반복 | 최초 정상 저장 뒤 14일 관찰창에서 재열기/재사용 ≥6/10/경로, 프로젝트/외부 결과의 독립성·누락을 기록. 관찰 중인 사람을 성공으로 미리 세지 않음 |",
+      "measurement": "See cited bounded evidence; full target not demonstrated",
+      "status": "NOT_RUN"
+    }
+  ],
+  "boundedHistoricalDiagnostics": {
+    "scope": "Phase28 single-scene 12 seconds per condition; not current candidate acceptance",
+    "evidence": {
+      "path": "evidence/phase28/run-02/review.json",
+      "sha256": "24ebcf5100c7a62333ec4940b187fd32e8e9fbb1c40e03e618f10db9fa06b662"
+    },
+    "measurements": [
+      {
+        "width": 1280,
+        "height": 720,
+        "fps": 15,
+        "stress": false,
+        "durationMs": 12000.799999952316,
+        "completedFrames": 180,
+        "completedFps": 14.99900006672182,
+        "completionWallP95Ms": 1.1999999284744263,
+        "completionWallMaxMs": 1.7000000476837158,
+        "frameIntervalP95Ms": 79.20000004768372,
+        "stallsOver100ms": 0,
+        "textureEstimateMiB": 6.1746826171875
+      },
+      {
+        "width": 1920,
+        "height": 1080,
+        "fps": 30,
+        "stress": false,
+        "durationMs": 12000.700000047684,
+        "completedFrames": 360,
+        "completedFps": 29.998250101958185,
+        "completionWallP95Ms": 0.8000000715255737,
+        "completionWallMaxMs": 2.3000000715255737,
+        "frameIntervalP95Ms": 47.60000002384186,
+        "stallsOver100ms": 0,
+        "textureEstimateMiB": 6.1746826171875
+      },
+      {
+        "width": 1920,
+        "height": 1080,
+        "fps": 30,
+        "stress": true,
+        "durationMs": 12000.599999904633,
+        "completedFrames": 360,
+        "completedFps": 29.998500075234645,
+        "completionWallP95Ms": 8.700000047683716,
+        "completionWallMaxMs": 11.600000023841858,
+        "frameIntervalP95Ms": 35.10000002384186,
+        "stallsOver100ms": 0,
+        "textureEstimateMiB": 6.1746826171875
+      }
+    ]
+  },
+  "currentCandidateAcceptanceMeasurements": {
+    "twoHourRuns": 0,
+    "cameraToOBSLatencyMs": null,
+    "independentLatencyMs": null,
+    "processTreeRSSMiB": null,
+    "qualityPanelScore": null,
+    "noviceTaskSeconds": null,
+    "correctionCount": null
+  },
+  "historicalEvidenceRevalidatedOnThisCandidate": false,
+  "physicalDevicesVerified": false,
+  "actualOBSReceiptVerified": true,
+  "actualOBSRoute": "split-image final prepared route",
+  "actualOBSAllThreeRoutes": false,
+  "actualIndependentRuntimeVerified": true,
+  "independentRuns": 6,
+  "cleanWindowsVerified": false,
+  "noviceVerified": false
+}

@@ -1,0 +1,35 @@
+{
+  "passed": true,
+  "projectId": "7192c7cf-eb10-4775-a56a-fde4ff66ce56",
+  "finalRevision": 15,
+  "finalRole": "head",
+  "verifiedDurableCheckpoints": [
+    {
+      "revision": 6,
+      "role": "head",
+      "snapshotSha256": "f762a11ac497c45042042f4d5d6521d19341207d07e71a22c6cfb875b01db1e2"
+    },
+    {
+      "revision": 7,
+      "role": "head",
+      "snapshotSha256": "67abd9256342638bc4a588c21ddcf47125d5b120494050c10766063fd559ec68"
+    },
+    {
+      "revision": 8,
+      "role": "custom",
+      "snapshotSha256": "790f0a6888a8adffed958e571af60dc10d7a8a165990c23dbd5ee444f217f1f7"
+    },
+    {
+      "revision": 11,
+      "role": "head",
+      "snapshotSha256": "ff900b45939908544e9dc5e09baa5aa38a1f5338323413cae52830e0faef2ce2"
+    },
+    {
+      "revision": 12,
+      "role": "custom",
+      "snapshotSha256": "a1b750a4d757c7c2754ce251d86b242d13cd9ee6ba0ee946d23e38482187232b"
+    }
+  ],
+  "correctionWasActuallyAppliedAndRestored": true,
+  "rawAssetsOrPrivatePathsPublished": false
+}

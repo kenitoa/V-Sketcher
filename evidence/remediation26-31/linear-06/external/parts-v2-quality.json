@@ -1,0 +1,87 @@
+{
+  "passed": true,
+  "route": "parts",
+  "version": 2,
+  "method": "Official Session target-only OBS PNG; fixed 0.5 target camera; direct 1024px mipmapped reference; nearest reference classification",
+  "threshold": "Mean RGB error <=4/255 and >=96% pixels within12/255; every pose must occur as nearest reference",
+  "roi": [
+    297,
+    202,
+    727,
+    841
+  ],
+  "classifiedPoses": [
+    "expression",
+    "eyes-closed",
+    "head-negative",
+    "head-positive",
+    "middle",
+    "mouth-open",
+    "neutral"
+  ],
+  "checks": [
+    {
+      "label": "neutral",
+      "meanRGBError": 1.350716356710461,
+      "fractionWithin12": 0.9840266404629326,
+      "classifiedAs": "neutral",
+      "sha256": "88b27716853b72b6297875cd29bef29b28497c39cf3d19cbaacd65daf85d5a42",
+      "passed": true,
+      "image": "parts-v2-neutral.png"
+    },
+    {
+      "label": "eyes-closed",
+      "meanRGBError": 1.349795586611833,
+      "fractionWithin12": 0.9841394620955708,
+      "classifiedAs": "eyes-closed",
+      "sha256": "643e5edb0c765fe851c111a430366b27ade514151c15e6efd56443c3f2ffe45b",
+      "passed": true,
+      "image": "parts-v2-eyes-closed.png"
+    },
+    {
+      "label": "middle",
+      "meanRGBError": 1.3517014230083342,
+      "fractionWithin12": 0.9840302798704371,
+      "classifiedAs": "middle",
+      "sha256": "b3adc81aa6d4f4546aa267d1bd440e51b3a1d39b9e0f0a922ef9ebdcd68732a1",
+      "passed": true,
+      "image": "parts-v2-middle.png"
+    },
+    {
+      "label": "mouth-open",
+      "meanRGBError": 1.3511882665502055,
+      "fractionWithin12": 0.9840266404629326,
+      "classifiedAs": "mouth-open",
+      "sha256": "3c491ff38499876486202ef388ca4fc111a78db9b8cbb7065ce05bd2cdb1c4ea",
+      "passed": true,
+      "image": "parts-v2-mouth-open.png"
+    },
+    {
+      "label": "head-negative",
+      "meanRGBError": 1.3777777777777778,
+      "fractionWithin12": 0.9827928813189213,
+      "classifiedAs": "head-negative",
+      "sha256": "df0240258a9690780b5dfb0e9707fd48d920a8e676e5407cae400a85ea9f7442",
+      "passed": true,
+      "image": "parts-v2-head-negative.png"
+    },
+    {
+      "label": "head-positive",
+      "meanRGBError": 1.3823294634300203,
+      "fractionWithin12": 0.9829639334716308,
+      "classifiedAs": "head-positive",
+      "sha256": "ef7e8e0276ee8112c9b5fd944b1c7c99d6f6c578bbf0276daf812bd38cdc80d7",
+      "passed": true,
+      "image": "parts-v2-head-positive.png"
+    },
+    {
+      "label": "expression",
+      "meanRGBError": 1.350561075323604,
+      "fractionWithin12": 0.9840885103905084,
+      "classifiedAs": "expression",
+      "sha256": "c17d04e1ce58d3b2692fe8516b7204fa75fa0a58ee3a2bc509659a934bd667f6",
+      "passed": true,
+      "image": "parts-v2-expression.png"
+    }
+  ]
+}

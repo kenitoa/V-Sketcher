@@ -106,3 +106,11 @@
 .about.environment-dialog .settings-footer button.primary:hover:not(:disabled){background:#69427f}
 @media(max-width:850px){.settings-layout{grid-template-columns:165px minmax(0,1fr)}.settings-tabs{padding:18px 8px}.settings-tabs small{display:none}.settings-content{padding:20px 18px}.settings-card{padding:18px 16px}.settings-key-row{grid-template-columns:1fr 1.3fr 80px}.settings-key-row>small{grid-column:1/-1}.settings-data-flow{gap:6px}.settings-data-flow span{font-size:10px}}
 @media(prefers-reduced-motion:reduce){.settings-switch:before,.about.environment-dialog input.settings-switch{transition:none}}
+.environment-live-dialog{width:min(960px,94vw);max-height:94vh;overflow:auto;background:#f7f3ed;color:#302638;border:1px solid #b8a6c8;border-radius:16px;padding:20px 24px;font:13px/1.6 system-ui,"Malgun Gothic",sans-serif}
+.environment-live-dialog h2{font-size:20px;margin:0 0 8px}.environment-live-dialog p{margin:8px 0}.environment-live-dialog h3{font-size:15px;margin:12px 0 0;color:#67477f}
+.environment-live-dialog .live-device-controls,.environment-live-dialog .live-device-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.environment-live-dialog .live-device-controls label{flex:1;min-width:180px}
+.environment-live-dialog select{width:100%;font:inherit;padding:6px;border:1px solid #c9bbd2;border-radius:6px;background:#fff}.environment-live-dialog button{font:inherit;padding:7px 12px;min-height:36px;border:1px solid #c9bbd2;border-radius:7px;background:#fff;color:#60466e}
+.environment-live-dialog [data-live-start]{background:#79548f;color:white;border-color:#79548f}.environment-live-dialog .live-device-previews{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:12px 0}
+.environment-live-dialog .live-device-previews>canvas,.environment-live-dialog [data-live-character]{display:block;width:100%;min-width:0;height:240px;background:#292132;border-radius:10px;overflow:hidden;object-fit:contain}
+.environment-live-dialog [data-live-character] .run-surface{height:100%!important}.environment-live-dialog [data-live-character] canvas{display:block;width:100%;height:100%;object-fit:contain}
+.environment-live-dialog .live-device-attestation{display:flex;align-items:center;gap:8px;margin:8px 0}.environment-live-dialog .live-device-actions{margin:8px 0}

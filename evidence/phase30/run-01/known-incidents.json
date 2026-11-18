@@ -1,0 +1,36 @@
+{
+  "origin": "Existing local evidence review; not post-release user intake",
+  "incidents": [
+    {
+      "accepted": true,
+      "route": "application",
+      "stage": "camera",
+      "symptom": "no-face",
+      "origin": "developer-observation",
+      "evidenceLevel": "unverified",
+      "id": "INC30-001",
+      "appVersion": "0.22.0",
+      "environment": {
+        "os": "windows11",
+        "arch": "x64",
+        "camera": "unknown"
+      },
+      "severity": "P1",
+      "state": "TRIAGED",
+      "automaticUpload": false,
+      "rawMediaStored": false,
+      "relatedIssue": "INT27-CAM-01",
+      "evidence": [
+        {
+          "path": "evidence/phase27/run-1794981764746/review.json",
+          "sha256": "e588489ce1e8bb74445d2fa1e28e7a3b87a422e4aaafc8649966fe99736e00a0"
+        }
+      ],
+      "mitigation": "Device-free manual execution; not a fix",
+      "reproducedOnCurrentCandidate": false,
+      "fixed": false,
+      "released": false
+    }
+  ],
+  "newPostReleaseReports": 0
+}

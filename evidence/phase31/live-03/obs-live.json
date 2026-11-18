@@ -1,0 +1,158 @@
+{
+  "passed": false,
+  "faceBroadcastPassed": false,
+  "bodyMotionAccepted": false,
+  "obsVersion": "33.0.1",
+  "source": "actual WebGL 3D model browser source",
+  "samples": [
+    {
+      "name": "obs-3d-neutral",
+      "sha256": "8ef0b759b72dd68c1a8103723b702753617dc60c7213a9abe5856b35a06ca021"
+    },
+    {
+      "name": "obs-3d-live-6",
+      "sha256": "e5f3b9c7f42243c30ed85c8b0f49aed971865a83aed715fc1c16ae5405fbca4d"
+    },
+    {
+      "name": "obs-3d-live-14",
+      "sha256": "80b921ebc0edfd2e8210fdcc1b15d59f79aaa9e317609da2f45167766b9df5e2"
+    },
+    {
+      "name": "obs-3d-live-22",
+      "sha256": "8cff79e63e290173768ea4164833baf6513ce5d81f07b0a7b294769543254fed"
+    },
+    {
+      "name": "obs-3d-live-30",
+      "sha256": "d4fbb965ca5a564078b7c56d226667a4a4a3671de25f9d09bb76bc792c9ff393"
+    },
+    {
+      "name": "obs-3d-live-38",
+      "sha256": "a133568e033251f913a4cad98cd0638ba13e2653fb3693fb9d40d94dae36ccb8"
+    },
+    {
+      "name": "obs-3d-live-46",
+      "sha256": "8937c86fb6d803d2a50db10ce73b901c6230ccb934edf6a14f2aa3216a4eb602"
+    },
+    {
+      "name": "obs-3d-live-54",
+      "sha256": "fa84da2fb8fa721eeebd801c84744e879e0188193372d41a4ae8873e18b155aa"
+    }
+  ],
+  "uniqueImages": 8,
+  "trackingBackend": "DirectShow index 0 + pinned face and pose models; browser identity not compared",
+  "live": {
+    "type": "summary",
+    "passed": false,
+    "code": null,
+    "frames": 542,
+    "framesWithFace": 0,
+    "microphoneBlocks": 861,
+    "maximumRMS": 0.002647825051099062,
+    "controlRanges": {
+      "yaw": [
+        0,
+        0
+      ],
+      "roll": [
+        0,
+        0
+      ],
+      "mouth": [
+        0.0010837953595910221,
+        0.07943475153297186
+      ],
+      "blinkLeft": [
+        0,
+        0
+      ],
+      "blinkRight": [
+        0,
+        0
+      ],
+      "chest": [
+        0,
+        0
+      ],
+      "leftUpperArm": [
+        0,
+        0
+      ],
+      "leftLowerArm": [
+        0,
+        0
+      ],
+      "rightUpperArm": [
+        0,
+        0
+      ],
+      "rightLowerArm": [
+        0,
+        0
+      ]
+    },
+    "bodyObservedFrames": {
+      "chest": 0,
+      "leftUpperArm": 0,
+      "leftLowerArm": 0,
+      "rightUpperArm": 0,
+      "rightLowerArm": 0
+    },
+    "bodyMotionAccepted": false,
+    "bodyJointDiagnostics": {
+      "leftShoulder": {
+        "noPose": 542,
+        "outsideFrame": 0,
+        "lowConfidence": 0,
+        "observed": 0
+      },
+      "rightShoulder": {
+        "noPose": 542,
+        "outsideFrame": 0,
+        "lowConfidence": 0,
+        "observed": 0
+      },
+      "leftElbow": {
+        "noPose": 542,
+        "outsideFrame": 0,
+        "lowConfidence": 0,
+        "observed": 0
+      },
+      "rightElbow": {
+        "noPose": 542,
+        "outsideFrame": 0,
+        "lowConfidence": 0,
+        "observed": 0
+      },
+      "leftWrist": {
+        "noPose": 542,
+        "outsideFrame": 0,
+        "lowConfidence": 0,
+        "observed": 0
+      },
+      "rightWrist": {
+        "noPose": 542,
+        "outsideFrame": 0,
+        "lowConfidence": 0,
+        "observed": 0
+      }
+    },
+    "bodyTrackingScope": "confidence-gated image-plane shoulder roll and arm angles; not 3D body reconstruction",
+    "seconds": 56.22749130008742,
+    "resourcesReleased": true,
+    "framesStored": false,
+    "pcmStored": false,
+    "sourceIdentityComparedWith2DBrowser": false
+  },
+  "ownedOBS": true,
+  "our3DPrototypeOnly": true,
+  "sourceDimensions": [
+    1920,
+    1080
+  ],
+  "streamingStarted": false,
+  "recordingStarted": false,
+  "rawCameraFramesStored": false,
+  "rawMicrophonePCMStored": false,
+  "actualUserVisualAttestation": "PENDING",
+  "releasePerformanceAcceptance": false
+}

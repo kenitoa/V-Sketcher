@@ -1,0 +1,102 @@
+{
+  "passed": true,
+  "cycles": 60,
+  "cycleScope": "Compiled product project/run/output host services, premium sample on three route labels; not three route preparation or GPU rendering",
+  "durationMs": 13649.5943,
+  "cycleP95Ms": 432.59389999999985,
+  "eventLoopP95Ms": 49.020927,
+  "samples": [
+    {
+      "at": 1184.2476,
+      "rss": 103559168,
+      "heap": 20379112,
+      "external": 19910959
+    },
+    {
+      "at": 2205.3035,
+      "rss": 122765312,
+      "heap": 34764288,
+      "external": 17573889
+    },
+    {
+      "at": 3209.0341,
+      "rss": 126713856,
+      "heap": 17579888,
+      "external": 23529895
+    },
+    {
+      "at": 4219.1714,
+      "rss": 120926208,
+      "heap": 23972392,
+      "external": 17126707
+    },
+    {
+      "at": 5219.1482,
+      "rss": 153227264,
+      "heap": 16459784,
+      "external": 16953680
+    },
+    {
+      "at": 6220.1027,
+      "rss": 158101504,
+      "heap": 25460728,
+      "external": 21437294
+    },
+    {
+      "at": 7219.5247,
+      "rss": 155697152,
+      "heap": 41295200,
+      "external": 19026638
+    },
+    {
+      "at": 8220.4377,
+      "rss": 154247168,
+      "heap": 33064928,
+      "external": 17237711
+    },
+    {
+      "at": 9219.5402,
+      "rss": 153853952,
+      "heap": 26268416,
+      "external": 17149980
+    },
+    {
+      "at": 10232.7263,
+      "rss": 157396992,
+      "heap": 33286544,
+      "external": 19390243
+    },
+    {
+      "at": 11233.5979,
+      "rss": 167845888,
+      "heap": 32910904,
+      "external": 29921497
+    },
+    {
+      "at": 12235.8543,
+      "rss": 193667072,
+      "heap": 37742560,
+      "external": 29778100
+    },
+    {
+      "at": 13247.2594,
+      "rss": 214011904,
+      "heap": 33471416,
+      "external": 17306665
+    }
+  ],
+  "samplingScope": "This Node host-service test process only; not Electron/worker/OBS tree",
+  "privacy": {
+    "canaryLogChecks": true,
+    "diagnosticAllowlist": true,
+    "broadcastWhitelist": true,
+    "privateProjectNameExcluded": true,
+    "traversalAndQueryRequests": 180
+  },
+  "actualGPUVerified": false,
+  "physicalDevicesOpened": false,
+  "actualOBSVerified": false,
+  "performanceAcceptance": false,
+  "twoHourAcceptance": false,
+  "m0": "HOLD"
+}

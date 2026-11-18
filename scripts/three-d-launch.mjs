@@ -1,0 +1,13 @@
+import {spawn} from 'node:child_process';
+import {mkdirSync,writeFileSync,openSync,closeSync,existsSync} from 'node:fs';
+import {resolve,join} from 'node:path';
+import assert from 'node:assert/strict';
+import {electronPath} from './common.mjs';
+const model=resolve(process.argv[2]),evidence=resolve(process.argv[3]);
+assert.ok(!existsSync(evidence),'E_3D_OUTPUT_EXISTS');
+const work=resolve('.local/phase31-live-'+Date.now());mkdirSync(work,{recursive:true});
+const env={...process.env};delete env.ELECTRON_RUN_AS_NODE;
+const stdout=openSync(join(work,'main.log'),'w'),stderr=openSync(join(work,'main.err'),'w');
+const child=spawn(electronPath(),['tools/three-d-main.cjs','--work='+work,'--model='+model,'--source='+resolve('assets/product/preview/1599b359b246e226fee73fa9c644972f58b727b158e8e47fdc87bf4c976d9121.png'),'--mode=live','--evidence='+evidence],{env,windowsHide:true,detached:true,stdio:['ignore',stdout,stderr]});
+writeFileSync('.local/phase31-current-live.json',JSON.stringify({work,model,pid:child.pid}));child.unref();closeSync(stdout);closeSync(stderr);
+console.log('New live prototype started; devices remain closed until the test starts.');

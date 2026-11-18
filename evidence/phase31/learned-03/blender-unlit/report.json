@@ -1,0 +1,42 @@
+{
+  "passed": true,
+  "sourceSha256": "9e4feac99b3a55e0180665fe7dd0f2d0a8791e8735cdfb11c9bde9b4ea4df177",
+  "target": "Official Blender",
+  "version": "4.5.3 LTS",
+  "meshCount": 1,
+  "views": [
+    {
+      "view": "positive-x",
+      "sha256": "2506ca7a219cf5450a1c313a31e3eb08d11c7bbccfd21a141489419396f8aa51"
+    },
+    {
+      "view": "negative-x",
+      "sha256": "865058fc817553b640fc6e61cb5e12ab3d787c65f128d1b23a93b35fb5dd3bf2"
+    },
+    {
+      "view": "positive-y",
+      "sha256": "af1394b017776d15ee804a4994a5c7455ede1ef22c2c2ce01c90c5c750fe1680"
+    },
+    {
+      "view": "negative-y",
+      "sha256": "b771318b370110fc847052e695a0bf69129b66e00d6e72dd3a2affbfd009f69c"
+    },
+    {
+      "view": "positive-z",
+      "sha256": "be4bb8bc6d18c3a1c662aeae8dd70d84f969c1ae4ceae77748f50024f7783673"
+    },
+    {
+      "view": "negative-z",
+      "sha256": "fa6f8ef7ad5d3e0285a9dd31b83d4c581c0198c14f7fa6e07055b6f142b4f35f"
+    }
+  ],
+  "boneCount": 0,
+  "morphTargets": 0,
+  "ourAppRequired": false,
+  "ourFrameServerRequired": false,
+  "physicalDevicesOpened": false,
+  "diagnosticUnlitVertexColors": true,
+  "sourceModelMaterialModified": false,
+  "orientation": "Raw learned output, six axes; humanoid Y-up orientation not accepted",
+  "productionQualityAccepted": false
+}

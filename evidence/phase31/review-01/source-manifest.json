@@ -1,0 +1,74 @@
+[
+  {
+    "file": "scripts/three-d-blender.py",
+    "sha256": "42d4010682402de4900d959966dac4e774048ea7bc3667ce377ee0dde86b2d1f"
+  },
+  {
+    "file": "scripts/three-d-final-check.mjs",
+    "sha256": "b41076acd11377f397fa25edd377592b054287e1f1dd1a0fcdc1896f1e9342aa"
+  },
+  {
+    "file": "scripts/three-d-launch.mjs",
+    "sha256": "8767be58571a68f4e24ed38d51674f87738756c17afcc3fde524df306dd9f299"
+  },
+  {
+    "file": "scripts/three-d-learned-prepare.py",
+    "sha256": "84a66c3b46d7701aed28c8d0596860cd8a5a0fa7b36f76135135be2f3248ba1e"
+  },
+  {
+    "file": "scripts/three-d-obs.mjs",
+    "sha256": "1314039f7b05256cda76c7323887c67bb462af129880d73fb34fddd864526078"
+  },
+  {
+    "file": "scripts/three-d-review.py",
+    "sha256": "23f809c383ae00ad39ae3627fe2ec032ba372eb6b6e05d1f30047dcad88231b7"
+  },
+  {
+    "file": "scripts/three-d-ui-check.mjs",
+    "sha256": "5033231b2fc368f025e5262af268b522b25fa93550145c1f7318e85b3cddb945"
+  },
+  {
+    "file": "tests/worker/test_three_d_motion.py",
+    "sha256": "821429d9e4e0cf0ff4f3744e7a03852c1e1fe9206bc24bebf24df871f0838493"
+  },
+  {
+    "file": "tools/three-d-anatomy.py",
+    "sha256": "5e422f39d81fef0f09b2437b0fa1afa185a436f1248961a4b58b8ac7c79e7607"
+  },
+  {
+    "file": "tools/three-d-blender-check.py",
+    "sha256": "824c85cf21568dcea1c18d8538a9ebaf77394c6b2a024ea105c484973f638c95"
+  },
+  {
+    "file": "tools/three-d-build.py",
+    "sha256": "715d19bb17ff1ed1819f99397b81558c46f8c6dc3a0fb328a27c75526f17a726"
+  },
+  {
+    "file": "tools/three-d-learned.py",
+    "sha256": "a2a1f519611385fe0e02d44b421a2d249f6c312f2562ec5334b577e8813769ed"
+  },
+  {
+    "file": "tools/three-d-live.py",
+    "sha256": "ac6ccfc77fbcc1c2607eac47aaec388ecb8c1131c48d1cc233d531f586d7a50c"
+  },
+  {
+    "file": "tools/three-d-main.cjs",
+    "sha256": "126663d71fe4f79f27b6631ba06a958dc5aae93d944882cd9f62b4296e53b5f5"
+  },
+  {
+    "file": "tools/three-d-motion.py",
+    "sha256": "2f41e1ce8f7b3208f172fa4fa7244209698f2537d40fbfce48144f031ad3c651"
+  },
+  {
+    "file": "tools/three-d-reference.json",
+    "sha256": "0e63b670b96133e251dbb202e86a58920d705a059a63b33e553389f70e7cab26"
+  },
+  {
+    "file": "tools/three-d-static-check.py",
+    "sha256": "c42be15b528bd50c815beb95069e16b5cf7540ecdd3f6d0233f2feeaba04d0e0"
+  },
+  {
+    "file": "tools/three-d-viewer.html",
+    "sha256": "2f5133d27fe3173e483158f1ccae7b179752444f00f1789eeadb1996689baa2d"
+  }
+]

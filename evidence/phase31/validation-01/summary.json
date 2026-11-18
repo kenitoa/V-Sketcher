@@ -1,0 +1,41 @@
+{
+  "passed": true,
+  "records": [
+    {
+      "file": "evidence\\phase31\\run-07\\model.glb",
+      "sha256": "94ffb92eee35edb9aa69320705296f8a9d1885f8c5618f1ef100ec5db888fba5",
+      "errors": 0
+    },
+    {
+      "file": "evidence\\phase31\\run-07\\model.vrm",
+      "sha256": "32b9e087db1f71509fbfe3846ecdc2b2a89e098e113332e73c588f10ee4a7e5b",
+      "errors": 0
+    },
+    {
+      "file": "evidence\\phase31\\run-07\\corrected-model.glb",
+      "sha256": "72ebafa16a01305cd94fae1954aa1863ae603d044254501be2a6e92c42383959",
+      "errors": 0
+    },
+    {
+      "file": "evidence\\phase31\\run-07\\corrected-model.vrm",
+      "sha256": "86d3b098c9fbed759c6ab84d12cdff423403c92ce7009e25f6d69635bd461262",
+      "errors": 0
+    },
+    {
+      "file": "evidence\\phase31\\learned-02\\model.glb",
+      "sha256": "ae6143c4367d082dffc232827b4234ad074346b9fbaa4a9a5bf50428fc25aff2",
+      "errors": 0
+    },
+    {
+      "file": "evidence\\phase31\\learned-03\\model.glb",
+      "sha256": "9e4feac99b3a55e0180665fe7dd0f2d0a8791e8735cdfb11c9bde9b4ea4df177",
+      "errors": 0
+    }
+  ],
+  "finalUI": "run-07",
+  "neutralAfterSyntheticStop": true,
+  "independentBlenderExactBytes": "run-05/blender/report.json",
+  "syntheticInputIsNotHumanTrackingEvidence": true,
+  "devicesReleased": true,
+  "productQualityAcceptance": false
+}

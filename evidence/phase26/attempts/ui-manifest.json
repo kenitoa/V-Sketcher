@@ -1,0 +1,17 @@
+[
+  {
+    "run": "ui-01",
+    "scope": "Settings-only UI; synthetic streams, native file writes; no physical-device or milestone approval",
+    "layout": "Initial functional screen"
+  },
+  {
+    "run": "ui-02",
+    "scope": "Settings-only UI; synthetic streams, native file writes; no physical-device or milestone approval",
+    "layout": "First card layout; common dialog width issue"
+  },
+  {
+    "run": "ui-03",
+    "scope": "Settings-only UI; synthetic streams, native file writes; no physical-device or milestone approval",
+    "layout": "Corrected desktop width and no-horizontal-overflow guard"
+  }
+]

@@ -1,0 +1,9 @@
+{
+  "passed": false,
+  "requiredLocalGatePassed": true,
+  "nodeGroups": 327,
+  "pythonGroups": 36,
+  "failure": "E_INPUT_EXPRESSION_RELEASE",
+  "stage": "input-recovery-ui",
+  "sourceChangesAfterThisRun": "Gather clock/control diagnostics before selecting a correction"
+}

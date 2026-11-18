@@ -12,4 +12,5 @@ mkdirSync(resolve(root, 'dist'), { recursive: true });
 const pkg = JSON.parse(readFileSync(resolve(root, 'package.json'), 'utf8'));
 writeFileSync(resolve(root, 'dist/runtime-config.json'), JSON.stringify({ channel: mode, version: pkg.version, protocol: 1 }) + '\n');
 run(python, ['scripts/notices.py']);
+run(process.execPath, ['scripts/prepare-release.mjs']);
 console.log('Built', mode, pkg.version);

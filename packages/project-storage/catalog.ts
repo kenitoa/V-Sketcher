@@ -1,7 +1,8 @@
-import { mkdir, readFile, rename, unlink, readdir, stat, lstat } from 'node:fs/promises';
+import { mkdir, readFile, unlink, readdir, stat, lstat } from 'node:fs/promises';
 import { join } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { readBundle, decodeBundle, sha256, encodeBundle, type SnapshotKind } from './archive';
+import {replaceJournal} from './replace';
 import { serializeProject, type Project } from '../project-model';
 export interface RecoveryRecord { id:string; projectId:string; displayName:string; revision:number; createdAt:string; kind:'autosave' | 'checkpoint' | 'backup'; reason:string; sourcePath:string | null; pending:boolean; bytes:number; hash:string; }
 export interface RecentRecord { id:string; path:string; displayName:string; sourceType:string; openedAt:string; }
@@ -13,7 +14,7 @@ export class ProjectCatalog {
   file(id:string):string { if (!UUID.test(id)) throw new Error('E_RECOVERY_ID'); return join(this.root,'snapshots',id+'.2dsketch'); }
   private async persist():Promise<void> {
     await mkdir(this.root,{ recursive:true }); const file = join(this.root,'catalog.json'); const temporary = join(this.root,'.catalog-'+randomUUID()+'.tmp');
-    try { const handle = await import('node:fs/promises').then(fs => fs.open(temporary,'wx')); try { await handle.writeFile(JSON.stringify(this.data)); await handle.sync(); } finally { await handle.close(); } await rename(temporary,file); }
+    try { const handle = await import('node:fs/promises').then(fs => fs.open(temporary,'wx')); try { await handle.writeFile(JSON.stringify(this.data)); await handle.sync(); } finally { await handle.close(); } await replaceJournal(temporary,file); }
     finally { try { await unlink(temporary); } catch { /* non-authoritative temporary journal */ } }
   }
   private mutate<T>(operation:()=>Promise<T>):Promise<T> { const result = this.queue.then(operation); this.queue = result.catch(() => {}); return result; }

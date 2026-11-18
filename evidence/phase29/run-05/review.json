@@ -1,0 +1,227 @@
+{
+  "phase": 29,
+  "appVersion": "0.22.0",
+  "passedLocalScope": true,
+  "entirePhaseComplete": false,
+  "completedTasks": [
+    "T-281",
+    "T-285",
+    "T-286",
+    "T-287",
+    "T-289"
+  ],
+  "incompleteTasks": [
+    "T-282",
+    "T-283",
+    "T-284",
+    "T-288",
+    "T-290"
+  ],
+  "gate": {
+    "command": "tools\\dev.cmd run check",
+    "exitCode": 0,
+    "nodeTests": 329,
+    "pythonTests": 36,
+    "totalTests": 365,
+    "nodeFailures": 0,
+    "typecheck": true,
+    "ruff": true,
+    "generatedValidatorsCurrent": true,
+    "testBuild": true,
+    "normalLogsCopied": false,
+    "privateControllerLog": ".local/check29-release.log"
+  },
+  "package": {
+    "passed": true,
+    "appVersion": "0.22.0",
+    "oldVersion": "0.21.0",
+    "realZipExtraction": true,
+    "sideBySideUpdate": true,
+    "oldBundleUnchanged": true,
+    "userProjectPreserved": true,
+    "userAssetPreserved": true,
+    "oldReleaseProjectOpenedByNewRelease": true,
+    "removalRefusesAddedAsset": true,
+    "bothAppFoldersRemovedWithoutRecursiveDelete": true,
+    "sharedProfilePreserved": true,
+    "developerToolsOnPath": false,
+    "frozenWorker": true,
+    "cleanWindowsOS": false,
+    "crossVersionProjectMigration": true,
+    "previousVersionWasNotRerun": false,
+    "packagedRuns": [
+      {
+        "label": "before",
+        "passed": true,
+        "windowSize": [
+          1380,
+          900
+        ]
+      },
+      {
+        "label": "after",
+        "passed": true,
+        "windowSize": [
+          1380,
+          900
+        ]
+      },
+      {
+        "label": "repeat",
+        "passed": true,
+        "windowSize": [
+          1080,
+          720
+        ]
+      }
+    ],
+    "publicDistributionApproved": false,
+    "limitedTrialDistributed": false,
+    "m0": "HOLD"
+  },
+  "novice": {
+    "consented": 1,
+    "successSelfReports": 1,
+    "directFullPathCompletions": 0,
+    "measuredTimingRows": 0,
+    "releaseSampleGoal": 30,
+    "firstRouteGoalEach": 10,
+    "userRequestedLaterRecheck": true
+  },
+  "unresolved": [
+    "three-route novice observation",
+    "quantitative time and correction measurement",
+    "re-observation after changes",
+    "7-day first use and 14-day repeat windows",
+    "clean Windows installation",
+    "controlled trial distribution and environment-classified feedback",
+    "predecessor 27/28 and actual devices/endurance/performance gates"
+  ],
+  "m0": "HOLD",
+  "publicDistributionApproved": false,
+  "distributed": false,
+  "rawMediaStored": false,
+  "zip": {
+    "path": "out/make/zip/win32/x64/2DSketcher-win32-x64-0.22.0.zip",
+    "bytes": 308869254,
+    "sha256": "3bf0538da2c0864dea6048548940cb6ccce1b6e77a3ab193e23250da77c98ac1"
+  },
+  "sources": [
+    {
+      "path": "package.json",
+      "sha256": "b7b95b69f6fd10bea135a127718d298c44afb6de7061be4a8c2e9022674587fa"
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "eb4a908c80a1ba4ae0f2c74323a87ea2e8603a96918046b3e8ea0f0bc31223f9"
+    },
+    {
+      "path": "forge.config.cjs",
+      "sha256": "333b051794a62c17698187fa94925f732d0c8d9a526471620b8a104891aadd0e"
+    },
+    {
+      "path": "apps/desktop/main.ts",
+      "sha256": "3ef18c374bc4187d17336a63be8cc18bc6014a214a23f559ee8bab50e3d0f23e"
+    },
+    {
+      "path": "apps/renderer/src/project-desk.tsx",
+      "sha256": "f9840f46fa63a9ebb4d47ea3dc44b135c4256bf64a1a5e6b7066f8e1cbf10a48"
+    },
+    {
+      "path": "apps/renderer/src/help-panel.tsx",
+      "sha256": "cd2d458455b20cf12848a8661c639b31fcbd2709d60e0c5b7bbd3513e4fa3869"
+    },
+    {
+      "path": "apps/renderer/src/help.css",
+      "sha256": "105160b95dca880ad81adef9921ab9f448e6cacf98a0aa9efa19ba2a096b127e"
+    },
+    {
+      "path": "apps/renderer/src/guide-self-check.ts",
+      "sha256": "3b2d809b6bace621ba18db5953ce14bb7c57b5ccb8e84df6ff5d787b27ff4c15"
+    },
+    {
+      "path": "apps/renderer/src/global.d.ts",
+      "sha256": "6d8ed9d5629576510937c2acfb4081e86f919fe115fa57d9266a115934a5cf9e"
+    },
+    {
+      "path": "apps/renderer/src/environment-self-check.ts",
+      "sha256": "76bc4544390db898b4d0560fe8dfcbc34c47ba9091ed183184a9724c66f4c050"
+    },
+    {
+      "path": "packages/user-guide/index.ts",
+      "sha256": "3effebe1819a5c093425edc5d415359d5fb11ea332611963c8fc798343e070b9"
+    },
+    {
+      "path": "scripts/build.mjs",
+      "sha256": "21d1e25565934be142db4d82b3121a706090ceb68d8dea3c89b09c26327d0be2"
+    },
+    {
+      "path": "scripts/prepare-release.mjs",
+      "sha256": "fe0b465d067248d9ef40d82ae5f9c3b193f38bcd0c057e88558b67ee51a38c25"
+    },
+    {
+      "path": "scripts/test.mjs",
+      "sha256": "af6bbb4da791d460980d982704b86ae150634a9c6c8375ec14f37e6926363820"
+    },
+    {
+      "path": "scripts/usability-ui-check.mjs",
+      "sha256": "a59ff0dde87b9b49b9bc98ebc456e025c6df53772ea3a3b9b2295c9b9f132f60"
+    },
+    {
+      "path": "scripts/usability-package-check.mjs",
+      "sha256": "737c8494c0bb2ded86eb2eca3cc540f45ad4c070b1276389bb9cf5fedac6c6b0"
+    },
+    {
+      "path": "scripts/portable-lifecycle-test.mjs",
+      "sha256": "e776d1d7db9aacc69ee51e634ab56ed3fb495b368cc1f116dc23d44b10460c85"
+    },
+    {
+      "path": "scripts/usability-review.mjs",
+      "sha256": "6c92f5deb3a8f0de2358eed374a32b33f27b55468cd2f359ea7e2a22bbbbd880"
+    },
+    {
+      "path": "tests/user-guide.test.ts",
+      "sha256": "3eac3d19c4a39cb30befb48f1f0c7f25b8fee4f89d878fb207e11bb83a671d1c"
+    },
+    {
+      "path": "tools/portable-lifecycle.mjs",
+      "sha256": "0ac9a24dde76994b952cf000cddd795693d444b0154e200f67e3d6f7d92c6f3f"
+    },
+    {
+      "path": "docs/planning/29-observation-protocol.md",
+      "sha256": "77fa27b323d7984285211550cdab5d7520501cc96be8e3657906f70a7a6a1a00"
+    },
+    {
+      "path": "docs/user/observation-template.json",
+      "sha256": "80222bd920fea6336ebd9d74b924c7ba232094637ed2118422c3d6302be78f19"
+    },
+    {
+      "path": "docs/user/feedback.md",
+      "sha256": "719ed43d765971d82d19a0a4daded3959f2768d03685c926da8d32382f4e38eb"
+    },
+    {
+      "path": "docs/user/install.md",
+      "sha256": "547ab656dae726f647275041589a08b73018efd34edff9cb2c7496798842f9d7"
+    },
+    {
+      "path": "docs/user/troubleshooting.md",
+      "sha256": "4b61b16787371e69e93f1f0184e31ac16dc8a4009c903ba7622cb5f3c3e6d04d"
+    },
+    {
+      "path": "docs/Todo",
+      "sha256": "e5cfe81471bf4fb392f27d67c60cb2584f1dc57bb1076d4ac1e26989b3d174d9"
+    },
+    {
+      "path": "docs/PRD.md",
+      "sha256": "3e8282bd2d70804e18296f3ce193865a648e34e1d4d77c4214433cf8685607d9"
+    },
+    {
+      "path": "docs/Function.md",
+      "sha256": "b86b3e7962b6b005ee0b2b81dffdc6766696124afc3b494a94da3d56a61dc2b8"
+    },
+    {
+      "path": "docs/planning/29-usability-release.md",
+      "sha256": "a6fe00c9b36a23adb821343121f1ff25d4202b513aef8ff47c66082ec6b903fb"
+    }
+  ]
+}

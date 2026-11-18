@@ -1,0 +1,17 @@
+{
+  "testedProductSourcesUnchanged": true,
+  "postRunChange": "Controller output/profile separation only; tested controller preserved byte-for-byte",
+  "latestControllerSyntaxChecked": true,
+  "sourceSha256": {
+    "tools/integration-external-check.mjs": "de02bfdf2ff747e57aed7cfeb22584ba1b67afc944cc8eb6ed637691e34865ae",
+    "tools/integration-live-check.mjs": "76b904b22b2a0ffe9546fbf4c200a7cd4051e107c88ed751954bfff9897fd46f",
+    "tools/integration-obs-check.mjs": "4102ab591fdad95a4e307383f3b35b461b4fc681815e37c067ad602dc56f630f",
+    "tools/integration-obs-main.cjs": "8b87bda95af1c0cf5b8858d0f41ef55f4056357bc9d15da75398ad316b9841b2",
+    "tools/integration-obs-pixels.py": "cfbdd8da75c44d20251930c8c35fadac0a479988129ecc7c31dfecb5279a8348",
+    "scripts/verify-integration.mjs": "9d8b228df6a59de90e00e8095df7dfa509d810fd2496394b916ade376911344f",
+    "scripts/integration-coverage.py": "8c17f25f6ed2f6bbfe45038c6c4a2320a12f268f6c90cbad4b648de2da8cf7c7",
+    "scripts/integration-review.py": "472d1850db8e7071ee8afdbebe36ad769c0da0935f22860bb33d20a7fff9becd"
+  },
+  "live02": "Ended before device connection/test start; not acceptance success",
+  "m0": "HOLD"
+}

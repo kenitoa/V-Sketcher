@@ -1,0 +1,62 @@
+{
+  "passed": true,
+  "target": "Official portable Blender",
+  "version": "4.5.3 LTS",
+  "sourceSha256": "e09d655f055515e0e0cb8633a499cb6ee46617cf958f9df841455b7e784c650b",
+  "sourceUnchanged": true,
+  "meshCount": 2,
+  "armatureCount": 1,
+  "boneCount": 19,
+  "shapeKeys": [
+    "Basis",
+    "aa",
+    "blinkLeft",
+    "blinkRight"
+  ],
+  "materials": [
+    "EstimatedBack",
+    "ObservedFront"
+  ],
+  "imageCount": 2,
+  "views": [
+    {
+      "view": "front",
+      "sha256": "98b7f1cd789cc7f1a976345006da1dde916bbfe0da0679b5b88bf740acbcd286",
+      "renderMs": 46148.842100054026
+    },
+    {
+      "view": "side",
+      "sha256": "20556ea93ef246d09b486908005787e63eb2d6be1cb7d4762d671b06d870e372",
+      "renderMs": 1056.4160000067204
+    },
+    {
+      "view": "rear",
+      "sha256": "27f9d6b9be9723a30fdce245b4615e3db71fab164dddfd67ab424bd26ce9d6b1",
+      "renderMs": 574.4157999288291
+    },
+    {
+      "view": "threequarter",
+      "sha256": "2a02d52159bb6b2703ef73b6f8c8b71a16d62b1e1bcdab3f83b3e15fd9b30138",
+      "renderMs": 593.6686999630183
+    },
+    {
+      "view": "blink",
+      "sha256": "59acc696a983e9069901a753aa1d13fcb135e2114f26398c9d92921d512ef2dc",
+      "renderMs": 729.3427000986412
+    },
+    {
+      "view": "mouth",
+      "sha256": "7dc8a27a25e3b11a97f418d0416325f49169b26595e782a6efe25f0f7cbcdfd5",
+      "renderMs": 617.4116999609396
+    },
+    {
+      "view": "head",
+      "sha256": "15527803a83628a221364bfbb9184c0f60bbff70a9a8b999941aa31c09d83a4d",
+      "renderMs": 638.5574999731034
+    }
+  ],
+  "ourAppRequired": false,
+  "ourFrameServerRequired": false,
+  "physicalDevicesOpened": false,
+  "productionQualityAcceptance": false
+}

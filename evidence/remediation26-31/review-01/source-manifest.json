@@ -1,0 +1,102 @@
+[
+  {
+    "file": "package-lock.json",
+    "sha256": "8df691037330644376a44d812528566b4151658629d329376d4f0731d3fb9c97"
+  },
+  {
+    "file": "package.json",
+    "sha256": "df4e8005c8cc8d9124a54cdb3b5d7bc4f7d6e46892d723faa28c697398b82b96"
+  },
+  {
+    "file": "packages/project-storage/catalog.ts",
+    "sha256": "cd88351ed1bdc3f22e8df3bccd1f1c9349a6efa7e75159072073687116bef472"
+  },
+  {
+    "file": "packages/project-storage/replace.ts",
+    "sha256": "d8f7b3a5ac46812c2677bb7f3a83a95e8c0670ce12ecfa4730510238eacedcdd"
+  },
+  {
+    "file": "scripts/remediation-linear.mjs",
+    "sha256": "b8616f8e81c82d09d69fcc08dc0ab6b51c483d67d4ffbe53b462c5afa3de92a8"
+  },
+  {
+    "file": "scripts/remediation-media.mjs",
+    "sha256": "18feb8481ed4efa09c453c9e43cce67bdb9ae9537600edc615795bed05df6c42"
+  },
+  {
+    "file": "scripts/remediation-package-final.mjs",
+    "sha256": "7edcfa5c339ecc252668487d9f37cde8d8b225bfa10f9a67ee629ca101986252"
+  },
+  {
+    "file": "scripts/remediation-package.mjs",
+    "sha256": "2e7b9214d58652bf73aa8682222794f635ea10a08003dbbba987d675b29ce47b"
+  },
+  {
+    "file": "scripts/remediation-review.py",
+    "sha256": "0af5fa05751215b0bbb7dada9491ec82d244faae7532612098a98e452253b4d3"
+  },
+  {
+    "file": "scripts/remediation-role-proof.mjs",
+    "sha256": "cc2efa5721c7dd458430cb51ea9a9fa62ded76be5937c9d721935dd48ea7a5c2"
+  },
+  {
+    "file": "scripts/remediation-space-cleanup.py",
+    "sha256": "89d9ed02953329927c6b633ac487750ae6f36878c8b25285f598d160303e1558"
+  },
+  {
+    "file": "scripts/remediation-space-prepare.py",
+    "sha256": "711d80f097b5c559a1461bb690d8b21f51d8f6c506ad568877a9aa0f2563983d"
+  },
+  {
+    "file": "scripts/remediation-update-docs.py",
+    "sha256": "4a524b0c44584960aa4958111f5eb681f7da46c9312602d75b4237b943c5b3f1"
+  },
+  {
+    "file": "scripts/test.mjs",
+    "sha256": "8655546cf84bdf2139cbf673acdaccf4e41b63d5857e7e2b9b6209657c1af336"
+  },
+  {
+    "file": "tests/journal-replace.test.ts",
+    "sha256": "26f3ff54deca0de561746f901117cd30c850bea9ed45154b3e418d55359d5dfa"
+  },
+  {
+    "file": "tools/fixtures/camera/astronaut.png",
+    "sha256": "2418889d0d83962d51facc3832b55cf1849690018a1e873d1c551146555cd02f"
+  },
+  {
+    "file": "tools/fixtures/camera/source.json",
+    "sha256": "aca2371bdffcc4feeda1059abe1af22e0ec476a655dd17b32bb9a709d7afe68f"
+  },
+  {
+    "file": "tools/remediation-flow-main.cjs",
+    "sha256": "4e6aa05b67531f7fa8acf82ab933829bbd932f3fc619df1c7dbc937718289ab2"
+  },
+  {
+    "file": "tools/remediation-flow.js",
+    "sha256": "091fcd1c8a8e021da1cccdc35662ecfc4425f538f63c993785efce011bcc7716"
+  },
+  {
+    "file": "tools/remediation-media-main.cjs",
+    "sha256": "bb0a735a18f891cbe49e7f43ed91288c819716cdaae9c25b4692d156ad98f5c4"
+  },
+  {
+    "file": "tools/remediation-media-preload.cjs",
+    "sha256": "4699092b537cc06d676e98c1522c8a5436a4636d37afbf6b7207a81da6bab0d6"
+  },
+  {
+    "file": "tools/remediation-media.html",
+    "sha256": "7f37758b2d6b2b07636be93f4aa68b138e75940b9568c7eca283c7bb01503b0d"
+  },
+  {
+    "file": "tools/remediation-media.ts",
+    "sha256": "cd2d6870d0ad78a7d21d3a2cd8581d4ffeda2c3ace70fab3b9611813387760a7"
+  },
+  {
+    "file": "tools/remediation-reference.ts",
+    "sha256": "626c8549fcf29232361f2ca3e8143806706ad6be2019e5719417ba0bab680449"
+  },
+  {
+    "file": "tools/remediation-space.cjs",
+    "sha256": "e3d46546439a300e809d5e71380d3b4ccc2a8679e1496efabb35836b78dc83bf"
+  }
+]

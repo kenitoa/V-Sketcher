@@ -1,0 +1,96 @@
+{
+  "passed": true,
+  "cycles": 60,
+  "cycleScope": "Compiled product project/run/output host services, premium sample on three route labels; not three route preparation or GPU rendering",
+  "durationMs": 12223.7231,
+  "cycleP95Ms": 307.4307000000001,
+  "eventLoopP95Ms": 49.577983,
+  "samples": [
+    {
+      "at": 1210.8976,
+      "rss": 99270656,
+      "heap": 22564064,
+      "external": 15398381
+    },
+    {
+      "at": 2221.1005,
+      "rss": 120852480,
+      "heap": 19478272,
+      "external": 12994376
+    },
+    {
+      "at": 3222.5327,
+      "rss": 117788672,
+      "heap": 16218920,
+      "external": 14961956
+    },
+    {
+      "at": 4221.694,
+      "rss": 136175616,
+      "heap": 22998344,
+      "external": 33925409
+    },
+    {
+      "at": 5221.7254,
+      "rss": 159944704,
+      "heap": 35792624,
+      "external": 23523925
+    },
+    {
+      "at": 6221.7029,
+      "rss": 156389376,
+      "heap": 24594008,
+      "external": 19265491
+    },
+    {
+      "at": 7222.132,
+      "rss": 194080768,
+      "heap": 33365552,
+      "external": 21447451
+    },
+    {
+      "at": 8222.1269,
+      "rss": 226541568,
+      "heap": 33376720,
+      "external": 23335154
+    },
+    {
+      "at": 9251.3269,
+      "rss": 223485952,
+      "heap": 76582832,
+      "external": 19118719
+    },
+    {
+      "at": 10256.6073,
+      "rss": 225153024,
+      "heap": 38902256,
+      "external": 34100693
+    },
+    {
+      "at": 11256.0147,
+      "rss": 224768000,
+      "heap": 27202856,
+      "external": 17250829
+    },
+    {
+      "at": 12282.1365,
+      "rss": 224940032,
+      "heap": 29310104,
+      "external": 29743615
+    }
+  ],
+  "samplingScope": "This Node host-service test process only; not Electron/worker/OBS tree",
+  "privacy": {
+    "canaryLogChecks": true,
+    "diagnosticAllowlist": true,
+    "broadcastWhitelist": true,
+    "privateProjectNameExcluded": true,
+    "traversalAndQueryRequests": 180
+  },
+  "actualGPUVerified": false,
+  "physicalDevicesOpened": false,
+  "actualOBSVerified": false,
+  "performanceAcceptance": false,
+  "twoHourAcceptance": false,
+  "m0": "HOLD"
+}

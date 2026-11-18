@@ -1,0 +1,36 @@
+{
+  "stages": [
+    {
+      "name": "required-check",
+      "passed": true
+    },
+    {
+      "name": "storage",
+      "passed": true
+    },
+    {
+      "name": "cycles-and-privacy",
+      "passed": true
+    },
+    {
+      "name": "actual-gpu",
+      "passed": true
+    },
+    {
+      "name": "notices",
+      "passed": true
+    },
+    {
+      "name": "portable-build",
+      "passed": true
+    },
+    {
+      "name": "packaged-self-check",
+      "passed": true
+    },
+    {
+      "name": "packaged-license-bytes",
+      "passed": true
+    }
+  ]
+}

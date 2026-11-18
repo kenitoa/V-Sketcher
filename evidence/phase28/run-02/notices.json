@@ -1,0 +1,136 @@
+{
+  "localInventoryPassed": true,
+  "sourceNoticeCopies": [
+    {
+      "source": "NOTICE.md",
+      "notice": "NOTICE.md",
+      "sha256": "9aecde185a81e3a3f5fabd785a112cbfbe539ac78f76565c2aadd9353c688fd1"
+    },
+    {
+      "source": "worker/resources/model-source.json",
+      "notice": "model-source.json",
+      "sha256": "3cbe671b9bf9b3e411b3d1eb3dc678ecf4320070ce568c492bd481fd4e408182"
+    },
+    {
+      "source": "assets/product/parts/catalog.json",
+      "notice": "parts-catalog.json",
+      "sha256": "f0494f8a5f68a715283be2760c68ed9ece3c0f0ce1810497c76f7bba3dd0092d"
+    },
+    {
+      "source": "assets/product/parts/generation-record.json",
+      "notice": "parts-generation-record.json",
+      "sha256": "8a4bfd2b373cf73d1ee6f07bc6cfc87432760fda6c4f4543ae9cf47636cf1a8a"
+    },
+    {
+      "source": "assets/product/parts/USAGE.md",
+      "notice": "parts-USAGE.md",
+      "sha256": "6c3dcb90a39ce6618f57a363cd2ff44c5f1f28ce4abbf14dcdf489ee49df2639"
+    },
+    {
+      "source": "assets/product/split/manifest.json",
+      "notice": "split-provenance.json",
+      "sha256": "702cf425bab16e6d671ac2d5f95993abad99e1f556cacaad54f3d22ac8ae6b08"
+    }
+  ],
+  "premiumPreviewAssets": 9,
+  "partsStateAssets": 27,
+  "modelPinnedHashVerified": true,
+  "nodeRuntime": [
+    {
+      "name": "ajv",
+      "version": "8.20.0",
+      "license": "MIT",
+      "copiedTexts": 1
+    },
+    {
+      "name": "buffer-crc32",
+      "version": "1.0.0",
+      "license": "MIT",
+      "copiedTexts": 1
+    },
+    {
+      "name": "fast-deep-equal",
+      "version": "3.1.3",
+      "license": "MIT",
+      "copiedTexts": 1
+    },
+    {
+      "name": "fast-uri",
+      "version": "3.1.9",
+      "license": "BSD-3-Clause",
+      "copiedTexts": 1
+    },
+    {
+      "name": "json-schema-traverse",
+      "version": "1.0.0",
+      "license": "MIT",
+      "copiedTexts": 1
+    },
+    {
+      "name": "pend",
+      "version": "1.2.0",
+      "license": "MIT",
+      "copiedTexts": 1
+    },
+    {
+      "name": "react",
+      "version": "19.3.1",
+      "license": "MIT",
+      "copiedTexts": 1
+    },
+    {
+      "name": "react-dom",
+      "version": "19.3.1",
+      "license": "MIT",
+      "copiedTexts": 1
+    },
+    {
+      "name": "scheduler",
+      "version": "0.28.0",
+      "license": "MIT",
+      "copiedTexts": 1
+    },
+    {
+      "name": "require-from-string",
+      "version": "2.0.2",
+      "license": "MIT",
+      "copiedTexts": 1
+    },
+    {
+      "name": "ws",
+      "version": "8.23.0",
+      "license": "MIT",
+      "copiedTexts": 1
+    },
+    {
+      "name": "yauzl",
+      "version": "3.4.0",
+      "license": "MIT",
+      "copiedTexts": 1
+    },
+    {
+      "name": "yazl",
+      "version": "3.3.1",
+      "license": "MIT",
+      "copiedTexts": 1
+    }
+  ],
+  "installedPythonPackages": 29,
+  "pythonPackagesWithoutCopiedLicenseText": [],
+  "pythonBundledSubsetAndTransitiveNoticesApproved": false,
+  "electronLicenseAndChromiumNoticesPresent": true,
+  "thirdPartyExecutableBundlingApproved": false,
+  "publicDistributionApproved": false,
+  "licenseTextOverrides": {
+    "flatbuffers": {
+      "version": "25.12.19",
+      "path": "worker/resources/third-party/flatbuffers/LICENSE",
+      "source": "https://raw.githubusercontent.com/google/flatbuffers/v25.12.19/LICENSE",
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "retrieved": "2026-11-18",
+      "reason": "Installed wheel omits license text; pinned upstream license retained in bundled notices"
+    }
+  },
+  "scope": "Current private build local attribution/inventory consistency; no new legal interpretation or publication approval",
+  "m0": "HOLD"
+}

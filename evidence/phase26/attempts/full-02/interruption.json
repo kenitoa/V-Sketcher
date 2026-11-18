@@ -1,0 +1,9 @@
+{
+  "state": "INTERRUPTED_FOR_AUTHORIZED_HUMAN_DEVICE_TEST",
+  "lastStage": {
+    "stage": "prior-full",
+    "complete": false
+  },
+  "fullRegressionPassed": false,
+  "reason": "Avoid simultaneous verification apps while the user performs the real media test; no incomplete run relabeled as passed"
+}

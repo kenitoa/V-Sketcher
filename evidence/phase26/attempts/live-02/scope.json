@@ -1,0 +1,6 @@
+{
+  "passed": false,
+  "startedByUser": false,
+  "physicalStreamsOpened": false,
+  "reason": "Preparation timed out; no device connection or human-started measurement"
+}

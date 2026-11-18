@@ -1,0 +1,48 @@
+{
+  "passed": true,
+  "guide": {
+    "passed": true,
+    "topics": 11,
+    "threeRouteChoices": true,
+    "search": true,
+    "noResults": true,
+    "escapeFocusRestored": true,
+    "openingAndCancellingPreservesProject": true,
+    "premiumPartsExample": true,
+    "exampleNavigatesToMotion": true,
+    "deviceRequests": 0,
+    "noviceObservation": false
+  },
+  "appVersion": "0.22.0",
+  "channel": "test",
+  "packaged": false,
+  "windowSize": [
+    1380,
+    900
+  ],
+  "worker": {
+    "workerVersion": "0.1.0",
+    "python": "3.14.10",
+    "frozen": false,
+    "dependencyFilesInsideBundle": false,
+    "modelSha256": "64184e229b263107bc2b804c6625db1341ff2bb731874b0bcc2fe6544e0bc9ff",
+    "modelLoaded": true,
+    "cameraOpened": false,
+    "microphoneOpened": false,
+    "dependencies": {
+      "numpy": "2.5.5",
+      "opencv": "5.0.0",
+      "mediapipe": "1.2.3",
+      "sounddevice": "0.5.6",
+      "pillow": "13.0.0"
+    }
+  },
+  "workerStopped": true,
+  "protections": {
+    "sandbox": true,
+    "contextIsolation": true,
+    "nodeIntegration": false,
+    "externalNetworkBlocked": true
+  },
+  "m0": "HOLD"
+}

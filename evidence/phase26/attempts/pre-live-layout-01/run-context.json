@@ -1,0 +1,8 @@
+{
+  "status": "PASSED_AUTOMATED_RUN_BEFORE_LIVE_DIALOG_LAYOUT_REPAIR",
+  "appVersion": "0.21.0",
+  "preservedOriginalBytes": true,
+  "scope": "Automated regression, official independent avatar and packaged settings evidence for the preceding source/archive hashes; not a successful human-device trial. Superseded source is separately revalidated after scoped live-dialog CSS and numeric diagnostics changes.",
+  "humanDeviceTrialPassed": false,
+  "m0": "HOLD"
+}

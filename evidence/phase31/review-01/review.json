@@ -1,0 +1,162 @@
+{
+  "date": "2026-11-18T15:45:43.783675+00:00",
+  "section31Complete": false,
+  "completed": [
+    "T-301",
+    "T-302",
+    "T-303",
+    "T-304",
+    "T-305",
+    "T-306",
+    "T-308",
+    "T-309",
+    "T-310"
+  ],
+  "open": [
+    "T-307"
+  ],
+  "decision": "HOLD for product 3D; continue bounded research",
+  "M0": "HOLD",
+  "prior2DReleaseHoldsPreserved": true,
+  "requiredGate": {
+    "passed": true,
+    "nodeTests": 338,
+    "pythonTests": 43,
+    "total": 381
+  },
+  "sourceOriginalUnchanged": true,
+  "partWeightProof": true,
+  "finalUISource": "evidence/phase31/run-07",
+  "syntheticStopReturnsToNeutral": true,
+  "sourceAutoFaceDetections": 0,
+  "sourceAutoBodyDetections": 0,
+  "independentGLB": true,
+  "officialVRMLibraryLoad": true,
+  "independentVRMDesktopTrackingAccepted": false,
+  "actualOBS": {
+    "version": "33.0.1",
+    "uniqueAvatarImages": 8,
+    "faceBroadcastPassed": false,
+    "bodyMotionAccepted": false,
+    "overallPassed": false
+  },
+  "latestTrial": {
+    "file": "evidence/phase31/live-03/obs-live.json",
+    "overallPassed": false,
+    "framesWithFace": 0,
+    "bodyObservedFrames": {
+      "chest": 0,
+      "leftUpperArm": 0,
+      "leftLowerArm": 0,
+      "rightUpperArm": 0,
+      "rightLowerArm": 0
+    }
+  },
+  "learnedCandidate": {
+    "passed": true,
+    "candidate": "TripoSR",
+    "sourceCommit": "107cefdc244c39106fa830359024f6a2f1c78871",
+    "modelRevision": "5b521936b01fbe1890f6f9baed0254ab6351c04a",
+    "sourceSha256": "1599b359b246e226fee73fa9c644972f58b727b158e8e47fdc87bf4c976d9121",
+    "sourceImagesUploaded": false,
+    "loadAndVerifySeconds": 58.43887349998113,
+    "inferenceSeconds": 4.666281500016339,
+    "extractionSeconds": 0.8250565999187529,
+    "wallSeconds": 64.79608040000312,
+    "peakVRAMAllocatedBytes": 1957210624,
+    "peakVRAMReservedBytes": 2124414976,
+    "gpu": "NVIDIA GeForce RTX 4050 Laptop GPU",
+    "torchVersion": "2.5.1+cu124",
+    "transformersVersion": "4.44.2",
+    "resolution": 128,
+    "chunkSize": 8192,
+    "vertices": 17610,
+    "triangles": 35172,
+    "bounds": [
+      [
+        -0.2920111417770386,
+        -0.4095694422721863,
+        -0.48636430501937866
+      ],
+      [
+        0.26685237884521484,
+        0.42195379734039307,
+        0.512509822845459
+      ]
+    ],
+    "watertight": true,
+    "rig": false,
+    "expressions": false,
+    "sideRearGroundTruth": false,
+    "adaptations": [
+      "Transformers 4.44.2 for Python 3.12 wheels",
+      "scikit-image CPU marching cubes instead of torchmcubes CUDA extension",
+      "RGBA input bypasses unused rembg dependency",
+      "local pinned DINO config; network connections disabled during inference"
+    ],
+    "upstreamSourceModified": false,
+    "researchOnly": true,
+    "productionQualityAccepted": false
+  },
+  "learnedHigherResolution": {
+    "passed": true,
+    "candidate": "TripoSR",
+    "sourceCommit": "107cefdc244c39106fa830359024f6a2f1c78871",
+    "modelRevision": "5b521936b01fbe1890f6f9baed0254ab6351c04a",
+    "sourceSha256": "1599b359b246e226fee73fa9c644972f58b727b158e8e47fdc87bf4c976d9121",
+    "sourceImagesUploaded": false,
+    "loadAndVerifySeconds": 31.97899450000841,
+    "inferenceSeconds": 4.39813620003406,
+    "extractionSeconds": 3.050733199925162,
+    "wallSeconds": 40.43064520007465,
+    "peakVRAMAllocatedBytes": 2494078464,
+    "peakVRAMReservedBytes": 3164602368,
+    "gpu": "NVIDIA GeForce RTX 4050 Laptop GPU",
+    "torchVersion": "2.5.1+cu124",
+    "transformersVersion": "4.44.2",
+    "resolution": 256,
+    "chunkSize": 8192,
+    "vertices": 77597,
+    "triangles": 155168,
+    "bounds": [
+      [
+        -0.2910991907119751,
+        -0.4058269262313843,
+        -0.48782506585121155
+      ],
+      [
+        0.26908767223358154,
+        0.4209442138671875,
+        0.5080413818359375
+      ]
+    ],
+    "watertight": false,
+    "rig": false,
+    "expressions": false,
+    "sideRearGroundTruth": false,
+    "adaptations": [
+      "Transformers 4.44.2 for Python 3.12 wheels",
+      "scikit-image CPU marching cubes instead of torchmcubes CUDA extension",
+      "RGBA input bypasses unused rembg dependency",
+      "local pinned DINO config; network connections disabled during inference"
+    ],
+    "upstreamSourceModified": false,
+    "researchOnly": true,
+    "productionQualityAccepted": false
+  },
+  "criticalRisks": [
+    "D31-R01",
+    "D31-R02",
+    "D31-R03",
+    "D31-R04",
+    "D31-R05",
+    "D31-R06"
+  ],
+  "rawCameraFramesStored": false,
+  "microphonePCMStored": false,
+  "productPackagingChangedBy31": false,
+  "published": false,
+  "signed": false,
+  "pushed": false,
+  "historicalRunsPreserved": true
+}

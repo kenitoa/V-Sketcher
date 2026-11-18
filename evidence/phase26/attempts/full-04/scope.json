@@ -1,0 +1,9 @@
+{
+  "passed": false,
+  "requiredLocalGatePassed": true,
+  "nodeGroups": 328,
+  "pythonGroups": 36,
+  "inputRecoveryPassed": true,
+  "failure": "Tracking UI expected exactly one option, but the new explicit Windows default plus fixture produce two",
+  "correction": "Require both the explicit default option and the fixture option; all inference/calibration checks unchanged"
+}

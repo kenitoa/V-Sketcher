@@ -1,0 +1,22 @@
+{
+    "gpuAdapterLinkedToMeasuredContext":  false,
+    "adapters":  [
+                     {
+                         "driver":  "32.0.101.6078",
+                         "name":  "Intel(R) UHD Graphics"
+                     },
+                     {
+                         "driver":  "32.0.16.1078",
+                         "name":  "NVIDIA GeForce RTX 4050 Laptop GPU"
+                     }
+                 ],
+    "memoryGiB":  31.71,
+    "cpu":  "13th Gen Intel(R) Core(TM) i5-13420H",
+    "osVersion":  "10.0.26300",
+    "scope":  "Same workstation; bounded diagnostic measurements, not release benchmark baseline",
+    "date":  "2026-11-18",
+    "powerModeFixedForReleaseBenchmark":  false,
+    "logicalProcessors":  12,
+    "osBuild":  "26300",
+    "cleanOS":  false
+}

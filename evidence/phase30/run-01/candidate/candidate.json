@@ -1,0 +1,73 @@
+{
+  "candidate": {
+    "version": "0.22.0",
+    "sha256": "3bf0538da2c0864dea6048548940cb6ccce1b6e77a3ab193e23250da77c98ac1",
+    "bytes": 308869254,
+    "path": "out/make/zip/win32/x64/2DSketcher-win32-x64-0.22.0.zip",
+    "components": [
+      {
+        "path": "2DSketcher.exe",
+        "bytes": 250093568,
+        "sha256": "3d1e14d512373d91a66356e7b4d36345baefecbaf439726424aeb4f63ed9edd9"
+      },
+      {
+        "path": "resources/app.asar",
+        "bytes": 42756338,
+        "sha256": "c16e0f0ca5fe17dfc68ab920b2cf52e08d0353e936cc93f72937cd24a5329839"
+      },
+      {
+        "path": "resources/worker/worker.exe",
+        "bytes": 8810258,
+        "sha256": "b734cad79c96072cfcfee920b04c9b6a7f0aa47835216e02a8124666d86768b6"
+      },
+      {
+        "path": "resources/release/support.json",
+        "bytes": 1684,
+        "sha256": "9ebc18e3a992ca4da5d4c3c30cf1c4b13d61ae5e453850a8b5d664fc6a16c42b"
+      },
+      {
+        "path": "resources/release/USER-GUIDE.md",
+        "bytes": 9279,
+        "sha256": "034cc9a8e3c8c9c0dbbe2bf704f67eabf3cd3c678c9872ef890caa617bc72790"
+      },
+      {
+        "path": "resources/notices/dependency-inventory.json",
+        "bytes": 97138,
+        "sha256": "4eaa5fce585b8a37e7bfc5e28195d773ea27c71b2486c8175d8ad77707cea2cb"
+      },
+      {
+        "path": "resources/notices/model-source.json",
+        "bytes": 481,
+        "sha256": "3cbe671b9bf9b3e411b3d1eb3dc678ecf4320070ce568c492bd481fd4e408182"
+      }
+    ]
+  },
+  "reports": [
+    {
+      "name": "full",
+      "passed": true
+    },
+    {
+      "name": "image",
+      "passed": true
+    },
+    {
+      "name": "avatar",
+      "passed": true
+    },
+    {
+      "name": "broadcast",
+      "passed": true
+    }
+  ],
+  "invalidArchiveRejected": true,
+  "existingVersionOverwriteRejected": true,
+  "modifiedAsarDetectedAndRestored": true,
+  "originalCandidatePreserved": true,
+  "developerToolsOnPath": false,
+  "cleanWindowsOS": false,
+  "signed": false,
+  "releaseDecision": "HOLD",
+  "finalReleaseCandidateApproved": false,
+  "publicDistributionApproved": false
+}

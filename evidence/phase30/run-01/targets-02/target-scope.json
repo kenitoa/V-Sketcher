@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "appVersion": "0.22.0",
+  "source": "exact extracted portable candidate",
+  "independentRuns": 6,
+  "creationRoutesInIndependentRuns": 3,
+  "actualOBSRoute": "split-image final prepared route",
+  "actualOBSAllThreeRoutes": false,
+  "physicalDevicesOpened": false,
+  "streamingStarted": false,
+  "recordingStarted": false,
+  "performanceAcceptance": false,
+  "publicDistributionApproved": false
+}

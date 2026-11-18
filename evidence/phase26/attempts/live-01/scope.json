@@ -1,0 +1,7 @@
+{
+  "startedByUser": false,
+  "passed": false,
+  "reason": "Preparation timed out before human-started measurement; face and microphone readiness were not accepted",
+  "rawCameraFramesStored": false,
+  "rawAudioStored": false
+}

@@ -1,0 +1,8 @@
+{
+  "appVersion": "0.21.0",
+  "packagedExecutable": "out/2DSketcher-win32-x64/2DSketcher.exe",
+  "executableSha256": "bbb7ee0c06e9c64bfb1aea726c00ac23225e39d6c1bf639784e9b99c6855dcc1",
+  "appArchiveSha256": "176fdb4826c335eb074b9d6632380a017b47cb11e14e73a3b54812c3522d3abe",
+  "developerToolsOnPath": false,
+  "exitCode": 1
+}
