@@ -18,35 +18,37 @@ interface Batch { buffer:WebGLBuffer;data:Float32Array;count:number;crop:[number
 export class AvatarRenderer {
   readonly gl:WebGL2RenderingContext; private program:WebGLProgram; private textures = new Map<string,Texture>(); private batches = new Map<string,Batch>();
   private frameCount = 0; private current:Parameters = { ...NEUTRAL }; private disposed = false; private uploads = 0;
-  constructor(private canvas:HTMLCanvasElement,private scene:PreviewScene) {
+  constructor(private canvas:HTMLCanvasElement,private scene:PreviewScene,private sampling:'linear'|'mipmapped'='linear') {
     validateScene(scene); const gl = canvas.getContext('webgl2',{ alpha:true,premultipliedAlpha:true,antialias:true }); if (!gl) throw new Error('E_WEBGL_UNAVAILABLE'); this.gl = gl;
     const compile = (type:number,source:string):WebGLShader => { const shader = gl.createShader(type); if (!shader) throw new Error('E_SHADER_CREATE'); gl.shaderSource(shader,source); gl.compileShader(shader); if (!gl.getShaderParameter(shader,gl.COMPILE_STATUS)) throw new Error('E_SHADER_COMPILE'); return shader; };
     const program = gl.createProgram(); if (!program) throw new Error('E_SHADER_CREATE'); const vs = compile(gl.VERTEX_SHADER,vertex); const fs = compile(gl.FRAGMENT_SHADER,fragment); gl.attachShader(program,vs); gl.attachShader(program,fs); gl.linkProgram(program); gl.deleteShader(vs); gl.deleteShader(fs); if (!gl.getProgramParameter(program,gl.LINK_STATUS)) throw new Error('E_SHADER_LINK'); this.program = program;
-    gl.enable(gl.BLEND); gl.blendFunc(gl.ONE,gl.ONE_MINUS_SRC_ALPHA); gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL,true);
+    gl.enable(gl.BLEND); gl.blendFunc(gl.ONE,gl.ONE_MINUS_SRC_ALPHA); gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL,!scene.premultipliedTextures);
   }
   async load(base:string):Promise<void> {
     const gl = this.gl;
     for (const path of new Set(this.scene.layers.flatMap(l => Object.values(l.states)))) {
+      if(this.textures.has(path))continue;
       const same=[...this.textures.entries()].find(([key])=>key.split('?')[0]===path.split('?')[0])?.[1];if(same){this.textures.set(path,same);continue;}
       const image = new Image(); image.src = new URL(path,base).href; await image.decode(); if (this.disposed) return;
       const texture = gl.createTexture(); if (!texture) throw new Error('E_TEXTURE_CREATE'); gl.bindTexture(gl.TEXTURE_2D,texture);
-      gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE); gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,image);
+      gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,this.sampling==='mipmapped'?gl.LINEAR_MIPMAP_LINEAR:gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE); gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,image);if(this.sampling==='mipmapped')gl.generateMipmap(gl.TEXTURE_2D);
       this.textures.set(path,{ texture,width:image.naturalWidth,height:image.naturalHeight,image });
     }
     for (const layer of this.scene.layers) for (const path of new Set(Object.values(layer.states))) {
       const tex = this.textures.get(path)!; const geometry = layer.geometry?.[path]; const crop = geometry?.crop ?? { x:0,y:0,width:tex.width,height:tex.height }; const matrix = geometry?.matrix ?? [1,0,0,1,...layer.origin] as [number,number,number,number,number,number];
       if (crop.x+crop.width>tex.width || crop.y+crop.height>tex.height) throw new Error('E_ASSET_GEOMETRY');
       const mesh = layer.mesh; const back = inverse(matrix); const corners = [[crop.x,crop.y],[crop.x+crop.width,crop.y],[crop.x+crop.width,crop.y+crop.height],[crop.x,crop.y+crop.height]].map(([x,y]) => { const p = transform(matrix,{ x:x!,y:y! }); return { position:[p.x,p.y],weight:0,minimum:[0,0],maximum:[0,0] }; });
-      const source = mesh?.vertices ?? corners; const triangles = mesh?.triangles ?? [0,1,2,0,2,3]; const data = new Float32Array(triangles.flatMap(i => { const v = source[i]!; const uv = transform(back,{ x:v.position[0]!,y:v.position[1]! }); return [v.position[0]!,v.position[1]!,uv.x/tex.width,uv.y/tex.height,v.weight,...v.minimum,...v.maximum]; }));
+      const source = mesh?.vertices ?? corners; const triangles = mesh?.triangles ?? [0,1,2,0,2,3]; const data = new Float32Array(triangles.flatMap(i => { const v = source[i]!; const uv = transform(back,{ x:v.position[0]!,y:v.position[1]! }); return [v.position[0]!,v.position[1]!,layer.meshUVs?.[i]?.[0]??uv.x/tex.width,layer.meshUVs?.[i]?.[1]??uv.y/tex.height,v.weight,...v.minimum,...v.maximum]; }));
       if ([...data].some(v => !Number.isFinite(v))) throw new Error('E_SCENE_MESH');
       const buffer = gl.createBuffer(); if (!buffer) throw new Error('E_RENDER_BUFFER'); gl.bindBuffer(gl.ARRAY_BUFFER,buffer); gl.bufferData(gl.ARRAY_BUFFER,data,gl.STATIC_DRAW); this.uploads++;
       this.batches.set(layer.id+'|'+path,{ buffer,data,count:triangles.length,crop:[crop.x/tex.width,crop.y/tex.height,(crop.x+crop.width)/tex.width,(crop.y+crop.height)/tex.height] });
     }
   }
-  draw(input:Partial<Parameters> = {},placement?:{scale:number;x:number;y:number;crop:{left:number;right:number;top:number;bottom:number}}):void {
+  async setNativeScene(scene:PreviewScene,base:string):Promise<void>{if(!this.scene.premultipliedTextures||!scene.premultipliedTextures)throw new Error('E_NATIVE_PREVIEW');validateScene(scene);for(const b of this.batches.values())this.gl.deleteBuffer(b.buffer);this.batches.clear();this.scene=scene;await this.load(base);this.draw();}
+  draw(input:Partial<Parameters> = {},placement?:{scale:number;x:number;y:number;crop:{left:number;right:number;top:number;bottom:number}},nativePixelScale?:number):void {
     this.current = parameters({ ...(this.scene.defaults ?? NEUTRAL),...input }); const gl = this.gl; const [width,height] = this.scene.canvas;gl.disable(gl.SCISSOR_TEST);gl.clearColor(0,0,0,0); gl.clear(gl.COLOR_BUFFER_BIT);gl.viewport(0,0,this.canvas.width,this.canvas.height);if(placement){const w=this.canvas.width,h=this.canvas.height,s=placement.scale,c=placement.crop;gl.viewport(Math.round((w-w*s)/2+placement.x*w),Math.round((h-h*s)/2-placement.y*h),Math.round(w*s),Math.round(h*s));gl.enable(gl.SCISSOR_TEST);gl.scissor(Math.round(c.left*w),Math.round(c.bottom*h),Math.round((1-c.left-c.right)*w),Math.round((1-c.top-c.bottom)*h));}gl.useProgram(this.program);
     gl.uniform1i(gl.getUniformLocation(this.program,'artwork'),0);gl.uniform1i(gl.getUniformLocation(this.program,'artworkNext'),1);
-    const fit = Math.min(this.canvas.width/width,this.canvas.height/height); gl.uniform2f(gl.getUniformLocation(this.program,'canvasSize'),width,height); gl.uniform2f(gl.getUniformLocation(this.program,'fit'),fit*width/this.canvas.width,fit*height/this.canvas.height);
+    const fit = Math.min(this.canvas.width/width,this.canvas.height/height); gl.uniform2f(gl.getUniformLocation(this.program,'canvasSize'),width,height); if(nativePixelScale!==undefined&&(!Number.isFinite(nativePixelScale)||nativePixelScale<=0||nativePixelScale>8))throw new Error('E_NATIVE_SCALE');gl.uniform2f(gl.getUniformLocation(this.program,'fit'),(nativePixelScale??fit)*width/this.canvas.width,(nativePixelScale??fit)*height/this.canvas.height);
     for (const layer of this.ordered()) {
       const color=layer.color;gl.uniform4f(gl.getUniformLocation(this.program,'tint'),color?.hueDegrees??0,color?.minimumHue??0,color?.maximumHue??1,color?.minimumSaturation??1);
       const m = layer.mesh; const dynamic = dynamicMatrix(layer,this.current); gl.uniformMatrix3fv(gl.getUniformLocation(this.program,'dynamic'),false,new Float32Array([dynamic[0],dynamic[1],0,dynamic[2],dynamic[3],0,dynamic[4],dynamic[5],1]));

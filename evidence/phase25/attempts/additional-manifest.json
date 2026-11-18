@@ -1,0 +1,153 @@
+{
+  "scope": "Additional immutable development attempts. External04 uses rounded-viewport references and fails; exact-projection diagnostic reuses those captured frames with a separately generated fixed-scale reference. Final acceptance must use fresh verified product outputs.",
+  "files": [
+    {
+      "path": "ui-07/avatar-export-ui.png",
+      "sha256": "33e56897a630b43b3e9c32f1475171e4bf6292572be0a532b756d9aa54bf4caa"
+    },
+    {
+      "path": "ui-07/pixel-quality.json",
+      "sha256": "3ef55c2cc44621d60ae2a9616779887f29d3ac9eb2f73d447e2100031ede254a"
+    },
+    {
+      "path": "ui-07/report.json",
+      "sha256": "957ecbdff0d617d337b3fba74f7b801ed05058df329c5c96a3dc89940efd822e"
+    },
+    {
+      "path": "external-04/external-failed.json",
+      "sha256": "e82f28495feecb8a499f7d2d61711b8b2bc01350734c11d5f8500c56c166e85b"
+    },
+    {
+      "path": "external-04/parts-v1-expression.png",
+      "sha256": "a68a540a61a6f4535f3c394d4d7260de62acdb1a83905669256f60591e266a88"
+    },
+    {
+      "path": "external-04/parts-v1-eyes-closed.png",
+      "sha256": "0bd5ff1c89b510a0dbf5f938a119a41b0bc374580ce1ee1f89f2b2ad58ae6ec3"
+    },
+    {
+      "path": "external-04/parts-v1-head-negative.png",
+      "sha256": "5e05df3d036697e8c11b8f20af3939cea16494a8a92df5aba0fff2c86c3732a7"
+    },
+    {
+      "path": "external-04/parts-v1-head-positive.png",
+      "sha256": "98715c9906da77c4ccfaf78e4f310dc5be3f33ce0cca1c01b5aa2fed57a4779f"
+    },
+    {
+      "path": "external-04/parts-v1-middle.png",
+      "sha256": "b5809524330923b598e9c5f9ee6181b41c62f81c4239ce245aed88fd905f0781"
+    },
+    {
+      "path": "external-04/parts-v1-mouth-open.png",
+      "sha256": "7d8af71b7ea286a509330b4e83f4f6e79605555efcba3b2aeadd3dde52d518b2"
+    },
+    {
+      "path": "external-04/parts-v1-neutral.png",
+      "sha256": "7951dcb8ad51234a332b102ab6782795cc4b8281e52836d43a59b03950ffc3c1"
+    },
+    {
+      "path": "external-04/parts-v1-quality.json",
+      "sha256": "0f4441b947b867c6bd1d7713d5661a38730f6e0d2103358efd297ef7b84c475a"
+    },
+    {
+      "path": "external-04/parts-v2-expression.png",
+      "sha256": "b5ea69a5d27b81c9eeb400f5d437d285568664e814f3996f724954944346f33d"
+    },
+    {
+      "path": "external-04/parts-v2-eyes-closed.png",
+      "sha256": "a941fef7a62ac1e3900b1955e6242178e2e4176547c24d1388a23d9708d13308"
+    },
+    {
+      "path": "external-04/parts-v2-head-negative.png",
+      "sha256": "258d242f824574a0123bf58c4e30c6310a629ca1cee6737c87f2d04eff309f27"
+    },
+    {
+      "path": "external-04/parts-v2-head-positive.png",
+      "sha256": "df3129876a92e18dc8a831e6a79be3ab824519f2856b688def1b495302c2ca0f"
+    },
+    {
+      "path": "external-04/parts-v2-middle.png",
+      "sha256": "e47471998e76744cf87b9425591dfdae6985743c0764bd71e551107afea74421"
+    },
+    {
+      "path": "external-04/parts-v2-mouth-open.png",
+      "sha256": "6e5625c803478091b1981b8eb2c784a998d06114a9cf9fc882eb82adb503fec0"
+    },
+    {
+      "path": "external-04/parts-v2-neutral.png",
+      "sha256": "3d4565b280afc434f4e8f9fc4ff0375d75cbd142d758d5a6f4db6b5e4930ed21"
+    },
+    {
+      "path": "external-04/parts-v2-quality.json",
+      "sha256": "f6afec9b813d13b673ffbe17ee1474557f16f451cbb43b079239200aea74eea6"
+    },
+    {
+      "path": "external-04/progress.json",
+      "sha256": "4ebb593294bfbc1217610071e656aac5fd5b4962364e3d27d01b49f4d687b61b"
+    },
+    {
+      "path": "external-04/single-image-v1-expression.png",
+      "sha256": "cc76037e931ca8c082d510e3d1db5cfe8adafe813eb17d2cd3afadc3c3f22fee"
+    },
+    {
+      "path": "external-04/single-image-v1-eyes-closed.png",
+      "sha256": "8789ce85070d7e9df9f6fca1d7346aa25e92de029bfb1095b9a0faba898a1f73"
+    },
+    {
+      "path": "external-04/single-image-v1-head-negative.png",
+      "sha256": "1f126b9a7d087c58d8529b8315701fa1724b559e86efe12ee2a94d2bb7fccca0"
+    },
+    {
+      "path": "external-04/single-image-v1-head-positive.png",
+      "sha256": "bff75c5d0e282076bfc4e212120ea9d3e183d7407ce8af725411e8b9ff2b3073"
+    },
+    {
+      "path": "external-04/single-image-v1-middle.png",
+      "sha256": "be225aab8a6cf982172ba05e676290d10113533b1bf3ebac9be782f661ec107c"
+    },
+    {
+      "path": "external-04/single-image-v1-mouth-open.png",
+      "sha256": "02a0151a90d8984921cb5753ed1f57f222a0b6420185ebcd90442c94960c1f03"
+    },
+    {
+      "path": "external-04/single-image-v1-neutral.png",
+      "sha256": "c31871ed66beaaf77466d51b36536ed5188a631ddfc3c5865031f54744ffdcd6"
+    },
+    {
+      "path": "external-04/single-image-v1-quality.json",
+      "sha256": "f7296d81950e21bc78c845a900ae5640e572e1a7625d0a1631528bbd1c2984c0"
+    },
+    {
+      "path": "exact-projection-diagnostic/single-image-v1-expression.png",
+      "sha256": "cc76037e931ca8c082d510e3d1db5cfe8adafe813eb17d2cd3afadc3c3f22fee"
+    },
+    {
+      "path": "exact-projection-diagnostic/single-image-v1-eyes-closed.png",
+      "sha256": "8789ce85070d7e9df9f6fca1d7346aa25e92de029bfb1095b9a0faba898a1f73"
+    },
+    {
+      "path": "exact-projection-diagnostic/single-image-v1-head-negative.png",
+      "sha256": "1f126b9a7d087c58d8529b8315701fa1724b559e86efe12ee2a94d2bb7fccca0"
+    },
+    {
+      "path": "exact-projection-diagnostic/single-image-v1-head-positive.png",
+      "sha256": "bff75c5d0e282076bfc4e212120ea9d3e183d7407ce8af725411e8b9ff2b3073"
+    },
+    {
+      "path": "exact-projection-diagnostic/single-image-v1-middle.png",
+      "sha256": "be225aab8a6cf982172ba05e676290d10113533b1bf3ebac9be782f661ec107c"
+    },
+    {
+      "path": "exact-projection-diagnostic/single-image-v1-mouth-open.png",
+      "sha256": "02a0151a90d8984921cb5753ed1f57f222a0b6420185ebcd90442c94960c1f03"
+    },
+    {
+      "path": "exact-projection-diagnostic/single-image-v1-neutral.png",
+      "sha256": "72890a0c7555c1da3c4d3a3d80c5f60838b3473c75c14398e60d5c24851930dc"
+    },
+    {
+      "path": "exact-projection-diagnostic/single-image-v1-quality.json",
+      "sha256": "90ac55ae2aa88a53fbc264c96237a461eb61bc95bae6cd31773f2d13f61a9180"
+    }
+  ]
+}

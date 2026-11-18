@@ -1,0 +1,543 @@
+{
+  "passed": true,
+  "avatarExport": {
+    "passed": true,
+    "routes": [
+      {
+        "route": "parts",
+        "passed": true,
+        "actualRoutePreparation": true,
+        "conversionPreview": true,
+        "referenceStates": 7,
+        "reviewRequired": true,
+        "realINPWrite": true,
+        "staleRejected": true,
+        "reexport": true,
+        "oldConfirmationStale": true,
+        "targetVersionRejected": true,
+        "settingsReopened": true
+      },
+      {
+        "route": "single-image",
+        "passed": true,
+        "actualRoutePreparation": true,
+        "conversionPreview": true,
+        "referenceStates": 7,
+        "reviewRequired": true,
+        "realINPWrite": true,
+        "staleRejected": true,
+        "reexport": true,
+        "oldConfirmationStale": true,
+        "targetVersionRejected": true,
+        "settingsReopened": true
+      },
+      {
+        "route": "split-image",
+        "passed": true,
+        "actualRoutePreparation": true,
+        "conversionPreview": true,
+        "referenceStates": 7,
+        "reviewRequired": true,
+        "realINPWrite": true,
+        "staleRejected": true,
+        "reexport": true,
+        "oldConfirmationStale": true,
+        "targetVersionRejected": true,
+        "settingsReopened": true
+      }
+    ],
+    "deviceRequests": 0,
+    "physicalDevicesOpened": false,
+    "programmaticConfirmationOnly": true,
+    "actualExternalRuntimeVerified": false,
+    "m0": "HOLD",
+    "cancelledBuild": true,
+    "images": [
+      {
+        "route": "parts",
+        "label": "neutral",
+        "original": "parts-neutral-original.png",
+        "converted": "parts-neutral-converted.png",
+        "target": "parts-neutral-target-reference.png"
+      },
+      {
+        "route": "parts",
+        "label": "eyes-closed",
+        "original": "parts-eyes-closed-original.png",
+        "converted": "parts-eyes-closed-converted.png",
+        "target": "parts-eyes-closed-target-reference.png"
+      },
+      {
+        "route": "parts",
+        "label": "middle",
+        "original": "parts-middle-original.png",
+        "converted": "parts-middle-converted.png",
+        "target": "parts-middle-target-reference.png"
+      },
+      {
+        "route": "parts",
+        "label": "mouth-open",
+        "original": "parts-mouth-open-original.png",
+        "converted": "parts-mouth-open-converted.png",
+        "target": "parts-mouth-open-target-reference.png"
+      },
+      {
+        "route": "parts",
+        "label": "head-negative",
+        "original": "parts-head-negative-original.png",
+        "converted": "parts-head-negative-converted.png",
+        "target": "parts-head-negative-target-reference.png"
+      },
+      {
+        "route": "parts",
+        "label": "head-positive",
+        "original": "parts-head-positive-original.png",
+        "converted": "parts-head-positive-converted.png",
+        "target": "parts-head-positive-target-reference.png"
+      },
+      {
+        "route": "parts",
+        "label": "expression",
+        "original": "parts-expression-original.png",
+        "converted": "parts-expression-converted.png",
+        "target": "parts-expression-target-reference.png"
+      },
+      {
+        "route": "parts",
+        "label": "v2-neutral",
+        "original": "parts-v2-neutral-original.png",
+        "converted": "parts-v2-neutral-converted.png",
+        "target": "parts-v2-neutral-target-reference.png"
+      },
+      {
+        "route": "parts",
+        "label": "v2-eyes-closed",
+        "original": "parts-v2-eyes-closed-original.png",
+        "converted": "parts-v2-eyes-closed-converted.png",
+        "target": "parts-v2-eyes-closed-target-reference.png"
+      },
+      {
+        "route": "parts",
+        "label": "v2-middle",
+        "original": "parts-v2-middle-original.png",
+        "converted": "parts-v2-middle-converted.png",
+        "target": "parts-v2-middle-target-reference.png"
+      },
+      {
+        "route": "parts",
+        "label": "v2-mouth-open",
+        "original": "parts-v2-mouth-open-original.png",
+        "converted": "parts-v2-mouth-open-converted.png",
+        "target": "parts-v2-mouth-open-target-reference.png"
+      },
+      {
+        "route": "parts",
+        "label": "v2-head-negative",
+        "original": "parts-v2-head-negative-original.png",
+        "converted": "parts-v2-head-negative-converted.png",
+        "target": "parts-v2-head-negative-target-reference.png"
+      },
+      {
+        "route": "parts",
+        "label": "v2-head-positive",
+        "original": "parts-v2-head-positive-original.png",
+        "converted": "parts-v2-head-positive-converted.png",
+        "target": "parts-v2-head-positive-target-reference.png"
+      },
+      {
+        "route": "parts",
+        "label": "v2-expression",
+        "original": "parts-v2-expression-original.png",
+        "converted": "parts-v2-expression-converted.png",
+        "target": "parts-v2-expression-target-reference.png"
+      },
+      {
+        "route": "single-image",
+        "label": "neutral",
+        "original": "single-image-neutral-original.png",
+        "converted": "single-image-neutral-converted.png",
+        "target": "single-image-neutral-target-reference.png"
+      },
+      {
+        "route": "single-image",
+        "label": "eyes-closed",
+        "original": "single-image-eyes-closed-original.png",
+        "converted": "single-image-eyes-closed-converted.png",
+        "target": "single-image-eyes-closed-target-reference.png"
+      },
+      {
+        "route": "single-image",
+        "label": "middle",
+        "original": "single-image-middle-original.png",
+        "converted": "single-image-middle-converted.png",
+        "target": "single-image-middle-target-reference.png"
+      },
+      {
+        "route": "single-image",
+        "label": "mouth-open",
+        "original": "single-image-mouth-open-original.png",
+        "converted": "single-image-mouth-open-converted.png",
+        "target": "single-image-mouth-open-target-reference.png"
+      },
+      {
+        "route": "single-image",
+        "label": "head-negative",
+        "original": "single-image-head-negative-original.png",
+        "converted": "single-image-head-negative-converted.png",
+        "target": "single-image-head-negative-target-reference.png"
+      },
+      {
+        "route": "single-image",
+        "label": "head-positive",
+        "original": "single-image-head-positive-original.png",
+        "converted": "single-image-head-positive-converted.png",
+        "target": "single-image-head-positive-target-reference.png"
+      },
+      {
+        "route": "single-image",
+        "label": "expression",
+        "original": "single-image-expression-original.png",
+        "converted": "single-image-expression-converted.png",
+        "target": "single-image-expression-target-reference.png"
+      },
+      {
+        "route": "single-image",
+        "label": "v2-neutral",
+        "original": "single-image-v2-neutral-original.png",
+        "converted": "single-image-v2-neutral-converted.png",
+        "target": "single-image-v2-neutral-target-reference.png"
+      },
+      {
+        "route": "single-image",
+        "label": "v2-eyes-closed",
+        "original": "single-image-v2-eyes-closed-original.png",
+        "converted": "single-image-v2-eyes-closed-converted.png",
+        "target": "single-image-v2-eyes-closed-target-reference.png"
+      },
+      {
+        "route": "single-image",
+        "label": "v2-middle",
+        "original": "single-image-v2-middle-original.png",
+        "converted": "single-image-v2-middle-converted.png",
+        "target": "single-image-v2-middle-target-reference.png"
+      },
+      {
+        "route": "single-image",
+        "label": "v2-mouth-open",
+        "original": "single-image-v2-mouth-open-original.png",
+        "converted": "single-image-v2-mouth-open-converted.png",
+        "target": "single-image-v2-mouth-open-target-reference.png"
+      },
+      {
+        "route": "single-image",
+        "label": "v2-head-negative",
+        "original": "single-image-v2-head-negative-original.png",
+        "converted": "single-image-v2-head-negative-converted.png",
+        "target": "single-image-v2-head-negative-target-reference.png"
+      },
+      {
+        "route": "single-image",
+        "label": "v2-head-positive",
+        "original": "single-image-v2-head-positive-original.png",
+        "converted": "single-image-v2-head-positive-converted.png",
+        "target": "single-image-v2-head-positive-target-reference.png"
+      },
+      {
+        "route": "single-image",
+        "label": "v2-expression",
+        "original": "single-image-v2-expression-original.png",
+        "converted": "single-image-v2-expression-converted.png",
+        "target": "single-image-v2-expression-target-reference.png"
+      },
+      {
+        "route": "split-image",
+        "label": "neutral",
+        "original": "split-image-neutral-original.png",
+        "converted": "split-image-neutral-converted.png",
+        "target": "split-image-neutral-target-reference.png"
+      },
+      {
+        "route": "split-image",
+        "label": "eyes-closed",
+        "original": "split-image-eyes-closed-original.png",
+        "converted": "split-image-eyes-closed-converted.png",
+        "target": "split-image-eyes-closed-target-reference.png"
+      },
+      {
+        "route": "split-image",
+        "label": "middle",
+        "original": "split-image-middle-original.png",
+        "converted": "split-image-middle-converted.png",
+        "target": "split-image-middle-target-reference.png"
+      },
+      {
+        "route": "split-image",
+        "label": "mouth-open",
+        "original": "split-image-mouth-open-original.png",
+        "converted": "split-image-mouth-open-converted.png",
+        "target": "split-image-mouth-open-target-reference.png"
+      },
+      {
+        "route": "split-image",
+        "label": "head-negative",
+        "original": "split-image-head-negative-original.png",
+        "converted": "split-image-head-negative-converted.png",
+        "target": "split-image-head-negative-target-reference.png"
+      },
+      {
+        "route": "split-image",
+        "label": "head-positive",
+        "original": "split-image-head-positive-original.png",
+        "converted": "split-image-head-positive-converted.png",
+        "target": "split-image-head-positive-target-reference.png"
+      },
+      {
+        "route": "split-image",
+        "label": "expression",
+        "original": "split-image-expression-original.png",
+        "converted": "split-image-expression-converted.png",
+        "target": "split-image-expression-target-reference.png"
+      },
+      {
+        "route": "split-image",
+        "label": "v2-neutral",
+        "original": "split-image-v2-neutral-original.png",
+        "converted": "split-image-v2-neutral-converted.png",
+        "target": "split-image-v2-neutral-target-reference.png"
+      },
+      {
+        "route": "split-image",
+        "label": "v2-eyes-closed",
+        "original": "split-image-v2-eyes-closed-original.png",
+        "converted": "split-image-v2-eyes-closed-converted.png",
+        "target": "split-image-v2-eyes-closed-target-reference.png"
+      },
+      {
+        "route": "split-image",
+        "label": "v2-middle",
+        "original": "split-image-v2-middle-original.png",
+        "converted": "split-image-v2-middle-converted.png",
+        "target": "split-image-v2-middle-target-reference.png"
+      },
+      {
+        "route": "split-image",
+        "label": "v2-mouth-open",
+        "original": "split-image-v2-mouth-open-original.png",
+        "converted": "split-image-v2-mouth-open-converted.png",
+        "target": "split-image-v2-mouth-open-target-reference.png"
+      },
+      {
+        "route": "split-image",
+        "label": "v2-head-negative",
+        "original": "split-image-v2-head-negative-original.png",
+        "converted": "split-image-v2-head-negative-converted.png",
+        "target": "split-image-v2-head-negative-target-reference.png"
+      },
+      {
+        "route": "split-image",
+        "label": "v2-head-positive",
+        "original": "split-image-v2-head-positive-original.png",
+        "converted": "split-image-v2-head-positive-converted.png",
+        "target": "split-image-v2-head-positive-target-reference.png"
+      },
+      {
+        "route": "split-image",
+        "label": "v2-expression",
+        "original": "split-image-v2-expression-original.png",
+        "converted": "split-image-v2-expression-converted.png",
+        "target": "split-image-v2-expression-target-reference.png"
+      }
+    ],
+    "files": [
+      {
+        "route": "parts",
+        "version": 1,
+        "contentFingerprint": "666538c18db22e897a65df6bd517554c6dc68807fa28aaa73774eafdeebcbc23",
+        "id": "d190eabc-0649-47a9-a502-47ac07c40b66",
+        "name": "avatar-parts-v1.inp",
+        "bytes": 10718323,
+        "sha256": "554cc26ed0482cee072b01c2c6b111e84ac5ce36be69c7358f44fa0f813115ee",
+        "basis": {
+          "source": "working",
+          "projectId": "0ebec5c9-7048-4b3d-a841-df54a6b702f3",
+          "revision": 3,
+          "fingerprint": "50221fb4d36962346ab300c472d2c97426ceb862458ea1e2ffebd4f643a3435a"
+        },
+        "created": "2026-11-18T00:50:02.133Z",
+        "targetVersion": "0.8.7",
+        "converterVersion": "0.3.0",
+        "state": "WRITTEN",
+        "newerEdits": false,
+        "confirmation": null,
+        "fileState": "PRESENT",
+        "current": true,
+        "textureCount": 14,
+        "parameterCount": 5,
+        "animationCount": 6
+      },
+      {
+        "route": "parts",
+        "version": 2,
+        "contentFingerprint": "2929714bba592375d552acbe78008d154a7fc886174e52569517e7123c15fb36",
+        "id": "0148d7d9-e2d0-480d-91e4-4d8ee5d7a4e8",
+        "name": "avatar-parts-v2.inp",
+        "bytes": 10718326,
+        "sha256": "74b96a576596e83f4902699a0aa3e6ff1894099b94d9f0d1f68f913e2015b094",
+        "basis": {
+          "source": "working",
+          "projectId": "0ebec5c9-7048-4b3d-a841-df54a6b702f3",
+          "revision": 4,
+          "fingerprint": "cae6f2b3dcc12d9c81dcdc7784968f4473b233975545458d08662f13c9dfdebd"
+        },
+        "created": "2026-11-18T00:50:22.432Z",
+        "targetVersion": "0.8.7",
+        "converterVersion": "0.3.0",
+        "state": "WRITTEN",
+        "newerEdits": false,
+        "confirmation": null,
+        "fileState": "PRESENT",
+        "current": true,
+        "textureCount": 14,
+        "parameterCount": 5,
+        "animationCount": 6
+      },
+      {
+        "route": "single-image",
+        "version": 1,
+        "contentFingerprint": "35b99452b7f1d35bb7dec6cb06eb4f2457f2da1a566065dc973aac55cb0396f2",
+        "id": "80f721f4-1fef-4aa4-b207-650b7cb1bfe0",
+        "name": "avatar-single-image-v1.inp",
+        "bytes": 28614430,
+        "sha256": "9d6a2fe93eb26233f0a3f8c787a703089e9b2c9b39f21b5c2428da255eb090b2",
+        "basis": {
+          "source": "working",
+          "projectId": "4b5775d1-3e39-4132-9e6a-6c1fb93eb8ec",
+          "revision": 4,
+          "fingerprint": "3fd6eab5c673fbc6cfaf11c2283974737b5c8d2c80ef83d75e75b04b18ce173b"
+        },
+        "created": "2026-11-18T00:50:48.336Z",
+        "targetVersion": "0.8.7",
+        "converterVersion": "0.3.0",
+        "state": "WRITTEN",
+        "newerEdits": false,
+        "confirmation": null,
+        "fileState": "PRESENT",
+        "current": true,
+        "textureCount": 196,
+        "parameterCount": 5,
+        "animationCount": 4
+      },
+      {
+        "route": "single-image",
+        "version": 2,
+        "contentFingerprint": "d41571f92880fcebbb4d99b9c8fa02684907bfa4ca9fc5b65171a0bffc48ca67",
+        "id": "457612f5-2501-4884-9baa-eff4c316ad02",
+        "name": "avatar-single-image-v2.inp",
+        "bytes": 28614433,
+        "sha256": "61a4da2f712fa3d9f7b9c82e1696ec034bf82eae48fb8de57ef818b676449fc0",
+        "basis": {
+          "source": "working",
+          "projectId": "4b5775d1-3e39-4132-9e6a-6c1fb93eb8ec",
+          "revision": 5,
+          "fingerprint": "6335e176587362c90eba119c328066e5c015f58d2c9b021af3d737930204827a"
+        },
+        "created": "2026-11-18T00:50:57.842Z",
+        "targetVersion": "0.8.7",
+        "converterVersion": "0.3.0",
+        "state": "WRITTEN",
+        "newerEdits": false,
+        "confirmation": null,
+        "fileState": "PRESENT",
+        "current": true,
+        "textureCount": 196,
+        "parameterCount": 5,
+        "animationCount": 4
+      },
+      {
+        "route": "split-image",
+        "version": 1,
+        "contentFingerprint": "12c33445c81a926da4242df929d9a2ce7b85e6a58e7b296f8f8f8f4f396c7e1f",
+        "id": "40b694b9-3d51-4b64-98dd-523a2b31f73e",
+        "name": "avatar-split-image-v1.inp",
+        "bytes": 4148664,
+        "sha256": "3b5a3cc56071c7f9dee3f71e1507dc531495c0840c3c5f9e732ef7477b5541c2",
+        "basis": {
+          "source": "working",
+          "projectId": "6fdd4263-f6b1-4eef-b7f9-d3dd657c9247",
+          "revision": 3,
+          "fingerprint": "9d814bd67998dcc783d8a3b79d6ffc9a89277da888b07cdc82de21388f1401cd"
+        },
+        "created": "2026-11-18T00:51:10.293Z",
+        "targetVersion": "0.8.7",
+        "converterVersion": "0.3.0",
+        "state": "WRITTEN",
+        "newerEdits": false,
+        "confirmation": null,
+        "fileState": "PRESENT",
+        "current": true,
+        "textureCount": 15,
+        "parameterCount": 5,
+        "animationCount": 3
+      },
+      {
+        "route": "split-image",
+        "version": 2,
+        "contentFingerprint": "cac96e03e841ca57ee700eff6102dc45c209a48cc987803f77fded96ef1b7a87",
+        "id": "3e50a62c-bfe9-4054-9637-0f8a4f4a2455",
+        "name": "avatar-split-image-v2.inp",
+        "bytes": 4148667,
+        "sha256": "a19d1a42cea8b137761caccceffeb3c4cee8bdae38ab43498a7295ef0d7aad01",
+        "basis": {
+          "source": "working",
+          "projectId": "6fdd4263-f6b1-4eef-b7f9-d3dd657c9247",
+          "revision": 4,
+          "fingerprint": "ad1dea68d068282f7ee1574a4571af0627dd371d14d5bedb96b5e59ae8f3faff"
+        },
+        "created": "2026-11-18T00:51:19.760Z",
+        "targetVersion": "0.8.7",
+        "converterVersion": "0.3.0",
+        "state": "WRITTEN",
+        "newerEdits": false,
+        "confirmation": null,
+        "fileState": "PRESENT",
+        "current": true,
+        "textureCount": 15,
+        "parameterCount": 5,
+        "animationCount": 3
+      }
+    ],
+    "actualFileMoveReconnected": true,
+    "resourcesReleased": true
+  },
+  "appVersion": "0.20.0",
+  "channel": "release",
+  "packaged": true,
+  "windowSize": [
+    1080,
+    720
+  ],
+  "worker": {
+    "workerVersion": "0.1.0",
+    "python": "3.14.10",
+    "frozen": true,
+    "dependencyFilesInsideBundle": true,
+    "modelSha256": "64184e229b263107bc2b804c6625db1341ff2bb731874b0bcc2fe6544e0bc9ff",
+    "modelLoaded": true,
+    "cameraOpened": false,
+    "microphoneOpened": false,
+    "dependencies": {
+      "numpy": "2.5.5",
+      "opencv": "5.0.0",
+      "mediapipe": "1.2.3",
+      "sounddevice": "0.5.6",
+      "pillow": "13.0.0"
+    }
+  },
+  "workerStopped": true,
+  "protections": {
+    "sandbox": true,
+    "contextIsolation": true,
+    "nodeIntegration": false,
+    "externalNetworkBlocked": true
+  }
+}

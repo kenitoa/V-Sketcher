@@ -1,0 +1,37 @@
+{
+  "runs": [
+    {
+      "route": "parts",
+      "resultVersion": 1,
+      "sourceSha256": "f7c79f62e250ba8aa1b6ccb8a86bc0ee362f55ca9b8018888f35a36961644165",
+      "movedUnicodeAndSpacePath": true,
+      "externalFileUnchanged": true,
+      "appProcessExited": true,
+      "workerStopped": true,
+      "captureFrames": 60,
+      "qualityPassed": true
+    },
+    {
+      "route": "parts",
+      "resultVersion": 2,
+      "sourceSha256": "145280f1aa307eafd20b1a0437fead0c566578a7dfa4f252a3be076bd7c66711",
+      "movedUnicodeAndSpacePath": true,
+      "externalFileUnchanged": true,
+      "appProcessExited": true,
+      "workerStopped": true,
+      "captureFrames": 61,
+      "qualityPassed": true
+    },
+    {
+      "route": "single-image",
+      "resultVersion": 1,
+      "sourceSha256": "9a6f437398a70fe3f91ea52f287dc703591ec8db978eb14bcf8265b029796605",
+      "movedUnicodeAndSpacePath": true,
+      "externalFileUnchanged": true,
+      "appProcessExited": true,
+      "workerStopped": true,
+      "captureFrames": 41,
+      "qualityPassed": false
+    }
+  ]
+}

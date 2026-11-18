@@ -1,0 +1,369 @@
+{
+  "passed": true,
+  "avatarExport": {
+    "passed": true,
+    "routes": [
+      {
+        "route": "parts",
+        "passed": true,
+        "actualRoutePreparation": true,
+        "conversionPreview": true,
+        "referenceStates": 7,
+        "reviewRequired": true,
+        "realINPWrite": true,
+        "staleRejected": true,
+        "reexport": true,
+        "oldConfirmationStale": true,
+        "targetVersionRejected": true,
+        "settingsReopened": true
+      },
+      {
+        "route": "single-image",
+        "passed": true,
+        "actualRoutePreparation": true,
+        "conversionPreview": true,
+        "referenceStates": 7,
+        "reviewRequired": true,
+        "realINPWrite": true,
+        "staleRejected": true,
+        "reexport": true,
+        "oldConfirmationStale": true,
+        "targetVersionRejected": true,
+        "settingsReopened": true
+      },
+      {
+        "route": "split-image",
+        "passed": true,
+        "actualRoutePreparation": true,
+        "conversionPreview": true,
+        "referenceStates": 7,
+        "reviewRequired": true,
+        "realINPWrite": true,
+        "staleRejected": true,
+        "reexport": true,
+        "oldConfirmationStale": true,
+        "targetVersionRejected": true,
+        "settingsReopened": true
+      }
+    ],
+    "deviceRequests": 0,
+    "physicalDevicesOpened": false,
+    "programmaticConfirmationOnly": true,
+    "actualExternalRuntimeVerified": false,
+    "m0": "HOLD",
+    "cancelledBuild": true,
+    "images": [
+      {
+        "route": "parts",
+        "label": "neutral",
+        "original": "parts-neutral-original.png",
+        "converted": "parts-neutral-converted.png"
+      },
+      {
+        "route": "parts",
+        "label": "eyes-closed",
+        "original": "parts-eyes-closed-original.png",
+        "converted": "parts-eyes-closed-converted.png"
+      },
+      {
+        "route": "parts",
+        "label": "middle",
+        "original": "parts-middle-original.png",
+        "converted": "parts-middle-converted.png"
+      },
+      {
+        "route": "parts",
+        "label": "mouth-open",
+        "original": "parts-mouth-open-original.png",
+        "converted": "parts-mouth-open-converted.png"
+      },
+      {
+        "route": "parts",
+        "label": "head-negative",
+        "original": "parts-head-negative-original.png",
+        "converted": "parts-head-negative-converted.png"
+      },
+      {
+        "route": "parts",
+        "label": "head-positive",
+        "original": "parts-head-positive-original.png",
+        "converted": "parts-head-positive-converted.png"
+      },
+      {
+        "route": "parts",
+        "label": "expression",
+        "original": "parts-expression-original.png",
+        "converted": "parts-expression-converted.png"
+      },
+      {
+        "route": "single-image",
+        "label": "neutral",
+        "original": "single-image-neutral-original.png",
+        "converted": "single-image-neutral-converted.png"
+      },
+      {
+        "route": "single-image",
+        "label": "eyes-closed",
+        "original": "single-image-eyes-closed-original.png",
+        "converted": "single-image-eyes-closed-converted.png"
+      },
+      {
+        "route": "single-image",
+        "label": "middle",
+        "original": "single-image-middle-original.png",
+        "converted": "single-image-middle-converted.png"
+      },
+      {
+        "route": "single-image",
+        "label": "mouth-open",
+        "original": "single-image-mouth-open-original.png",
+        "converted": "single-image-mouth-open-converted.png"
+      },
+      {
+        "route": "single-image",
+        "label": "head-negative",
+        "original": "single-image-head-negative-original.png",
+        "converted": "single-image-head-negative-converted.png"
+      },
+      {
+        "route": "single-image",
+        "label": "head-positive",
+        "original": "single-image-head-positive-original.png",
+        "converted": "single-image-head-positive-converted.png"
+      },
+      {
+        "route": "single-image",
+        "label": "expression",
+        "original": "single-image-expression-original.png",
+        "converted": "single-image-expression-converted.png"
+      },
+      {
+        "route": "split-image",
+        "label": "neutral",
+        "original": "split-image-neutral-original.png",
+        "converted": "split-image-neutral-converted.png"
+      },
+      {
+        "route": "split-image",
+        "label": "eyes-closed",
+        "original": "split-image-eyes-closed-original.png",
+        "converted": "split-image-eyes-closed-converted.png"
+      },
+      {
+        "route": "split-image",
+        "label": "middle",
+        "original": "split-image-middle-original.png",
+        "converted": "split-image-middle-converted.png"
+      },
+      {
+        "route": "split-image",
+        "label": "mouth-open",
+        "original": "split-image-mouth-open-original.png",
+        "converted": "split-image-mouth-open-converted.png"
+      },
+      {
+        "route": "split-image",
+        "label": "head-negative",
+        "original": "split-image-head-negative-original.png",
+        "converted": "split-image-head-negative-converted.png"
+      },
+      {
+        "route": "split-image",
+        "label": "head-positive",
+        "original": "split-image-head-positive-original.png",
+        "converted": "split-image-head-positive-converted.png"
+      },
+      {
+        "route": "split-image",
+        "label": "expression",
+        "original": "split-image-expression-original.png",
+        "converted": "split-image-expression-converted.png"
+      }
+    ],
+    "files": [
+      {
+        "route": "parts",
+        "version": 1,
+        "id": "2d1a463f-e1c3-45b1-ba6a-1b03d2deaf87",
+        "name": "avatar-parts-v1.inp",
+        "bytes": 10366055,
+        "sha256": "2089513197540e9d7bf579e756400f589983b727ec7cbb1be066862c81d2f9a2",
+        "basis": {
+          "source": "working",
+          "projectId": "c2586c98-af99-41bb-b72e-c194fe1d029a",
+          "revision": 3,
+          "fingerprint": "a3db117a23610cca4ee1e2edf579d82f2ef766c4d40d906fe28dfda5e2595b11"
+        },
+        "created": "2026-11-17T23:25:42.431Z",
+        "targetVersion": "0.8.7",
+        "converterVersion": "0.3.0",
+        "state": "WRITTEN",
+        "newerEdits": false,
+        "confirmation": null,
+        "fileState": "PRESENT",
+        "current": true,
+        "textureCount": 14,
+        "parameterCount": 5,
+        "animationCount": 6
+      },
+      {
+        "route": "parts",
+        "version": 2,
+        "id": "04899a6a-5171-4931-9f60-fe4e20ea5c80",
+        "name": "avatar-parts-v2.inp",
+        "bytes": 10366058,
+        "sha256": "2f3c51ba30f964bae825e43ccfa034d14a1cc59421db06271d5734e6a99070a7",
+        "basis": {
+          "source": "working",
+          "projectId": "c2586c98-af99-41bb-b72e-c194fe1d029a",
+          "revision": 4,
+          "fingerprint": "54525dc85e76836a5e5b67c6655d7809c81d968d966a1254f5b3efc53aafd5d3"
+        },
+        "created": "2026-11-17T23:25:55.967Z",
+        "targetVersion": "0.8.7",
+        "converterVersion": "0.3.0",
+        "state": "WRITTEN",
+        "newerEdits": false,
+        "confirmation": null,
+        "fileState": "PRESENT",
+        "current": true,
+        "textureCount": 14,
+        "parameterCount": 5,
+        "animationCount": 6
+      },
+      {
+        "route": "single-image",
+        "version": 1,
+        "id": "8b571426-a216-4eda-ace4-9fc281930be8",
+        "name": "avatar-single-image-v1.inp",
+        "bytes": 28573910,
+        "sha256": "673a0ac6b5b396f249005d78b8ad062fcf22be6ca7c77f9f8380fcf57464ec6d",
+        "basis": {
+          "source": "working",
+          "projectId": "9597384e-4e2e-404f-9bf6-1381c355678e",
+          "revision": 4,
+          "fingerprint": "f5616c041da21ec74d664468805ac03850134762c8fb0f12a19ee82cccc6e0a6"
+        },
+        "created": "2026-11-17T23:26:20.385Z",
+        "targetVersion": "0.8.7",
+        "converterVersion": "0.3.0",
+        "state": "WRITTEN",
+        "newerEdits": false,
+        "confirmation": null,
+        "fileState": "PRESENT",
+        "current": true,
+        "textureCount": 196,
+        "parameterCount": 5,
+        "animationCount": 4
+      },
+      {
+        "route": "single-image",
+        "version": 2,
+        "id": "66416d58-921b-4efe-9de5-5c567fc0870b",
+        "name": "avatar-single-image-v2.inp",
+        "bytes": 28573913,
+        "sha256": "5e249f3d9fd64948070f094aca5dc382b43940aac6cdf5d78143e5631e8e7eff",
+        "basis": {
+          "source": "working",
+          "projectId": "9597384e-4e2e-404f-9bf6-1381c355678e",
+          "revision": 5,
+          "fingerprint": "938e76dcfae38772a388a2c6a40d1137ebba8fc422a62dbe5a8a9d69abfd3511"
+        },
+        "created": "2026-11-17T23:26:26.712Z",
+        "targetVersion": "0.8.7",
+        "converterVersion": "0.3.0",
+        "state": "WRITTEN",
+        "newerEdits": false,
+        "confirmation": null,
+        "fileState": "PRESENT",
+        "current": true,
+        "textureCount": 196,
+        "parameterCount": 5,
+        "animationCount": 4
+      },
+      {
+        "route": "split-image",
+        "version": 1,
+        "id": "acaaaa22-ad1e-48b3-a463-ddd691a2e5e6",
+        "name": "avatar-split-image-v1.inp",
+        "bytes": 4037766,
+        "sha256": "4c6835be20c1531f2a80511235368b65c184002271161c3f40f4736b61dc7db9",
+        "basis": {
+          "source": "working",
+          "projectId": "17d3bac4-2e74-43b9-9791-0ad0739b1211",
+          "revision": 3,
+          "fingerprint": "d204114c22da727e4ff0b7b249556a863d9d8099e52372fd75307b7278b4c6a6"
+        },
+        "created": "2026-11-17T23:26:38.771Z",
+        "targetVersion": "0.8.7",
+        "converterVersion": "0.3.0",
+        "state": "WRITTEN",
+        "newerEdits": false,
+        "confirmation": null,
+        "fileState": "PRESENT",
+        "current": true,
+        "textureCount": 15,
+        "parameterCount": 5,
+        "animationCount": 3
+      },
+      {
+        "route": "split-image",
+        "version": 2,
+        "id": "d21312d9-c727-4868-81b2-2592e643adf5",
+        "name": "avatar-split-image-v2.inp",
+        "bytes": 4037769,
+        "sha256": "8edab5bd0a497813a12a957af93a7c53aad5ef8fe666a3d21a5373124ca8b837",
+        "basis": {
+          "source": "working",
+          "projectId": "17d3bac4-2e74-43b9-9791-0ad0739b1211",
+          "revision": 4,
+          "fingerprint": "c758848dbd03b1b8039d68070d2cc58f1fdef5deef82797aa16359a04a671216"
+        },
+        "created": "2026-11-17T23:26:43.954Z",
+        "targetVersion": "0.8.7",
+        "converterVersion": "0.3.0",
+        "state": "WRITTEN",
+        "newerEdits": false,
+        "confirmation": null,
+        "fileState": "PRESENT",
+        "current": true,
+        "textureCount": 15,
+        "parameterCount": 5,
+        "animationCount": 3
+      }
+    ],
+    "actualFileMoveReconnected": true,
+    "resourcesReleased": true
+  },
+  "appVersion": "0.20.0",
+  "channel": "test",
+  "packaged": false,
+  "windowSize": [
+    1080,
+    720
+  ],
+  "worker": {
+    "workerVersion": "0.1.0",
+    "python": "3.14.10",
+    "frozen": false,
+    "dependencyFilesInsideBundle": false,
+    "modelSha256": "64184e229b263107bc2b804c6625db1341ff2bb731874b0bcc2fe6544e0bc9ff",
+    "modelLoaded": true,
+    "cameraOpened": false,
+    "microphoneOpened": false,
+    "dependencies": {
+      "numpy": "2.5.5",
+      "opencv": "5.0.0",
+      "mediapipe": "1.2.3",
+      "sounddevice": "0.5.6",
+      "pillow": "13.0.0"
+    }
+  },
+  "workerStopped": true,
+  "protections": {
+    "sandbox": true,
+    "contextIsolation": true,
+    "nodeIntegration": false,
+    "externalNetworkBlocked": true
+  }
+}

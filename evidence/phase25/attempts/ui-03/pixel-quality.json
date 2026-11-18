@@ -1,0 +1,427 @@
+{
+  "passed": true,
+  "method": "Independent Pillow/NumPy decode; source versus actual INP interpretation",
+  "threshold": "Visible union >1000 pixels; >=97.5% premultiplied RGBA pixels within 4/255; mean <=1.5/255",
+  "checks": [
+    {
+      "route": "parts",
+      "label": "neutral",
+      "passed": true,
+      "visiblePixels": 148344,
+      "fractionWithin4": 1.0,
+      "meanPremultipliedRGBAError": 0.0015025753600798573,
+      "originalSha256": "8a818a1b98382846d04e2d5fb9a39d1fa2453e8904a067bb7663d030f1eb532f",
+      "convertedSha256": "4c6cf09d6e64bdd8ef07bc3f8aa45b92fd473c18db192cb7dfc437f8727293ae"
+    },
+    {
+      "route": "parts",
+      "label": "eyes-closed",
+      "passed": true,
+      "visiblePixels": 148344,
+      "fractionWithin4": 1.0,
+      "meanPremultipliedRGBAError": 0.0015463924339082563,
+      "originalSha256": "2f243d12bf240370716c5f960753c02a3df2bd4c8f02c51b402784fc38aab8ed",
+      "convertedSha256": "c0919d49ec23972b5350a6544cd2587c010b97b5f6b2942426f349dac9112b7d"
+    },
+    {
+      "route": "parts",
+      "label": "middle",
+      "passed": true,
+      "visiblePixels": 148344,
+      "fractionWithin4": 1.0,
+      "meanPremultipliedRGBAError": 0.001537966073556641,
+      "originalSha256": "3b59728c10b06f967846a31546b8aa572ffcf67f186c89fe2bf50a93a8c6e200",
+      "convertedSha256": "c96975c3f7092cd4931b87dec1c788928c70b63d91ad79e3c7921ff080c153bc"
+    },
+    {
+      "route": "parts",
+      "label": "mouth-open",
+      "passed": true,
+      "visiblePixels": 148344,
+      "fractionWithin4": 1.0,
+      "meanPremultipliedRGBAError": 0.0015025753600798573,
+      "originalSha256": "7fb6af4839bf4e9e26485ad0c495b79c3a6d8f5e524ef3a28f08c4e7c2140245",
+      "convertedSha256": "7ad36b9355af26dba0aefb0b8d50d43a231185dfda55737ca8b21bc26692012c"
+    },
+    {
+      "route": "parts",
+      "label": "head-negative",
+      "passed": true,
+      "visiblePixels": 148419,
+      "fractionWithin4": 1.0,
+      "meanPremultipliedRGBAError": 0.014922538457300735,
+      "originalSha256": "7d206d3570ed3e41bbeb7c88303f63f15a0bbd6274b151bbf458623d90bf30ad",
+      "convertedSha256": "76c7adc1c49ef053b39d6ce697dc649c540bc917670cb00554bba1b9725d36c0"
+    },
+    {
+      "route": "parts",
+      "label": "head-positive",
+      "passed": true,
+      "visiblePixels": 148398,
+      "fractionWithin4": 0.9999932613647085,
+      "meanPremultipliedRGBAError": 0.01526214348325079,
+      "originalSha256": "d859157423425f64fb3a5d439236cb1337a86d139ed4ba64dbb6c0751c44b335",
+      "convertedSha256": "a8b8db60abcd6f791c33446f7285608245badb5ad32633e009ee1e4882ec49ff"
+    },
+    {
+      "route": "parts",
+      "label": "expression",
+      "passed": true,
+      "visiblePixels": 148344,
+      "fractionWithin4": 1.0,
+      "meanPremultipliedRGBAError": 0.0015244838969940568,
+      "originalSha256": "fa4bc1428a72f743c5b174c8b6387f2e68befd830d0c533cdc841c499bb205e4",
+      "convertedSha256": "6df21301472181f1af9c0ecfa378c90f9f7ca89529b20567a33e36d3b4771ded"
+    },
+    {
+      "route": "parts",
+      "label": "v2-neutral",
+      "passed": true,
+      "visiblePixels": 148344,
+      "fractionWithin4": 1.0,
+      "meanPremultipliedRGBAError": 0.0015096204582248157,
+      "originalSha256": "6a7d80573d4b8cfca5cdc75e6327b77baa92beaf9299f3c9caaffd0f45c60c12",
+      "convertedSha256": "3de479ef991454c00c065e5011979a20acc1cd0096be32b9c5665a1010c9adc6"
+    },
+    {
+      "route": "parts",
+      "label": "v2-eyes-closed",
+      "passed": true,
+      "visiblePixels": 148344,
+      "fractionWithin4": 1.0,
+      "meanPremultipliedRGBAError": 0.0015551228041235376,
+      "originalSha256": "6b947d858e26b4d9eb61edbb6d4368763b5302da86a0c2066cfcc66425ff87b8",
+      "convertedSha256": "f0402ee6ff4a6fba69c98b0ec49ecc0cf4040b0fa5860bcf6de491b7c4a4bf90"
+    },
+    {
+      "route": "parts",
+      "label": "v2-middle",
+      "passed": true,
+      "visiblePixels": 148344,
+      "fractionWithin4": 1.0,
+      "meanPremultipliedRGBAError": 0.0015466964437719224,
+      "originalSha256": "ece37485340e7470553b04700ac757662a66db3057f6be8da279c852b9f5cbe7",
+      "convertedSha256": "85031dad783e3b1abb8267a3ab722265dd4a94bec34ce15b3daa52035102b5ca"
+    },
+    {
+      "route": "parts",
+      "label": "v2-mouth-open",
+      "passed": true,
+      "visiblePixels": 148344,
+      "fractionWithin4": 1.0,
+      "meanPremultipliedRGBAError": 0.0015096204582248157,
+      "originalSha256": "a2bf38e1f5665583c350d639909cd27ca5481c647c9464bf26f65575287a81a3",
+      "convertedSha256": "d16601fca06e57d6ce862f7d285a2593f6bda296828d57f84368109c87d9b744"
+    },
+    {
+      "route": "parts",
+      "label": "v2-head-negative",
+      "passed": true,
+      "visiblePixels": 148419,
+      "fractionWithin4": 1.0,
+      "meanPremultipliedRGBAError": 0.01492407755520969,
+      "originalSha256": "cf47e4db69dc52c2fdafbd4a0e8c537e9cf1b249715dc8542848a19e9098e1a8",
+      "convertedSha256": "f16e5f2aa280cb6d6b2bdf209f603329b0dfba82eaadda8d32dda5bdb626628d"
+    },
+    {
+      "route": "parts",
+      "label": "v2-head-positive",
+      "passed": true,
+      "visiblePixels": 148397,
+      "fractionWithin4": 0.9999932613192989,
+      "meanPremultipliedRGBAError": 0.01527941675265091,
+      "originalSha256": "7dab71bf98e1ecf35b624253efdc0727c5c7d6ea8126da4b2060920fc66f564d",
+      "convertedSha256": "ba24eb500589cf75d077fe5f04b2b4e8fb3a228c2933fa0b95289a3c8dfe9a77"
+    },
+    {
+      "route": "parts",
+      "label": "v2-expression",
+      "passed": true,
+      "visiblePixels": 148344,
+      "fractionWithin4": 1.0,
+      "meanPremultipliedRGBAError": 0.001529843723068692,
+      "originalSha256": "8226a1de396ab4a0747dd1233682461fc6566b7b0513e43efdc5bf831e9c958b",
+      "convertedSha256": "dceec644ea2571ce13d15268b367d75c952b58849eb97318e8bc9c157c0f59ee"
+    },
+    {
+      "route": "single-image",
+      "label": "neutral",
+      "passed": true,
+      "visiblePixels": 117059,
+      "fractionWithin4": 0.9997778897820757,
+      "meanPremultipliedRGBAError": 0.0030074577777018403,
+      "originalSha256": "8b9ffab2fed5229c0296555f12d3d77e04d1cab0926af8e3327bae780e8f38e2",
+      "convertedSha256": "a16663dfda67360aa88db853461fc1fc3e0dc28588c1918ef8da504f9006ea16"
+    },
+    {
+      "route": "single-image",
+      "label": "eyes-closed",
+      "passed": true,
+      "visiblePixels": 117059,
+      "fractionWithin4": 0.9997778897820757,
+      "meanPremultipliedRGBAError": 0.003000598491560061,
+      "originalSha256": "6afe705496b10d03f8de0b35a104e92a2aecbd5662ef965f0dbb33d28856cb6c",
+      "convertedSha256": "58b2be9f48c8269812bbf79acce75abc754b2992938fee7bd154bbbb1f350c5d"
+    },
+    {
+      "route": "single-image",
+      "label": "middle",
+      "passed": true,
+      "visiblePixels": 117059,
+      "fractionWithin4": 0.9997778897820757,
+      "meanPremultipliedRGBAError": 0.004155839631062532,
+      "originalSha256": "9e95e44ad5c2e785b63be5b449eee16af1f5e1d39a857d9fe4bfcc32a4d6a6d2",
+      "convertedSha256": "522e4dc08d74ff9b73f86ca7bc0fc091558c31a6461136826436651a37c0f619"
+    },
+    {
+      "route": "single-image",
+      "label": "mouth-open",
+      "passed": true,
+      "visiblePixels": 117059,
+      "fractionWithin4": 0.9997778897820757,
+      "meanPremultipliedRGBAError": 0.0030074577777018403,
+      "originalSha256": "2fac8026bc076d50ebe5b79f2de1e17c9e587c69a118476646b48c28014bf7de",
+      "convertedSha256": "9ab139e799b7fa6dab67538a6c18b5a69c7c2c0e2fd24864ad557eea13490fdc"
+    },
+    {
+      "route": "single-image",
+      "label": "head-negative",
+      "passed": true,
+      "visiblePixels": 117079,
+      "fractionWithin4": 0.999282535723742,
+      "meanPremultipliedRGBAError": 0.012216788764549626,
+      "originalSha256": "ab3ca1ef7d8aa71371b331b3a7ab952f688698b83935dd9a453d8c2b2b7a7973",
+      "convertedSha256": "d558f7cacc1be0b36ac262950a63719dfacf739611bcad4937c97852df576e82"
+    },
+    {
+      "route": "single-image",
+      "label": "head-positive",
+      "passed": true,
+      "visiblePixels": 117096,
+      "fractionWithin4": 0.9993936599029856,
+      "meanPremultipliedRGBAError": 0.012153644336739955,
+      "originalSha256": "f90c6fc7865ce383c2af14be1662efa47fe5f5ea83d5418961f8da51bcef897d",
+      "convertedSha256": "f0f5e81a918870f50ccc223be453990e54e539ad5e3ca11d7524eb5c9a540a6d"
+    },
+    {
+      "route": "single-image",
+      "label": "expression",
+      "passed": true,
+      "visiblePixels": 117059,
+      "fractionWithin4": 0.9997778897820757,
+      "meanPremultipliedRGBAError": 0.00299332882077732,
+      "originalSha256": "3a5504d28718024a662b62196610fddee9bf63f57bd600ae19686c09fdaa360c",
+      "convertedSha256": "8919af06f0733dce152e0a082cd61be0dfeab66d2a3210063a6cb4401d3c2cac"
+    },
+    {
+      "route": "single-image",
+      "label": "v2-neutral",
+      "passed": true,
+      "visiblePixels": 116922,
+      "fractionWithin4": 0.9997776295307983,
+      "meanPremultipliedRGBAError": 0.0031802498800105002,
+      "originalSha256": "c9e638f61bc92b9de7b9b64ea1143f3e642d6843ac914ab838ffc104c6258cde",
+      "convertedSha256": "6f69549b449cf373f3b4e574ae0e44fe5d76a2553bab2112f94428f20c91f65f"
+    },
+    {
+      "route": "single-image",
+      "label": "v2-eyes-closed",
+      "passed": true,
+      "visiblePixels": 116922,
+      "fractionWithin4": 0.9997776295307983,
+      "meanPremultipliedRGBAError": 0.003178447102828058,
+      "originalSha256": "3209f60d7e93bd0b1599b81994a1367612644101bcd589aadc1d5c46f0a4b469",
+      "convertedSha256": "b91cef5f88939524b264d3d4ac39f310062fa02b0b4a01327c5c0d61dd903831"
+    },
+    {
+      "route": "single-image",
+      "label": "v2-middle",
+      "passed": true,
+      "visiblePixels": 116922,
+      "fractionWithin4": 0.9997776295307983,
+      "meanPremultipliedRGBAError": 0.0043324592798752014,
+      "originalSha256": "a2d18197db9e7805d146008a553859f0f141945fd8954ef956f6808c76cf785c",
+      "convertedSha256": "c3cfaac91c8c7cd866f5bf71f81c0bade000bfbf062e7ffde3523a9b46583d7b"
+    },
+    {
+      "route": "single-image",
+      "label": "v2-mouth-open",
+      "passed": true,
+      "visiblePixels": 116922,
+      "fractionWithin4": 0.9997776295307983,
+      "meanPremultipliedRGBAError": 0.0031802498800105002,
+      "originalSha256": "e0941c4d05707154f3a322c133836e483ceac4ec2f3a646fcbd26e0952381d71",
+      "convertedSha256": "bd576f38b3824d7dea28763ebf3def2d1a825eae97692a409e4e6adeb24bb853"
+    },
+    {
+      "route": "single-image",
+      "label": "v2-head-negative",
+      "passed": true,
+      "visiblePixels": 116934,
+      "fractionWithin4": 0.9992645423914345,
+      "meanPremultipliedRGBAError": 0.012919999785365767,
+      "originalSha256": "f1b2e531a4e9535f3155482c736f2fce64f27800ade05ad42a3abac3c39ef98d",
+      "convertedSha256": "356b929739c93e6468afe79186a4022e5f1963f30cdaba643a2f94f2e2289593"
+    },
+    {
+      "route": "single-image",
+      "label": "v2-head-positive",
+      "passed": true,
+      "visiblePixels": 116959,
+      "fractionWithin4": 0.9993843996614198,
+      "meanPremultipliedRGBAError": 0.012822517493561095,
+      "originalSha256": "e3af49d3606a68edf1deae35b2e8ec838d9258e51128093a96022666928c5a08",
+      "convertedSha256": "5a389f39cfac5a4e6d6d3759f2cc9079b97eb2f0c002df5d22ed95c8722e8b43"
+    },
+    {
+      "route": "single-image",
+      "label": "v2-expression",
+      "passed": true,
+      "visiblePixels": 116922,
+      "fractionWithin4": 0.9997776295307983,
+      "meanPremultipliedRGBAError": 0.003171160529006932,
+      "originalSha256": "db8034d99a218a501ae0b14c6942dd809867d85d2a3f6babd6d41a34c66461a2",
+      "convertedSha256": "a7274aa018ffe810e77bbb8e0578ec4fb1a5f829c1d2eab2b048ba0f05f182f0"
+    },
+    {
+      "route": "split-image",
+      "label": "neutral",
+      "passed": true,
+      "visiblePixels": 148441,
+      "fractionWithin4": 0.9999797899502159,
+      "meanPremultipliedRGBAError": 0.0016104965979089074,
+      "originalSha256": "facf23f78ead7321da5a1108e97b08ca4d180fb3293bd16f482c12e155759200",
+      "convertedSha256": "12b9861deae7fbb2588088909a88b73a4def32d9542ec540e9841ac577ac6ef8"
+    },
+    {
+      "route": "split-image",
+      "label": "eyes-closed",
+      "passed": true,
+      "visiblePixels": 148441,
+      "fractionWithin4": 0.9999663165836932,
+      "meanPremultipliedRGBAError": 0.001620601622800952,
+      "originalSha256": "f7716a12afc1a6cbe0032d25511e5480bcab9d220d2ff80e640f10c787cf011c",
+      "convertedSha256": "41250795625cd95f542ef7d17623268f9e8706e7ecd10cd0e43f686b2d1e00f7"
+    },
+    {
+      "route": "split-image",
+      "label": "middle",
+      "passed": true,
+      "visiblePixels": 148441,
+      "fractionWithin4": 0.9999595799004318,
+      "meanPremultipliedRGBAError": 0.0016846001137839016,
+      "originalSha256": "5429c75728d471ddf0bfaafa2b87aaebc1c0deb5b4af6f7b526b3ee9cb81b957",
+      "convertedSha256": "a4305a36bcfd3144089c105f21a9a193c154dc9cb2245fa0326d4da43ae83bd9"
+    },
+    {
+      "route": "split-image",
+      "label": "mouth-open",
+      "passed": true,
+      "visiblePixels": 148441,
+      "fractionWithin4": 0.9999932633167387,
+      "meanPremultipliedRGBAError": 0.001501025494911757,
+      "originalSha256": "b63a4b7b94b54d3da54957f741010ee5aa3798a7648c37a81989c32a92e4d541",
+      "convertedSha256": "6124af88683157b93f49d4cb36def26e60f4d33eb6692d8d61d1876d97075461"
+    },
+    {
+      "route": "split-image",
+      "label": "head-negative",
+      "passed": true,
+      "visiblePixels": 148682,
+      "fractionWithin4": 0.9999730969451581,
+      "meanPremultipliedRGBAError": 0.0016052617627672796,
+      "originalSha256": "79d0710c2e2dd5ae56ff50f7de62be569e1103d5285aeb1715c4b26b49fdbb31",
+      "convertedSha256": "022df2f69c52bba45cd2086d115d1e4e87c0a6b7232da2b4e732e52dfe24182b"
+    },
+    {
+      "route": "split-image",
+      "label": "head-positive",
+      "passed": true,
+      "visiblePixels": 148616,
+      "fractionWithin4": 0.9999596274963665,
+      "meanPremultipliedRGBAError": 0.0017144064925318787,
+      "originalSha256": "1b992be3beaf5797451867d8e034176a1bb9f9ba3077b100da87db00582297de",
+      "convertedSha256": "a4ab31095faec357ee5e47f0584aea0d9d132762dfc954d5a21fb3c73b3de0e2"
+    },
+    {
+      "route": "split-image",
+      "label": "expression",
+      "passed": true,
+      "visiblePixels": 148441,
+      "fractionWithin4": 0.9999797899502159,
+      "meanPremultipliedRGBAError": 0.0015481822777412989,
+      "originalSha256": "73dbce22c46511819f622fd518ead99497cb0138d14bda98868ffb87f26b0eb8",
+      "convertedSha256": "a0c241666ac2d24e0ce3689c352aba550201822cc799078409a34f0e854c8f28"
+    },
+    {
+      "route": "split-image",
+      "label": "v2-neutral",
+      "passed": true,
+      "visiblePixels": 148441,
+      "fractionWithin4": 0.9999797899502159,
+      "meanPremultipliedRGBAError": 0.0016107277586090523,
+      "originalSha256": "94743a0984f4934b3c70919017bfd02e8f0b918217cf11f6efa57727f89670f8",
+      "convertedSha256": "1df33383da8425f778007f921e0d275466c5ff70b2f7dfaa3ec6f51e0a09ecd2"
+    },
+    {
+      "route": "split-image",
+      "label": "v2-eyes-closed",
+      "passed": true,
+      "visiblePixels": 148441,
+      "fractionWithin4": 0.9999663165836932,
+      "meanPremultipliedRGBAError": 0.0016174644418704154,
+      "originalSha256": "9ac8c5888e4f9cb8d19b0de5fd893d398456ad7db53f79154576353bb8ccedca",
+      "convertedSha256": "481f6459579d7254ef5426d9c83300e81c0155e1b995e7aaf1d09832e6d94467"
+    },
+    {
+      "route": "split-image",
+      "label": "v2-middle",
+      "passed": true,
+      "visiblePixels": 148441,
+      "fractionWithin4": 0.9999595799004318,
+      "meanPremultipliedRGBAError": 0.001673042078776661,
+      "originalSha256": "284b337d60729533304761b049a9d71fcd1fb01ba90c771a93549ad397d9eaf4",
+      "convertedSha256": "2761b1a2a71dfa31c128f631e451c79bdbbfea7a8ddaa34366940ab4b3f14468"
+    },
+    {
+      "route": "split-image",
+      "label": "v2-mouth-open",
+      "passed": true,
+      "visiblePixels": 148441,
+      "fractionWithin4": 0.9999932633167387,
+      "meanPremultipliedRGBAError": 0.0015029408264272427,
+      "originalSha256": "364370461edbefdf09018df673b007f85ea4f9de2bba17897081558e8d8cca27",
+      "convertedSha256": "d4e411a2cace812a8a68833021ce0796063b9e4ee90b6581515f518750326d3a"
+    },
+    {
+      "route": "split-image",
+      "label": "v2-head-negative",
+      "passed": true,
+      "visiblePixels": 148682,
+      "fractionWithin4": 0.9999730969451581,
+      "meanPremultipliedRGBAError": 0.0015952192744035105,
+      "originalSha256": "72cf19e7174e973a03fef6c6887e4ee3023d88fbdeace7914a7020c8cd0450e9",
+      "convertedSha256": "1a10c99db44b13a2bb2f9b9b9c14d1945fdf8330f7bcf0d64d876614845213aa"
+    },
+    {
+      "route": "split-image",
+      "label": "v2-head-positive",
+      "passed": true,
+      "visiblePixels": 148616,
+      "fractionWithin4": 0.999966356246972,
+      "meanPremultipliedRGBAError": 0.0017041550430798365,
+      "originalSha256": "ec4606c16d6d049cc58d258849638ea7ebd3deb0dcfc7eba536bd8945ce3b00a",
+      "convertedSha256": "412588ff7e2368a0a188e057a07959c07a858f6bb9ed07c31dd541e953324242"
+    },
+    {
+      "route": "split-image",
+      "label": "v2-expression",
+      "passed": true,
+      "visiblePixels": 148441,
+      "fractionWithin4": 0.9999797899502159,
+      "meanPremultipliedRGBAError": 0.0015484134384414435,
+      "originalSha256": "4ffd3167ddf550f1908d64e92c0c5d823be381c0de2bed5c8cdf036e1365539c",
+      "convertedSha256": "69b86cfda0a279f6fea501be33088205b3f7da83c0e509161bc664d1e3690426"
+    }
+  ]
+}

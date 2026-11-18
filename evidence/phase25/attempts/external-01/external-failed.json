@@ -1,0 +1,17 @@
+{
+  "passed": false,
+  "code": "E_TARGET_PIXELS",
+  "runs": [
+    {
+      "route": "parts",
+      "resultVersion": 1,
+      "sourceSha256": "f0b54a5e90e64a77a0e4eedcfeea7f22623e41dccc2c49b04a563caeecf35bd3",
+      "movedUnicodeAndSpacePath": true,
+      "externalFileUnchanged": true,
+      "appProcessExited": true,
+      "workerStopped": true,
+      "captureFrames": 60,
+      "qualityPassed": false
+    }
+  ]
+}

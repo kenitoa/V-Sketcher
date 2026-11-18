@@ -1,0 +1,138 @@
+{
+  "passed": true,
+  "broadcast": {
+    "passed": true,
+    "routes": [
+      {
+        "route": "parts",
+        "passed": true,
+        "actualRoutePreparation": true,
+        "alpha": true,
+        "avatarOnly": true,
+        "motion": true,
+        "expression": true,
+        "hide": true,
+        "workingEditIsolated": true,
+        "workingSavePinned": true,
+        "executionReplacement": true,
+        "stalePublisherClears": true,
+        "inputLossFallback": true,
+        "physicalDevicesOpened": false,
+        "neutral": {
+          "ready": true,
+          "width": 1920,
+          "height": 1080,
+          "visiblePixels": 503562,
+          "transparentPixels": 1570038,
+          "partialAlphaPixels": 187753,
+          "pixelHash": 2852528294,
+          "canvasOnly": true,
+          "bodyText": "",
+          "nodeExposed": false,
+          "glError": 0
+        }
+      },
+      {
+        "route": "single-image",
+        "passed": true,
+        "actualRoutePreparation": true,
+        "alpha": true,
+        "avatarOnly": true,
+        "motion": true,
+        "expression": true,
+        "hide": true,
+        "workingEditIsolated": true,
+        "workingSavePinned": true,
+        "executionReplacement": true,
+        "stalePublisherClears": true,
+        "inputLossFallback": true,
+        "physicalDevicesOpened": false,
+        "neutral": {
+          "ready": true,
+          "width": 1920,
+          "height": 1080,
+          "visiblePixels": 611555,
+          "transparentPixels": 1462045,
+          "partialAlphaPixels": 611545,
+          "pixelHash": 2365972891,
+          "canvasOnly": true,
+          "bodyText": "",
+          "nodeExposed": false,
+          "glError": 0
+        }
+      },
+      {
+        "route": "split-image",
+        "passed": true,
+        "actualRoutePreparation": true,
+        "alpha": true,
+        "avatarOnly": true,
+        "motion": true,
+        "expression": true,
+        "hide": true,
+        "workingEditIsolated": true,
+        "workingSavePinned": true,
+        "executionReplacement": true,
+        "stalePublisherClears": true,
+        "inputLossFallback": true,
+        "physicalDevicesOpened": false,
+        "neutral": {
+          "ready": true,
+          "width": 1920,
+          "height": 1080,
+          "visiblePixels": 504213,
+          "transparentPixels": 1569387,
+          "partialAlphaPixels": 189171,
+          "pixelHash": 1898978825,
+          "canvasOnly": true,
+          "bodyText": "",
+          "nodeExposed": false,
+          "glError": 0
+        }
+      }
+    ],
+    "settingsRestore": true,
+    "rendererFailureKeepsRun": true,
+    "tokenRotation": true,
+    "restartReconnect": true,
+    "receiverSandbox": true,
+    "externalOBS": "NOT_RUN",
+    "osGlobalKeyDelivery": "NOT_RUN",
+    "physicalDevicesOpened": false,
+    "rawCameraFramesSaved": false,
+    "rawAudioSaved": false,
+    "m0": "HOLD"
+  },
+  "obs": null,
+  "appVersion": "0.20.0",
+  "channel": "test",
+  "packaged": false,
+  "windowSize": [
+    1380,
+    900
+  ],
+  "worker": {
+    "workerVersion": "0.1.0",
+    "python": "3.14.10",
+    "frozen": false,
+    "dependencyFilesInsideBundle": false,
+    "modelSha256": "64184e229b263107bc2b804c6625db1341ff2bb731874b0bcc2fe6544e0bc9ff",
+    "modelLoaded": true,
+    "cameraOpened": false,
+    "microphoneOpened": false,
+    "dependencies": {
+      "numpy": "2.5.5",
+      "opencv": "5.0.0",
+      "mediapipe": "1.2.3",
+      "sounddevice": "0.5.6",
+      "pillow": "13.0.0"
+    }
+  },
+  "workerStopped": true,
+  "protections": {
+    "sandbox": true,
+    "contextIsolation": true,
+    "nodeIntegration": false,
+    "externalNetworkBlocked": true
+  }
+}

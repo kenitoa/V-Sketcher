@@ -1,0 +1,39 @@
+{
+  "passed": false,
+  "code": "E_TARGET_PIXELS",
+  "runs": [
+    {
+      "route": "parts",
+      "resultVersion": 1,
+      "sourceSha256": "3176e61251333f1dcb459f33cdc0ca22311c8829fbd6639211206a23db755e7e",
+      "movedUnicodeAndSpacePath": true,
+      "externalFileUnchanged": true,
+      "appProcessExited": true,
+      "workerStopped": true,
+      "captureFrames": 62,
+      "qualityPassed": true
+    },
+    {
+      "route": "parts",
+      "resultVersion": 2,
+      "sourceSha256": "986a846c3b52eb0981407e024ae2df071ad4550f05268f8a67a9eb4484dfba1c",
+      "movedUnicodeAndSpacePath": true,
+      "externalFileUnchanged": true,
+      "appProcessExited": true,
+      "workerStopped": true,
+      "captureFrames": 59,
+      "qualityPassed": true
+    },
+    {
+      "route": "single-image",
+      "resultVersion": 1,
+      "sourceSha256": "9a84bf63a222e078c1bdf916d58360b40aff3467be22c4f1e0d61cc24818e610",
+      "movedUnicodeAndSpacePath": true,
+      "externalFileUnchanged": true,
+      "appProcessExited": true,
+      "workerStopped": true,
+      "captureFrames": 40,
+      "qualityPassed": false
+    }
+  ]
+}

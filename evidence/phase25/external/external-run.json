@@ -1,0 +1,88 @@
+{
+  "passed": true,
+  "target": "Official Inochi Session",
+  "targetVersion": "0.8.7",
+  "sdkVersion": "0.8.6",
+  "targetExecutableSha256": "5c905b9d9b38118b5699ed414fc1bc2848b87ad0e24858e45ad5759d4c64c17e",
+  "officialArchiveSha256": "66340da0e38f1489ce0ccd454abce7672004b3f74944af79ab01c35b0df0cd8f",
+  "obsVersion": "33.0.1",
+  "obsWebSocketVersion": "5.7.6",
+  "method": "AUTOMATED_TARGET_ONLY_CAPTURE_AFTER_PRODUCT_EXIT",
+  "programmaticTargetInput": false,
+  "nativeEmbeddedAnimations": true,
+  "ourAppRequired": false,
+  "ourFrameServerRequired": false,
+  "streamingStarted": false,
+  "recordingStarted": false,
+  "existingUserScenesModified": false,
+  "physicalDevicesOpened": false,
+  "m0": "HOLD",
+  "runs": [
+    {
+      "route": "parts",
+      "resultVersion": 1,
+      "sourceSha256": "83d730e3b8e481851e996934ff7dd3d820e7ba652fce9a4c9ceccd19239a14c9",
+      "movedUnicodeAndSpacePath": true,
+      "externalFileUnchanged": true,
+      "appProcessExited": true,
+      "workerStopped": true,
+      "captureFrames": 66,
+      "qualityPassed": true
+    },
+    {
+      "route": "parts",
+      "resultVersion": 2,
+      "sourceSha256": "4c135bcaff2e23a19a02e99d82e002d3bd69304709dac246875b342f2c945a11",
+      "movedUnicodeAndSpacePath": true,
+      "externalFileUnchanged": true,
+      "appProcessExited": true,
+      "workerStopped": true,
+      "captureFrames": 60,
+      "qualityPassed": true
+    },
+    {
+      "route": "single-image",
+      "resultVersion": 1,
+      "sourceSha256": "d323654971b0906a80a2f08f3334377dcb0c460cebe7fc148fff7ee0ce87386e",
+      "movedUnicodeAndSpacePath": true,
+      "externalFileUnchanged": true,
+      "appProcessExited": true,
+      "workerStopped": true,
+      "captureFrames": 43,
+      "qualityPassed": true
+    },
+    {
+      "route": "single-image",
+      "resultVersion": 2,
+      "sourceSha256": "404d9e96cde4334637abbb00a799e908239f9670856207a4193a77d67645ba07",
+      "movedUnicodeAndSpacePath": true,
+      "externalFileUnchanged": true,
+      "appProcessExited": true,
+      "workerStopped": true,
+      "captureFrames": 42,
+      "qualityPassed": true
+    },
+    {
+      "route": "split-image",
+      "resultVersion": 1,
+      "sourceSha256": "a368cc00499ee10ccf5d301a3a44eba5e09ea2bb1d1cbc23a88975dc7736d850",
+      "movedUnicodeAndSpacePath": true,
+      "externalFileUnchanged": true,
+      "appProcessExited": true,
+      "workerStopped": true,
+      "captureFrames": 37,
+      "qualityPassed": true
+    },
+    {
+      "route": "split-image",
+      "resultVersion": 2,
+      "sourceSha256": "d747e4da1c60a5488af1d6cf3dc7b45b547614fb140ea30661e7c1accdae3437",
+      "movedUnicodeAndSpacePath": true,
+      "externalFileUnchanged": true,
+      "appProcessExited": true,
+      "workerStopped": true,
+      "captureFrames": 36,
+      "qualityPassed": true
+    }
+  ]
+}

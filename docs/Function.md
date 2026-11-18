@@ -2,14 +2,14 @@
 
 | 항목 | 내용 |
 |---|---|
-| 문서 버전 | v0.25 — 24단계 이미지 저장·외부 대상·호환성 검사 반영 |
+| 문서 버전 | v0.26 — 25단계 외부 아바타 생성·독립 구동·재내보내기 반영 |
 | 작성일 | 2026-11-16 |
 | 최종 갱신 | 2026-11-18 |
-| 기준 문서 | [PRD.md](./PRD.md) v0.25, [01 기획 기준](./planning/01-product-baseline.md), [02 검증 준비](./planning/02-readiness.md), [03 가능성 검증](./planning/03-feasibility.md), [04 실제 외부 사용 검증](./planning/04-tracking-broadcast-export.md), [05 결정](./planning/05-decisions.md), [06 제품 기반](./planning/06-foundation.md), [07 공통 모델](./planning/07-common-model.md), [08 작업/트랜잭션](./planning/08-async-workflow.md), [09 프로젝트 보존](./planning/09-project-lifecycle.md), [10 공통 화면](./planning/10-common-editor.md), [11 공통 움직임](./planning/11-common-motion.md), [12 그림 입력](./planning/12-image-input.md), [13 파츠 조합](./planning/13-parts-library.md), [14 한 장 자동 구조화](./planning/14-single-image.md), [15 쉬운 보정](./planning/15-corrections.md), [16 분리 그림](./planning/16-split-image.md), [17 세부 편집](./planning/17-detail-editor.md), [18 표정 제어](./planning/18-expressions.md), [19 카메라 구현/재검증](./planning/19-camera-tracking.md), [20 입력 복구](./planning/20-input-recovery.md), [21 실행 준비](./planning/21-execution.md), [22 실행 중 변경](./planning/22-runtime-changes.md), [23 방송 출력](./planning/23-broadcast.md), [24 이미지/호환 검사](./planning/24-file-output.md) |
+| 기준 문서 | [PRD.md](./PRD.md) v0.26, [01 기획 기준](./planning/01-product-baseline.md), [02 검증 준비](./planning/02-readiness.md), [03 가능성 검증](./planning/03-feasibility.md), [04 실제 외부 사용 검증](./planning/04-tracking-broadcast-export.md), [05 결정](./planning/05-decisions.md), [06 제품 기반](./planning/06-foundation.md), [07 공통 모델](./planning/07-common-model.md), [08 작업/트랜잭션](./planning/08-async-workflow.md), [09 프로젝트 보존](./planning/09-project-lifecycle.md), [10 공통 화면](./planning/10-common-editor.md), [11 공통 움직임](./planning/11-common-motion.md), [12 그림 입력](./planning/12-image-input.md), [13 파츠 조합](./planning/13-parts-library.md), [14 한 장 자동 구조화](./planning/14-single-image.md), [15 쉬운 보정](./planning/15-corrections.md), [16 분리 그림](./planning/16-split-image.md), [17 세부 편집](./planning/17-detail-editor.md), [18 표정 제어](./planning/18-expressions.md), [19 카메라 구현/재검증](./planning/19-camera-tracking.md), [20 입력 복구](./planning/20-input-recovery.md), [21 실행 준비](./planning/21-execution.md), [22 실행 중 변경](./planning/22-runtime-changes.md), [23 방송 출력](./planning/23-broadcast.md), [24 이미지/호환 검사](./planning/24-file-output.md), [25 외부 아바타](./planning/25-external-avatar.md) |
 | 목적 | PRD의 요구사항을 화면 행동, 처리 규칙, 상태, 데이터, 예외, 검증 가능한 완료 조건으로 구체화 |
 | 초기 범위 | 파츠·한 장 그림·분리 그림 기반 2D 제작, 반응·추적, 앱 내 실행, 실제 방송 연결, 외부 아바타용 내보내기 |
 | 장기 필수 범위 | 그림 기반 3D 제작 및 자체 모델을 제작·연결하는 글 기반 생성 |
-| 구현 상태 | 01~18·T-181~189·T-191~208·T-210~240 구현. 앱 0.19.0·모델 1.9 유지. 실행 중 편집/검증 반영·프로젝트 전환·입력/렌더링 소유권·저장 경쟁 보호·로컬 투명 방송 출력/설정/복구·정지 PNG/INP 사전검사를 연결하며 검증 범위는 단계별 기록으로 구분한다. T-190 실제 카메라 재검증·T-209 실제 OS 전역 키 확인 미완료. 사람 음성 구간·물리 USB 분리·OBS/성능 승인은 별도, M0 HOLD/5 OPEN 유지 |
+| 구현 상태 | 01~18·T-181~189·T-191~208·T-210~250 구현. 앱 0.20.0·모델 1.9 유지. 실행 중 편집/검증 반영·프로젝트 전환·입력/렌더링 소유권·저장 경쟁 보호·로컬 투명 방송 출력/설정/복구·정지 PNG/INP 생성·공식 대상 독립 동작/표정·재내보내기를 연결하며 검증 범위는 단계별 기록으로 구분한다. T-190 실제 카메라 재검증·T-209 실제 OS 전역 키 확인 미완료. 사람 음성 구간·물리 USB 분리·OBS/성능 승인은 별도, M0 HOLD/5 OPEN 유지 |
 
 ## 1. 문서 사용 규칙
 
@@ -801,6 +801,8 @@ T-201~208·T-210 검증과 **T-209 실제 전역 입력 확인 대기**를 구�
 - **독립성:** 내보낸 캐릭터의 사용에 우리 앱의 실행·카메라 연결을 필수로 요구하지 않는다. 대상 프로그램 자체의 입력·설정은 별개다.
 - **완료 기준:** 대상에서 직접 로드·구동하고, 프로젝트 수정 후 재내보낸 최신 결과도 구분해 확인할 수 있다.
 
+**25단계 구현:** 앱 0.20.0·모델 1.9에서 T-241~250의 고정 입력·실제 INP 변환/내장 PNG/망/매개변수/표정·제한 프로필 검토·안전 저장/취소·결과/확인 이력·재내보내기/이동 재연결을 구현했다. Node 315 + Python 36 = 351개 검사와 이전 전체 회귀, 세 실제 경로 최초/수정 INP 6개·42상태 원본/변환 비교·앱/worker 종료 뒤 공식 Session 0.8.7 독립 동작/표정 6회·같은 PC release 2회를 구분한다. [25 사용법·검증](./planning/25-external-avatar.md), [계약](./architecture/avatar-export.md). 곡선 키점/65상태 양자화와 대상 필터/표정 정책 차이는 명시적인 검토/경고 대상이며 미지원 교차 변형·손상 참조는 차단한다. 라이브 장치 연결·다른 대상 버전·T-190/T-209·M0 HOLD/5 OPEN·필수 장기 범위는 유지한다.
+
 ## 16. 환경 설정·성능·자산 정보
 
 ### F-SET-001. 장치·저장·개인정보 설정
@@ -1327,3 +1329,4 @@ PRD의 확정 방향을 변경해야 한다면 기능 명세만 조용히 축소
 | v0.23 | 2026-11-18 | T-211~220 실행 중 편집/검증 반영·독립 GPU 후보/취소/롤백·구조 재시작·프로젝트 유지/전환·리비전/고정 입력·작업 보류/64MiB 조건·입력/렌더링 소유권·저장/전환 경쟁 보호 구현. 298개 검사·전체 개발 앱 회귀·세 실제 경로·같은 PC release 새 설정 2회 통과. T-190/T-209 미완료·M0 HOLD/5 OPEN·필수 장기 범위 유지. |
 | v0.24 | 2026-11-18 | T-221~230 로컬 투명 방송 출력·독립 크기/배치/잘림/프레임·설정 복원/재연결·OBS 안내/확인 분리·증상 진단·숨김/입력/출력 손실 복구 구현. 311개 검사·전체 개발 앱 회귀·세 경로 출력 페이지·실제 별도 OBS의 분리 그림/앱 초점 키/편집·저장·복구·같은 PC release 2회 통과. T-190/T-209 미완료·M0 HOLD/5 OPEN·필수 장기 범위 유지. |
 | v0.25 | 2026-11-18 | T-231~240 PNG 미리보기/저장·정적 그림·실행 입력 고정·외부 대상 프로필/설정 재사용·호환 검사/수정 위치·변환 검토 사본/경고 확인 범위 구현. 331개 검사·기존 전체 개발 앱 회귀·실제 PNG 14종/독립 픽셀 검사·같은 PC release 2회 통과. 외부 파일/독립 구동은 25단계, T-190/T-209 미완료·M0 HOLD/5 OPEN·필수 장기 범위 유지. |
+| v0.26 | 2026-11-18 | T-241~250 고정 입력·실제 INP/내장 자산·가중 망/65상태/표정·제한 프로필 검토·안전 저장/취소·확인 이력·재내보내기/이동 재연결 구현. 351개 검사·이전 전체 회귀·6개 최초/수정 INP 및 42상태 픽셀 비교·앱 종료 뒤 공식 대상 독립 구동 6회·같은 PC release 2회 확인. 실제 장치/다른 버전·T-190/T-209·M0 HOLD/5 OPEN은 별도 유지. |
