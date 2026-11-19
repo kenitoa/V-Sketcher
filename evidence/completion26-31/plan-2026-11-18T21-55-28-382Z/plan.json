@@ -1,0 +1,214 @@
+{
+  "format": "2dsketcher-completion-plan/1",
+  "candidate": {
+    "version": "0.22.1",
+    "sha256": "e5e4f3a5820d4a3563dfcce9b8cba3eccc1ce50d8673db0cb45a0c4030590ad3"
+  },
+  "tasks": [
+    {
+      "id": "T-260",
+      "kind": "physical2d",
+      "dependsOn": [
+        "T-267",
+        "T-270"
+      ],
+      "todoOpen": true,
+      "instructions": "실제 사람·웹캠/마이크 각 2종, 권한/점유·복수 얼굴·소음·물리 손실/복귀를 관찰한다.",
+      "template": "templates/T-260.json"
+    },
+    {
+      "id": "T-267",
+      "kind": "physical2d",
+      "dependsOn": [],
+      "todoOpen": true,
+      "instructions": "실제 사람·웹캠/마이크 각 2종, 권한/점유·복수 얼굴·소음·물리 손실/복귀를 관찰한다.",
+      "template": "templates/T-267.json"
+    },
+    {
+      "id": "T-270",
+      "kind": "integration",
+      "dependsOn": [
+        "T-267"
+      ],
+      "todoOpen": true,
+      "instructions": "초기 AC 15개·FT 21개와 원화/추적 결함을 수정 후 해당 경로로 재검증한다.",
+      "template": "templates/T-270.json"
+    },
+    {
+      "id": "T-274",
+      "kind": "endurance",
+      "dependsOn": [
+        "T-267"
+      ],
+      "todoOpen": true,
+      "instructions": "각 제작 경로 2시간, 실제 장치·OBS x264 녹화와 1초 자원/프레임 표본을 수집한다.",
+      "template": "templates/T-274.json"
+    },
+    {
+      "id": "T-275",
+      "kind": "cycles",
+      "dependsOn": [],
+      "todoOpen": true,
+      "instructions": "실제 장치·프로젝트 전환과 프로세스 트리/GPU/비정상 종료 임시 파일 누적을 검사한다.",
+      "template": "templates/T-275.json"
+    },
+    {
+      "id": "T-276",
+      "kind": "latency",
+      "dependsOn": [
+        "T-267"
+      ],
+      "todoOpen": true,
+      "instructions": "카메라 프레임 ID→OBS draw ACK와 120FPS 이상 독립 물리 계측을 각각 90사건 이상 수집한다.",
+      "template": "templates/T-276.json"
+    },
+    {
+      "id": "T-277",
+      "kind": "load",
+      "dependsOn": [
+        "T-267"
+      ],
+      "todoOpen": true,
+      "instructions": "지원 입력 30개×3회와 최대 입력·장치/OBS 동시 부하·품질 복원을 검사한다.",
+      "template": "templates/T-277.json"
+    },
+    {
+      "id": "T-280",
+      "kind": "risk",
+      "dependsOn": [
+        "T-270",
+        "T-274",
+        "T-275",
+        "T-276",
+        "T-277"
+      ],
+      "todoOpen": true,
+      "instructions": "현재 후보의 데이터/개인정보/외부/성능 미해결 위험이 0인지 검토한다.",
+      "template": "templates/T-280.json"
+    },
+    {
+      "id": "T-282",
+      "kind": "usability",
+      "dependsOn": [],
+      "todoOpen": true,
+      "instructions": "관찰 화면으로 실제 초보자 30명·경로별 첫 사용 10명, 7/14일 창과 실패/도움을 함께 기록한다.",
+      "template": "templates/study.json"
+    },
+    {
+      "id": "T-283",
+      "kind": "usability",
+      "dependsOn": [
+        "T-282"
+      ],
+      "todoOpen": true,
+      "instructions": "관찰 화면으로 실제 초보자 30명·경로별 첫 사용 10명, 7/14일 창과 실패/도움을 함께 기록한다.",
+      "template": "templates/study.json"
+    },
+    {
+      "id": "T-284",
+      "kind": "guidance",
+      "dependsOn": [
+        "T-282",
+        "T-283"
+      ],
+      "todoOpen": true,
+      "instructions": "관찰된 막힘→변경 빌드→같은 과제의 새 직접 관찰을 연결한다.",
+      "template": "templates/T-284.json"
+    },
+    {
+      "id": "T-288",
+      "kind": "cleanWindows",
+      "dependsOn": [],
+      "todoOpen": true,
+      "instructions": "시험 키트를 새 Windows에서 실행하고 별도 OS 준비 증거와 업데이트·프로젝트 보존 관찰을 연결한다.",
+      "template": "templates/T-288.json"
+    },
+    {
+      "id": "T-290",
+      "kind": "trial",
+      "dependsOn": [
+        "T-288"
+      ],
+      "todoOpen": true,
+      "instructions": "실제 제한 시험 수신·동의한 피드백을 환경/설치/첫 사용/방송/외부별로 분류한다.",
+      "template": "templates/T-290.json"
+    },
+    {
+      "id": "T-291",
+      "kind": "fixes",
+      "dependsOn": [
+        "T-290"
+      ],
+      "todoOpen": true,
+      "instructions": "실제 시험 결함을 재현·수정하고 영향받은 제작 경로와 외부 대상을 재검증한다.",
+      "template": "templates/T-291.json"
+    },
+    {
+      "id": "T-295",
+      "kind": "release",
+      "dependsOn": [
+        "T-260",
+        "T-280",
+        "T-284",
+        "T-288",
+        "T-291"
+      ],
+      "todoOpen": true,
+      "instructions": "기존 release-controls의 모든 AC/M0/PERF/RUN/ART/OUT/UX/권리/서명 게이트를 같은 후보에 연결한다.",
+      "template": "templates/T-295.json"
+    },
+    {
+      "id": "T-296",
+      "kind": "candidate",
+      "dependsOn": [
+        "T-295"
+      ],
+      "todoOpen": true,
+      "instructions": "전체 포터블 회귀·인벤토리·세 경로 OBS·공식 외부 구동·실제 서명을 재검증한다.",
+      "template": "templates/T-296.json"
+    },
+    {
+      "id": "T-297",
+      "kind": "distribution",
+      "dependsOn": [
+        "T-296"
+      ],
+      "todoOpen": true,
+      "instructions": "승인된 후보의 실제 다운로드/설치/서명과 공개 안내·지원 경로를 확인한다.",
+      "template": "templates/T-297.json"
+    },
+    {
+      "id": "T-298",
+      "kind": "feedback",
+      "dependsOn": [
+        "T-297"
+      ],
+      "todoOpen": true,
+      "instructions": "실제 배포 이후 동의한 오류/환경/초보자 막힘과 실패 사례를 수집한다.",
+      "template": "templates/T-298.json"
+    },
+    {
+      "id": "T-299",
+      "kind": "update",
+      "dependsOn": [
+        "T-298"
+      ],
+      "todoOpen": true,
+      "instructions": "실제 배포 후 우선 결함을 수정하고 회귀/복구/안내를 갖춘 업데이트 제공을 확인한다.",
+      "template": "templates/T-299.json"
+    },
+    {
+      "id": "T-307",
+      "kind": "threeD",
+      "dependsOn": [],
+      "todoOpen": true,
+      "instructions": "얼굴·눈·입·몸통·양팔을 각각 관찰하고 원화 부위 준비·반대 부위 격리·실제 OBS와 손실 복귀를 확인한다.",
+      "template": "templates/T-307.json"
+    }
+  ],
+  "taskCount": 20,
+  "automaticPublication": false,
+  "automaticTodoChanges": false,
+  "m0": "HOLD",
+  "release": "HOLD"
+}

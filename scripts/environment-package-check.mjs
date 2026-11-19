@@ -1,13 +1,142 @@
+import { inventory as packageInventory } from '../tools/portable-lifecycle.mjs';
+import { packageTestPath } from './common.mjs';
 import assert from 'node:assert/strict';
-import {cpSync,mkdirSync,readFileSync,writeFileSync,readdirSync,statSync,existsSync} from 'node:fs';
-import {resolve,join,relative} from 'node:path';
-import {spawnSync} from 'node:child_process';
-import {createHash} from 'node:crypto';
-import {listPackage,extractFile} from '@electron/asar';
-const output=resolve(process.argv.find(v=>v.startsWith('--evidence-dir='))?.slice(15)??'.local/environment-package-'+Date.now());mkdirSync(output,{recursive:true});assert.ok(!existsSync(join(output,'package-audit.json')));
-const source=resolve('out/2DSketcher-win32-x64'),target=resolve('.local/isolated/environment-'+Date.now(),'한글 경로 with spaces'),bundle=join(target,'2DSketcher');mkdirSync(target,{recursive:true});cpSync(source,bundle,{recursive:true,errorOnExist:true,force:false});
-const archive=join(bundle,'resources/app.asar'),entries=listPackage(archive).map(p=>p.replaceAll('\\','/')),file=p=>extractFile(archive,join(...p.split('/'))),hash=b=>createHash('sha256').update(b).digest('hex');assert.equal(JSON.parse(file('package.json')).version,'0.21.0');assert.equal(JSON.parse(file('dist/runtime-config.json')).channel,'release');assert.ok(existsSync(join(bundle,'resources/notices/dependency-inventory.json')));assert.ok(existsSync(join(bundle,'resources/notices/model-source.json')));assert.equal(JSON.parse(file('dist/renderer/assets/preview-project.json')).schemaVersion.minor,9);assert.ok(!entries.some(p=>/(^|\/)(experiments|tests|\.git|\.local|scripts|tools|worker\/main\.py|electron-forge|typescript|vite)(\/|$)/.test(p)));assert.ok(!entries.some(p=>/obs64\.exe|inochi-session.*\.exe/.test(p)));
-const system=process.env.SystemRoot??'C:\\Windows',env=Object.fromEntries(Object.entries(process.env).filter(([k])=>!/^(PYTHON|NODE|NPM|ELECTRON|VIRTUAL_ENV|CONDA|VSCODE)/i.test(k)));env.PATH=join(system,'System32');for(const cmd of ['node','npm','python','py'])assert.notEqual(spawnSync(join(system,'System32/where.exe'),[cmd],{cwd:target,env,windowsHide:true}).status,0);
-const reports=[];for(const attempt of [1,2]){const evidence=join(output,'packaged-'+attempt);mkdirSync(evidence,{recursive:true});const report=join(target,'report-'+attempt+'.json'),args=['--settings-only=true','--profile-dir='+join(target,'profile-'+attempt),'--self-check-report='+report,'--settings-evidence='+evidence];if(attempt===2)args.push('--compact-editor=true');const result=spawnSync(join(bundle,'2DSketcher.exe'),args,{cwd:target,env,windowsHide:true,encoding:'utf8',timeout:1200000});writeFileSync(join(target,'launch-'+attempt+'.log'),(result.stdout??'')+(result.stderr??''));if(result.error)throw result.error;const data=JSON.parse(readFileSync(report,'utf8'));writeFileSync(join(output,'packaged-run-'+attempt+'.json'),JSON.stringify(data,null,2)+'\n');assert.equal(result.status,0);assert.equal(data.passed,true);assert.equal(data.appVersion,'0.21.0');assert.equal(data.channel,'release');assert.equal(data.packaged,true);assert.equal(data.worker.frozen,true);assert.equal(data.worker.dependencyFilesInsideBundle,true);assert.equal(data.workerStopped,true);for(const key of ['globalKeysSuspendedInSettings','editorTracksReleased','executionTracksReleased','requestsRevokedBeforeMedia','runContinuedLimited','defaultFolderSaved','originalAssetsPreserved','qualityAppliedAndRestored','diagnosticReviewed','settingsSeparateFromProject','sourceHashUnchanged','persistenceReopened','defaultFolderFileExists','diagnosticPrivacyChecked'])assert.equal(data.settings[key],true,key);assert.equal(data.settings.physicalDevicesOpened,false);assert.equal(data.settings.automaticQuality,false);assert.equal(data.settings.endToEndMeasured,false);assert.equal(data.settings.m0,'HOLD');assert.deepEqual(data.protections,{sandbox:true,contextIsolation:true,nodeIntegration:false,externalNetworkBlocked:true});if(attempt===2)assert.deepEqual(data.windowSize,[1080,720]);reports.push({attempt,passed:true,windowSize:data.windowSize,freshProfile:true});}
-const files=[];function walk(dir){for(const e of readdirSync(dir,{withFileTypes:true})){const p=join(dir,e.name);if(e.isDirectory())walk(p);else files.push({path:relative(source,p).replaceAll('\\','/'),bytes:statSync(p).size,sha256:hash(readFileSync(p))});}}walk(source);
-writeFileSync(join(output,'package-audit.json'),JSON.stringify({passed:true,appVersion:'0.21.0',commonProjectSchema:'1.9',cleanWindowsOS:false,isolation:{developerToolsOnPath:false,externalNodeOrPythonRequired:false,freshProfiles:2,unicodeAndSpacePath:true},reports,archiveEntries:entries.length,externalProgramsBundled:false,packageBytes:files.reduce((n,v)=>n+v.bytes,0),files,m0:'HOLD'},null,2)+'\n');console.log('Environment release passed twice without developer tools on PATH.');
+import { cpSync, mkdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { resolve, join } from 'node:path';
+import { spawnSync } from 'node:child_process';
+import { listPackage, extractFile } from '@electron/asar';
+const currentVersion = JSON.parse(readFileSync('package.json', 'utf8')).version;
+const output = resolve(
+  process.argv.find((v) => v.startsWith('--evidence-dir='))?.slice(15) ??
+    '.local/environment-package-' + Date.now(),
+);
+mkdirSync(output, { recursive: true });
+assert.ok(!existsSync(join(output, 'package-audit.json')));
+const source = resolve('out/2DSketcher-win32-x64'),
+  target = packageTestPath(),
+  bundle = join(target, '2DSketcher');
+mkdirSync(target, { recursive: true });
+cpSync(source, bundle, { recursive: true, errorOnExist: true, force: false });
+const archive = join(bundle, 'resources/app.asar'),
+  entries = listPackage(archive).map((p) => p.replaceAll('\\', '/')),
+  file = (p) => extractFile(archive, join(...p.split('/')));
+assert.equal(JSON.parse(file('package.json')).version, currentVersion);
+assert.equal(JSON.parse(file('dist/runtime-config.json')).channel, 'release');
+assert.ok(existsSync(join(bundle, 'resources/notices/dependency-inventory.json')));
+assert.ok(existsSync(join(bundle, 'resources/notices/model-source.json')));
+assert.equal(JSON.parse(file('dist/renderer/assets/preview-project.json')).schemaVersion.minor, 9);
+assert.ok(
+  !entries.some((p) =>
+    /(^|\/)(experiments|tests|\.git|\.local|scripts|tools|worker\/main\.py|electron-forge|typescript|vite)(\/|$)/.test(
+      p,
+    ),
+  ),
+);
+assert.ok(!entries.some((p) => /obs64\.exe|inochi-session.*\.exe/.test(p)));
+const system = process.env.SystemRoot ?? 'C:\\Windows',
+  env = Object.fromEntries(
+    Object.entries(process.env).filter(
+      ([k]) => !/^(PYTHON|NODE|NPM|ELECTRON|VIRTUAL_ENV|CONDA|VSCODE)/i.test(k),
+    ),
+  );
+env.PATH = join(system, 'System32');
+for (const cmd of ['node', 'npm', 'python', 'py'])
+  assert.notEqual(
+    spawnSync(join(system, 'System32/where.exe'), [cmd], { cwd: target, env, windowsHide: true })
+      .status,
+    0,
+  );
+const reports = [];
+for (const attempt of [1, 2]) {
+  const evidence = join(output, 'packaged-' + attempt);
+  mkdirSync(evidence, { recursive: true });
+  const report = join(target, 'report-' + attempt + '.json'),
+    args = [
+      '--settings-only=true',
+      '--profile-dir=' + join(target, 'profile-' + attempt),
+      '--self-check-report=' + report,
+      '--settings-evidence=' + evidence,
+    ];
+  if (attempt === 2) args.push('--compact-editor=true');
+  const result = spawnSync(join(bundle, '2DSketcher.exe'), args, {
+    cwd: target,
+    env,
+    windowsHide: true,
+    encoding: 'utf8',
+    timeout: 1200000,
+  });
+  writeFileSync(
+    join(target, 'launch-' + attempt + '.log'),
+    (result.stdout ?? '') + (result.stderr ?? ''),
+  );
+  if (result.error) throw result.error;
+  const data = JSON.parse(readFileSync(report, 'utf8'));
+  writeFileSync(
+    join(output, 'packaged-run-' + attempt + '.json'),
+    JSON.stringify(data, null, 2) + '\n',
+  );
+  assert.equal(result.status, 0);
+  assert.equal(data.passed, true);
+  assert.equal(data.appVersion, currentVersion);
+  assert.equal(data.channel, 'release');
+  assert.equal(data.packaged, true);
+  assert.equal(data.worker.frozen, true);
+  assert.equal(data.worker.dependencyFilesInsideBundle, true);
+  assert.equal(data.workerStopped, true);
+  for (const key of [
+    'globalKeysSuspendedInSettings',
+    'editorTracksReleased',
+    'executionTracksReleased',
+    'requestsRevokedBeforeMedia',
+    'runContinuedLimited',
+    'defaultFolderSaved',
+    'originalAssetsPreserved',
+    'qualityAppliedAndRestored',
+    'diagnosticReviewed',
+    'settingsSeparateFromProject',
+    'sourceHashUnchanged',
+    'persistenceReopened',
+    'defaultFolderFileExists',
+    'diagnosticPrivacyChecked',
+  ])
+    assert.equal(data.settings[key], true, key);
+  assert.equal(data.settings.physicalDevicesOpened, false);
+  assert.equal(data.settings.automaticQuality, false);
+  assert.equal(data.settings.endToEndMeasured, false);
+  assert.equal(data.settings.m0, 'HOLD');
+  assert.deepEqual(data.protections, {
+    sandbox: true,
+    contextIsolation: true,
+    nodeIntegration: false,
+    externalNetworkBlocked: true,
+  });
+  if (attempt === 2) assert.deepEqual(data.windowSize, [1080, 720]);
+  reports.push({ attempt, passed: true, windowSize: data.windowSize, freshProfile: true });
+}
+const files = packageInventory(source, { sort: false });
+writeFileSync(
+  join(output, 'package-audit.json'),
+  JSON.stringify(
+    {
+      passed: true,
+      appVersion: currentVersion,
+      commonProjectSchema: '1.9',
+      cleanWindowsOS: false,
+      isolation: {
+        developerToolsOnPath: false,
+        externalNodeOrPythonRequired: false,
+        freshProfiles: 2,
+        unicodeAndSpacePath: true,
+      },
+      reports,
+      archiveEntries: entries.length,
+      externalProgramsBundled: false,
+      packageBytes: files.reduce((n, v) => n + v.bytes, 0),
+      files,
+      m0: 'HOLD',
+    },
+    null,
+    2,
+  ) + '\n',
+);
+console.log('Environment release passed twice without developer tools on PATH.');

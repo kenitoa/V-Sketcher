@@ -1,0 +1,96 @@
+{
+  "passed": true,
+  "candidate": {
+    "version": "0.22.5",
+    "sha256": "a3de5d5ef307854e5def1ab5a7d7779779127537a7720b3f819345f0d651b308"
+  },
+  "inventory": {
+    "format": "2dsketcher-clean-probe/1",
+    "collectedAt": "2026-11-19T15:55:26.1212694Z",
+    "passed": false,
+    "cleanWindowsVerified": false,
+    "updateVerified": false,
+    "physicalDevicesOpened": false,
+    "securityBypasses": 0,
+    "automaticUpload": false,
+    "powerShellInvoked": false,
+    "errorCode": null,
+    "stage": "inventory",
+    "candidate": {
+      "version": "0.22.5",
+      "sha256": "a3de5d5ef307854e5def1ab5a7d7779779127537a7720b3f819345f0d651b308"
+    },
+    "os": {
+      "platform": "windows",
+      "build": "26300",
+      "compatibilityReportedVersion": "6.2.9200.0",
+      "x64": true,
+      "logicalCores": 12
+    },
+    "developerToolsDetected": [
+      "node.exe",
+      "npm.cmd",
+      "python.exe",
+      "py.exe",
+      "git.exe"
+    ],
+    "developerToolsAbsent": false
+  },
+  "packaged": {
+    "format": "2dsketcher-clean-probe/1",
+    "collectedAt": "2026-11-19T15:55:26.9506919Z",
+    "passed": true,
+    "cleanWindowsVerified": false,
+    "updateVerified": false,
+    "physicalDevicesOpened": false,
+    "securityBypasses": 0,
+    "automaticUpload": false,
+    "powerShellInvoked": false,
+    "errorCode": null,
+    "stage": "complete",
+    "candidate": {
+      "version": "0.22.5",
+      "sha256": "a3de5d5ef307854e5def1ab5a7d7779779127537a7720b3f819345f0d651b308"
+    },
+    "os": {
+      "platform": "windows",
+      "build": "26300",
+      "compatibilityReportedVersion": "6.2.9200.0",
+      "x64": true,
+      "logicalCores": 12
+    },
+    "developerToolsDetected": [
+      "node.exe",
+      "npm.cmd",
+      "python.exe",
+      "py.exe",
+      "git.exe"
+    ],
+    "developerToolsAbsent": false,
+    "privateWorkId": "2DSC-0f5d61e2ae54",
+    "signaturePresence": "PresentUnverified",
+    "tests": [
+      {
+        "attempt": 1,
+        "passed": true,
+        "reportSha256": "586b832c8aeaf58d7b20c8ced525016b532f3be09e7cd1bade51dc272d9418bb",
+        "protectionsIntact": true,
+        "frozenWorker": true
+      },
+      {
+        "attempt": 2,
+        "passed": true,
+        "reportSha256": "54d035a8619f73812844b989b664ba080d0b9494728b4867b17a66eb715ba3fc",
+        "protectionsIntact": true,
+        "frozenWorker": true
+      }
+    ],
+    "ownedTemporaryFilesRemoved": true
+  },
+  "archiveUnchanged": true,
+  "sharedArchiveReadOnly": true,
+  "cleanWindowsVerified": false,
+  "updateVerified": false,
+  "powerShellInvoked": false,
+  "securityBypasses": 0
+}

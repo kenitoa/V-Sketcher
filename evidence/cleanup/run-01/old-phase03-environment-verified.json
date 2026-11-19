@@ -1,0 +1,14 @@
+{
+  "format": "2dsketcher-cache-archive/1",
+  "group": "old-phase03-environment",
+  "verified": true,
+  "files": 5530,
+  "logicalBytes": 367473428,
+  "everyArchiveFileReconstructedAndHashMatched": true,
+  "originalSourceHashesRecordedAtPack": true,
+  "sourceHashRecheckedDuringVerify": false,
+  "sourceHashRequiredAgainBeforeEviction": true,
+  "indexSha256": "3c3bdfb18110f21b9ee1b765946087dbf39d7a6ba64c2f39389495b4f597ef4c",
+  "sourceRemoved": false,
+  "historicalEvidenceModified": false
+}

@@ -1,0 +1,12 @@
+{
+  "format": "2dsketcher-cache-archive/1",
+  "group": "correction-tests",
+  "verified": true,
+  "files": 11520,
+  "logicalBytes": 18298801334,
+  "everyFileReconstructedAndSourceHashMatched": true,
+  "sourceRemoved": false,
+  "maxObjectMiB": 4.0,
+  "readCacheMiBLimit": 32,
+  "historicalEvidenceModified": false
+}

@@ -1,0 +1,12 @@
+{
+  "format": "2dsketcher-cache-archive/1",
+  "group": "generated-phase26-recovery-02",
+  "verified": true,
+  "files": 155,
+  "logicalBytes": 185596870,
+  "everyFileReconstructedAndSourceHashMatched": true,
+  "sourceRemoved": false,
+  "maxObjectMiB": 4.0,
+  "readCacheMiBLimit": 32,
+  "historicalEvidenceModified": false
+}

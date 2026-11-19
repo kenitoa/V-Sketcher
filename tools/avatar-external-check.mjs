@@ -1,27 +1,240 @@
-import {readFileSync,writeFileSync,mkdirSync,existsSync,copyFileSync,openSync} from 'node:fs';
-import {resolve,join} from 'node:path';
-import {spawn,spawnSync} from 'node:child_process';
-import {createHash} from 'node:crypto';
+import {
+  readFileSync,
+  writeFileSync,
+  mkdirSync,
+  existsSync,
+  copyFileSync,
+  openSync,
+} from 'node:fs';
+import { resolve, join } from 'node:path';
+import { spawn, spawnSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import assert from 'node:assert/strict';
-import {OBSClient} from './obs-client.mjs';
-const arg=n=>process.argv.find(v=>v.startsWith('--'+n+'='))?.slice(n.length+3),reportFile=resolve(arg('report')),images=resolve(arg('images-dir')),work=resolve(arg('work-dir')),out=resolve(arg('output-dir')),targetRoot=resolve(arg('target-root')),secret=JSON.parse(readFileSync(resolve(arg('secret'))));
-mkdirSync(out,{recursive:true});mkdirSync(work,{recursive:true});assert.ok(!existsSync(join(out,'external-run.json')),'E_EVIDENCE_EXISTS');
-const hash=b=>createHash('sha256').update(b).digest('hex'),load=p=>JSON.parse(readFileSync(p,'utf8')),report=load(reportFile),runner=load(join(images,'runner.json'));assert.ok(report.passed&&report.workerStopped&&runner.appProcessExited&&runner.exitCode===0&&runner.reportSha256===hash(readFileSync(reportFile)),'E_APP_STILL_ACTIVE');
-const exe=join(targetRoot,'inochi-session-phase25.exe'),original=resolve('experiments/phase04/tools/inochi-session/inochi-session.exe');assert.equal(hash(readFileSync(exe)),hash(readFileSync(original)),'E_TARGET_BINARY');
+import { OBSClient } from './obs-client.mjs';
+const arg = (n) => process.argv.find((v) => v.startsWith('--' + n + '='))?.slice(n.length + 3),
+  reportFile = resolve(arg('report')),
+  images = resolve(arg('images-dir')),
+  work = resolve(arg('work-dir')),
+  out = resolve(arg('output-dir')),
+  targetRoot = resolve(arg('target-root')),
+  secret = JSON.parse(readFileSync(resolve(arg('secret'))));
+mkdirSync(out, { recursive: true });
+mkdirSync(work, { recursive: true });
+assert.ok(!existsSync(join(out, 'external-run.json')), 'E_EVIDENCE_EXISTS');
+const hash = (b) => createHash('sha256').update(b).digest('hex'),
+  load = (p) => JSON.parse(readFileSync(p, 'utf8')),
+  report = load(reportFile),
+  runner = load(join(images, 'runner.json'));
+assert.ok(
+  report.passed &&
+    report.workerStopped &&
+    runner.appProcessExited &&
+    runner.exitCode === 0 &&
+    runner.reportSha256 === hash(readFileSync(reportFile)),
+  'E_APP_STILL_ACTIVE',
+);
+const exe = join(targetRoot, 'inochi-session-phase25.exe'),
+  original = resolve('experiments/phase04/tools/inochi-session/inochi-session.exe');
+assert.equal(hash(readFileSync(exe)), hash(readFileSync(original)), 'E_TARGET_BINARY');
 // Verify the pre-existing official archive and executable bytes, without changing frozen history.
-const source=load('experiments/phase04/tools/sources.json').find(v=>v.id==='inochi-session'),archive=resolve('experiments/phase04/tools',source.filename);assert.equal(hash(readFileSync(archive)),source.sha256,'E_TARGET_ARCHIVE');
-const obs=await OBSClient.connect(secret),version=await obs.request('GetVersion');assert.equal(version.obsVersion,'33.0.1');assert.equal((await obs.request('GetStreamStatus')).outputActive,false);assert.equal((await obs.request('GetRecordStatus')).outputActive,false);
-const scene='Phase25 external verification',input='Phase25 external target',scenes=await obs.request('GetSceneList');if(!scenes.scenes.some(v=>v.sceneName===scene))await obs.request('CreateScene',{sceneName:scene});const inputs=await obs.request('GetInputList');if(!inputs.inputs.some(v=>v.inputName===input))await obs.request('CreateInput',{sceneName:scene,inputName:input,inputKind:'window_capture',inputSettings:{method:1,cursor:false},sceneItemEnabled:true});await obs.request('SetCurrentProgramScene',{sceneName:scene});
-const pause=ms=>new Promise(r=>setTimeout(r,ms)),runs=[];let child;
-try{for(const file of report.avatarExport.files){
- assert.match(file.name,/^avatar-(parts|single-image|split-image)-v[12]\.inp$/);const originalFile=join(images,file.name),bytes=readFileSync(originalFile);assert.equal(hash(bytes),file.sha256);const dir=join(work,file.route+'-v'+file.version,'이동한 결과 with spaces');mkdirSync(dir,{recursive:true});const moved=join(dir,'independent-character.inp');copyFileSync(originalFile,moved);
- // Read only envelope metadata here; the independent Python decoder owns image verification.
- let p=8;const integer=()=>{const v=bytes.readUInt32BE(p);p+=4;return v;};const take=n=>{const b=bytes.subarray(p,p+n);p+=n;return b;};const model=JSON.parse(take(integer()));take(8);const count=integer();for(let i=0;i<count;i++){const n=integer();take(1);take(n);}take(8);const extCount=integer();let metadata;for(let i=0;i<extCount;i++){const name=take(integer()).toString(),data=JSON.parse(take(integer()));if(name==='org.2dsketcher.export.v1')metadata=data;}assert.ok(metadata?.demo&&metadata.canvas);
- const env={...process.env,PATH:join(process.env.SystemRoot??'C:\\Windows','System32'),APPDATA:join(work,'user/Roaming'),LOCALAPPDATA:join(work,'user/Local')};mkdirSync(env.APPDATA,{recursive:true});mkdirSync(env.LOCALAPPDATA,{recursive:true});child=spawn(exe,[moved],{cwd:targetRoot,env,windowsHide:false,stdio:['ignore',openSync(join(dir,'target.log'),'a'),openSync(join(dir,'target-error.log'),'a')]});
- let found=false;for(let i=0;i<60;i++){if(child.exitCode!==null)throw new Error('E_TARGET_EXIT');const r=await obs.request('GetInputPropertiesListPropertyItems',{inputName:input,propertyName:'window'}),matches=r.propertyItems.filter(v=>String(v.itemValue).endsWith(':inochi-session-phase25.exe'));if(matches.length===1){await obs.request('SetInputSettings',{inputName:input,inputSettings:{window:'',method:1},overlay:true});await obs.request('SetInputSettings',{inputName:input,inputSettings:{window:matches[0].itemValue,method:1,cursor:false},overlay:true});found=true;break;}await pause(250);}assert.ok(found,'E_TARGET_WINDOW');await pause(1800);
- const captures=join(dir,'captures');mkdirSync(captures,{recursive:true});const end=Date.now()+Math.ceil(model.animations['2DSketcher-demo'].length/30+3)*1000;let frames=0;while(Date.now()<end){if(child.exitCode!==null)throw new Error('E_TARGET_EXIT');const frame=await obs.screenshot(input);writeFileSync(join(captures,'frame-'+String(frames++).padStart(4,'0')+'.png'),frame);await pause(180);}
- child.kill();await new Promise(r=>child.once('exit',r));child=null;assert.equal(hash(readFileSync(moved)),file.sha256,'E_TARGET_CHANGED_FILE');
- const pixels=spawnSync(resolve('.venv-product/Scripts/python.exe'),['tools/avatar-target-pixels.py','--report='+reportFile,'--images-dir='+images,'--capture-dir='+captures,'--output-dir='+out,'--route='+file.route,'--version='+file.version,'--canvas='+JSON.stringify(metadata.canvas)],{encoding:'utf8',windowsHide:true});const quality=load(join(out,file.route+'-v'+file.version+'-quality.json'));runs.push({route:file.route,resultVersion:file.version,sourceSha256:file.sha256,movedUnicodeAndSpacePath:true,externalFileUnchanged:true,appProcessExited:true,workerStopped:true,captureFrames:frames,qualityPassed:quality.passed});writeFileSync(join(out,'progress.json'),JSON.stringify({runs},null,2)+'\n');assert.equal(pixels.status,0,'E_TARGET_PIXELS');console.log('Official independent target passed '+file.route+' v'+file.version);
- }
- assert.equal((await obs.request('GetStreamStatus')).outputActive,false);assert.equal((await obs.request('GetRecordStatus')).outputActive,false);writeFileSync(join(out,'external-run.json'),JSON.stringify({passed:true,target:'Official Inochi Session',targetVersion:'0.8.7',sdkVersion:'0.8.6',targetExecutableSha256:hash(readFileSync(exe)),officialArchiveSha256:source.sha256,obsVersion:version.obsVersion,obsWebSocketVersion:version.obsWebSocketVersion,method:'AUTOMATED_TARGET_ONLY_CAPTURE_AFTER_PRODUCT_EXIT',programmaticTargetInput:false,nativeEmbeddedAnimations:true,ourAppRequired:false,ourFrameServerRequired:false,streamingStarted:false,recordingStarted:false,existingUserScenesModified:false,physicalDevicesOpened:false,m0:'HOLD',runs},null,2)+'\n');
-}catch(e){writeFileSync(join(out,'external-failed.json'),JSON.stringify({passed:false,code:e.message.match(/E_[A-Z_]+/)?.[0]??'E_EXTERNAL_ASSERTION',runs},null,2)+'\n');throw e;}finally{if(child)child.kill();obs.close();}
+const source = load('experiments/phase04/tools/sources.json').find(
+    (v) => v.id === 'inochi-session',
+  ),
+  archive = resolve('experiments/phase04/tools', source.filename);
+assert.equal(hash(readFileSync(archive)), source.sha256, 'E_TARGET_ARCHIVE');
+const obs = await OBSClient.connect(secret),
+  version = await obs.request('GetVersion');
+assert.equal(version.obsVersion, '33.0.1');
+assert.equal((await obs.request('GetStreamStatus')).outputActive, false);
+assert.equal((await obs.request('GetRecordStatus')).outputActive, false);
+const scene = 'Phase25 external verification',
+  input = 'Phase25 external target',
+  scenes = await obs.request('GetSceneList');
+if (!scenes.scenes.some((v) => v.sceneName === scene))
+  await obs.request('CreateScene', { sceneName: scene });
+const inputs = await obs.request('GetInputList');
+if (!inputs.inputs.some((v) => v.inputName === input))
+  await obs.request('CreateInput', {
+    sceneName: scene,
+    inputName: input,
+    inputKind: 'window_capture',
+    inputSettings: { method: 1, cursor: false },
+    sceneItemEnabled: true,
+  });
+await obs.request('SetCurrentProgramScene', { sceneName: scene });
+const pause = (ms) => new Promise((r) => setTimeout(r, ms)),
+  runs = [];
+let child;
+try {
+  for (const file of report.avatarExport.files) {
+    assert.match(file.name, /^avatar-(parts|single-image|split-image)-v[12]\.inp$/);
+    const originalFile = join(images, file.name),
+      bytes = readFileSync(originalFile);
+    assert.equal(hash(bytes), file.sha256);
+    const dir = join(work, file.route + '-v' + file.version, '이동한 결과 with spaces');
+    mkdirSync(dir, { recursive: true });
+    const moved = join(dir, 'independent-character.inp');
+    copyFileSync(originalFile, moved);
+    // Read only envelope metadata here; the independent Python decoder owns image verification.
+    let p = 8;
+    const integer = () => {
+      const v = bytes.readUInt32BE(p);
+      p += 4;
+      return v;
+    };
+    const take = (n) => {
+      const b = bytes.subarray(p, p + n);
+      p += n;
+      return b;
+    };
+    const model = JSON.parse(take(integer()));
+    take(8);
+    const count = integer();
+    for (let i = 0; i < count; i++) {
+      const n = integer();
+      take(1);
+      take(n);
+    }
+    take(8);
+    const extCount = integer();
+    let metadata;
+    for (let i = 0; i < extCount; i++) {
+      const name = take(integer()).toString(),
+        data = JSON.parse(take(integer()));
+      if (name === 'org.2dsketcher.export.v1') metadata = data;
+    }
+    assert.ok(metadata?.demo && metadata.canvas);
+    const env = {
+      ...process.env,
+      PATH: join(process.env.SystemRoot ?? 'C:\\Windows', 'System32'),
+      APPDATA: join(work, 'user/Roaming'),
+      LOCALAPPDATA: join(work, 'user/Local'),
+    };
+    mkdirSync(env.APPDATA, { recursive: true });
+    mkdirSync(env.LOCALAPPDATA, { recursive: true });
+    child = spawn(exe, [moved], {
+      cwd: targetRoot,
+      env,
+      windowsHide: false,
+      stdio: [
+        'ignore',
+        openSync(join(dir, 'target.log'), 'a'),
+        openSync(join(dir, 'target-error.log'), 'a'),
+      ],
+    });
+    let found = false;
+    for (let i = 0; i < 60; i++) {
+      if (child.exitCode !== null) throw new Error('E_TARGET_EXIT');
+      const r = await obs.request('GetInputPropertiesListPropertyItems', {
+          inputName: input,
+          propertyName: 'window',
+        }),
+        matches = r.propertyItems.filter((v) =>
+          String(v.itemValue).endsWith(':inochi-session-phase25.exe'),
+        );
+      if (matches.length === 1) {
+        await obs.request('SetInputSettings', {
+          inputName: input,
+          inputSettings: { window: '', method: 1 },
+          overlay: true,
+        });
+        await obs.request('SetInputSettings', {
+          inputName: input,
+          inputSettings: { window: matches[0].itemValue, method: 1, cursor: false },
+          overlay: true,
+        });
+        found = true;
+        break;
+      }
+      await pause(250);
+    }
+    assert.ok(found, 'E_TARGET_WINDOW');
+    await pause(1800);
+    const captures = join(dir, 'captures');
+    mkdirSync(captures, { recursive: true });
+    const end = Date.now() + Math.ceil(model.animations['2DSketcher-demo'].length / 30 + 3) * 1000;
+    let frames = 0;
+    while (Date.now() < end) {
+      if (child.exitCode !== null) throw new Error('E_TARGET_EXIT');
+      const frame = await obs.screenshot(input);
+      writeFileSync(join(captures, 'frame-' + String(frames++).padStart(4, '0') + '.png'), frame);
+      await pause(180);
+    }
+    child.kill();
+    await new Promise((r) => child.once('exit', r));
+    child = null;
+    assert.equal(hash(readFileSync(moved)), file.sha256, 'E_TARGET_CHANGED_FILE');
+    const pixels = spawnSync(
+      resolve('.venv-product/Scripts/python.exe'),
+      [
+        'tools/avatar-target-pixels.py',
+        '--report=' + reportFile,
+        '--images-dir=' + images,
+        '--capture-dir=' + captures,
+        '--output-dir=' + out,
+        '--route=' + file.route,
+        '--version=' + file.version,
+        '--canvas=' + JSON.stringify(metadata.canvas),
+      ],
+      { encoding: 'utf8', windowsHide: true },
+    );
+    const quality = load(join(out, file.route + '-v' + file.version + '-quality.json'));
+    runs.push({
+      route: file.route,
+      resultVersion: file.version,
+      sourceSha256: file.sha256,
+      movedUnicodeAndSpacePath: true,
+      externalFileUnchanged: true,
+      appProcessExited: true,
+      workerStopped: true,
+      captureFrames: frames,
+      qualityPassed: quality.passed,
+    });
+    writeFileSync(join(out, 'progress.json'), JSON.stringify({ runs }, null, 2) + '\n');
+    assert.equal(pixels.status, 0, 'E_TARGET_PIXELS');
+    console.log('Official independent target passed ' + file.route + ' v' + file.version);
+  }
+  assert.equal((await obs.request('GetStreamStatus')).outputActive, false);
+  assert.equal((await obs.request('GetRecordStatus')).outputActive, false);
+  writeFileSync(
+    join(out, 'external-run.json'),
+    JSON.stringify(
+      {
+        passed: true,
+        target: 'Official Inochi Session',
+        targetVersion: '0.8.7',
+        sdkVersion: '0.8.6',
+        targetExecutableSha256: hash(readFileSync(exe)),
+        officialArchiveSha256: source.sha256,
+        obsVersion: version.obsVersion,
+        obsWebSocketVersion: version.obsWebSocketVersion,
+        method: 'AUTOMATED_TARGET_ONLY_CAPTURE_AFTER_PRODUCT_EXIT',
+        programmaticTargetInput: false,
+        nativeEmbeddedAnimations: true,
+        ourAppRequired: false,
+        ourFrameServerRequired: false,
+        streamingStarted: false,
+        recordingStarted: false,
+        existingUserScenesModified: false,
+        physicalDevicesOpened: false,
+        m0: 'HOLD',
+        runs,
+      },
+      null,
+      2,
+    ) + '\n',
+  );
+} catch (e) {
+  writeFileSync(
+    join(out, 'external-failed.json'),
+    JSON.stringify(
+      { passed: false, code: e.message.match(/E_[A-Z_]+/)?.[0] ?? 'E_EXTERNAL_ASSERTION', runs },
+      null,
+      2,
+    ) + '\n',
+  );
+  throw e;
+} finally {
+  if (child) child.kill();
+  obs.close();
+}

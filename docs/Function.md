@@ -2,14 +2,14 @@
 
 | 항목 | 내용 |
 |---|---|
-| 문서 버전 | v0.30 — 26~31 보완·0.22.1 복구 목록 수정·실증 경계 반영 |
+| 문서 버전 | v0.31 — 용량·메모리 정리·잔여 20개 실행/판정 |
 | 작성일 | 2026-11-16 |
-| 최종 갱신 | 2026-11-19 |
-| 기준 문서 | [PRD.md](./PRD.md) v0.30, [01 기획 기준](./planning/01-product-baseline.md), [02 검증 준비](./planning/02-readiness.md), [03 가능성 검증](./planning/03-feasibility.md), [04 실제 외부 사용 검증](./planning/04-tracking-broadcast-export.md), [05 결정](./planning/05-decisions.md), [06 제품 기반](./planning/06-foundation.md), [07 공통 모델](./planning/07-common-model.md), [08 작업/트랜잭션](./planning/08-async-workflow.md), [09 프로젝트 보존](./planning/09-project-lifecycle.md), [10 공통 화면](./planning/10-common-editor.md), [11 공통 움직임](./planning/11-common-motion.md), [12 그림 입력](./planning/12-image-input.md), [13 파츠 조합](./planning/13-parts-library.md), [14 한 장 자동 구조화](./planning/14-single-image.md), [15 쉬운 보정](./planning/15-corrections.md), [16 분리 그림](./planning/16-split-image.md), [17 세부 편집](./planning/17-detail-editor.md), [18 표정 제어](./planning/18-expressions.md), [19 카메라 구현/재검증](./planning/19-camera-tracking.md), [20 입력 복구](./planning/20-input-recovery.md), [21 실행 준비](./planning/21-execution.md), [22 실행 중 변경](./planning/22-runtime-changes.md), [23 방송 출력](./planning/23-broadcast.md), [24 이미지/호환 검사](./planning/24-file-output.md), [25 외부 아바타](./planning/25-external-avatar.md) |
+| 최종 갱신 | 2026-11-20 |
+| 기준 문서 | [PRD.md](./PRD.md) v0.31, [01 기획 기준](./planning/01-product-baseline.md), [02 검증 준비](./planning/02-readiness.md), [03 가능성 검증](./planning/03-feasibility.md), [04 실제 외부 사용 검증](./planning/04-tracking-broadcast-export.md), [05 결정](./planning/05-decisions.md), [06 제품 기반](./planning/06-foundation.md), [07 공통 모델](./planning/07-common-model.md), [08 작업/트랜잭션](./planning/08-async-workflow.md), [09 프로젝트 보존](./planning/09-project-lifecycle.md), [10 공통 화면](./planning/10-common-editor.md), [11 공통 움직임](./planning/11-common-motion.md), [12 그림 입력](./planning/12-image-input.md), [13 파츠 조합](./planning/13-parts-library.md), [14 한 장 자동 구조화](./planning/14-single-image.md), [15 쉬운 보정](./planning/15-corrections.md), [16 분리 그림](./planning/16-split-image.md), [17 세부 편집](./planning/17-detail-editor.md), [18 표정 제어](./planning/18-expressions.md), [19 카메라 구현/재검증](./planning/19-camera-tracking.md), [20 입력 복구](./planning/20-input-recovery.md), [21 실행 준비](./planning/21-execution.md), [22 실행 중 변경](./planning/22-runtime-changes.md), [23 방송 출력](./planning/23-broadcast.md), [24 이미지/호환 검사](./planning/24-file-output.md), [25 외부 아바타](./planning/25-external-avatar.md) |
 | 목적 | PRD의 요구사항을 화면 행동, 처리 규칙, 상태, 데이터, 예외, 검증 가능한 완료 조건으로 구체화 |
 | 초기 범위 | 파츠·한 장 그림·분리 그림 기반 2D 제작, 반응·추적, 앱 내 실행, 실제 방송 연결, 외부 아바타용 내보내기 |
 | 장기 필수 범위 | 그림 기반 3D 제작 및 자체 모델을 제작·연결하는 글 기반 생성 |
-| 구현 상태 | 앱 0.22.1·모델 1.9. 26~31의 14개 작업을 근거로 추가 완료. 실제 입력·장시간/전체 지연·초보자·깨끗한 Windows·출시 후 운영 20개는 미완료. T-190/T-209/T-260/T-307·M0 HOLD/5 OPEN·초기 2D/3D 출시 HOLD 유지 |
+| 구현 상태 | 소스 0.22.5·모델 1.9. [용량·메모리 정리](./planning/cleanup.md)와 [잔여 20개 실행/판정 도구](./planning/26-31-completion.md)를 추가했다. 26~31은 40/60 완료이며 실제 입력·장시간/전체 지연·초보자·새 Windows·출시 후 운영 20개는 미완료. T-190/T-209/T-260/T-307·M0 HOLD/5 OPEN·초기 2D/3D 출시 HOLD 유지 |
 
 ## 1. 문서 사용 규칙
 

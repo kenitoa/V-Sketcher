@@ -1,4 +1,5 @@
 """Independently decode the nine avatar-only OBS captures from this run."""
+
 import argparse
 import json
 import runpy
@@ -26,8 +27,12 @@ def main():
             states.append({'state': state, **row})
         assert len({row['pixelSha256'] for row in states}) == 3
         rows.append({'route': route, 'states': states})
-    output.write_text(json.dumps({'passed': True, 'routes': rows}, indent=2) + '\n', encoding='utf8')
-    print('Three actual OBS routes: visible avatar, transparent/partial alpha and distinct poses passed.')
+    output.write_text(
+        json.dumps({'passed': True, 'routes': rows}, indent=2) + '\n', encoding='utf8'
+    )
+    print(
+        'Three actual OBS routes: visible avatar, transparent/partial alpha and distinct poses passed.'
+    )
 
 
 if __name__ == '__main__':

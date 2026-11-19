@@ -1,0 +1,12 @@
+{
+  "group": "isolated",
+  "removedFiles": 32351,
+  "removedLogicalBytes": 22295790923,
+  "retainedChangedOrProtectedFiles": 0,
+  "remainingSelectedFiles": 1333,
+  "losslessArchiveRetained": true,
+  "wholeArchiveReconstructedBeforeFirstRemoval": true,
+  "sourceHashRecheckedBeforeEachRemoval": true,
+  "recursiveDeletionUsed": false,
+  "historicalEvidenceModified": false
+}

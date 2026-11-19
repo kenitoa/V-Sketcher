@@ -1,0 +1,5 @@
+{
+  "prettier": "3.10.1",
+  "ruff": "0.17.5",
+  "runtimeDependency": false
+}

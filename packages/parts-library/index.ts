@@ -1,41 +1,370 @@
-import {assertSimpleSafe} from '../detail-editor/model';
+import { assertSimpleSafe } from '../detail-editor/model';
 import { randomUUID } from 'node:crypto';
-import { assertProject,createProject,type Project,type CharacterPart,type PreviewKey } from '../project-model';
-import { authorRig,KEYS } from '../motion';
-import { multiply,translate,rotate,scale } from '../coordinates';
-import { SLOTS,defaults,matches,assemblyReason,canonicalAsset,type Catalog,type Slot,type Item,type Adjustment,type PartTemplate } from './types';
+import {
+  assertProject,
+  createProject,
+  type Project,
+  type CharacterPart,
+  type PreviewKey,
+} from '../project-model';
+import { authorRig, KEYS } from '../motion';
+import { multiply, translate, rotate, scale } from '../coordinates';
+import {
+  SLOTS,
+  defaults,
+  matches,
+  assemblyReason,
+  canonicalAsset,
+  type Catalog,
+  type Slot,
+  type Item,
+  type Adjustment,
+  type PartTemplate,
+} from './types';
 export * from './types';
-export function assertCatalog(c:Catalog):void {
-  if(c.id!=='atelier-luna' || c.version!=='1.0.0' || c.canvas.width!==1024 || c.canvas.height!==1280 || c.items.length!==12 || SLOTS.some(s=>c.items.filter(i=>i.slot===s).length!==2) || new Set(c.items.map(i=>i.id)).size!==12 || new Set(c.assets.map(a=>a.id)).size!==c.assets.length)throw new Error('E_PARTS_CATALOG');
-  for(const i of c.items){if(i.family!==c.family || i.version!==c.version || !c.items.some(j=>j.slot===i.slot&&j.id===c.defaults[i.slot]) || i.templates.some(t=>t.textures.some(v=>!c.assets.some(a=>a.id===v.assetId))) || (i.slot==='hair' && (i.templates.length!==2 || !i.templates.some(t=>t.role==='hair-front') || !i.templates.some(t=>t.role==='hair-back'))))throw new Error('E_PARTS_CATALOG');}
-  for(const a of c.assets)if(!/^parts\/[a-z0-9-]+\.png$/.test(c.files[a.fingerprint.sha256]??''))throw new Error('E_PARTS_CATALOG');
+export function assertCatalog(c: Catalog): void {
+  if (
+    c.id !== 'atelier-luna' ||
+    c.version !== '1.0.0' ||
+    c.canvas.width !== 1024 ||
+    c.canvas.height !== 1280 ||
+    c.items.length !== 12 ||
+    SLOTS.some((s) => c.items.filter((i) => i.slot === s).length !== 2) ||
+    new Set(c.items.map((i) => i.id)).size !== 12 ||
+    new Set(c.assets.map((a) => a.id)).size !== c.assets.length
+  )
+    throw new Error('E_PARTS_CATALOG');
+  for (const i of c.items) {
+    if (
+      i.family !== c.family ||
+      i.version !== c.version ||
+      !c.items.some((j) => j.slot === i.slot && j.id === c.defaults[i.slot]) ||
+      i.templates.some((t) => t.textures.some((v) => !c.assets.some((a) => a.id === v.assetId))) ||
+      (i.slot === 'hair' &&
+        (i.templates.length !== 2 ||
+          !i.templates.some((t) => t.role === 'hair-front') ||
+          !i.templates.some((t) => t.role === 'hair-back')))
+    )
+      throw new Error('E_PARTS_CATALOG');
+  }
+  for (const a of c.assets)
+    if (!/^parts\/[a-z0-9-]+\.png$/.test(c.files[a.fingerprint.sha256] ?? ''))
+      throw new Error('E_PARTS_CATALOG');
 }
-export function compatible(p:Project,c:Catalog,item:Item):string|null {return assemblyReason(p,c)??(item.family!==c.family?'Different style family':null);}
-function parameter(p:Project,key:PreviewKey):string { let v=p.parameters.find(v=>v.previewKey===key);if(!v){v={id:randomUUID(),displayName:key,semantic:key,unit:'ratio',min:key.startsWith('head')?-1:0,neutral:key.startsWith('eye')?1:0,max:1,previewKey:key};p.parameters.push(v);}return v.id; }
-function adjusted(p:Project,t:PartTemplate,item:Item,c:Catalog,id:string,parentId:string|null):CharacterPart {
-  const a=p.assembly!.adjustments.find(a=>a.key===t.key)??defaults(t.key);const [x,y]=t.anchor;const matrix=multiply(translate(a.x+x,a.y+y),multiply(rotate(a.rotation),multiply(scale(a.scale),translate(-x,-y))));
-  return {id,displayName:item.label+(t.key==='eye-left'?' · 왼쪽':t.key==='eye-right'?' · 오른쪽':''),role:t.role,side:t.side,parentId,groupId:null,textures:structuredClone(t.textures),localTransform:matrix,drawOrder:t.order,visible:true,opacity:1,correctionOrigin:'user-confirmed',limitations:[],library:{catalogId:c.id,itemId:item.id,version:item.version,key:t.key},color:{hueDegrees:a.hue,minimumHue:t.tint[0],maximumHue:t.tint[1],minimumSaturation:t.tint[2]}};
+export function compatible(p: Project, c: Catalog, item: Item): string | null {
+  return assemblyReason(p, c) ?? (item.family !== c.family ? 'Different style family' : null);
 }
-function refresh(p:Project,c:Catalog):void {
-  const before=p.parts;const known=new Set(before.filter(v=>v.library?.catalogId===c.id).map(v=>v.id));const oldMesh=p.motion;const faceOld=before.find(v=>v.library?.key==='face');const faceId=faceOld?.id??randomUUID();const items=p.assembly!.choices.flatMap(choice=>{const item=c.items.find(i=>i.id===choice.itemId);return item?[item]:[];});
-  p.parts=items.flatMap(item=>item.templates.map(t=>{const old=before.find(v=>v.library?.key===t.key);const result=adjusted(p,t,item,c,old?.id??(t.key==='face'?faceId:randomUUID()),t.key==='face'||t.key==='outfit'?null:faceId);if(old){const oldItem=c.items.find(v=>v.id===old.library?.itemId);const suffix=t.key==='eye-left'?' \u00b7 \uc67c\ucabd':t.key==='eye-right'?' \u00b7 \uc624\ub978\ucabd':'';if(old.displayName!==oldItem?.label+suffix)result.displayName=old.displayName;result.opacity=old.opacity;result.visible=old.visible;result.role=old.role;}return result;}));
-  const bindings=p.partBindings;const disconnected=bindings.filter(b=>!p.parts.some(v=>v.id===b.partId));p.partBindings=bindings.filter(b=>p.parts.some(v=>v.id===b.partId)&&!(known.has(b.partId)&&b.kind==='state-blend'));
-  for(const part of p.parts){const key=part.library?.key;const preview:PreviewKey|null=key==='eye-left'?'eye_left':key==='eye-right'?'eye_right':key==='mouth'?'mouth':null;if(preview)p.partBindings.push({id:bindings.find(b=>b.partId===part.id&&b.kind==='state-blend')?.id??randomUUID(),partId:part.id,parameterId:parameter(p,preview),kind:'state-blend',mapping:{minimumState:'closed',middleState:key==='mouth'?'smile':'half',maximumState:'open'}});}
-  for(const key of KEYS)parameter(p,key);delete p.motion;p.motion=authorRig(p);const ratio=344/p.motion.faceWidth;p.motion.faceWidth=344;for(const m of p.motion.meshes)for(const v of m.vertices){v.minimum=[v.minimum[0]*ratio,v.minimum[1]*ratio];v.maximum=[v.maximum[0]*ratio,v.maximum[1]*ratio];}if(oldMesh)p.motion.settings=structuredClone(oldMesh.settings);
-  p.assembly!.warnings=disconnected.length?[`${disconnected.length}\uAC1C\uC758 \uC774\uC804 \uD30C\uCE20 \uC804\uC6A9 \uC5F0\uACB0\uC744 \uC81C\uAC70\uD588\uC5B4\uC694. \uD45C\uC815\uACFC \uC785\uB825 \uB9E4\uAC1C\uBCC0\uC218\uB294 \uBCF4\uAD00\uD569\uB2C8\uB2E4.`]:[];if(p.assembly!.choices.some(v=>v.itemId===null&&v.slot!=='accessory'))p.assembly!.warnings.push('\uAE30\uBCF8 \uBD80\uC704\uB97C \uC81C\uAC70\uD55C \uC870\uD569\uC740 64\uAC1C \uAE30\uBCF8 \uAC80\uC218 \uC870\uD569 \uBC16\uC785\uB2C8\uB2E4. \uB204\uB77D \uBD80\uC704\uC758 \uC678\uD615\uACFC \uB3D9\uC791 \uC81C\uD55C\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694.');for(const [slot,key] of [['eyes','eye_left'],['mouth','mouth']] as const)if(!p.assembly!.choices.find(v=>v.slot===slot)?.itemId)p.assembly!.warnings.push(slot==='eyes'?'눈을 제거했어요. 눈 동작은 중지되며 표정·입력 값은 보관합니다. 다시 장착하면 의미에 맞춰 연결합니다.':'입을 제거했어요. 입 동작은 중지되며 표정·입력 값은 보관합니다. 다시 장착하면 연결합니다.');
+function parameter(p: Project, key: PreviewKey): string {
+  let v = p.parameters.find((v) => v.previewKey === key);
+  if (!v) {
+    v = {
+      id: randomUUID(),
+      displayName: key,
+      semantic: key,
+      unit: 'ratio',
+      min: key.startsWith('head') ? -1 : 0,
+      neutral: key.startsWith('eye') ? 1 : 0,
+      max: 1,
+      previewKey: key,
+    };
+    p.parameters.push(v);
+  }
+  return v.id;
 }
-export function startAssembly(p:Project,c:Catalog):void {assertSimpleSafe(p);assertCatalog(c);p.schemaVersion.minor=Math.max(3,p.schemaVersion.minor);delete p.structure;delete p.split;p.provenance={preparation:'Authored modular parts library, assembled locally',limitations:['Small planar head motion; no secondary dynamics or live tracking provided']};p.canvas={...c.canvas};p.parts=[];p.groups=[];p.partBindings=[];delete p.inputPreparation;p.inputAssetIds=[];p.assembly={catalogId:c.id,version:c.version,linkedEyes:true,adjustments:[],warnings:[],choices:SLOTS.map(slot=>({slot,itemId:c.defaults[slot],version:c.version}))};for(const a of c.assets){const old=p.assets.find(v=>v.id===a.id);if(old&&!canonicalAsset(old,a))throw new Error('E_PARTS_CATALOG');if(!old)p.assets.push(structuredClone(a));}for(const key of KEYS)parameter(p,key);refresh(p,c);
-  if(!p.expressions.length){const pid=(key:PreviewKey)=>parameter(p,key);p.expressions=[{id:randomUUID(),displayName:'기본',values:KEYS.map(key=>({parameterId:pid(key),value:p.parameters.find(v=>v.previewKey===key)!.neutral,locked:false})),transitionMs:150,release:'live-input'},{id:randomUUID(),displayName:'눈 감기',values:['eye_left','eye_right'].map(key=>({parameterId:pid(key as PreviewKey),value:p.parameters.find(v=>v.previewKey===key)!.min,locked:false})),transitionMs:150,release:'live-input'},{id:randomUUID(),displayName:'미소',values:[{parameterId:pid('mouth'),value:(p.parameters.find(v=>v.previewKey==='mouth')!.min+p.parameters.find(v=>v.previewKey==='mouth')!.max)/2,locked:false}],transitionMs:150,release:'live-input'}];}
-  p.provenance={preparation:'Authored modular parts library, assembled locally',limitations:['Small planar head motion; no secondary dynamics or live tracking provided']};assertProject(p);
+function adjusted(
+  p: Project,
+  t: PartTemplate,
+  item: Item,
+  c: Catalog,
+  id: string,
+  parentId: string | null,
+): CharacterPart {
+  const a = p.assembly!.adjustments.find((a) => a.key === t.key) ?? defaults(t.key);
+  const [x, y] = t.anchor;
+  const matrix = multiply(
+    translate(a.x + x, a.y + y),
+    multiply(rotate(a.rotation), multiply(scale(a.scale), translate(-x, -y))),
+  );
+  return {
+    id,
+    displayName:
+      item.label + (t.key === 'eye-left' ? ' · 왼쪽' : t.key === 'eye-right' ? ' · 오른쪽' : ''),
+    role: t.role,
+    side: t.side,
+    parentId,
+    groupId: null,
+    textures: structuredClone(t.textures),
+    localTransform: matrix,
+    drawOrder: t.order,
+    visible: true,
+    opacity: 1,
+    correctionOrigin: 'user-confirmed',
+    limitations: [],
+    library: { catalogId: c.id, itemId: item.id, version: item.version, key: t.key },
+    color: {
+      hueDegrees: a.hue,
+      minimumHue: t.tint[0],
+      maximumHue: t.tint[1],
+      minimumSaturation: t.tint[2],
+    },
+  };
 }
-export function selectItem(p:Project,c:Catalog,id:string):void {assertSimpleSafe(p);const item=c.items.find(i=>i.id===id);if(!item || compatible(p,c,item))throw new Error('E_PARTS_COMPATIBILITY');const choice=p.assembly!.choices.find(v=>v.slot===item.slot)!;choice.itemId=item.id;choice.version=item.version;refresh(p,c);assertProject(p);}
-export function removeSlot(p:Project,c:Catalog,slot:Slot):void {assertSimpleSafe(p);if(slot==='face')throw new Error('E_PARTS_REQUIRED');if(!matches(c,p.assembly))throw new Error('E_PARTS_COMPATIBILITY');const choice=p.assembly!.choices.find(v=>v.slot===slot)!;choice.itemId=null;refresh(p,c);assertProject(p);}
-export function adjustPart(p:Project,c:Catalog,value:Adjustment):void {assertSimpleSafe(p);
-  if(!matches(c,p.assembly))throw new Error('E_PARTS_COMPATIBILITY');const part=p.parts.find(v=>v.library?.key===value.key);const item=c.items.find(i=>i.id===part?.library?.itemId);if(!item)throw new Error('E_PARTS_MISSING');const l=item.limits;
-  if(![value.x,value.y,value.scale,value.rotation,value.hue].every(Number.isFinite)||Math.abs(value.x)>l.position||Math.abs(value.y)>l.position||Math.abs(value.scale-1)>l.scale+1e-8||Math.abs(value.rotation)>l.rotation||Math.abs(value.hue)>l.hue)throw new Error('E_PARTS_RANGE');
-  const put=(v:Adjustment):void=>{p.assembly!.adjustments=p.assembly!.adjustments.filter(a=>a.key!==v.key);p.assembly!.adjustments.push({...v});};put(value);if(p.assembly!.linkedEyes&&value.key.startsWith('eye-'))put({...value,key:value.key==='eye-left'?'eye-right':'eye-left',x:-value.x,rotation:-value.rotation});refresh(p,c);assertProject(p);
+function refresh(p: Project, c: Catalog): void {
+  const before = p.parts;
+  const known = new Set(before.filter((v) => v.library?.catalogId === c.id).map((v) => v.id));
+  const oldMesh = p.motion;
+  const faceOld = before.find((v) => v.library?.key === 'face');
+  const faceId = faceOld?.id ?? randomUUID();
+  const items = p.assembly!.choices.flatMap((choice) => {
+    const item = c.items.find((i) => i.id === choice.itemId);
+    return item ? [item] : [];
+  });
+  p.parts = items.flatMap((item) =>
+    item.templates.map((t) => {
+      const old = before.find((v) => v.library?.key === t.key);
+      const result = adjusted(
+        p,
+        t,
+        item,
+        c,
+        old?.id ?? (t.key === 'face' ? faceId : randomUUID()),
+        t.key === 'face' || t.key === 'outfit' ? null : faceId,
+      );
+      if (old) {
+        const oldItem = c.items.find((v) => v.id === old.library?.itemId);
+        const suffix =
+          t.key === 'eye-left'
+            ? ' \u00b7 \uc67c\ucabd'
+            : t.key === 'eye-right'
+              ? ' \u00b7 \uc624\ub978\ucabd'
+              : '';
+        if (old.displayName !== oldItem?.label + suffix) result.displayName = old.displayName;
+        result.opacity = old.opacity;
+        result.visible = old.visible;
+        result.role = old.role;
+      }
+      return result;
+    }),
+  );
+  const bindings = p.partBindings;
+  const disconnected = bindings.filter((b) => !p.parts.some((v) => v.id === b.partId));
+  p.partBindings = bindings.filter(
+    (b) =>
+      p.parts.some((v) => v.id === b.partId) && !(known.has(b.partId) && b.kind === 'state-blend'),
+  );
+  for (const part of p.parts) {
+    const key = part.library?.key;
+    const preview: PreviewKey | null =
+      key === 'eye-left'
+        ? 'eye_left'
+        : key === 'eye-right'
+          ? 'eye_right'
+          : key === 'mouth'
+            ? 'mouth'
+            : null;
+    if (preview)
+      p.partBindings.push({
+        id:
+          bindings.find((b) => b.partId === part.id && b.kind === 'state-blend')?.id ??
+          randomUUID(),
+        partId: part.id,
+        parameterId: parameter(p, preview),
+        kind: 'state-blend',
+        mapping: {
+          minimumState: 'closed',
+          middleState: key === 'mouth' ? 'smile' : 'half',
+          maximumState: 'open',
+        },
+      });
+  }
+  for (const key of KEYS) parameter(p, key);
+  delete p.motion;
+  p.motion = authorRig(p);
+  const ratio = 344 / p.motion.faceWidth;
+  p.motion.faceWidth = 344;
+  for (const m of p.motion.meshes)
+    for (const v of m.vertices) {
+      v.minimum = [v.minimum[0] * ratio, v.minimum[1] * ratio];
+      v.maximum = [v.maximum[0] * ratio, v.maximum[1] * ratio];
+    }
+  if (oldMesh) p.motion.settings = structuredClone(oldMesh.settings);
+  p.assembly!.warnings = disconnected.length
+    ? [
+        `${disconnected.length}\uAC1C\uC758 \uC774\uC804 \uD30C\uCE20 \uC804\uC6A9 \uC5F0\uACB0\uC744 \uC81C\uAC70\uD588\uC5B4\uC694. \uD45C\uC815\uACFC \uC785\uB825 \uB9E4\uAC1C\uBCC0\uC218\uB294 \uBCF4\uAD00\uD569\uB2C8\uB2E4.`,
+      ]
+    : [];
+  if (p.assembly!.choices.some((v) => v.itemId === null && v.slot !== 'accessory'))
+    p.assembly!.warnings.push(
+      '\uAE30\uBCF8 \uBD80\uC704\uB97C \uC81C\uAC70\uD55C \uC870\uD569\uC740 64\uAC1C \uAE30\uBCF8 \uAC80\uC218 \uC870\uD569 \uBC16\uC785\uB2C8\uB2E4. \uB204\uB77D \uBD80\uC704\uC758 \uC678\uD615\uACFC \uB3D9\uC791 \uC81C\uD55C\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694.',
+    );
+  for (const slot of ['eyes', 'mouth'] as const)
+    if (!p.assembly!.choices.find((v) => v.slot === slot)?.itemId)
+      p.assembly!.warnings.push(
+        slot === 'eyes'
+          ? '눈을 제거했어요. 눈 동작은 중지되며 표정·입력 값은 보관합니다. 다시 장착하면 의미에 맞춰 연결합니다.'
+          : '입을 제거했어요. 입 동작은 중지되며 표정·입력 값은 보관합니다. 다시 장착하면 연결합니다.',
+      );
 }
-export function linkEyes(p:Project,c:Catalog,linked:boolean,anchor:string):void {assertSimpleSafe(p);if(!matches(c,p.assembly))throw new Error('E_PARTS_COMPATIBILITY');p.assembly!.linkedEyes=linked;if(linked){const key=anchor==='eye-right'?'eye-right':'eye-left';if(p.parts.some(v=>v.library?.key===key))adjustPart(p,c,p.assembly!.adjustments.find(a=>a.key===key)??defaults(key));} }
-export function resetAdjustment(p:Project,c:Catalog,key:string|null):void {assertSimpleSafe(p);if(!matches(c,p.assembly))throw new Error('E_PARTS_COMPATIBILITY');if(key)adjustPart(p,c,defaults(key));else{p.assembly!.adjustments=[];refresh(p,c);} }
+export function startAssembly(p: Project, c: Catalog): void {
+  assertSimpleSafe(p);
+  assertCatalog(c);
+  p.schemaVersion.minor = Math.max(3, p.schemaVersion.minor);
+  delete p.structure;
+  delete p.split;
+  p.provenance = {
+    preparation: 'Authored modular parts library, assembled locally',
+    limitations: ['Small planar head motion; no secondary dynamics or live tracking provided'],
+  };
+  p.canvas = { ...c.canvas };
+  p.parts = [];
+  p.groups = [];
+  p.partBindings = [];
+  delete p.inputPreparation;
+  p.inputAssetIds = [];
+  p.assembly = {
+    catalogId: c.id,
+    version: c.version,
+    linkedEyes: true,
+    adjustments: [],
+    warnings: [],
+    choices: SLOTS.map((slot) => ({ slot, itemId: c.defaults[slot], version: c.version })),
+  };
+  for (const a of c.assets) {
+    const old = p.assets.find((v) => v.id === a.id);
+    if (old && !canonicalAsset(old, a)) throw new Error('E_PARTS_CATALOG');
+    if (!old) p.assets.push(structuredClone(a));
+  }
+  for (const key of KEYS) parameter(p, key);
+  refresh(p, c);
+  if (!p.expressions.length) {
+    const pid = (key: PreviewKey) => parameter(p, key);
+    p.expressions = [
+      {
+        id: randomUUID(),
+        displayName: '기본',
+        values: KEYS.map((key) => ({
+          parameterId: pid(key),
+          value: p.parameters.find((v) => v.previewKey === key)!.neutral,
+          locked: false,
+        })),
+        transitionMs: 150,
+        release: 'live-input',
+      },
+      {
+        id: randomUUID(),
+        displayName: '눈 감기',
+        values: ['eye_left', 'eye_right'].map((key) => ({
+          parameterId: pid(key as PreviewKey),
+          value: p.parameters.find((v) => v.previewKey === key)!.min,
+          locked: false,
+        })),
+        transitionMs: 150,
+        release: 'live-input',
+      },
+      {
+        id: randomUUID(),
+        displayName: '미소',
+        values: [
+          {
+            parameterId: pid('mouth'),
+            value:
+              (p.parameters.find((v) => v.previewKey === 'mouth')!.min +
+                p.parameters.find((v) => v.previewKey === 'mouth')!.max) /
+              2,
+            locked: false,
+          },
+        ],
+        transitionMs: 150,
+        release: 'live-input',
+      },
+    ];
+  }
+  p.provenance = {
+    preparation: 'Authored modular parts library, assembled locally',
+    limitations: ['Small planar head motion; no secondary dynamics or live tracking provided'],
+  };
+  assertProject(p);
+}
+export function selectItem(p: Project, c: Catalog, id: string): void {
+  assertSimpleSafe(p);
+  const item = c.items.find((i) => i.id === id);
+  if (!item || compatible(p, c, item)) throw new Error('E_PARTS_COMPATIBILITY');
+  const choice = p.assembly!.choices.find((v) => v.slot === item.slot)!;
+  choice.itemId = item.id;
+  choice.version = item.version;
+  refresh(p, c);
+  assertProject(p);
+}
+export function removeSlot(p: Project, c: Catalog, slot: Slot): void {
+  assertSimpleSafe(p);
+  if (slot === 'face') throw new Error('E_PARTS_REQUIRED');
+  if (!matches(c, p.assembly)) throw new Error('E_PARTS_COMPATIBILITY');
+  const choice = p.assembly!.choices.find((v) => v.slot === slot)!;
+  choice.itemId = null;
+  refresh(p, c);
+  assertProject(p);
+}
+export function adjustPart(p: Project, c: Catalog, value: Adjustment): void {
+  assertSimpleSafe(p);
+  if (!matches(c, p.assembly)) throw new Error('E_PARTS_COMPATIBILITY');
+  const part = p.parts.find((v) => v.library?.key === value.key);
+  const item = c.items.find((i) => i.id === part?.library?.itemId);
+  if (!item) throw new Error('E_PARTS_MISSING');
+  const l = item.limits;
+  if (
+    ![value.x, value.y, value.scale, value.rotation, value.hue].every(Number.isFinite) ||
+    Math.abs(value.x) > l.position ||
+    Math.abs(value.y) > l.position ||
+    Math.abs(value.scale - 1) > l.scale + 1e-8 ||
+    Math.abs(value.rotation) > l.rotation ||
+    Math.abs(value.hue) > l.hue
+  )
+    throw new Error('E_PARTS_RANGE');
+  const put = (v: Adjustment): void => {
+    p.assembly!.adjustments = p.assembly!.adjustments.filter((a) => a.key !== v.key);
+    p.assembly!.adjustments.push({ ...v });
+  };
+  put(value);
+  if (p.assembly!.linkedEyes && value.key.startsWith('eye-'))
+    put({
+      ...value,
+      key: value.key === 'eye-left' ? 'eye-right' : 'eye-left',
+      x: -value.x,
+      rotation: -value.rotation,
+    });
+  refresh(p, c);
+  assertProject(p);
+}
+export function linkEyes(p: Project, c: Catalog, linked: boolean, anchor: string): void {
+  assertSimpleSafe(p);
+  if (!matches(c, p.assembly)) throw new Error('E_PARTS_COMPATIBILITY');
+  p.assembly!.linkedEyes = linked;
+  if (linked) {
+    const key = anchor === 'eye-right' ? 'eye-right' : 'eye-left';
+    if (p.parts.some((v) => v.library?.key === key))
+      adjustPart(p, c, p.assembly!.adjustments.find((a) => a.key === key) ?? defaults(key));
+  }
+}
+export function resetAdjustment(p: Project, c: Catalog, key: string | null): void {
+  assertSimpleSafe(p);
+  if (!matches(c, p.assembly)) throw new Error('E_PARTS_COMPATIBILITY');
+  if (key) adjustPart(p, c, defaults(key));
+  else {
+    p.assembly!.adjustments = [];
+    refresh(p, c);
+  }
+}
 
-export function combination(c:Catalog,index:number):Project {if(!Number.isInteger(index)||index<0||index>=64)throw new Error('E_PARTS_COMBINATION');const p=createProject('Atelier combination '+index,'parts');startAssembly(p,c);SLOTS.forEach((slot,i)=>{p.assembly!.choices.find(v=>v.slot===slot)!.itemId=c.items.filter(v=>v.slot===slot)[(index>>i)&1]!.id;});refresh(p,c);assertProject(p);return p;}
+export function combination(c: Catalog, index: number): Project {
+  if (!Number.isInteger(index) || index < 0 || index >= 64) throw new Error('E_PARTS_COMBINATION');
+  const p = createProject('Atelier combination ' + index, 'parts');
+  startAssembly(p, c);
+  SLOTS.forEach((slot, i) => {
+    p.assembly!.choices.find((v) => v.slot === slot)!.itemId = c.items.filter(
+      (v) => v.slot === slot,
+    )[(index >> i) & 1]!.id;
+  });
+  refresh(p, c);
+  assertProject(p);
+  return p;
+}

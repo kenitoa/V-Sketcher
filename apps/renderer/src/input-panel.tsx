@@ -1,19 +1,269 @@
-import {environmentValue} from './environment-state';
-import React,{useEffect,useState} from 'react';
-import type {MicrophoneRuntime} from './microphone-runtime';
-import {microphoneErrors} from './microphone-runtime';
-import type {CameraRuntime} from './camera-runtime';
-import type {Project} from '../../../packages/project-model';
-import type {PreviewScene} from '../../../packages/scene-core';
-import {ExpressionPreview} from './expression-preview';
-import {settings,type ExpressionOperation} from '../../../packages/expression-control';
-export function InputPanel({mic:r,camera,project:p,scene,command}:{mic:MicrophoneRuntime;camera:CameraRuntime;project:Project;scene:PreviewScene|null;command:(op:ExpressionOperation)=>void}) {
- const [,refresh]=useState(0),[devices,setDevices]=useState<MediaDeviceInfo[]>([]),[chosen,setChosen]=useState(environmentValue().microphoneId);const list=async()=>{const d=await r.devices();setDevices(d);setChosen(old=>d.some(v=>v.deviceId===r.deviceId)?r.deviceId:old||'');};
- useEffect(()=>{void list();const change=()=>void list();navigator.mediaDevices.addEventListener('devicechange',change);const timer=setInterval(()=>refresh(v=>v+1),100);return()=>{clearInterval(timer);navigator.mediaDevices.removeEventListener('devicechange',change);};},[]);
- const s=settings(p),profile=r.profile,phase=r.player.controls.recoveryState(performance.now());
- return <div className="camera-layout" data-input-panel><ExpressionPreview scene={scene} player={r.player}/><div className="camera-controls">{r.reviewPrompt&&<div className="camera-review" role="alert">{r.reviewPrompt}</div>}<label>마이크<select data-mic-device value={chosen} onChange={e=>setChosen(e.target.value)} disabled={r.state==='connecting'}><option value="">Windows 기본 마이크</option>{chosen&&!devices.some(d=>d.deviceId===chosen)&&<option value={chosen}>저장한 마이크 없음 · 다시 선택</option>}{devices.map((d,i)=><option key={d.deviceId||i} value={d.deviceId}>{d.label||`마이크 ${i+1}`}</option>)}</select></label><div className="expression-actions"><button data-mic-refresh onClick={()=>void list()}>목록 새로 고침</button><button data-mic-start disabled={r.state==='connecting'} onClick={()=>void r.start(chosen).then(list)}>선택 마이크 연결·재연결</button><button data-mic-stop disabled={r.state==='idle'} onClick={()=>void r.stop()}>마이크 중지</button><button onClick={()=>r.player.stop()}>편집 시험 해제</button></div><p data-mic-state role="status">{r.state==='open'?r.blocks?performance.now()-r.lastInput>150?'입력 지연 · 상태 확인 중':`입력 수신 · ${r.rms<=(profile?.noiseFloor??0)+(profile?.margin??0)?'무음·소음 기준 이하':'반응 중'}`:'마이크 열림 · 입력 대기':r.state==='connecting'?'마이크 연결 중':r.state==='failed'?'마이크 입력 중단':'마이크 중지'}</p>{r.sourceLabel&&<p>연결된 입력: {r.sourceLabel}</p>}{r.errorCode&&<p role="alert">{microphoneErrors[r.errorCode]??microphoneErrors.E_MIC_AUDIO}</p>}<label>입력 레벨 <meter data-mic-level min="0" max="1" value={r.rms}/></label><label>입 반응 <meter data-mic-mouth min="0" max="1" value={r.mouth}/></label><small>소리 크기에 반응합니다. 말소리와 키보드·손뼉을 구별하지 않으므로 소음 기준과 감도를 조절해 주세요.</small>
- {r.player.list().some(c=>c.key==='mouth'&&c.limited)&&<small>보완 그림이 있는 입은 기본 자세에서 남은 범위의 65%까지 반응합니다.</small>}
- <section className="camera-calibration"><h3>조용한 상태의 기준</h3><p>약 2초 동안 말하지 않고 평소 주변 소음만 들려 주세요.</p><div className="expression-actions"><button data-mic-calibrate disabled={r.state!=='open'||r.calibration.state==='collecting'} onClick={()=>r.beginCalibration()}>소음 기준 측정</button><button data-mic-cancel disabled={!['collecting','ready'].includes(r.calibration.state)} onClick={()=>r.calibration.cancel()}>측정 취소</button><button data-mic-apply disabled={r.calibration.state!=='ready'} onClick={()=>void r.applyCalibration()}>새 기준 적용</button></div><p data-mic-calibration>{r.calibration.state==='collecting'?'조용한 입력 수집 중':r.calibration.state==='ready'?'새 기준 준비 · 적용 전까지 이전 기준 유지':r.calibration.state==='failed'?'측정 실패 · 큰 소음 없이 다시 시도해 주세요':r.calibration.state==='cancelled'?'측정 종료 · 이전 기준 유지':'측정 전'}{profile&&` · 기준 ${profile.noiseFloor.toFixed(4)}`}</p></section>
- {profile&&<form key={JSON.stringify(profile)} onSubmit={e=>{e.preventDefault();const d=new FormData(e.currentTarget);void r.save({...profile,margin:Number(d.get('margin')),sensitivity:Number(d.get('sensitivity')),strength:Number(d.get('strength')),smoothingMs:Number(d.get('smoothingMs'))});}}><h3>이 장치의 입 반응</h3><div className="expression-row">{[['margin','추가 소음 여유',0,.1,.001],['sensitivity','감도',.1,10,.1],['strength','반응 세기',0,2,.1],['smoothingMs','부드러움(ms)',0,500,1]].map(([name,label,min,max,step])=><label key={name}>{label}<input data-mic-setting={name} type="number" required name={String(name)} min={Number(min)} max={Number(max)} step={Number(step)} defaultValue={profile[name as 'margin'|'sensitivity'|'strength'|'smoothingMs']}/></label>)}</div><button data-mic-save type="submit">장치 설정 저장</button></form>}
- <section><h3>입 입력·복구</h3><label>입 우선 입력<select data-input-mouth value={s.mouth} onChange={e=>command({kind:'settings',value:{...s,mouth:e.target.value as 'camera'|'microphone'}})}><option value="camera">카메라 우선</option><option value="microphone">마이크 우선</option></select></label><label><input data-input-alternate type="checkbox" checked={s.alternate} onChange={e=>command({kind:'settings',value:{...s,alternate:e.target.checked}})}/>우선 입력 손실 시 다른 유효 입력 사용</label><p data-input-transition role="status">{phase==='returning'?'기본 동작으로 복귀 중':phase==='recovering'?'최신 입력으로 복구 중':phase==='live'?'유효 입력 사용 중':'기본 동작'}</p><p data-camera-loss>{camera.state==='open'?camera.target.state==='tracked'?'카메라 대상 추적 중':'얼굴 입력 없음 · 짧게 유지 후 기본 동작':camera.state==='failed'?'카메라 연결 끊김 · 마이크는 독립 유지':'카메라 중지'}</p><small>카메라 입력 300ms·마이크 입력 150ms 이후 대체 입력을 선택합니다. 유효한 대체가 없으면 500ms에 걸쳐 기본 동작으로, 입력 복구 시 250ms에 걸쳐 최신 값으로 돌아갑니다. 고정 표정·편집 시험이 우선합니다.</small><p>자동 재연결 안 함 · 장치를 다시 선택한 뒤 연결 버튼을 눌러 주세요.</p><button data-input-camera-reconnect onClick={()=>window.dispatchEvent(new Event('studio:camera'))}>카메라 선택·재연결·중립 보정</button></section><small>원음은 메모리에서 레벨만 계산해 버립니다. 녹음·소리 재생·방송 오디오 전송을 하지 않습니다. 장치 기준과 감도는 이 PC에만 저장합니다.</small></div></div>;
+import { environmentValue } from './environment-state';
+import { useEffect, useState } from 'react';
+import type { MicrophoneRuntime } from './microphone-runtime';
+import { microphoneErrors } from './microphone-runtime';
+import type { CameraRuntime } from './camera-runtime';
+import type { Project } from '../../../packages/project-model';
+import type { PreviewScene } from '../../../packages/scene-core';
+import { ExpressionPreview } from './expression-preview';
+import { settings, type ExpressionOperation } from '../../../packages/expression-control';
+export function InputPanel({
+  mic: r,
+  camera,
+  project: p,
+  scene,
+  command,
+}: {
+  mic: MicrophoneRuntime;
+  camera: CameraRuntime;
+  project: Project;
+  scene: PreviewScene | null;
+  command: (op: ExpressionOperation) => void;
+}) {
+  const [, refresh] = useState(0),
+    [devices, setDevices] = useState<MediaDeviceInfo[]>([]),
+    [chosen, setChosen] = useState(environmentValue().microphoneId);
+  const list = async () => {
+    const d = await r.devices();
+    setDevices(d);
+    setChosen((old) => (d.some((v) => v.deviceId === r.deviceId) ? r.deviceId : old || ''));
+  };
+  useEffect(() => {
+    void list();
+    const change = () => void list();
+    navigator.mediaDevices.addEventListener('devicechange', change);
+    const timer = setInterval(() => refresh((v) => v + 1), 100);
+    return () => {
+      clearInterval(timer);
+      navigator.mediaDevices.removeEventListener('devicechange', change);
+    };
+  }, []);
+  const s = settings(p),
+    profile = r.profile,
+    phase = r.player.controls.recoveryState(performance.now());
+  return (
+    <div className="camera-layout" data-input-panel>
+      <ExpressionPreview scene={scene} player={r.player} />
+      <div className="camera-controls">
+        {r.reviewPrompt && (
+          <div className="camera-review" role="alert">
+            {r.reviewPrompt}
+          </div>
+        )}
+        <label>
+          마이크
+          <select
+            data-mic-device
+            value={chosen}
+            onChange={(e) => setChosen(e.target.value)}
+            disabled={r.state === 'connecting'}
+          >
+            <option value="">Windows 기본 마이크</option>
+            {chosen && !devices.some((d) => d.deviceId === chosen) && (
+              <option value={chosen}>저장한 마이크 없음 · 다시 선택</option>
+            )}
+            {devices.map((d, i) => (
+              <option key={d.deviceId || i} value={d.deviceId}>
+                {d.label || `마이크 ${i + 1}`}
+              </option>
+            ))}
+          </select>
+        </label>
+        <div className="expression-actions">
+          <button data-mic-refresh onClick={() => void list()}>
+            목록 새로 고침
+          </button>
+          <button
+            data-mic-start
+            disabled={r.state === 'connecting'}
+            onClick={() => void r.start(chosen).then(list)}
+          >
+            선택 마이크 연결·재연결
+          </button>
+          <button data-mic-stop disabled={r.state === 'idle'} onClick={() => void r.stop()}>
+            마이크 중지
+          </button>
+          <button onClick={() => r.player.stop()}>편집 시험 해제</button>
+        </div>
+        <p data-mic-state role="status">
+          {r.state === 'open'
+            ? r.blocks
+              ? performance.now() - r.lastInput > 150
+                ? '입력 지연 · 상태 확인 중'
+                : `입력 수신 · ${r.rms <= (profile?.noiseFloor ?? 0) + (profile?.margin ?? 0) ? '무음·소음 기준 이하' : '반응 중'}`
+              : '마이크 열림 · 입력 대기'
+            : r.state === 'connecting'
+              ? '마이크 연결 중'
+              : r.state === 'failed'
+                ? '마이크 입력 중단'
+                : '마이크 중지'}
+        </p>
+        {r.sourceLabel && <p>연결된 입력: {r.sourceLabel}</p>}
+        {r.errorCode && (
+          <p role="alert">{microphoneErrors[r.errorCode] ?? microphoneErrors.E_MIC_AUDIO}</p>
+        )}
+        <label>
+          입력 레벨 <meter data-mic-level min="0" max="1" value={r.rms} />
+        </label>
+        <label>
+          입 반응 <meter data-mic-mouth min="0" max="1" value={r.mouth} />
+        </label>
+        <small>
+          소리 크기에 반응합니다. 말소리와 키보드·손뼉을 구별하지 않으므로 소음 기준과 감도를 조절해
+          주세요.
+        </small>
+        {r.player.list().some((c) => c.key === 'mouth' && c.limited) && (
+          <small>보완 그림이 있는 입은 기본 자세에서 남은 범위의 65%까지 반응합니다.</small>
+        )}
+        <section className="camera-calibration">
+          <h3>조용한 상태의 기준</h3>
+          <p>약 2초 동안 말하지 않고 평소 주변 소음만 들려 주세요.</p>
+          <div className="expression-actions">
+            <button
+              data-mic-calibrate
+              disabled={r.state !== 'open' || r.calibration.state === 'collecting'}
+              onClick={() => r.beginCalibration()}
+            >
+              소음 기준 측정
+            </button>
+            <button
+              data-mic-cancel
+              disabled={!['collecting', 'ready'].includes(r.calibration.state)}
+              onClick={() => r.calibration.cancel()}
+            >
+              측정 취소
+            </button>
+            <button
+              data-mic-apply
+              disabled={r.calibration.state !== 'ready'}
+              onClick={() => void r.applyCalibration()}
+            >
+              새 기준 적용
+            </button>
+          </div>
+          <p data-mic-calibration>
+            {r.calibration.state === 'collecting'
+              ? '조용한 입력 수집 중'
+              : r.calibration.state === 'ready'
+                ? '새 기준 준비 · 적용 전까지 이전 기준 유지'
+                : r.calibration.state === 'failed'
+                  ? '측정 실패 · 큰 소음 없이 다시 시도해 주세요'
+                  : r.calibration.state === 'cancelled'
+                    ? '측정 종료 · 이전 기준 유지'
+                    : '측정 전'}
+            {profile && ` · 기준 ${profile.noiseFloor.toFixed(4)}`}
+          </p>
+        </section>
+        {profile && (
+          <form
+            key={JSON.stringify(profile)}
+            onSubmit={(e) => {
+              e.preventDefault();
+              const d = new FormData(e.currentTarget);
+              void r.save({
+                ...profile,
+                margin: Number(d.get('margin')),
+                sensitivity: Number(d.get('sensitivity')),
+                strength: Number(d.get('strength')),
+                smoothingMs: Number(d.get('smoothingMs')),
+              });
+            }}
+          >
+            <h3>이 장치의 입 반응</h3>
+            <div className="expression-row">
+              {[
+                ['margin', '추가 소음 여유', 0, 0.1, 0.001],
+                ['sensitivity', '감도', 0.1, 10, 0.1],
+                ['strength', '반응 세기', 0, 2, 0.1],
+                ['smoothingMs', '부드러움(ms)', 0, 500, 1],
+              ].map(([name, label, min, max, step]) => (
+                <label key={name}>
+                  {label}
+                  <input
+                    data-mic-setting={name}
+                    type="number"
+                    required
+                    name={String(name)}
+                    min={Number(min)}
+                    max={Number(max)}
+                    step={Number(step)}
+                    defaultValue={
+                      profile[name as 'margin' | 'sensitivity' | 'strength' | 'smoothingMs']
+                    }
+                  />
+                </label>
+              ))}
+            </div>
+            <button data-mic-save type="submit">
+              장치 설정 저장
+            </button>
+          </form>
+        )}
+        <section>
+          <h3>입 입력·복구</h3>
+          <label>
+            입 우선 입력
+            <select
+              data-input-mouth
+              value={s.mouth}
+              onChange={(e) =>
+                command({
+                  kind: 'settings',
+                  value: { ...s, mouth: e.target.value as 'camera' | 'microphone' },
+                })
+              }
+            >
+              <option value="camera">카메라 우선</option>
+              <option value="microphone">마이크 우선</option>
+            </select>
+          </label>
+          <label>
+            <input
+              data-input-alternate
+              type="checkbox"
+              checked={s.alternate}
+              onChange={(e) =>
+                command({ kind: 'settings', value: { ...s, alternate: e.target.checked } })
+              }
+            />
+            우선 입력 손실 시 다른 유효 입력 사용
+          </label>
+          <p data-input-transition role="status">
+            {phase === 'returning'
+              ? '기본 동작으로 복귀 중'
+              : phase === 'recovering'
+                ? '최신 입력으로 복구 중'
+                : phase === 'live'
+                  ? '유효 입력 사용 중'
+                  : '기본 동작'}
+          </p>
+          <p data-camera-loss>
+            {camera.state === 'open'
+              ? camera.target.state === 'tracked'
+                ? '카메라 대상 추적 중'
+                : '얼굴 입력 없음 · 짧게 유지 후 기본 동작'
+              : camera.state === 'failed'
+                ? '카메라 연결 끊김 · 마이크는 독립 유지'
+                : '카메라 중지'}
+          </p>
+          <small>
+            카메라 입력 300ms·마이크 입력 150ms 이후 대체 입력을 선택합니다. 유효한 대체가 없으면
+            500ms에 걸쳐 기본 동작으로, 입력 복구 시 250ms에 걸쳐 최신 값으로 돌아갑니다. 고정
+            표정·편집 시험이 우선합니다.
+          </small>
+          <p>자동 재연결 안 함 · 장치를 다시 선택한 뒤 연결 버튼을 눌러 주세요.</p>
+          <button
+            data-input-camera-reconnect
+            onClick={() => window.dispatchEvent(new Event('studio:camera'))}
+          >
+            카메라 선택·재연결·중립 보정
+          </button>
+        </section>
+        <small>
+          원음은 메모리에서 레벨만 계산해 버립니다. 녹음·소리 재생·방송 오디오 전송을 하지 않습니다.
+          장치 기준과 감도는 이 PC에만 저장합니다.
+        </small>
+      </div>
+    </div>
+  );
 }

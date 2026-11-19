@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "scope": "two portable settings checks; full regression pending",
+  "appVersion": "0.22.3",
+  "zip": {
+    "file": "out/make/zip/win32/x64/2DSketcher-win32-x64-0.22.3.zip",
+    "sha256": "5787316bf57ef755eebffb9be4ab68ebc32ceba0060c8b79f247221b3ece1a18"
+  },
+  "m0": "HOLD",
+  "signed": false,
+  "published": false,
+  "settingsAudit": "evidence/candidates/0.22.3/settings-1795055033112/package-audit.json"
+}

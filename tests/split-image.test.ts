@@ -1,43 +1,498 @@
+import { scratchPath } from './temp';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFile,mkdir,mkdtemp,writeFile} from 'node:fs/promises';
-import {resolve,join} from 'node:path';
-import {ZipFile} from 'yazl';
-import {readArchive,readEntries,readSource,manifestSource,safeEntry,hash,writeArchive} from '../packages/split-image/archive';
-import {draftFromSource,materials,buildProject,draftFromProject,assertGuidanceCompatible} from '../packages/split-image/model';
-import {configuration,configured,configKey,issues,effective,type SplitDraft} from '../packages/split-image/types';
-import {splitProcessor} from '../apps/desktop/split-processor';
-import {createProject,assertProject,readProject,validateProject} from '../packages/project-model';
-import {partOpacity,partWorldTransform} from '../packages/project-model/geometry';
-import {projectToPreview} from '../packages/project-model/preview';
-import {capabilities} from '../packages/motion';
-import {parseSessionCommand} from '../packages/project-session/contracts';
-import {ProjectSession} from '../packages/project-session';
-import {saveParts} from '../packages/split-image/export';
-const fixture=readFile('assets/product/split/premium-example.2dparts');
-let preparation:ReturnType<typeof prepare>|undefined;
-async function prepare(){const source=await readArchive(await fixture),raw=new Map([...source.files.values()].map(b=>[hash(b),b]));const processor=splitProcessor(resolve('.venv-product/Scripts/python.exe'),['-I',resolve('worker/main.py')],resolve('.local/split-test-worker'),process.env);const result=await processor.probe(raw,new AbortController().signal);const d=draftFromSource(source,result.images,result.files),normal=new Map([...result.files.values()].map(b=>[hash(b),b])),m=materials(d,raw,normal);return {source,raw,result,d,m,p:buildProject(createProject('Split','split-image'),d,m.assets)};}
-const setup=()=>preparation??=prepare();
-async function temp(){await mkdir('.local/split-tests',{recursive:true});return mkdtemp(resolve('.local/split-tests/run-'));}
-async function zip(entries:Map<string,Buffer>){const z=new ZipFile();for(const [path,b] of entries)z.addBuffer(b,path);z.end();return new Promise<Buffer>((ok,no)=>{const chunks:Buffer[]=[];z.outputStream.on('data',b=>chunks.push(b));z.outputStream.on('error',no);z.outputStream.on('end',()=>ok(Buffer.concat(chunks)));});}
-async function session(){const f=await setup(),dir=await temp();let output=join(dir,'split.2dsketch');const s=new ProjectSession({dataDir:dir,bundled:f.p,bundledBytes:f.m.bytes,splitExample:await fixture,splitProcessor:{probe:async()=>f.result},autoTimers:false,dialogs:{openProject:async()=>null,saveProject:async()=>output,relinkImage:async()=>null,unsaved:async()=>'discard',saveSplit:async()=>join(dir,'export.2dparts')}});await s.init();await s.newProject('Split test','split-image');return {s,dir,output:(path:string)=>output=path};}
-async function wait(s:ProjectSession){const end=Date.now()+150000;while(s.view().split?.busy){if(Date.now()>end)throw new Error('E_TEST_TIMEOUT');await new Promise(r=>setTimeout(r,10));}assert.equal(s.view().split?.errorCode,null);}
-async function preview(s:ProjectSession){await s.dispatch({type:'split-load',kind:'example'});await wait(s);const d=s.view().split!.draft!,c=configuration(d);await s.dispatch({type:'split-prepare',draftId:d.id,config:c,expectedRevision:s.view().project!.revision});await wait(s);return {d,c};}
-test('T151: actual bounded worker decodes all premium cropped PNGs and complete manifest without detector or rescaling',async()=>{const f=await setup();assert.equal(f.d.layers.length,16);assert.equal(f.result.images.length,f.raw.size);assert.ok(f.d.layers.some(l=>l.image.width===1));assert.ok(!issues(f.d).some(v=>v.level==='block'));assertProject(f.p);assert.equal(f.p.schemaVersion.minor,9);});
-test('T151: supported archive rejects versions, unknown effects, undeclared files and incorrect original hashes',async()=>{const f=await setup();const bytes=f.source.files;const original=JSON.parse(f.source.manifest!);for(const edit of [(v:any)=>v.schemaVersion.minor=1,(v:any)=>v.layers[0].blendMode='multiply',(v:any)=>v.layers[0].filter='blur',(v:any)=>v.hashes[v.layers[0].path]='0'.repeat(64)]){const raw=structuredClone(original);edit(raw);assert.throws(()=>manifestSource(Buffer.from(JSON.stringify(raw)),bytes,'0'.repeat(64)));}await assert.rejects(readArchive(await zip(new Map([...bytes,['manifest.json',Buffer.from(f.source.manifest!)],['unused.png',bytes.values().next().value!]]))));});
-test('T151: preflight rejects unsafe paths, case aliases, symlinks, encryption, excessive size and corrupted CRC',async()=>{for(const path of ['../x.png','/x.png','a\\x.png','C:x.png','nul.png','a./x.png','x?.png'])assert.equal(safeEntry(path),false);const f=await setup();const b=f.source.files.values().next().value!;await assert.rejects(readEntries(await zip(new Map([['A.png',b],['a.png',b]]))));const aliases=new ZipFile();aliases.addEmptyDirectory('A.png');aliases.addBuffer(b,'a.png');aliases.end();const aliased=await new Promise<Buffer>((ok,no)=>{const chunks:Buffer[]=[];aliases.outputStream.on('data',b=>chunks.push(b));aliases.outputStream.on('error',no);aliases.outputStream.on('end',()=>ok(Buffer.concat(chunks)));});await assert.rejects(readEntries(aliased));const original=await zip(new Map([['a.png',b]]));const central=original.indexOf(Buffer.from([0x50,0x4b,0x01,0x02]));for(const change of [(x:Buffer)=>x.writeUInt32LE(0xa1ff0000,central+38),(x:Buffer)=>x.writeUInt16LE(x.readUInt16LE(central+8)|1,central+8),(x:Buffer)=>x.writeUInt32LE(0xffffffff,central+24),(x:Buffer)=>x.writeUInt32LE(123,central+16)]){const bad=Buffer.from(original);change(bad);await assert.rejects(readEntries(bad));}});
-test('T152: local parent coordinates, stable source z, groups, opacity and authored variants preserve original composite metadata',async()=>{const {p,d}=await setup();for(const l of d.layers){assert.deepEqual(partWorldTransform(p,l.id).slice(4),l.origin);assert.equal(p.parts.find(v=>v.id===l.id)!.visible,l.visible);}const q=structuredClone(d);q.groups[0]!.opacity=.5;q.groups[1]!.opacity=.4;const m=materials(q,(await setup()).raw,new Map([...(await setup()).result.files.values()].map(b=>[hash(b),b])));const next=buildProject(createProject('Opacity','split-image'),q,m.assets);for(const l of q.layers)assert.equal(partOpacity(next,next.parts.find(v=>v.id===l.id)!),effective(q,l).opacity);assert.equal(new Set(p.parts.map(v=>v.drawOrder)).size,p.parts.length);});
-test('T153: ambiguous PNG folder and mixed sizes remain guesses until explicit layout, positions, roles and omitted files are confirmed',async()=>{const f=await setup(),dir=await temp();for(let i=0;i<f.source.layers.length;i++)await writeFile(join(dir,`fragment-${i}.png`),f.source.files.get(f.source.layers[i]!.path)!);await writeFile(join(dir,'notes.txt'),'omitted');const source=await readSource(dir,'folder',new AbortController().signal);const d=draftFromSource(source,f.result.images,f.result.files);assert.equal(d.layout,'cropped');assert.ok(d.layers.every(l=>!l.positionConfirmed&&!l.roleConfirmed));for(const code of ['LAYOUT_UNCONFIRMED','POSITION_UNCONFIRMED','ROLE_UNCONFIRMED','OMITTED_UNCONFIRMED'])assert.ok(issues(d).some(v=>v.code===code));assert.equal(d.omitted.length,1);});
-test('T154: empty, hidden and duplicate-named layers keep independent stable IDs and immutable original bytes',async()=>{const f=await setup();assert.equal(new Set(f.d.layers.map(l=>l.id)).size,16);assert.ok(f.d.layers.some(l=>l.image.empty));assert.ok(f.d.layers.some(l=>!l.visible));assert.ok(new Set(f.d.layers.map(l=>l.name)).size<16);for(const l of f.d.layers){assert.equal(hash(f.m.bytes.get(l.originalAssetId)!),l.sourceHash);assert.equal(f.p.parts.find(v=>v.id===l.id)!.id,l.id);}});
-test('T155: filename hints never become confirmed roles; eye proposals include alpha shape and anatomical position evidence',async()=>{const f=await setup(),source=structuredClone(f.source);source.kind='folder';source.manifest=null;for(const l of source.layers){l.role=null;l.side=null;l.name='eye_left.png';}const d=draftFromSource(source,f.result.images,f.result.files);assert.ok(d.layers.every(l=>!l.roleConfirmed));assert.ok(d.layers.some(l=>l.proposal.reasons.includes('CANVAS_POSITION')));assert.ok(d.layers.some(l=>l.proposal.reasons.includes('ALPHA_SHAPE')));assert.ok(d.layers.some(l=>l.proposal.reasons.includes('SIDE_CONFLICT')));});
-test('T156: manual anatomical side and role changes are reversible config only; extra renderer fields and ID substitution are rejected',async()=>{const {d}=await setup(),c=configuration(d),before=JSON.stringify(d);c.layers[0]!.role='custom';c.layers[0]!.side='none';assert.equal(configured(d,c).layers[0]!.role,'custom');assert.equal(JSON.stringify(d),before);assert.throws(()=>parseSessionCommand({type:'split-prepare',expectedRevision:0,draftId:d.id,config:{...c,mirror:true}}));const bad=structuredClone(c);bad.layers[0]!.id='substitution';assert.throws(()=>configured(d,bad));assert.throws(()=>parseSessionCommand({type:'split-load',kind:'psd'}));assert.notEqual(configKey(c),configKey(configuration(d)));});
-test('T157: duplicate primary role blocks, decorations remain unbound and incomplete authored states require limited acceptance',async()=>{const {d,m}=await setup(),q=structuredClone(d);const eye=q.layers.find(l=>l.role==='eye'&&l.usage==='primary')!,other=q.layers.find(l=>l.role==='accessory'&&l.visible)!;other.role='eye';other.side=eye.side;other.usage='primary';assert.ok(issues(q).some(v=>v.code==='ROLE_DUPLICATE'&&v.level==='block'));const nonhuman=structuredClone(d);for(const l of nonhuman.layers){l.role='custom';l.side='none';l.usage='auxiliary';l.variantOf=null;l.state='default';}assert.ok(issues(nonhuman).some(v=>v.code==='LIMITS_UNCONFIRMED'));nonhuman.limitedAccepted=true;const p=buildProject(createProject('Nonhuman','split-image'),nonhuman,m.assets);assert.ok(capabilities(p).filter(v=>v.key.startsWith('eye')||v.key==='mouth').every(v=>!v.supported));assert.equal(p.partBindings.length,0);});
-test('T158: parent/group cycles, missing references and invalid authored alternatives block before motion creation',async()=>{const {d}=await setup();for(const edit of [(v:SplitDraft)=>v.layers[0]!.parentId=v.layers[0]!.id,(v:SplitDraft)=>v.groups[0]!.parentGroupId=v.groups[0]!.id,(v:SplitDraft)=>v.layers[0]!.groupId='missing',(v:SplitDraft)=>v.layers.find(l=>l.usage==='alternative')!.visible=true]){const q=structuredClone(d);edit(q);assert.ok(issues(q).some(v=>v.level==='block'));assert.throws(()=>buildProject(createProject('Bad','split-image'),q,[]));}});
-test('T159: five common controls use authored states, bounded head mesh and existing semantic parameter IDs',async()=>{const {p}=await setup();assert.ok(capabilities(p).every(v=>v.supported));const scene=projectToPreview(p);assert.ok(scene.layers.some(l=>l.bind==='eye_left'));assert.ok(scene.layers.some(l=>l.bind==='mouth'));for(const mesh of p.motion!.meshes){assert.ok(mesh.vertices.every(v=>Math.abs(v.maximum[0])<=p.motion!.faceWidth*.045));}const ids=p.parameters.map(v=>v.id);const q=buildProject(p,draftFromProject(p),[]);assert.deepEqual(q.parameters.map(v=>v.id),ids);assert.deepEqual(q.expressions,p.expressions);assert.deepEqual(q.inputBindings,p.inputBindings);assert.deepEqual(q.motion!.settings,p.motion!.settings);});
-test('T159: saved metadata validates hashes, resource references and minor version; advanced rigs are protected from reguidance',async()=>{const {p}=await setup();for(const edit of [(v:typeof p)=>v.split!.draft.layers[0]!.sourceHash='0'.repeat(64),(v:typeof p)=>v.schemaVersion.minor=5,(v:typeof p)=>v.split!.draft.layers[0]!.imageAssetId='missing']){const q=structuredClone(p);edit(q);assert.ok(validateProject(q).length);}const q=structuredClone(p);q.motion!.meshes[0]!.vertices[0]!.weight=.123;assert.throws(()=>assertGuidanceCompatible(q),/ADVANCED_CONFLICT/);assert.doesNotThrow(()=>draftFromProject(q));const rotated=structuredClone(p),variant=rotated.split!.draft.layers.find(l=>l.usage==='alternative')!;rotated.parts.find(v=>v.id===variant.variantOf)!.textures.find(t=>t.state===variant.state)!.assetToLocal[0]=1.1;assert.throws(()=>draftFromProject(rotated),/TRANSFORM/);});
-test('T160: source bundle roundtrip preserves original files, positions, groups, role/state linkage and independent IDs',async()=>{const f=await setup(),d=draftFromProject(f.p),out=await readArchive(await writeArchive(d,f.raw));assert.equal(out.layers.length,16);for(const l of d.layers){const match=out.layers.find(v=>v.id===l.id)!;assert.deepEqual(match.origin,l.origin);assert.equal(match.role,l.role);assert.equal(match.side,l.side);assert.equal(match.variantOf,l.variantOf);assert.equal(hash(out.files.get(match.path)!),l.sourceHash);}assert.equal(out.groups.length,d.groups.length);});
-test('T160: source export writes atomically, verifies old target, keeps immutable backup and refuses corrupt replacement',async()=>{const dir=await temp(),path=join(dir,'source.2dparts'),bytes=await fixture;const a=await saveParts(path,bytes);assert.equal(a.hash,hash(bytes));const b=await saveParts(path,bytes);assert.ok(b.backup);assert.equal(hash(await readFile(join(dir,b.backup!))),hash(bytes));await writeFile(path,'corrupt');await assert.rejects(saveParts(path,bytes));assert.equal((await readFile(path)).toString(),'corrupt');});
-test('T160: actual session preview is isolated, explicit apply checkpoints once and undo/redo restores full common model',async()=>{const {s}=await session(),before=structuredClone(s.view().project!),{d,c}=await preview(s);assert.deepEqual(s.view().project,before);assert.ok(s.view().split!.project);await s.dispatch({type:'split-apply',draftId:d.id,config:c,expectedRevision:before.revision});assert.equal(s.view().errorCode,null);assert.ok(s.view().project!.split);assert.ok(s.view().recoveries.length);await s.dispatch({type:'undo'});assert.equal(s.view().project!.split,undefined);await s.dispatch({type:'redo'});assert.ok(s.view().project!.split);await s.shutdown();});
-test('T160: stale edits and changed review configuration cannot replace current project; cancellation revokes preview resources',async()=>{const {s}=await session(),{d,c}=await preview(s),rev=s.view().project!.revision;const bad=structuredClone(c);bad.layers[0]!.opacity=.5;await s.dispatch({type:'split-apply',draftId:d.id,config:bad,expectedRevision:rev});assert.equal(s.view().errorCode,'E_INPUT_STALE');await s.dispatch({type:'edit',target:'project-name',id:null,parameterId:null,value:'Keep manual',expectedRevision:rev,groupId:null});await s.dispatch({type:'split-apply',draftId:d.id,config:c,expectedRevision:rev});assert.equal(s.view().project!.displayName,'Keep manual');assert.equal(s.view().project!.split,undefined);await s.dispatch({type:'split-cancel'});assert.equal(s.view().split!.draft,null);assert.equal(s.view().split!.project,null);await s.shutdown();});
-test('T160: project save/duplicate/reopen preserves IDs, original hashes and editable split guidance',async()=>{const {s,dir,output}=await session(),{d,c}=await preview(s);await s.dispatch({type:'split-apply',draftId:d.id,config:c,expectedRevision:s.view().project!.revision});await s.save(false);const path=join(dir,'split.2dsketch'),digest=hash(await readFile(path)),record=structuredClone(s.view().project!.split),id=s.view().project!.projectId;output(join(dir,'copy.2dsketch'));await s.dispatch({type:'duplicate'});assert.notEqual(s.view().project!.projectId,id);assert.deepEqual(s.view().project!.split,record);await s.openFile(path);assert.deepEqual(s.view().project!.split,record);assert.equal(hash(await readFile(path)),digest);await s.dispatch({type:'split-edit'});await wait(s);assert.deepEqual(s.view().split!.draft!.layers.map(l=>l.id),record!.draft.layers.map(l=>l.id));await s.dispatch({type:'split-export'});assert.equal(s.view().errorCode,null);assert.equal((await readArchive(await readFile(join(dir,'export.2dparts')))).layers.length,16);await s.shutdown();});
-test('T151/T160: actual worker cancellation and project switch leave no candidate or stale imported metadata',async()=>{const f=await setup();await assert.rejects(splitProcessor(resolve('.venv-product/Scripts/python.exe'),['-I',resolve('worker/main.py')],resolve('.local/split-test-worker'),process.env).probe(f.raw,AbortSignal.abort()),/CANCELLED/);const {s}=await session();await s.dispatch({type:'split-load',kind:'example'});await s.newProject('Other route','parts');await new Promise(r=>setTimeout(r,30));assert.equal(s.view().project!.displayName,'Other route');assert.equal(s.view().project!.split,undefined);assert.equal(s.view().split?.draft??null,null);await s.shutdown();});
+import { readFile, mkdir, mkdtemp, writeFile } from 'node:fs/promises';
+import { resolve, join } from 'node:path';
+import { ZipFile } from 'yazl';
+import {
+  readArchive,
+  readEntries,
+  readSource,
+  manifestSource,
+  safeEntry,
+  hash,
+  writeArchive,
+} from '../packages/split-image/archive';
+import {
+  draftFromSource,
+  materials,
+  buildProject,
+  draftFromProject,
+  assertGuidanceCompatible,
+} from '../packages/split-image/model';
+import {
+  configuration,
+  configured,
+  configKey,
+  issues,
+  effective,
+  type SplitDraft,
+} from '../packages/split-image/types';
+import { splitProcessor } from '../apps/desktop/split-processor';
+import { createProject, assertProject, validateProject } from '../packages/project-model';
+import { partOpacity, partWorldTransform } from '../packages/project-model/geometry';
+import { projectToPreview } from '../packages/project-model/preview';
+import { capabilities } from '../packages/motion';
+import { parseSessionCommand } from '../packages/project-session/contracts';
+import { ProjectSession } from '../packages/project-session';
+import { saveParts } from '../packages/split-image/export';
+const fixture = readFile('assets/product/split/premium-example.2dparts');
+let preparation: ReturnType<typeof prepare> | undefined;
+async function prepare() {
+  const source = await readArchive(await fixture),
+    raw = new Map([...source.files.values()].map((b) => [hash(b), b]));
+  const processor = splitProcessor(
+    resolve('.venv-product/Scripts/python.exe'),
+    ['-I', resolve('worker/main.py')],
+    scratchPath('split-test-worker'),
+    process.env,
+  );
+  const result = await processor.probe(raw, new AbortController().signal);
+  const d = draftFromSource(source, result.images, result.files),
+    normal = new Map([...result.files.values()].map((b) => [hash(b), b])),
+    m = materials(d, raw, normal);
+  return {
+    source,
+    raw,
+    result,
+    d,
+    m,
+    p: buildProject(createProject('Split', 'split-image'), d, m.assets),
+  };
+}
+const setup = () => (preparation ??= prepare());
+async function temp() {
+  await mkdir(scratchPath('split-tests'), { recursive: true });
+  return mkdtemp(scratchPath('split-tests/run-'));
+}
+async function zip(entries: Map<string, Buffer>) {
+  const z = new ZipFile();
+  for (const [path, b] of entries) z.addBuffer(b, path);
+  z.end();
+  return new Promise<Buffer>((ok, no) => {
+    const chunks: Buffer[] = [];
+    z.outputStream.on('data', (b) => chunks.push(b));
+    z.outputStream.on('error', no);
+    z.outputStream.on('end', () => ok(Buffer.concat(chunks)));
+  });
+}
+async function session() {
+  const f = await setup(),
+    dir = await temp();
+  let output = join(dir, 'split.2dsketch');
+  const s = new ProjectSession({
+    dataDir: dir,
+    bundled: f.p,
+    bundledBytes: f.m.bytes,
+    splitExample: await fixture,
+    splitProcessor: { probe: async () => f.result },
+    autoTimers: false,
+    dialogs: {
+      openProject: async () => null,
+      saveProject: async () => output,
+      relinkImage: async () => null,
+      unsaved: async () => 'discard',
+      saveSplit: async () => join(dir, 'export.2dparts'),
+    },
+  });
+  await s.init();
+  await s.newProject('Split test', 'split-image');
+  return { s, dir, output: (path: string) => (output = path) };
+}
+async function wait(s: ProjectSession) {
+  const end = Date.now() + 150000;
+  while (s.view().split?.busy) {
+    if (Date.now() > end) throw new Error('E_TEST_TIMEOUT');
+    await new Promise((r) => setTimeout(r, 10));
+  }
+  assert.equal(s.view().split?.errorCode, null);
+}
+async function preview(s: ProjectSession) {
+  await s.dispatch({ type: 'split-load', kind: 'example' });
+  await wait(s);
+  const d = s.view().split!.draft!,
+    c = configuration(d);
+  await s.dispatch({
+    type: 'split-prepare',
+    draftId: d.id,
+    config: c,
+    expectedRevision: s.view().project!.revision,
+  });
+  await wait(s);
+  return { d, c };
+}
+test('T151: actual bounded worker decodes all premium cropped PNGs and complete manifest without detector or rescaling', async () => {
+  const f = await setup();
+  assert.equal(f.d.layers.length, 16);
+  assert.equal(f.result.images.length, f.raw.size);
+  assert.ok(f.d.layers.some((l) => l.image.width === 1));
+  assert.ok(!issues(f.d).some((v) => v.level === 'block'));
+  assertProject(f.p);
+  assert.equal(f.p.schemaVersion.minor, 9);
+});
+test('T151: supported archive rejects versions, unknown effects, undeclared files and incorrect original hashes', async () => {
+  const f = await setup();
+  const bytes = f.source.files;
+  const original = JSON.parse(f.source.manifest!);
+  for (const edit of [
+    (v: any) => (v.schemaVersion.minor = 1),
+    (v: any) => (v.layers[0].blendMode = 'multiply'),
+    (v: any) => (v.layers[0].filter = 'blur'),
+    (v: any) => (v.hashes[v.layers[0].path] = '0'.repeat(64)),
+  ]) {
+    const raw = structuredClone(original);
+    edit(raw);
+    assert.throws(() => manifestSource(Buffer.from(JSON.stringify(raw)), bytes, '0'.repeat(64)));
+  }
+  await assert.rejects(
+    readArchive(
+      await zip(
+        new Map([
+          ...bytes,
+          ['manifest.json', Buffer.from(f.source.manifest!)],
+          ['unused.png', bytes.values().next().value!],
+        ]),
+      ),
+    ),
+  );
+});
+test('T151: preflight rejects unsafe paths, case aliases, symlinks, encryption, excessive size and corrupted CRC', async () => {
+  for (const path of ['../x.png', '/x.png', 'a\\x.png', 'C:x.png', 'nul.png', 'a./x.png', 'x?.png'])
+    assert.equal(safeEntry(path), false);
+  const f = await setup();
+  const b = f.source.files.values().next().value!;
+  await assert.rejects(
+    readEntries(
+      await zip(
+        new Map([
+          ['A.png', b],
+          ['a.png', b],
+        ]),
+      ),
+    ),
+  );
+  const aliases = new ZipFile();
+  aliases.addEmptyDirectory('A.png');
+  aliases.addBuffer(b, 'a.png');
+  aliases.end();
+  const aliased = await new Promise<Buffer>((ok, no) => {
+    const chunks: Buffer[] = [];
+    aliases.outputStream.on('data', (b) => chunks.push(b));
+    aliases.outputStream.on('error', no);
+    aliases.outputStream.on('end', () => ok(Buffer.concat(chunks)));
+  });
+  await assert.rejects(readEntries(aliased));
+  const original = await zip(new Map([['a.png', b]]));
+  const central = original.indexOf(Buffer.from([0x50, 0x4b, 0x01, 0x02]));
+  for (const change of [
+    (x: Buffer) => x.writeUInt32LE(0xa1ff0000, central + 38),
+    (x: Buffer) => x.writeUInt16LE(x.readUInt16LE(central + 8) | 1, central + 8),
+    (x: Buffer) => x.writeUInt32LE(0xffffffff, central + 24),
+    (x: Buffer) => x.writeUInt32LE(123, central + 16),
+  ]) {
+    const bad = Buffer.from(original);
+    change(bad);
+    await assert.rejects(readEntries(bad));
+  }
+});
+test('T152: local parent coordinates, stable source z, groups, opacity and authored variants preserve original composite metadata', async () => {
+  const { p, d } = await setup();
+  for (const l of d.layers) {
+    assert.deepEqual(partWorldTransform(p, l.id).slice(4), l.origin);
+    assert.equal(p.parts.find((v) => v.id === l.id)!.visible, l.visible);
+  }
+  const q = structuredClone(d);
+  q.groups[0]!.opacity = 0.5;
+  q.groups[1]!.opacity = 0.4;
+  const m = materials(
+    q,
+    (await setup()).raw,
+    new Map([...(await setup()).result.files.values()].map((b) => [hash(b), b])),
+  );
+  const next = buildProject(createProject('Opacity', 'split-image'), q, m.assets);
+  for (const l of q.layers)
+    assert.equal(
+      partOpacity(
+        next,
+        next.parts.find((v) => v.id === l.id)!,
+      ),
+      effective(q, l).opacity,
+    );
+  assert.equal(new Set(p.parts.map((v) => v.drawOrder)).size, p.parts.length);
+});
+test('T153: ambiguous PNG folder and mixed sizes remain guesses until explicit layout, positions, roles and omitted files are confirmed', async () => {
+  const f = await setup(),
+    dir = await temp();
+  for (let i = 0; i < f.source.layers.length; i++)
+    await writeFile(join(dir, `fragment-${i}.png`), f.source.files.get(f.source.layers[i]!.path)!);
+  await writeFile(join(dir, 'notes.txt'), 'omitted');
+  const source = await readSource(dir, 'folder', new AbortController().signal);
+  const d = draftFromSource(source, f.result.images, f.result.files);
+  assert.equal(d.layout, 'cropped');
+  assert.ok(d.layers.every((l) => !l.positionConfirmed && !l.roleConfirmed));
+  for (const code of [
+    'LAYOUT_UNCONFIRMED',
+    'POSITION_UNCONFIRMED',
+    'ROLE_UNCONFIRMED',
+    'OMITTED_UNCONFIRMED',
+  ])
+    assert.ok(issues(d).some((v) => v.code === code));
+  assert.equal(d.omitted.length, 1);
+});
+test('T154: empty, hidden and duplicate-named layers keep independent stable IDs and immutable original bytes', async () => {
+  const f = await setup();
+  assert.equal(new Set(f.d.layers.map((l) => l.id)).size, 16);
+  assert.ok(f.d.layers.some((l) => l.image.empty));
+  assert.ok(f.d.layers.some((l) => !l.visible));
+  assert.ok(new Set(f.d.layers.map((l) => l.name)).size < 16);
+  for (const l of f.d.layers) {
+    assert.equal(hash(f.m.bytes.get(l.originalAssetId)!), l.sourceHash);
+    assert.equal(f.p.parts.find((v) => v.id === l.id)!.id, l.id);
+  }
+});
+test('T155: filename hints never become confirmed roles; eye proposals include alpha shape and anatomical position evidence', async () => {
+  const f = await setup(),
+    source = structuredClone(f.source);
+  source.kind = 'folder';
+  source.manifest = null;
+  for (const l of source.layers) {
+    l.role = null;
+    l.side = null;
+    l.name = 'eye_left.png';
+  }
+  const d = draftFromSource(source, f.result.images, f.result.files);
+  assert.ok(d.layers.every((l) => !l.roleConfirmed));
+  assert.ok(d.layers.some((l) => l.proposal.reasons.includes('CANVAS_POSITION')));
+  assert.ok(d.layers.some((l) => l.proposal.reasons.includes('ALPHA_SHAPE')));
+  assert.ok(d.layers.some((l) => l.proposal.reasons.includes('SIDE_CONFLICT')));
+});
+test('T156: manual anatomical side and role changes are reversible config only; extra renderer fields and ID substitution are rejected', async () => {
+  const { d } = await setup(),
+    c = configuration(d),
+    before = JSON.stringify(d);
+  c.layers[0]!.role = 'custom';
+  c.layers[0]!.side = 'none';
+  assert.equal(configured(d, c).layers[0]!.role, 'custom');
+  assert.equal(JSON.stringify(d), before);
+  assert.throws(() =>
+    parseSessionCommand({
+      type: 'split-prepare',
+      expectedRevision: 0,
+      draftId: d.id,
+      config: { ...c, mirror: true },
+    }),
+  );
+  const bad = structuredClone(c);
+  bad.layers[0]!.id = 'substitution';
+  assert.throws(() => configured(d, bad));
+  assert.throws(() => parseSessionCommand({ type: 'split-load', kind: 'psd' }));
+  assert.notEqual(configKey(c), configKey(configuration(d)));
+});
+test('T157: duplicate primary role blocks, decorations remain unbound and incomplete authored states require limited acceptance', async () => {
+  const { d, m } = await setup(),
+    q = structuredClone(d);
+  const eye = q.layers.find((l) => l.role === 'eye' && l.usage === 'primary')!,
+    other = q.layers.find((l) => l.role === 'accessory' && l.visible)!;
+  other.role = 'eye';
+  other.side = eye.side;
+  other.usage = 'primary';
+  assert.ok(issues(q).some((v) => v.code === 'ROLE_DUPLICATE' && v.level === 'block'));
+  const nonhuman = structuredClone(d);
+  for (const l of nonhuman.layers) {
+    l.role = 'custom';
+    l.side = 'none';
+    l.usage = 'auxiliary';
+    l.variantOf = null;
+    l.state = 'default';
+  }
+  assert.ok(issues(nonhuman).some((v) => v.code === 'LIMITS_UNCONFIRMED'));
+  nonhuman.limitedAccepted = true;
+  const p = buildProject(createProject('Nonhuman', 'split-image'), nonhuman, m.assets);
+  assert.ok(
+    capabilities(p)
+      .filter((v) => v.key.startsWith('eye') || v.key === 'mouth')
+      .every((v) => !v.supported),
+  );
+  assert.equal(p.partBindings.length, 0);
+});
+test('T158: parent/group cycles, missing references and invalid authored alternatives block before motion creation', async () => {
+  const { d } = await setup();
+  for (const edit of [
+    (v: SplitDraft) => (v.layers[0]!.parentId = v.layers[0]!.id),
+    (v: SplitDraft) => (v.groups[0]!.parentGroupId = v.groups[0]!.id),
+    (v: SplitDraft) => (v.layers[0]!.groupId = 'missing'),
+    (v: SplitDraft) => (v.layers.find((l) => l.usage === 'alternative')!.visible = true),
+  ]) {
+    const q = structuredClone(d);
+    edit(q);
+    assert.ok(issues(q).some((v) => v.level === 'block'));
+    assert.throws(() => buildProject(createProject('Bad', 'split-image'), q, []));
+  }
+});
+test('T159: five common controls use authored states, bounded head mesh and existing semantic parameter IDs', async () => {
+  const { p } = await setup();
+  assert.ok(capabilities(p).every((v) => v.supported));
+  const scene = projectToPreview(p);
+  assert.ok(scene.layers.some((l) => l.bind === 'eye_left'));
+  assert.ok(scene.layers.some((l) => l.bind === 'mouth'));
+  for (const mesh of p.motion!.meshes) {
+    assert.ok(mesh.vertices.every((v) => Math.abs(v.maximum[0]) <= p.motion!.faceWidth * 0.045));
+  }
+  const ids = p.parameters.map((v) => v.id);
+  const q = buildProject(p, draftFromProject(p), []);
+  assert.deepEqual(
+    q.parameters.map((v) => v.id),
+    ids,
+  );
+  assert.deepEqual(q.expressions, p.expressions);
+  assert.deepEqual(q.inputBindings, p.inputBindings);
+  assert.deepEqual(q.motion!.settings, p.motion!.settings);
+});
+test('T159: saved metadata validates hashes, resource references and minor version; advanced rigs are protected from reguidance', async () => {
+  const { p } = await setup();
+  for (const edit of [
+    (v: typeof p) => (v.split!.draft.layers[0]!.sourceHash = '0'.repeat(64)),
+    (v: typeof p) => (v.schemaVersion.minor = 5),
+    (v: typeof p) => (v.split!.draft.layers[0]!.imageAssetId = 'missing'),
+  ]) {
+    const q = structuredClone(p);
+    edit(q);
+    assert.ok(validateProject(q).length);
+  }
+  const q = structuredClone(p);
+  q.motion!.meshes[0]!.vertices[0]!.weight = 0.123;
+  assert.throws(() => assertGuidanceCompatible(q), /ADVANCED_CONFLICT/);
+  assert.doesNotThrow(() => draftFromProject(q));
+  const rotated = structuredClone(p),
+    variant = rotated.split!.draft.layers.find((l) => l.usage === 'alternative')!;
+  rotated.parts
+    .find((v) => v.id === variant.variantOf)!
+    .textures.find((t) => t.state === variant.state)!.assetToLocal[0] = 1.1;
+  assert.throws(() => draftFromProject(rotated), /TRANSFORM/);
+});
+test('T160: source bundle roundtrip preserves original files, positions, groups, role/state linkage and independent IDs', async () => {
+  const f = await setup(),
+    d = draftFromProject(f.p),
+    out = await readArchive(await writeArchive(d, f.raw));
+  assert.equal(out.layers.length, 16);
+  for (const l of d.layers) {
+    const match = out.layers.find((v) => v.id === l.id)!;
+    assert.deepEqual(match.origin, l.origin);
+    assert.equal(match.role, l.role);
+    assert.equal(match.side, l.side);
+    assert.equal(match.variantOf, l.variantOf);
+    assert.equal(hash(out.files.get(match.path)!), l.sourceHash);
+  }
+  assert.equal(out.groups.length, d.groups.length);
+});
+test('T160: source export writes atomically, verifies old target, keeps immutable backup and refuses corrupt replacement', async () => {
+  const dir = await temp(),
+    path = join(dir, 'source.2dparts'),
+    bytes = await fixture;
+  const a = await saveParts(path, bytes);
+  assert.equal(a.hash, hash(bytes));
+  const b = await saveParts(path, bytes);
+  assert.ok(b.backup);
+  assert.equal(hash(await readFile(join(dir, b.backup!))), hash(bytes));
+  await writeFile(path, 'corrupt');
+  await assert.rejects(saveParts(path, bytes));
+  assert.equal((await readFile(path)).toString(), 'corrupt');
+});
+test('T160: actual session preview is isolated, explicit apply checkpoints once and undo/redo restores full common model', async () => {
+  const { s } = await session(),
+    before = structuredClone(s.view().project!),
+    { d, c } = await preview(s);
+  assert.deepEqual(s.view().project, before);
+  assert.ok(s.view().split!.project);
+  await s.dispatch({
+    type: 'split-apply',
+    draftId: d.id,
+    config: c,
+    expectedRevision: before.revision,
+  });
+  assert.equal(s.view().errorCode, null);
+  assert.ok(s.view().project!.split);
+  assert.ok(s.view().recoveries.length);
+  await s.dispatch({ type: 'undo' });
+  assert.equal(s.view().project!.split, undefined);
+  await s.dispatch({ type: 'redo' });
+  assert.ok(s.view().project!.split);
+  await s.shutdown();
+});
+test('T160: stale edits and changed review configuration cannot replace current project; cancellation revokes preview resources', async () => {
+  const { s } = await session(),
+    { d, c } = await preview(s),
+    rev = s.view().project!.revision;
+  const bad = structuredClone(c);
+  bad.layers[0]!.opacity = 0.5;
+  await s.dispatch({ type: 'split-apply', draftId: d.id, config: bad, expectedRevision: rev });
+  assert.equal(s.view().errorCode, 'E_INPUT_STALE');
+  await s.dispatch({
+    type: 'edit',
+    target: 'project-name',
+    id: null,
+    parameterId: null,
+    value: 'Keep manual',
+    expectedRevision: rev,
+    groupId: null,
+  });
+  await s.dispatch({ type: 'split-apply', draftId: d.id, config: c, expectedRevision: rev });
+  assert.equal(s.view().project!.displayName, 'Keep manual');
+  assert.equal(s.view().project!.split, undefined);
+  await s.dispatch({ type: 'split-cancel' });
+  assert.equal(s.view().split!.draft, null);
+  assert.equal(s.view().split!.project, null);
+  await s.shutdown();
+});
+test('T160: project save/duplicate/reopen preserves IDs, original hashes and editable split guidance', async () => {
+  const { s, dir, output } = await session(),
+    { d, c } = await preview(s);
+  await s.dispatch({
+    type: 'split-apply',
+    draftId: d.id,
+    config: c,
+    expectedRevision: s.view().project!.revision,
+  });
+  await s.save(false);
+  const path = join(dir, 'split.2dsketch'),
+    digest = hash(await readFile(path)),
+    record = structuredClone(s.view().project!.split),
+    id = s.view().project!.projectId;
+  output(join(dir, 'copy.2dsketch'));
+  await s.dispatch({ type: 'duplicate' });
+  assert.notEqual(s.view().project!.projectId, id);
+  assert.deepEqual(s.view().project!.split, record);
+  await s.openFile(path);
+  assert.deepEqual(s.view().project!.split, record);
+  assert.equal(hash(await readFile(path)), digest);
+  await s.dispatch({ type: 'split-edit' });
+  await wait(s);
+  assert.deepEqual(
+    s.view().split!.draft!.layers.map((l) => l.id),
+    record!.draft.layers.map((l) => l.id),
+  );
+  await s.dispatch({ type: 'split-export' });
+  assert.equal(s.view().errorCode, null);
+  assert.equal((await readArchive(await readFile(join(dir, 'export.2dparts')))).layers.length, 16);
+  await s.shutdown();
+});
+test('T151/T160: actual worker cancellation and project switch leave no candidate or stale imported metadata', async () => {
+  const f = await setup();
+  await assert.rejects(
+    splitProcessor(
+      resolve('.venv-product/Scripts/python.exe'),
+      ['-I', resolve('worker/main.py')],
+      scratchPath('split-test-worker'),
+      process.env,
+    ).probe(f.raw, AbortSignal.abort()),
+    /CANCELLED/,
+  );
+  const { s } = await session();
+  await s.dispatch({ type: 'split-load', kind: 'example' });
+  await s.newProject('Other route', 'parts');
+  await new Promise((r) => setTimeout(r, 30));
+  assert.equal(s.view().project!.displayName, 'Other route');
+  assert.equal(s.view().project!.split, undefined);
+  assert.equal(s.view().split?.draft ?? null, null);
+  await s.shutdown();
+});

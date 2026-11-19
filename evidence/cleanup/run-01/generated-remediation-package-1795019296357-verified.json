@@ -1,0 +1,12 @@
+{
+  "format": "2dsketcher-cache-archive/1",
+  "group": "generated-remediation-package-1795019296357",
+  "verified": true,
+  "files": 3,
+  "logicalBytes": 21885,
+  "everyFileReconstructedAndSourceHashMatched": true,
+  "sourceRemoved": false,
+  "maxObjectMiB": 4.0,
+  "readCacheMiBLimit": 32,
+  "historicalEvidenceModified": false
+}

@@ -1,0 +1,385 @@
+{
+  "removedImports": 48,
+  "rows": [
+    {
+      "file": "apps/desktop/main.ts",
+      "removedImports": 1,
+      "emittedProgramsIdentical": true,
+      "beforeSha256": "62aebc61d24a4b2d19c2d5705eb792fbf6194f99880723f77a51493f8ca39281",
+      "afterSha256": "982fb4e66ca7fa5fb630d80758126f789015949a64570630e96250c939aa6297",
+      "emittedBeforeSha256": "799868241d4120720b9a3b5fca848c6a0105a5cf08c2bdef39c48900446dedb2",
+      "emittedAfterSha256": "799868241d4120720b9a3b5fca848c6a0105a5cf08c2bdef39c48900446dedb2"
+    },
+    {
+      "file": "apps/renderer/src/avatar-export-panel.tsx",
+      "removedImports": 1,
+      "emittedProgramsIdentical": true,
+      "beforeSha256": "3cc2da04bcb116029e3dd971e8779327907931564ad103c05360587a240e8831",
+      "afterSha256": "5d3f1f25c42d0b09686b2050d1f61e5f6655a34c9e6f3f09c53ff8f7bb6f3d5d",
+      "emittedBeforeSha256": "33dc4db534b53bd1a29b8dba239a8bf121527265b55b6dc82a1470dbd49c1311",
+      "emittedAfterSha256": "33dc4db534b53bd1a29b8dba239a8bf121527265b55b6dc82a1470dbd49c1311"
+    },
+    {
+      "file": "apps/renderer/src/broadcast-panel.tsx",
+      "removedImports": 1,
+      "emittedProgramsIdentical": true,
+      "beforeSha256": "19baded22d4cd36d8ae92d3a3f1b86f7eed0e341285fa724b979ae884d4f0e1f",
+      "afterSha256": "477a9ce7c924d8621582f0b761caae828339e6bf21bc43ede5a0edba1930abaf",
+      "emittedBeforeSha256": "edd796208558b862185dffd46126aa4e689c0e6ecc442f3667112f0a53da9ae9",
+      "emittedAfterSha256": "edd796208558b862185dffd46126aa4e689c0e6ecc442f3667112f0a53da9ae9"
+    },
+    {
+      "file": "apps/renderer/src/camera-panel.tsx",
+      "removedImports": 1,
+      "emittedProgramsIdentical": true,
+      "beforeSha256": "774cc2f14501c9b690afcf05014c1c8ebc9dbc835d2cb5f20836ddad54333301",
+      "afterSha256": "273e64fa62f91e612e28e1427fa419ac83966a7314c2cc04218ca7105ca89efd",
+      "emittedBeforeSha256": "a4f7fac173456633f2c326eee646bb751f9f500b296ed9e0234f63855e769501",
+      "emittedAfterSha256": "a4f7fac173456633f2c326eee646bb751f9f500b296ed9e0234f63855e769501"
+    },
+    {
+      "file": "apps/renderer/src/detail-panel.tsx",
+      "removedImports": 1,
+      "emittedProgramsIdentical": true,
+      "beforeSha256": "11307704f4a125e0d8c7835ee61e3e82da29b152d8251c7f7ccb229e73e35556",
+      "afterSha256": "83aa28ca365af4320f4a8333ce249578a3662beea669b29247304016cc978947",
+      "emittedBeforeSha256": "866fa225872263a71bd458ea136016b7bf856b93eb8d0658e49319db8ebde5cd",
+      "emittedAfterSha256": "866fa225872263a71bd458ea136016b7bf856b93eb8d0658e49319db8ebde5cd"
+    },
+    {
+      "file": "apps/renderer/src/editor-preview.tsx",
+      "removedImports": 1,
+      "emittedProgramsIdentical": true,
+      "beforeSha256": "bc9c7a609d4a7496eece23a7e2f0b0011a981c74027c19ec91df8e3acc101169",
+      "afterSha256": "b2c07fa8df354b1a5d28bf1575992082332f6ffa87278acad024d0fba0282542",
+      "emittedBeforeSha256": "0455506cb205bdd429e032e0ff905e6e0305c1273999c5585499b88f0c67f8ac",
+      "emittedAfterSha256": "0455506cb205bdd429e032e0ff905e6e0305c1273999c5585499b88f0c67f8ac"
+    },
+    {
+      "file": "apps/renderer/src/environment-panel.tsx",
+      "removedImports": 1,
+      "emittedProgramsIdentical": true,
+      "beforeSha256": "26d34109a16980ba07b5f8dba282a95c02b28ba5d6bdec2bcf4cb9012024b585",
+      "afterSha256": "bb7886e53721812b2525aeb7a744a00e363ab61eb38672dee8e615ea308f16c6",
+      "emittedBeforeSha256": "2835a81b8ba26a0544ef7133359c5d6c1b43022f9875451bb695204af39dad0d",
+      "emittedAfterSha256": "2835a81b8ba26a0544ef7133359c5d6c1b43022f9875451bb695204af39dad0d"
+    },
+    {
+      "file": "apps/renderer/src/expression-panel.tsx",
+      "removedImports": 1,
+      "emittedProgramsIdentical": true,
+      "beforeSha256": "803eefc97460e702d105974fca2b0bce2c404b1facb19b1e83a4be792627ae87",
+      "afterSha256": "bd78d6a50981f07c11226231f89c58d4c3e2140b735ac7a8f35acf3d4cfe2418",
+      "emittedBeforeSha256": "7fba7fef437747c8c5ca8da968d12f86d2438b6470ea7bc835893630f8977042",
+      "emittedAfterSha256": "7fba7fef437747c8c5ca8da968d12f86d2438b6470ea7bc835893630f8977042"
+    },
+    {
+      "file": "apps/renderer/src/expression-preview.tsx",
+      "removedImports": 1,
+      "emittedProgramsIdentical": true,
+      "beforeSha256": "3d39707bb9fc611c992387a00136a28b0c74052a89cd3f67387eab7072ea6b71",
+      "afterSha256": "b1e7cc4717dbf5cc8d48c6cb8ff5a7bb326cbdd838e63aa07373e9f1ccbf196d",
+      "emittedBeforeSha256": "0ca1f9432c4e5a3c490834314afe792cc49acf448d2c7a3222013dcef25f0b31",
+      "emittedAfterSha256": "0ca1f9432c4e5a3c490834314afe792cc49acf448d2c7a3222013dcef25f0b31"
+    },
+    {
+      "file": "apps/renderer/src/file-output-panel.tsx",
+      "removedImports": 1,
+      "emittedProgramsIdentical": true,
+      "beforeSha256": "63287008a7d6f244bc675af5da781020b8c7fb1c43525c932c3435818dd02ba7",
+      "afterSha256": "eff88256c3b6f29726ad28281c6260fc6d135787d1a171f521758ab21f647128",
+      "emittedBeforeSha256": "9e1624c8e32a57b56e380e12dcc1388171bf295d20cf9bf1421b137d0b9ee837",
+      "emittedAfterSha256": "9e1624c8e32a57b56e380e12dcc1388171bf295d20cf9bf1421b137d0b9ee837"
+    },
+    {
+      "file": "apps/renderer/src/help-panel.tsx",
+      "removedImports": 1,
+      "emittedProgramsIdentical": true,
+      "beforeSha256": "fd9169978355bf9aa6f27ce9af2e27d91e3faa0ca3e9e8cb17bb730bd5fa740f",
+      "afterSha256": "c58206be20540e59e481f5258b989d8ec412088474de7a1c41d18aec5dd8916e",
+      "emittedBeforeSha256": "7c64ec1d83a9742fcbc5f212f981024f34686f75c8797ce3c07fa4ede2148476",
+      "emittedAfterSha256": "7c64ec1d83a9742fcbc5f212f981024f34686f75c8797ce3c07fa4ede2148476"
+    },
+    {
+      "file": "apps/renderer/src/input-panel.tsx",
+      "removedImports": 1,
+      "emittedProgramsIdentical": true,
+      "beforeSha256": "5479a9599ebdfe3bf19e7878fd13dda3f797f83639f251c4fde74b60d88ed2f6",
+      "afterSha256": "1d488f76fbd08154edfdbfad68ef943e3212b66e706aaed57f9eca4e04b005e4",
+      "emittedBeforeSha256": "83bc84e6b54f6d468ae94b01dc2e0c2a5545ff28b69d0cba868fa7450932bf35",
+      "emittedAfterSha256": "83bc84e6b54f6d468ae94b01dc2e0c2a5545ff28b69d0cba868fa7450932bf35"
+    },
+    {
+      "file": "apps/renderer/src/main.tsx",
+      "removedImports": 1,
+      "emittedProgramsIdentical": true,
+      "beforeSha256": "726c48f408899a2de4d652bd9a3f99e69c9b836e7b90adf63500ff4b7897c771",
+      "afterSha256": "7e5c03d6fcf8abd9ea1d4979f0e68582bc9b25dde553554959462d9e0e5e4a85",
+      "emittedBeforeSha256": "3748655e749ba86e5c4affadcf5f7c65a18b47db603b315d7224c73be5222671",
+      "emittedAfterSha256": "3748655e749ba86e5c4affadcf5f7c65a18b47db603b315d7224c73be5222671"
+    },
+    {
+      "file": "apps/renderer/src/motion-panel.tsx",
+      "removedImports": 1,
+      "emittedProgramsIdentical": true,
+      "beforeSha256": "6201c3de7ec253f756b52b5e5511ac5fcb9f17138ea8e90d50f2bd9f6e36fdde",
+      "afterSha256": "954293b0151bf4f3b5523c064560c0a4d7c395361ce4cb3eea0170e46816c6e6",
+      "emittedBeforeSha256": "8f51d48c5bb2bc73c9c01ce6c87a54e08fb8ac1f2feaf455f1186e8059a842b8",
+      "emittedAfterSha256": "8f51d48c5bb2bc73c9c01ce6c87a54e08fb8ac1f2feaf455f1186e8059a842b8"
+    },
+    {
+      "file": "apps/renderer/src/parts-panel.tsx",
+      "removedImports": 2,
+      "emittedProgramsIdentical": true,
+      "beforeSha256": "0678f2d64a2a7733478ef3d03ac45f84503d5adaf967a8f906183c94c2ac3df0",
+      "afterSha256": "375dc15810f90f3e1dc0f1cd4beee652a79243ee49b2c769b6056b647255fabb",
+      "emittedBeforeSha256": "402a9d51f36bf5e893400ee22dfa0c362ce54ae49bf55eb2e0afd1444816922b",
+      "emittedAfterSha256": "402a9d51f36bf5e893400ee22dfa0c362ce54ae49bf55eb2e0afd1444816922b"
+    },
+    {
+      "file": "apps/renderer/src/project-desk.tsx",
+      "removedImports": 1,
+      "emittedProgramsIdentical": true,
+      "beforeSha256": "0261993cd5165e2619cf94d14c59e2e0be9b25e75eb174a86e478cda63ec8595",
+      "afterSha256": "1be811be8c02ecd70df7dbef29ce0d4ec29f294f293c959108a75c654fd6c7af",
+      "emittedBeforeSha256": "39411847494f85c24d5fb7ffc52707e3aed37026b4e6054fb59a431984ff292a",
+      "emittedAfterSha256": "39411847494f85c24d5fb7ffc52707e3aed37026b4e6054fb59a431984ff292a"
+    },
+    {
+      "file": "apps/renderer/src/run-dock.tsx",
+      "removedImports": 1,
+      "emittedProgramsIdentical": true,
+      "beforeSha256": "d678fb4b66c8288bd0ecf24759bce73c0d3c5a8e081a4f65cbd52456ecb40835",
+      "afterSha256": "4a4c324ec9ac6c689559ecd92b0c189b75627836985979a031f7f81c1537afa5",
+      "emittedBeforeSha256": "c9383ef3d3ff1a627803715b246cf2a55ec01d6f8bfe65c655965f80d797f7fa",
+      "emittedAfterSha256": "c9383ef3d3ff1a627803715b246cf2a55ec01d6f8bfe65c655965f80d797f7fa"
+    },
+    {
+      "file": "apps/renderer/src/run-panel.tsx",
+      "removedImports": 2,
+      "emittedProgramsIdentical": true,
+      "beforeSha256": "2e7e8b9dac56536e43f3e7f0b2d5b6cd5bea67fab754559dc25fcb9355a894eb",
+      "afterSha256": "4f124fd24c32bbc35c6eaffc7bed3d836cdd8ba78c8552fa8d10a58c67c1e1ae",
+      "emittedBeforeSha256": "6b59f4ab71cc548aa531aaab5daf0123d95aec02247195ad9c1b493c4f7562ea",
+      "emittedAfterSha256": "6b59f4ab71cc548aa531aaab5daf0123d95aec02247195ad9c1b493c4f7562ea"
+    },
+    {
+      "file": "apps/renderer/src/split-panel.tsx",
+      "removedImports": 1,
+      "emittedProgramsIdentical": true,
+      "beforeSha256": "775fe5b54db3a77099f4b3ebf91e17c217f87c9ea344c28725523ed17294b65a",
+      "afterSha256": "7c16cc9fdc0a31b3e64e87df1099418b15dcfd7a21bbfd80f583400a8d710ed7",
+      "emittedBeforeSha256": "e45af2e7410b0997a01eb40c0856feee2f9d35eed8ba8af9a8af997ba3ad3563",
+      "emittedAfterSha256": "e45af2e7410b0997a01eb40c0856feee2f9d35eed8ba8af9a8af997ba3ad3563"
+    },
+    {
+      "file": "apps/renderer/src/structure-panel.tsx",
+      "removedImports": 1,
+      "emittedProgramsIdentical": true,
+      "beforeSha256": "99f3c8e2113405f970ab4abbbb1001545ddd96f988aaac81445711c014fcf604",
+      "afterSha256": "6773effb706636e856fe4380da1e76f73921e2122a9046455cd66ffc70d94f1c",
+      "emittedBeforeSha256": "f47d48ac8333b79cdad39e6acc54b999afae6d98aac0f862134a0f93e4da5149",
+      "emittedAfterSha256": "f47d48ac8333b79cdad39e6acc54b999afae6d98aac0f862134a0f93e4da5149"
+    },
+    {
+      "file": "apps/renderer/src/workflow-lab.tsx",
+      "removedImports": 1,
+      "emittedProgramsIdentical": true,
+      "beforeSha256": "b297ca762ae8bbf30455410d7532d9a1b09a2e82ff420b262ed4c43adfa45e5b",
+      "afterSha256": "9eb6b74097a4d96d6df87c477a51839e642b7521be00983aff144ec9997e0578",
+      "emittedBeforeSha256": "688cddda54f02f4b927916586d2507c58fdb7cb74a7e6b8477b3dc272fd38846",
+      "emittedAfterSha256": "688cddda54f02f4b927916586d2507c58fdb7cb74a7e6b8477b3dc272fd38846"
+    },
+    {
+      "file": "packages/project-session/index.ts",
+      "removedImports": 1,
+      "emittedProgramsIdentical": true,
+      "beforeSha256": "6af7d9ce2fb986afc2d1454d74848bcbd58bf6356069e8addcfea7e42bc04374",
+      "afterSha256": "20372446d7c466e0281333e35dbb21d690305fa49f830f088b1fd8b424ad8953",
+      "emittedBeforeSha256": "1470897c509796a57b0218d7490c961a3f4b19526764ed1eec4bfcaab2da235a",
+      "emittedAfterSha256": "1470897c509796a57b0218d7490c961a3f4b19526764ed1eec4bfcaab2da235a"
+    },
+    {
+      "file": "packages/split-image/archive.ts",
+      "removedImports": 1,
+      "emittedProgramsIdentical": true,
+      "beforeSha256": "5872a24c339c88394825c4890600d3f278cca193e3daae08f7a5e7f9e90ffae3",
+      "afterSha256": "7e04966c80878e01ca5459e17d1732c6e2ca444d1394030e9ee413374a6c5b70",
+      "emittedBeforeSha256": "28a2a59ba1ab4c24a29aa51a66815d703d943790dc709eae92657ce39b2e8e7a",
+      "emittedAfterSha256": "28a2a59ba1ab4c24a29aa51a66815d703d943790dc709eae92657ce39b2e8e7a"
+    },
+    {
+      "file": "packages/split-image/session.ts",
+      "removedImports": 1,
+      "emittedProgramsIdentical": true,
+      "beforeSha256": "0d0dadbb05a2e90aa558ead2f1b7b93a2902d9c856e35aa27620a53e12766337",
+      "afterSha256": "4ce88a50c349253345dc262a1c3415ad65a9a2af7cad82cea4dc5e5aeab49984",
+      "emittedBeforeSha256": "e60e86b55804b606741867b5af5a7b4102258e4e2b9d5c9a4e99b3d252ecf244",
+      "emittedAfterSha256": "e60e86b55804b606741867b5af5a7b4102258e4e2b9d5c9a4e99b3d252ecf244"
+    },
+    {
+      "file": "tests/avatar-export.test.ts",
+      "removedImports": 2,
+      "emittedProgramsIdentical": true,
+      "beforeSha256": "fc1c4b2a9f37b197664edf2ee94b52912ddab1251dba279f040b16145551b81d",
+      "afterSha256": "cffcefc349783f8924248f09ffbda8007c8b490576f8aace8a68808001a557cb",
+      "emittedBeforeSha256": "64311ffd952f809d1e25d17e70dc4099979217735ad0fb8eecd8bc817826e331",
+      "emittedAfterSha256": "64311ffd952f809d1e25d17e70dc4099979217735ad0fb8eecd8bc817826e331"
+    },
+    {
+      "file": "tests/broadcast.test.ts",
+      "removedImports": 1,
+      "emittedProgramsIdentical": true,
+      "beforeSha256": "85854b2bc278145523b3642dd946f6bc39e6d63f849ef20bf5abe46c66f19981",
+      "afterSha256": "c3c1ee09ed78dac17e90fd241584cae11874eb01116760c358b3c955c512ec1a",
+      "emittedBeforeSha256": "898bff2e5870039c9129fb779a0c5e947f33c03a8b91470cf451508d6b5a25c6",
+      "emittedAfterSha256": "898bff2e5870039c9129fb779a0c5e947f33c03a8b91470cf451508d6b5a25c6"
+    },
+    {
+      "file": "tests/core.test.ts",
+      "removedImports": 1,
+      "emittedProgramsIdentical": true,
+      "beforeSha256": "f56686a9d19b1534626963345dc960afe128a2e1f8deeab4a6e689912c9c7d0f",
+      "afterSha256": "1dd28827d7fa25e27884a108a5dbcfa90956c8653d555fb1ff084e280b8c428e",
+      "emittedBeforeSha256": "447fcf515d600273cf0ab3dc3f870e1ca2be67e7e558fc81ab52c758fc5f1b68",
+      "emittedAfterSha256": "447fcf515d600273cf0ab3dc3f870e1ca2be67e7e558fc81ab52c758fc5f1b68"
+    },
+    {
+      "file": "tests/editor.test.ts",
+      "removedImports": 1,
+      "emittedProgramsIdentical": true,
+      "beforeSha256": "cdc2c3d453b6683853d03ac13737439dc41217978a46329d31161cc45e9b17e6",
+      "afterSha256": "0633713bcdd055f8d99794218458d7ffb732559505981624ea426fb2e9a0edac",
+      "emittedBeforeSha256": "470e1849bfccc1b21040047290fd1d7a29f37b422e5e998dd3dcf719c84a09bf",
+      "emittedAfterSha256": "470e1849bfccc1b21040047290fd1d7a29f37b422e5e998dd3dcf719c84a09bf"
+    },
+    {
+      "file": "tests/execution.test.ts",
+      "removedImports": 1,
+      "emittedProgramsIdentical": true,
+      "beforeSha256": "0691a0cbc4f705714d66403e1b216e5e6efbe055856896f83a130bdefff55c06",
+      "afterSha256": "20951873598b27cdea47549c661440cf87ac7ba682017b09c0b861fbc9c9a208",
+      "emittedBeforeSha256": "86e6330a5f4a1f730ae33f8432e238f3fbfbdd2cdeeaf79d79719ea3eb1764be",
+      "emittedAfterSha256": "86e6330a5f4a1f730ae33f8432e238f3fbfbdd2cdeeaf79d79719ea3eb1764be"
+    },
+    {
+      "file": "tests/expression-control.test.ts",
+      "removedImports": 1,
+      "emittedProgramsIdentical": true,
+      "beforeSha256": "d7ec2b40f205ddd24012e9ca4d4d4401a4b868d2a92ad2db6f076ae721fb1e23",
+      "afterSha256": "117c5ebb58a9c3de6e5f6683bbe645f400689a787dab0856d083bca3169eb8f8",
+      "emittedBeforeSha256": "acb72f0f32380bf22209d83a32a5ddff26fc4d8c8440172e9389679c687ac1e9",
+      "emittedAfterSha256": "acb72f0f32380bf22209d83a32a5ddff26fc4d8c8440172e9389679c687ac1e9"
+    },
+    {
+      "file": "tests/file-output.test.ts",
+      "removedImports": 1,
+      "emittedProgramsIdentical": true,
+      "beforeSha256": "48082f79df7edf94c9dc92c45776c10302b015cc519da25454ef303ab0159ee4",
+      "afterSha256": "43ce524e2ec63584549309dbb6308a155f356ec4961ebd21cb8c6e5d8e8532d8",
+      "emittedBeforeSha256": "6589791aa2383028706e6a2b74a1c9bf47b596db596a564c7a64d4092c861eed",
+      "emittedAfterSha256": "6589791aa2383028706e6a2b74a1c9bf47b596db596a564c7a64d4092c861eed"
+    },
+    {
+      "file": "tests/input-control.test.ts",
+      "removedImports": 1,
+      "emittedProgramsIdentical": true,
+      "beforeSha256": "85c63978c48b4457389e943ff019e5c43acfd58cc8984e954bd4661d64b0d0b9",
+      "afterSha256": "ea374445cea0d686616dacf88aedbf4918cab86423b56a6cc02bcb5d77211aab",
+      "emittedBeforeSha256": "101f241a53782cf41cd7775c56c4785a2b26c98a0a7bcebf72e90164d2d5a9fa",
+      "emittedAfterSha256": "101f241a53782cf41cd7775c56c4785a2b26c98a0a7bcebf72e90164d2d5a9fa"
+    },
+    {
+      "file": "tests/journal-replace.test.ts",
+      "removedImports": 1,
+      "emittedProgramsIdentical": true,
+      "beforeSha256": "063d418756ef09b2424f219bf2b892283116220deb705cf0b9e4f15e97a4ff87",
+      "afterSha256": "0fffafc192965f3ad7e62f30ea361f178c93e837ef1927b8f29f3b7d974b0543",
+      "emittedBeforeSha256": "bfb6989f32a807a59f508d5476ae22df1013cbb5b9db5131b2d715be286272f1",
+      "emittedAfterSha256": "bfb6989f32a807a59f508d5476ae22df1013cbb5b9db5131b2d715be286272f1"
+    },
+    {
+      "file": "tests/motion.test.ts",
+      "removedImports": 1,
+      "emittedProgramsIdentical": true,
+      "beforeSha256": "8cf67babb306a9607102408aae9061fb062bd712967830c2b27304b459f8af5e",
+      "afterSha256": "4510fd020be66352dad44d7a1d828fa9f82a5ab90e2f35759b1797722dde4304",
+      "emittedBeforeSha256": "2b68d980fb0857d2f90003d1e5385c093e2a631fb48187c689d535a050ad45dc",
+      "emittedAfterSha256": "2b68d980fb0857d2f90003d1e5385c093e2a631fb48187c689d535a050ad45dc"
+    },
+    {
+      "file": "tests/parts-library.test.ts",
+      "removedImports": 3,
+      "emittedProgramsIdentical": true,
+      "beforeSha256": "914d03f7deef2a021aa5bebb237483dd163e7d4663de82dddbcb87453f9fc1b7",
+      "afterSha256": "9cb8c7a0450ca2d6dd6e2b6c1da2523b246d1d0b17b52e43e810ebf65dfe89c2",
+      "emittedBeforeSha256": "3414f3048009fa1c67b964b369d51b6a2efc76d160623121aecbe38b0e0824e8",
+      "emittedAfterSha256": "3414f3048009fa1c67b964b369d51b6a2efc76d160623121aecbe38b0e0824e8"
+    },
+    {
+      "file": "tests/project.test.ts",
+      "removedImports": 1,
+      "emittedProgramsIdentical": true,
+      "beforeSha256": "24b0f4c004fd66c00e32b40b1c98b3794e718d5cdee1b71c52e8003016c40a23",
+      "afterSha256": "6cdec5ced2d383b5a891ad0f91d38e1af80edeafeb347a9bdc90e633878cea59",
+      "emittedBeforeSha256": "e45bc6b26fc18199a04889e4af71d11e95a5d28e431baf07cde204f766fa8986",
+      "emittedAfterSha256": "e45bc6b26fc18199a04889e4af71d11e95a5d28e431baf07cde204f766fa8986"
+    },
+    {
+      "file": "tests/runtime-changes.test.ts",
+      "removedImports": 1,
+      "emittedProgramsIdentical": true,
+      "beforeSha256": "558ac01fe0fce2c8e23bb84a7d8e5b27fabcda965a651ab8788ef670785b7850",
+      "afterSha256": "11f72d019d7cb1c66620bdf74f5d690b686b3c33caa46d23e54e71e96d2d0957",
+      "emittedBeforeSha256": "3b02645228994c31b4216df12b68b72c5e14c3c7fa97faedea19f96cd283e3ef",
+      "emittedAfterSha256": "3b02645228994c31b4216df12b68b72c5e14c3c7fa97faedea19f96cd283e3ef"
+    },
+    {
+      "file": "tests/settings.test.ts",
+      "removedImports": 1,
+      "emittedProgramsIdentical": true,
+      "beforeSha256": "66b12e2f1d6ad342b4c9ff7af2b00f65bc345eb90753b954103a1e666294c0e3",
+      "afterSha256": "c817c2b2cec4be82296d44dbde39fd9fff952f6506d1765be481864cd85b840f",
+      "emittedBeforeSha256": "1d79721a4c232107412cd696f9bdf53b64a95e78d2d5ca6965367a864e41badd",
+      "emittedAfterSha256": "1d79721a4c232107412cd696f9bdf53b64a95e78d2d5ca6965367a864e41badd"
+    },
+    {
+      "file": "tests/single-image.test.ts",
+      "removedImports": 1,
+      "emittedProgramsIdentical": true,
+      "beforeSha256": "867590f63afc6d8cda7a86fd42ece5def8e801a709a8faedfbc86d83d90dc178",
+      "afterSha256": "9e504eef9dc5e753bb72405b6f427d5be95bc9d2ad0a2ed4532d263473603b37",
+      "emittedBeforeSha256": "1fd04204a66f83e87dda7e6db959faa0e10d0f9c932965a498bda75b2636fc0a",
+      "emittedAfterSha256": "1fd04204a66f83e87dda7e6db959faa0e10d0f9c932965a498bda75b2636fc0a"
+    },
+    {
+      "file": "tests/split-image.test.ts",
+      "removedImports": 1,
+      "emittedProgramsIdentical": true,
+      "beforeSha256": "16a8c8ce2f5dd8a839173ebff9b3988b414f5d7ace0a2d818c09306ab9750229",
+      "afterSha256": "98cdbe35c4b6ef73bb1ca190359623293bbb0498a87fa2d7b0887a61e149366f",
+      "emittedBeforeSha256": "a53981a2229cc7564ce281c9e362744981ef9cb6c963c7bdc2a37ebdc3ad75e0",
+      "emittedAfterSha256": "a53981a2229cc7564ce281c9e362744981ef9cb6c963c7bdc2a37ebdc3ad75e0"
+    },
+    {
+      "file": "tests/storage.test.ts",
+      "removedImports": 2,
+      "emittedProgramsIdentical": true,
+      "beforeSha256": "04188bf394306fc1b4bdc8f02a0e08c9698d6732710483e2a43fe620fce6cf67",
+      "afterSha256": "130c280aad35a6b4c350460dc143b7322faa6c836cf633bf1aa8258c6b192eeb",
+      "emittedBeforeSha256": "059b91d0af26afca40b22337093f2ccc38a0ab415d9c86c40a3b942b65e2ca58",
+      "emittedAfterSha256": "059b91d0af26afca40b22337093f2ccc38a0ab415d9c86c40a3b942b65e2ca58"
+    },
+    {
+      "file": "tests/workflow.test.ts",
+      "removedImports": 1,
+      "emittedProgramsIdentical": true,
+      "beforeSha256": "3aca91a214b44eb77ad9bbda98029ce65ca0675e2c9514c0f7bd43a44ba36594",
+      "afterSha256": "95de49a53df8b54faf188210a92b0d8c8bc54457adeb5ebbcd3b7147da196c3c",
+      "emittedBeforeSha256": "97eae1b2e4e9ee202bdd0b77a579316155e5787b4648ff8aafea182c9db04a56",
+      "emittedAfterSha256": "97eae1b2e4e9ee202bdd0b77a579316155e5787b4648ff8aafea182c9db04a56"
+    }
+  ],
+  "compiler": "Pinned native TypeScript 7.0.2; actual project options",
+  "historicalFilesModified": false
+}

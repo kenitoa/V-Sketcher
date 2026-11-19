@@ -1,37 +1,499 @@
-import {environmentValue} from './environment-state';
-import {BroadcastPanel} from './broadcast-panel';
-import React,{useEffect,useRef,useState} from 'react';
-import {AvatarRenderer} from '../../../packages/avatar-renderer';
-import {checkReadiness,needsCamera,needsMicrophone,RUN_MODES,RUN_ACTIONS,availableRunActions,type FixTarget,type RunAction,type RunMode,type RunPreferences} from '../../../packages/execution';
-import type {SessionView} from '../../../packages/project-session/contracts';
-import type {RunRuntime} from './run-runtime';
-import {Modal} from './ui-foundations';
-const modes:Record<RunMode,string>={manual:'수동 · 장치 없이',automatic:'자동 눈 깜빡임 · 장치 없이',camera:'카메라',microphone:'마이크', 'camera-microphone':'카메라 + 마이크'};
-const actions:Record<RunAction,string>={neutral:'기본 자세 고정',release:'표정 해제',hide:'캐릭터 숨김',recalibrate:'중립 재보정','expression-1':'표정 1','expression-2':'표정 2','expression-3':'표정 3',stop:'실행 중지'};
-const states={idle:'실행 전',starting:'시작 중',normal:'정상 실행',limited:'제한 실행',stopping:'종료 중',failed:'시작 실패'};
-const messages:Record<string,string>={E_RUN_PROJECT:'프로젝트를 먼저 열어 주세요.',E_RUN_MODEL:'부위·매개변수·참조를 확인해 주세요.',E_RUN_ARTWORK:'표시할 그림이 없습니다.',E_RUN_RESOURCE:'연결된 그림 파일이 필요합니다.',E_RUN_UNUSED_RESOURCE:'사용하지 않는 그림 파일 연결이 끊겼습니다.',E_RUN_STATIC_ONLY:'현재 구조는 정지 그림으로 표시됩니다.',E_RUN_NO_BLINK:'눈 깜빡임 연결이 없습니다.',E_RUN_EXPRESSION:'표정의 연결 대상을 확인해 주세요.',E_RUN_ART_LIMIT:'자동 생성 영역의 품질을 확인해 주세요.',E_RUN_BUSY:'진행 중인 작업을 끝내거나 취소해 주세요.',E_RUN_CAMERA:'카메라가 없습니다. 장치를 연결하거나 수동 모드를 선택하세요.',E_RUN_MICROPHONE:'마이크가 없습니다. 장치를 연결하거나 수동 모드를 선택하세요.',E_RUN_DEVICE:'필요한 장치를 열지 못했습니다. 재선택하거나 제한 실행하세요.',E_RUN_RENDER:'그림 표시를 시작하지 못했습니다. 파일 연결을 확인하세요.',E_RUN_PREFERENCES:'이 PC의 실행 설정을 읽지 못했습니다. 설정을 다시 저장하세요.',E_RUN_SHORTCUT_RESERVED:'Control+Alt+Shift와 숫자 또는 F1~F11 조합을 사용하세요.',E_RUN_SHORTCUT_DUPLICATE:'사용 중인 키가 겹칩니다. 조합을 바꿔 주세요.',E_RUN_CALIBRATION:'먼저 추적할 얼굴을 선택해 주세요.'};
-export function RunCanvas({runtime:r}:{runtime:RunRuntime}){
- const host=useRef<HTMLDivElement>(null);useEffect(()=>{const element=r.surface.element;host.current?.appendChild(element);return()=>{if(element.parentElement===host.current)element.remove();};},[r]);
- return <div className="run-preview"><div ref={host}/>{!r.lease&&<span>실행</span>}</div>;
+import { environmentValue } from './environment-state';
+import { BroadcastPanel } from './broadcast-panel';
+import { useEffect, useRef, useState } from 'react';
+
+import {
+  checkReadiness,
+  needsCamera,
+  needsMicrophone,
+  RUN_MODES,
+  RUN_ACTIONS,
+  availableRunActions,
+  type FixTarget,
+  type RunAction,
+  type RunMode,
+  type RunPreferences,
+} from '../../../packages/execution';
+import type { SessionView } from '../../../packages/project-session/contracts';
+import type { RunRuntime } from './run-runtime';
+import { Modal } from './ui-foundations';
+const modes: Record<RunMode, string> = {
+  manual: '수동 · 장치 없이',
+  automatic: '자동 눈 깜빡임 · 장치 없이',
+  camera: '카메라',
+  microphone: '마이크',
+  'camera-microphone': '카메라 + 마이크',
+};
+const actions: Record<RunAction, string> = {
+  neutral: '기본 자세 고정',
+  release: '표정 해제',
+  hide: '캐릭터 숨김',
+  recalibrate: '중립 재보정',
+  'expression-1': '표정 1',
+  'expression-2': '표정 2',
+  'expression-3': '표정 3',
+  stop: '실행 중지',
+};
+const states = {
+  idle: '실행 전',
+  starting: '시작 중',
+  normal: '정상 실행',
+  limited: '제한 실행',
+  stopping: '종료 중',
+  failed: '시작 실패',
+};
+const messages: Record<string, string> = {
+  E_RUN_PROJECT: '프로젝트를 먼저 열어 주세요.',
+  E_RUN_MODEL: '부위·매개변수·참조를 확인해 주세요.',
+  E_RUN_ARTWORK: '표시할 그림이 없습니다.',
+  E_RUN_RESOURCE: '연결된 그림 파일이 필요합니다.',
+  E_RUN_UNUSED_RESOURCE: '사용하지 않는 그림 파일 연결이 끊겼습니다.',
+  E_RUN_STATIC_ONLY: '현재 구조는 정지 그림으로 표시됩니다.',
+  E_RUN_NO_BLINK: '눈 깜빡임 연결이 없습니다.',
+  E_RUN_EXPRESSION: '표정의 연결 대상을 확인해 주세요.',
+  E_RUN_ART_LIMIT: '자동 생성 영역의 품질을 확인해 주세요.',
+  E_RUN_BUSY: '진행 중인 작업을 끝내거나 취소해 주세요.',
+  E_RUN_CAMERA: '카메라가 없습니다. 장치를 연결하거나 수동 모드를 선택하세요.',
+  E_RUN_MICROPHONE: '마이크가 없습니다. 장치를 연결하거나 수동 모드를 선택하세요.',
+  E_RUN_DEVICE: '필요한 장치를 열지 못했습니다. 재선택하거나 제한 실행하세요.',
+  E_RUN_RENDER: '그림 표시를 시작하지 못했습니다. 파일 연결을 확인하세요.',
+  E_RUN_PREFERENCES: '이 PC의 실행 설정을 읽지 못했습니다. 설정을 다시 저장하세요.',
+  E_RUN_SHORTCUT_RESERVED: 'Control+Alt+Shift와 숫자 또는 F1~F11 조합을 사용하세요.',
+  E_RUN_SHORTCUT_DUPLICATE: '사용 중인 키가 겹칩니다. 조합을 바꿔 주세요.',
+  E_RUN_CALIBRATION: '먼저 추적할 얼굴을 선택해 주세요.',
+};
+export function RunCanvas({ runtime: r }: { runtime: RunRuntime }) {
+  const host = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const element = r.surface.element;
+    host.current?.appendChild(element);
+    return () => {
+      if (element.parentElement === host.current) element.remove();
+    };
+  }, [r]);
+  return (
+    <div className="run-preview">
+      <div ref={host} />
+      {!r.lease && <span>실행</span>}
+    </div>
+  );
 }
-export function RunPanel({runtime:r,view,quick=false,close,fix}:{runtime:RunRuntime;view:SessionView;quick?:boolean;close:()=>void;fix:(target:FixTarget,id:string|null)=>void}){
- const [,refresh]=useState(0),[mode,setMode]=useState<RunMode>(r.preferences.mode),[devices,setDevices]=useState<MediaDeviceInfo[]|null>(null),[camera,setCamera]=useState(environmentValue().cameraId),[microphone,setMicrophone]=useState(environmentValue().microphoneId),[settings,setSettings]=useState<RunPreferences|null>(null),[settingsError,setSettingsError]=useState<string|null>(null);const quickDone=useRef(false);
- const list=async()=>{try{const values=await navigator.mediaDevices.enumerateDevices();setDevices(values);setCamera(v=>v||'');setMicrophone(v=>v||'');}catch{setDevices(null);}};
- useEffect(()=>{const unsub=r.subscribe(()=>refresh(v=>v+1));void list();const tick=setInterval(()=>refresh(v=>v+1),100);const changed=()=>void list();navigator.mediaDevices.addEventListener('devicechange',changed);return()=>{unsub();clearInterval(tick);navigator.mediaDevices.removeEventListener('devicechange',changed);};},[]);
- const selected={camera,microphone,cameraAvailable:devices===null?null:devices.some(d=>d.kind==='videoinput'),microphoneAvailable:devices===null?null:devices.some(d=>d.kind==='audioinput')};
- const available=new Set(view.project?.assets.filter(a=>!view.issues.some(i=>i.assetId===a.id)).map(a=>a.id));const readiness=checkReadiness(view.project,mode,available,{camera:selected.cameraAvailable,microphone:selected.microphoneAvailable},view.saving||view.jobs.some(j=>['QUEUED','RUNNING','RESULT_READY','CANCEL_REQUESTED'].includes(j.state)));
- const start=async(limited=false)=>{if(!await r.configure({...r.preferences,mode}))return;await r.start(view,mode,selected,limited);};
- useEffect(()=>{if(quick&&!quickDone.current&&devices!==null){quickDone.current=true;if(!r.active&&['idle','failed'].includes(r.state)&&readiness.canStart)void start();}},[devices,quick]);
- const idle=['idle','failed'].includes(r.state),busy=r.state==='starting'||r.state==='stopping';const availableActions=r.lease?availableRunActions(r.lease.project,r.lease.mode):[];
- return <Modal titleId="run-title" className="run-dialog" onClose={()=>{if(settings){setSettings(null);void r.context(false);}else void r.stop().then(close);}}><h2 id="run-title">캐릭터 실행</h2><div className="run-layout" data-run-panel data-run-state={r.state}><RunCanvas runtime={r}/><div className="run-controls"><p role="status" data-run-status><strong>{states[r.state]}</strong>{r.lease&&<> · 실행본 {r.lease.revision} / 작업본 {view.project?.revision}</>}</p>
- {r.errorCode&&<p role="alert" data-run-error>{messages[r.errorCode]??'실행을 준비하지 못했습니다. 중지 후 다시 시도해 주세요.'} <code>{r.errorCode}</code></p>}
- {idle&&<><label>실행 모드<select data-run-mode value={mode} onChange={e=>setMode(e.target.value as RunMode)}>{RUN_MODES.map(m=><option key={m} value={m}>{modes[m]}</option>)}</select></label>{(needsCamera(mode)||needsMicrophone(mode))&&<><button data-run-refresh onClick={()=>void list()}>장치 목록 · 준비 상태 다시 확인</button>{needsCamera(mode)&&<label>카메라<select data-run-camera value={camera} onChange={e=>setCamera(e.target.value)}><option value="">Windows 기본 카메라</option>{camera&&!devices?.some(d=>d.kind==='videoinput'&&d.deviceId===camera)&&<option value={camera}>저장한 카메라 없음 · 다시 선택</option>}{devices?.filter(d=>d.kind==='videoinput').map((d,i)=><option key={d.deviceId||i} value={d.deviceId}>{d.label||`카메라 ${i+1}`}</option>)}</select></label>}{needsMicrophone(mode)&&<label>마이크<select data-run-microphone value={microphone} onChange={e=>setMicrophone(e.target.value)}><option value="">Windows 기본 마이크</option>{microphone&&!devices?.some(d=>d.kind==='audioinput'&&d.deviceId===microphone)&&<option value={microphone}>저장한 마이크 없음 · 다시 선택</option>}{devices?.filter(d=>d.kind==='audioinput').map((d,i)=><option key={d.deviceId||i} value={d.deviceId}>{d.label||`마이크 ${i+1}`}</option>)}</select></label>}</>}
- <ul className="run-issues" data-run-issues>{readiness.issues.map((i,n)=><li key={n}><strong>{i.severity==='block'?'시작 차단':'경고'}</strong> · {messages[i.code]??i.code} <button data-run-fix={i.target} onClick={()=>fix(i.target,i.id)}>문제 위치로</button></li>)}</ul>{!readiness.issues.length&&<p>준비 완료 · 이 모드에 필요한 항목을 확인했습니다.</p>}<div className="edit-actions"><button className="primary" data-run-start disabled={!readiness.canStart} onClick={()=>void start()}>실행 시작</button>{!readiness.canStart&&readiness.canStartLimited&&<button data-run-limited onClick={()=>void start(true)}>장치 없이 제한 실행</button>}</div></>}
- {r.active&&<><p>{r.hidden?'캐릭터 숨김':'캐릭터 표시'} · {r.player.neutralHold?'기본 자세 고정':'동작 입력 적용'} · {r.player.controls.snapshot().activeId?'저장 표정 적용':'저장 표정 해제'}</p>{r.state==='limited'&&<p data-run-limited-reason>경고 또는 입력 제한이 있습니다. {r.lease?.issues.filter(i=>i.severity==='warning').map(i=>messages[i.code]??i.code).join(' ')}{r.lease&&needsCamera(r.lease.mode)&&` 카메라: ${r.camera.state} · ${r.camera.selected?'얼굴 선택됨':'얼굴 선택 필요'} · ${r.camera.profile?'보정 있음':'중립 보정 필요'}.`}{r.lease&&needsMicrophone(r.lease.mode)&&` 마이크: ${r.microphone.state} · 수신 ${r.microphone.blocks}회.`}</p>}
- <div className="run-actions">{RUN_ACTIONS.filter(a=>a!=='stop').map(a=><button key={a} data-run-action={a} disabled={!availableActions.includes(a)} aria-pressed={a==='neutral'?r.player.neutralHold:a==='hide'?r.hidden:undefined} onClick={()=>r.action(a)}>{actions[a]}</button>)}</div>
- {r.lease&&needsCamera(r.lease.mode)&&<section><button data-run-camera-reconnect onClick={()=>void r.reconnect('camera',camera)}>선택 카메라 재연결</button>{r.camera.result?.faces.map((face,i)=><button key={i} onClick={()=>r.camera.select(face.box)}>얼굴 {i+1} 선택</button>)}{r.camera.calibration&&<><p>중립 보정 · {r.camera.calibration.state}</p><button onClick={()=>void r.camera.applyCalibration()}>중립 적용</button><button onClick={()=>r.camera.calibration.cancel()}>보정 취소</button></>}</section>}
- {r.lease&&needsMicrophone(r.lease.mode)&&<button data-run-microphone-reconnect onClick={()=>void r.reconnect('microphone',microphone)}>선택 마이크 재연결</button>}</>}
- {r.active&&<details><summary>단축키 실제 상태</summary>{r.statuses.map(s=><p data-run-key-status={s.action} key={s.action}>{actions[s.action]} · {({local:'앱 전용',disabled:'사용 안 함',inactive:'현재 모드·표정에 없음',suspended:'입력·설정 중 보류',registered:'전역 등록됨',conflict:'등록 실패 · 다른 조합으로 변경'})[s.state]}</p>)}</details>}<div className="edit-actions"><button data-run-stop disabled={idle||r.state==='stopping'} onClick={()=>void r.stop()}>{busy?'시작 취소 · 중지':'실행 중지'}</button><button data-run-settings disabled={busy} onClick={()=>void r.context(true).then(()=>{setSettings(structuredClone(r.preferences));setSettingsError(null);})}>빠른 조작 키 설정</button>{r.active&&<button data-run-edit onClick={close}>실행 유지·편집하기</button>}<button data-run-close onClick={()=>void r.stop().then(close)}>편집으로 돌아가기</button></div></div></div>
- {settings&&<section className="run-key-settings" data-run-key-settings><h3>빠른 조작 키</h3><p>앱 전용은 이 앱에 초점이 있을 때, 전역은 다른 앱에서도 실행 중에만 동작합니다. 텍스트 입력·한글 조합·키 설정 중에는 조작을 멈춥니다. 전역 키는 선택 등록이며 충돌하면 해당 키를 바꿔 주세요.</p><label><input type="checkbox" checked={settings.allowGlobal} onChange={e=>setSettings({...settings,allowGlobal:e.target.checked})}/>이 PC에서 전역 키 허용</label>{settings.bindings.map((b,i)=><div className="run-key-row" key={b.action}><label><input type="checkbox" checked={b.enabled} onChange={e=>setSettings({...settings,bindings:settings.bindings.map((v,n)=>n===i?{...v,enabled:e.target.checked}:v)})}/>{actions[b.action]}</label><input aria-label={`${actions[b.action]} 키`} value={b.accelerator} onChange={e=>setSettings({...settings,bindings:settings.bindings.map((v,n)=>n===i?{...v,accelerator:e.target.value}:v)})}/><select aria-label={`${actions[b.action]} 범위`} value={b.scope} onChange={e=>setSettings({...settings,bindings:settings.bindings.map((v,n)=>n===i?{...v,scope:e.target.value as 'local'|'global'}:v)})}><option value="local">앱 전용</option><option value="global">전역</option></select><small>{r.statuses.find(s=>s.action===b.action)?.state}</small></div>)}{settingsError&&<p role="alert">{messages[settingsError]??'설정을 저장하지 못했습니다.'}</p>}<button data-run-keys-save onClick={()=>void r.configure(settings).then(ok=>{if(ok){setSettings(null);void r.context(false);}else setSettingsError(r.errorCode);})}>키 설정 저장</button><button data-run-keys-cancel onClick={()=>{setSettings(null);void r.context(false);}}>취소</button></section>}
- <BroadcastPanel runtime={r}/></Modal>;
+export function RunPanel({
+  runtime: r,
+  view,
+  quick = false,
+  close,
+  fix,
+}: {
+  runtime: RunRuntime;
+  view: SessionView;
+  quick?: boolean;
+  close: () => void;
+  fix: (target: FixTarget, id: string | null) => void;
+}) {
+  const [, refresh] = useState(0),
+    [mode, setMode] = useState<RunMode>(r.preferences.mode),
+    [devices, setDevices] = useState<MediaDeviceInfo[] | null>(null),
+    [camera, setCamera] = useState(environmentValue().cameraId),
+    [microphone, setMicrophone] = useState(environmentValue().microphoneId),
+    [settings, setSettings] = useState<RunPreferences | null>(null),
+    [settingsError, setSettingsError] = useState<string | null>(null);
+  const quickDone = useRef(false);
+  const list = async () => {
+    try {
+      const values = await navigator.mediaDevices.enumerateDevices();
+      setDevices(values);
+      setCamera((v) => v || '');
+      setMicrophone((v) => v || '');
+    } catch {
+      setDevices(null);
+    }
+  };
+  useEffect(() => {
+    const unsub = r.subscribe(() => refresh((v) => v + 1));
+    void list();
+    const tick = setInterval(() => refresh((v) => v + 1), 100);
+    const changed = () => void list();
+    navigator.mediaDevices.addEventListener('devicechange', changed);
+    return () => {
+      unsub();
+      clearInterval(tick);
+      navigator.mediaDevices.removeEventListener('devicechange', changed);
+    };
+  }, []);
+  const selected = {
+    camera,
+    microphone,
+    cameraAvailable: devices === null ? null : devices.some((d) => d.kind === 'videoinput'),
+    microphoneAvailable: devices === null ? null : devices.some((d) => d.kind === 'audioinput'),
+  };
+  const available = new Set(
+    view.project?.assets
+      .filter((a) => !view.issues.some((i) => i.assetId === a.id))
+      .map((a) => a.id),
+  );
+  const readiness = checkReadiness(
+    view.project,
+    mode,
+    available,
+    { camera: selected.cameraAvailable, microphone: selected.microphoneAvailable },
+    view.saving ||
+      view.jobs.some((j) =>
+        ['QUEUED', 'RUNNING', 'RESULT_READY', 'CANCEL_REQUESTED'].includes(j.state),
+      ),
+  );
+  const start = async (limited = false) => {
+    if (!(await r.configure({ ...r.preferences, mode }))) return;
+    await r.start(view, mode, selected, limited);
+  };
+  useEffect(() => {
+    if (quick && !quickDone.current && devices !== null) {
+      quickDone.current = true;
+      if (!r.active && ['idle', 'failed'].includes(r.state) && readiness.canStart) void start();
+    }
+  }, [devices, quick]);
+  const idle = ['idle', 'failed'].includes(r.state),
+    busy = r.state === 'starting' || r.state === 'stopping';
+  const availableActions = r.lease ? availableRunActions(r.lease.project, r.lease.mode) : [];
+  return (
+    <Modal
+      titleId="run-title"
+      className="run-dialog"
+      onClose={() => {
+        if (settings) {
+          setSettings(null);
+          void r.context(false);
+        } else void r.stop().then(close);
+      }}
+    >
+      <h2 id="run-title">캐릭터 실행</h2>
+      <div className="run-layout" data-run-panel data-run-state={r.state}>
+        <RunCanvas runtime={r} />
+        <div className="run-controls">
+          <p role="status" data-run-status>
+            <strong>{states[r.state]}</strong>
+            {r.lease && (
+              <>
+                {' '}
+                · 실행본 {r.lease.revision} / 작업본 {view.project?.revision}
+              </>
+            )}
+          </p>
+          {r.errorCode && (
+            <p role="alert" data-run-error>
+              {messages[r.errorCode] ?? '실행을 준비하지 못했습니다. 중지 후 다시 시도해 주세요.'}{' '}
+              <code>{r.errorCode}</code>
+            </p>
+          )}
+          {idle && (
+            <>
+              <label>
+                실행 모드
+                <select
+                  data-run-mode
+                  value={mode}
+                  onChange={(e) => setMode(e.target.value as RunMode)}
+                >
+                  {RUN_MODES.map((m) => (
+                    <option key={m} value={m}>
+                      {modes[m]}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              {(needsCamera(mode) || needsMicrophone(mode)) && (
+                <>
+                  <button data-run-refresh onClick={() => void list()}>
+                    장치 목록 · 준비 상태 다시 확인
+                  </button>
+                  {needsCamera(mode) && (
+                    <label>
+                      카메라
+                      <select
+                        data-run-camera
+                        value={camera}
+                        onChange={(e) => setCamera(e.target.value)}
+                      >
+                        <option value="">Windows 기본 카메라</option>
+                        {camera &&
+                          !devices?.some(
+                            (d) => d.kind === 'videoinput' && d.deviceId === camera,
+                          ) && <option value={camera}>저장한 카메라 없음 · 다시 선택</option>}
+                        {devices
+                          ?.filter((d) => d.kind === 'videoinput')
+                          .map((d, i) => (
+                            <option key={d.deviceId || i} value={d.deviceId}>
+                              {d.label || `카메라 ${i + 1}`}
+                            </option>
+                          ))}
+                      </select>
+                    </label>
+                  )}
+                  {needsMicrophone(mode) && (
+                    <label>
+                      마이크
+                      <select
+                        data-run-microphone
+                        value={microphone}
+                        onChange={(e) => setMicrophone(e.target.value)}
+                      >
+                        <option value="">Windows 기본 마이크</option>
+                        {microphone &&
+                          !devices?.some(
+                            (d) => d.kind === 'audioinput' && d.deviceId === microphone,
+                          ) && <option value={microphone}>저장한 마이크 없음 · 다시 선택</option>}
+                        {devices
+                          ?.filter((d) => d.kind === 'audioinput')
+                          .map((d, i) => (
+                            <option key={d.deviceId || i} value={d.deviceId}>
+                              {d.label || `마이크 ${i + 1}`}
+                            </option>
+                          ))}
+                      </select>
+                    </label>
+                  )}
+                </>
+              )}
+              <ul className="run-issues" data-run-issues>
+                {readiness.issues.map((i, n) => (
+                  <li key={n}>
+                    <strong>{i.severity === 'block' ? '시작 차단' : '경고'}</strong> ·{' '}
+                    {messages[i.code] ?? i.code}{' '}
+                    <button data-run-fix={i.target} onClick={() => fix(i.target, i.id)}>
+                      문제 위치로
+                    </button>
+                  </li>
+                ))}
+              </ul>
+              {!readiness.issues.length && <p>준비 완료 · 이 모드에 필요한 항목을 확인했습니다.</p>}
+              <div className="edit-actions">
+                <button
+                  className="primary"
+                  data-run-start
+                  disabled={!readiness.canStart}
+                  onClick={() => void start()}
+                >
+                  실행 시작
+                </button>
+                {!readiness.canStart && readiness.canStartLimited && (
+                  <button data-run-limited onClick={() => void start(true)}>
+                    장치 없이 제한 실행
+                  </button>
+                )}
+              </div>
+            </>
+          )}
+          {r.active && (
+            <>
+              <p>
+                {r.hidden ? '캐릭터 숨김' : '캐릭터 표시'} ·{' '}
+                {r.player.neutralHold ? '기본 자세 고정' : '동작 입력 적용'} ·{' '}
+                {r.player.controls.snapshot().activeId ? '저장 표정 적용' : '저장 표정 해제'}
+              </p>
+              {r.state === 'limited' && (
+                <p data-run-limited-reason>
+                  경고 또는 입력 제한이 있습니다.{' '}
+                  {r.lease?.issues
+                    .filter((i) => i.severity === 'warning')
+                    .map((i) => messages[i.code] ?? i.code)
+                    .join(' ')}
+                  {r.lease &&
+                    needsCamera(r.lease.mode) &&
+                    ` 카메라: ${r.camera.state} · ${r.camera.selected ? '얼굴 선택됨' : '얼굴 선택 필요'} · ${r.camera.profile ? '보정 있음' : '중립 보정 필요'}.`}
+                  {r.lease &&
+                    needsMicrophone(r.lease.mode) &&
+                    ` 마이크: ${r.microphone.state} · 수신 ${r.microphone.blocks}회.`}
+                </p>
+              )}
+              <div className="run-actions">
+                {RUN_ACTIONS.filter((a) => a !== 'stop').map((a) => (
+                  <button
+                    key={a}
+                    data-run-action={a}
+                    disabled={!availableActions.includes(a)}
+                    aria-pressed={
+                      a === 'neutral' ? r.player.neutralHold : a === 'hide' ? r.hidden : undefined
+                    }
+                    onClick={() => r.action(a)}
+                  >
+                    {actions[a]}
+                  </button>
+                ))}
+              </div>
+              {r.lease && needsCamera(r.lease.mode) && (
+                <section>
+                  <button
+                    data-run-camera-reconnect
+                    onClick={() => void r.reconnect('camera', camera)}
+                  >
+                    선택 카메라 재연결
+                  </button>
+                  {r.camera.result?.faces.map((face, i) => (
+                    <button key={i} onClick={() => r.camera.select(face.box)}>
+                      얼굴 {i + 1} 선택
+                    </button>
+                  ))}
+                  {r.camera.calibration && (
+                    <>
+                      <p>중립 보정 · {r.camera.calibration.state}</p>
+                      <button onClick={() => void r.camera.applyCalibration()}>중립 적용</button>
+                      <button onClick={() => r.camera.calibration.cancel()}>보정 취소</button>
+                    </>
+                  )}
+                </section>
+              )}
+              {r.lease && needsMicrophone(r.lease.mode) && (
+                <button
+                  data-run-microphone-reconnect
+                  onClick={() => void r.reconnect('microphone', microphone)}
+                >
+                  선택 마이크 재연결
+                </button>
+              )}
+            </>
+          )}
+          {r.active && (
+            <details>
+              <summary>단축키 실제 상태</summary>
+              {r.statuses.map((s) => (
+                <p data-run-key-status={s.action} key={s.action}>
+                  {actions[s.action]} ·{' '}
+                  {
+                    {
+                      local: '앱 전용',
+                      disabled: '사용 안 함',
+                      inactive: '현재 모드·표정에 없음',
+                      suspended: '입력·설정 중 보류',
+                      registered: '전역 등록됨',
+                      conflict: '등록 실패 · 다른 조합으로 변경',
+                    }[s.state]
+                  }
+                </p>
+              ))}
+            </details>
+          )}
+          <div className="edit-actions">
+            <button
+              data-run-stop
+              disabled={idle || r.state === 'stopping'}
+              onClick={() => void r.stop()}
+            >
+              {busy ? '시작 취소 · 중지' : '실행 중지'}
+            </button>
+            <button
+              data-run-settings
+              disabled={busy}
+              onClick={() =>
+                void r.context(true).then(() => {
+                  setSettings(structuredClone(r.preferences));
+                  setSettingsError(null);
+                })
+              }
+            >
+              빠른 조작 키 설정
+            </button>
+            {r.active && (
+              <button data-run-edit onClick={close}>
+                실행 유지·편집하기
+              </button>
+            )}
+            <button data-run-close onClick={() => void r.stop().then(close)}>
+              편집으로 돌아가기
+            </button>
+          </div>
+        </div>
+      </div>
+      {settings && (
+        <section className="run-key-settings" data-run-key-settings>
+          <h3>빠른 조작 키</h3>
+          <p>
+            앱 전용은 이 앱에 초점이 있을 때, 전역은 다른 앱에서도 실행 중에만 동작합니다. 텍스트
+            입력·한글 조합·키 설정 중에는 조작을 멈춥니다. 전역 키는 선택 등록이며 충돌하면 해당
+            키를 바꿔 주세요.
+          </p>
+          <label>
+            <input
+              type="checkbox"
+              checked={settings.allowGlobal}
+              onChange={(e) => setSettings({ ...settings, allowGlobal: e.target.checked })}
+            />
+            이 PC에서 전역 키 허용
+          </label>
+          {settings.bindings.map((b, i) => (
+            <div className="run-key-row" key={b.action}>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={b.enabled}
+                  onChange={(e) =>
+                    setSettings({
+                      ...settings,
+                      bindings: settings.bindings.map((v, n) =>
+                        n === i ? { ...v, enabled: e.target.checked } : v,
+                      ),
+                    })
+                  }
+                />
+                {actions[b.action]}
+              </label>
+              <input
+                aria-label={`${actions[b.action]} 키`}
+                value={b.accelerator}
+                onChange={(e) =>
+                  setSettings({
+                    ...settings,
+                    bindings: settings.bindings.map((v, n) =>
+                      n === i ? { ...v, accelerator: e.target.value } : v,
+                    ),
+                  })
+                }
+              />
+              <select
+                aria-label={`${actions[b.action]} 범위`}
+                value={b.scope}
+                onChange={(e) =>
+                  setSettings({
+                    ...settings,
+                    bindings: settings.bindings.map((v, n) =>
+                      n === i ? { ...v, scope: e.target.value as 'local' | 'global' } : v,
+                    ),
+                  })
+                }
+              >
+                <option value="local">앱 전용</option>
+                <option value="global">전역</option>
+              </select>
+              <small>{r.statuses.find((s) => s.action === b.action)?.state}</small>
+            </div>
+          ))}
+          {settingsError && (
+            <p role="alert">{messages[settingsError] ?? '설정을 저장하지 못했습니다.'}</p>
+          )}
+          <button
+            data-run-keys-save
+            onClick={() =>
+              void r.configure(settings).then((ok) => {
+                if (ok) {
+                  setSettings(null);
+                  void r.context(false);
+                } else setSettingsError(r.errorCode);
+              })
+            }
+          >
+            키 설정 저장
+          </button>
+          <button
+            data-run-keys-cancel
+            onClick={() => {
+              setSettings(null);
+              void r.context(false);
+            }}
+          >
+            취소
+          </button>
+        </section>
+      )}
+      <BroadcastPanel runtime={r} />
+    </Modal>
+  );
 }

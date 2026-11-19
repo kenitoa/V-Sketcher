@@ -1,20 +1,229 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {pendingTasks,routes,privacyCheck,evaluateStudy,evaluateReceipt,assessTasks,percentile,safeRelative,emptyMeasurements} from '../tools/completion-controls.mjs';
-const now=Date.parse('2026-11-19T00:00:00Z'),candidate={version:'0.22.1',sha256:'a'.repeat(64)},start=now-16*86400000;
+import {
+  pendingTasks,
+  routes,
+  privacyCheck,
+  evaluateStudy,
+  evaluateReceipt,
+  assessTasks,
+  percentile,
+  safeRelative,
+  emptyMeasurements,
+} from '../tools/completion-controls.mjs';
+const now = Date.parse('2026-11-19T00:00:00Z'),
+  candidate = { version: '0.22.1', sha256: 'a'.repeat(64) },
+  start = now - 16 * 86400000;
 // Simulated data exists only in test memory. Never written as actual participant evidence.
-const session=(n,route)=>({format:'2dsketcher-completion/1',kind:'novice-session',candidate,participantId:'U29-'+String(n).padStart(3,'0'),firstRoute:route,origin:'direct-observation',observerRole:'independent-observer',consent:true,novice:true,startedAt:new Date(start).toISOString(),finishedAt:new Date(start+600000).toISOString(),collectedAt:new Date(now).toISOString(),outcome:'success',events:[{kind:'first-motion',elapsedMs:100000,outcome:'success'},{kind:'correction',part:'mouth',elapsedMs:110000,outcome:'success'},{kind:'saved-reopened',elapsedMs:150000,outcome:'success'},{kind:'obs-received',elapsedMs:300000,outcome:'success'},{kind:'independent-runtime',elapsedMs:500000,outcome:'success'}],segmentsMs:{active:400000,wait:100000,blocked:100000,pause:0},corrections:1,correctedParts:1,followups:[{at:new Date(now).toISOString(),outcome:'reopened-and-reused',directObservation:true}]});
-const cohort=()=>routes.flatMap((route,i)=>Array.from({length:10},(_,j)=>session(i*10+j+2,route)));
-const receipt=(taskId,kind,measurements)=>({format:'2dsketcher-completion/1',candidate,taskId,kind,origin:'instrumented',collectedAt:new Date(now).toISOString(),review:{verdict:'PASS',role:'test-operator'},artifacts:[{path:'evidence/test/report.json',sha256:'b'.repeat(64)}],measurements});
-test('all twenty pending tasks have an acyclic dependency graph and empty evidence cannot pass',()=>{assert.equal(pendingTasks.length,20);assert.equal(new Set(pendingTasks.map(t=>t.id)).size,20);assert.equal(assessTasks([],null).filter(t=>t.status==='PASS').length,0);});
-test('every generated measurement template remains non-passing even with a pass label on its review',()=>{for(const task of pendingTasks.filter(t=>t.kind!=='usability'))assert.equal(evaluateReceipt(receipt(task.id,task.kind,emptyMeasurements(task.kind)),candidate,now).passed,false,task.id);});
-test('30 distinct observed first users and elapsed followup windows are evaluated by route',()=>{const result=evaluateStudy(cohort(),candidate,now);assert.equal(result.passed,true);assert.deepEqual(result.routes.map(r=>r.participants),[10,10,10]);assert.equal(result.identityIndependentlyCertified,false);});
-test('self reports, developer observations, simulations and duplicate participants cannot fill the study',()=>{for(const mutation of [r=>r.origin='consented-self-report',r=>r.observerRole='developer',r=>r.origin='simulation',r=>r.participantId='U29-002']){const records=cohort();mutation(records[2]);assert.throws(()=>evaluateStudy(records,candidate,now),/E_COMPLETION_/);}});
-test('seven and fourteen day windows do not pass early; future receipts and mismatched candidates are rejected',()=>{const records=cohort();for(const r of records){r.followups=[];r.collectedAt=new Date(start+6*86400000).toISOString();}assert.equal(evaluateStudy(records,candidate,start+6*86400000).passed,false);const future=cohort();future[0].collectedAt=new Date(now+86400000).toISOString();assert.throws(()=>evaluateStudy(future,candidate,now),/E_COMPLETION_TIME/);assert.throws(()=>evaluateStudy(cohort(),{...candidate,sha256:'c'.repeat(64)},now),/E_COMPLETION_CANDIDATE/);});
-test('failed users and assistance stay in the denominator; late assistance does not erase an earlier milestone',()=>{const records=cohort();for(const r of records.slice(0,3)){r.outcome='abandoned';r.events=r.events.filter(e=>!['obs-received','independent-runtime'].includes(e.kind));}assert.equal(evaluateStudy(records,candidate,now).passed,false);const r=cohort();r[0].events.splice(2,0,{kind:'hint',elapsedMs:140000,outcome:'success'});const result=evaluateStudy(r,candidate,now);assert.equal(result.routes[0].firstMotion,10);assert.equal(result.routes[0].external,9);});
-test('correction counters and stopwatch partitions must agree with the underlying events',()=>{const rows=cohort();rows[0].corrections=0;assert.throws(()=>evaluateStudy(rows,candidate,now),/E_COMPLETION_CORRECTIONS/);const second=cohort();second[0].segmentsMs.extra=-500000;assert.throws(()=>evaluateStudy(second,candidate,now),/E_COMPLETION_SEGMENTS/);});
-test('private fields, local paths, media and credential-bearing URLs are rejected',()=>{for(const value of [{email:'somebody@example.com'},{deviceId:'private'},{value:'C:\\Users\\private\\name'},{value:'data:image/png;base64,AAAA'},{value:'https://example.org/?token=secret'}])assert.throws(()=>privacyCheck(value),/E_COMPLETION_PRIVATE/);assert.equal(privacyCheck({source:'https://example.org/document',cameraFrames:20}),true);assert.equal(safeRelative('evidence/../../secret'),false);});
-test('short playback and missing real-device conditions cannot pass endurance',()=>{const run=route=>({route,durationMs:7200000,samples:7200,actualCamera:true,actualMicrophone:true,obsX264Recording:true,frameMetricsRecorded:true,cpuMemoryGpuTemperatureRecorded:true,abnormalStops:0,recoveryFailures:0,rssGrowthMiB:100,baselineRssMiB:800});const r=receipt('T-274','endurance',{runs:routes.map(run)});assert.equal(evaluateReceipt(r,candidate,now).passed,true);r.measurements.runs[1].durationMs=36000;assert.equal(evaluateReceipt(r,candidate,now).passed,false);r.measurements.runs=routes.map(run);r.measurements.runs[0].rssGrowthMiB=null;assert.equal(evaluateReceipt(r,candidate,now).passed,false);});
-test('render timing cannot replace independently measured camera to OBS latency',()=>{const r=receipt('T-276','latency',{softwareMs:Array(90).fill(100),independentMs:Array(90).fill(150),referenceFPS:120,actualCamera:true,obsDrawCompleteAck:true,frameIdsCorrelated:true,clockOffsetsMeasured:true,independentPhysicalMeasurement:true,missingRatio:0,stallsOver100ms:0});assert.equal(evaluateReceipt(r,candidate,now).passed,true);r.measurements.independentPhysicalMeasurement=false;assert.equal(evaluateReceipt(r,candidate,now).passed,false);assert.equal(percentile([10,10,10,900],.95),900);});
-test('candidate evidence and upstream failures block release and downstream distribution',()=>{const proof=pendingTasks.map(t=>({taskId:t.id,passed:true,artifactHashesVerified:true}));const all=assessTasks(proof,{passed:true});assert.equal(all.every(r=>r.status==='PASS'),true);const blocked=assessTasks(proof.filter(p=>p.taskId!=='T-267'),{passed:true});assert.equal(blocked.find(t=>t.id==='T-297').status,'BLOCKED');const unverified=assessTasks(proof.map(p=>({...p,artifactHashesVerified:false})),null);assert.equal(unverified.every(t=>t.status!=='PASS'),true);});
-test('clean profiles and automatic host checks do not prove a clean Windows or a release',()=>{const r=receipt('T-288','cleanWindows',{freshProvisionedWindows:false,provisionReceiptVerified:false,developerToolsAbsent:true,installPassed:true,updatePassed:true,firstRunPassed:true,frozenWorkerInsideBundle:true,unicodeSpacePath:true,projectCopyPreserved:true,protectionsIntact:true,securityBypasses:0});assert.equal(evaluateReceipt(r,candidate,now).passed,false);assert.equal(evaluateReceipt(receipt('T-295','release',{releaseChecks:[]}),candidate,now).passed,false);});
+const session = (n, route) => ({
+  format: '2dsketcher-completion/1',
+  kind: 'novice-session',
+  candidate,
+  participantId: 'U29-' + String(n).padStart(3, '0'),
+  firstRoute: route,
+  origin: 'direct-observation',
+  observerRole: 'independent-observer',
+  consent: true,
+  novice: true,
+  startedAt: new Date(start).toISOString(),
+  finishedAt: new Date(start + 600000).toISOString(),
+  collectedAt: new Date(now).toISOString(),
+  outcome: 'success',
+  events: [
+    { kind: 'first-motion', elapsedMs: 100000, outcome: 'success' },
+    { kind: 'correction', part: 'mouth', elapsedMs: 110000, outcome: 'success' },
+    { kind: 'saved-reopened', elapsedMs: 150000, outcome: 'success' },
+    { kind: 'obs-received', elapsedMs: 300000, outcome: 'success' },
+    { kind: 'independent-runtime', elapsedMs: 500000, outcome: 'success' },
+  ],
+  segmentsMs: { active: 400000, wait: 100000, blocked: 100000, pause: 0 },
+  corrections: 1,
+  correctedParts: 1,
+  followups: [
+    { at: new Date(now).toISOString(), outcome: 'reopened-and-reused', directObservation: true },
+  ],
+});
+const cohort = () =>
+  routes.flatMap((route, i) =>
+    Array.from({ length: 10 }, (_, j) => session(i * 10 + j + 2, route)),
+  );
+const receipt = (taskId, kind, measurements) => ({
+  format: '2dsketcher-completion/1',
+  candidate,
+  taskId,
+  kind,
+  origin: 'instrumented',
+  collectedAt: new Date(now).toISOString(),
+  review: { verdict: 'PASS', role: 'test-operator' },
+  artifacts: [{ path: 'evidence/test/report.json', sha256: 'b'.repeat(64) }],
+  measurements,
+});
+test('all twenty pending tasks have an acyclic dependency graph and empty evidence cannot pass', () => {
+  assert.equal(pendingTasks.length, 20);
+  assert.equal(new Set(pendingTasks.map((t) => t.id)).size, 20);
+  assert.equal(assessTasks([], null).filter((t) => t.status === 'PASS').length, 0);
+});
+test('every generated measurement template remains non-passing even with a pass label on its review', () => {
+  for (const task of pendingTasks.filter((t) => t.kind !== 'usability'))
+    assert.equal(
+      evaluateReceipt(receipt(task.id, task.kind, emptyMeasurements(task.kind)), candidate, now)
+        .passed,
+      false,
+      task.id,
+    );
+});
+test('30 distinct observed first users and elapsed followup windows are evaluated by route', () => {
+  const result = evaluateStudy(cohort(), candidate, now);
+  assert.equal(result.passed, true);
+  assert.deepEqual(
+    result.routes.map((r) => r.participants),
+    [10, 10, 10],
+  );
+  assert.equal(result.identityIndependentlyCertified, false);
+});
+test('self reports, developer observations, simulations and duplicate participants cannot fill the study', () => {
+  for (const mutation of [
+    (r) => (r.origin = 'consented-self-report'),
+    (r) => (r.observerRole = 'developer'),
+    (r) => (r.origin = 'simulation'),
+    (r) => (r.participantId = 'U29-002'),
+  ]) {
+    const records = cohort();
+    mutation(records[2]);
+    assert.throws(() => evaluateStudy(records, candidate, now), /E_COMPLETION_/);
+  }
+});
+test('seven and fourteen day windows do not pass early; future receipts and mismatched candidates are rejected', () => {
+  const records = cohort();
+  for (const r of records) {
+    r.followups = [];
+    r.collectedAt = new Date(start + 6 * 86400000).toISOString();
+  }
+  assert.equal(evaluateStudy(records, candidate, start + 6 * 86400000).passed, false);
+  const future = cohort();
+  future[0].collectedAt = new Date(now + 86400000).toISOString();
+  assert.throws(() => evaluateStudy(future, candidate, now), /E_COMPLETION_TIME/);
+  assert.throws(
+    () => evaluateStudy(cohort(), { ...candidate, sha256: 'c'.repeat(64) }, now),
+    /E_COMPLETION_CANDIDATE/,
+  );
+});
+test('failed users and assistance stay in the denominator; late assistance does not erase an earlier milestone', () => {
+  const records = cohort();
+  for (const r of records.slice(0, 3)) {
+    r.outcome = 'abandoned';
+    r.events = r.events.filter((e) => !['obs-received', 'independent-runtime'].includes(e.kind));
+  }
+  assert.equal(evaluateStudy(records, candidate, now).passed, false);
+  const r = cohort();
+  r[0].events.splice(2, 0, { kind: 'hint', elapsedMs: 140000, outcome: 'success' });
+  const result = evaluateStudy(r, candidate, now);
+  assert.equal(result.routes[0].firstMotion, 10);
+  assert.equal(result.routes[0].external, 9);
+});
+test('correction counters and stopwatch partitions must agree with the underlying events', () => {
+  const rows = cohort();
+  rows[0].corrections = 0;
+  assert.throws(() => evaluateStudy(rows, candidate, now), /E_COMPLETION_CORRECTIONS/);
+  const second = cohort();
+  second[0].segmentsMs.extra = -500000;
+  assert.throws(() => evaluateStudy(second, candidate, now), /E_COMPLETION_SEGMENTS/);
+});
+test('private fields, local paths, media and credential-bearing URLs are rejected', () => {
+  for (const value of [
+    { email: 'somebody@example.com' },
+    { deviceId: 'private' },
+    { value: 'C:\\Users\\private\\name' },
+    { value: 'data:image/png;base64,AAAA' },
+    { value: 'https://example.org/?token=secret' },
+  ])
+    assert.throws(() => privacyCheck(value), /E_COMPLETION_PRIVATE/);
+  assert.equal(privacyCheck({ source: 'https://example.org/document', cameraFrames: 20 }), true);
+  assert.equal(safeRelative('evidence/../../secret'), false);
+});
+test('short playback and missing real-device conditions cannot pass endurance', () => {
+  const run = (route) => ({
+    route,
+    durationMs: 7200000,
+    samples: 7200,
+    actualCamera: true,
+    actualMicrophone: true,
+    obsX264Recording: true,
+    frameMetricsRecorded: true,
+    cpuMemoryGpuTemperatureRecorded: true,
+    abnormalStops: 0,
+    recoveryFailures: 0,
+    rssGrowthMiB: 100,
+    baselineRssMiB: 800,
+  });
+  const r = receipt('T-274', 'endurance', { runs: routes.map(run) });
+  assert.equal(evaluateReceipt(r, candidate, now).passed, true);
+  r.measurements.runs[1].durationMs = 36000;
+  assert.equal(evaluateReceipt(r, candidate, now).passed, false);
+  r.measurements.runs = routes.map(run);
+  r.measurements.runs[0].rssGrowthMiB = null;
+  assert.equal(evaluateReceipt(r, candidate, now).passed, false);
+});
+test('render timing cannot replace independently measured camera to OBS latency', () => {
+  const r = receipt('T-276', 'latency', {
+    softwareMs: Array(90).fill(100),
+    independentMs: Array(90).fill(150),
+    referenceFPS: 120,
+    actualCamera: true,
+    obsDrawCompleteAck: true,
+    frameIdsCorrelated: true,
+    clockOffsetsMeasured: true,
+    independentPhysicalMeasurement: true,
+    missingRatio: 0,
+    stallsOver100ms: 0,
+  });
+  assert.equal(evaluateReceipt(r, candidate, now).passed, true);
+  r.measurements.independentPhysicalMeasurement = false;
+  assert.equal(evaluateReceipt(r, candidate, now).passed, false);
+  assert.equal(percentile([10, 10, 10, 900], 0.95), 900);
+});
+test('candidate evidence and upstream failures block release and downstream distribution', () => {
+  const proof = pendingTasks.map((t) => ({
+    taskId: t.id,
+    passed: true,
+    artifactHashesVerified: true,
+  }));
+  const all = assessTasks(proof, { passed: true });
+  assert.equal(
+    all.every((r) => r.status === 'PASS'),
+    true,
+  );
+  const blocked = assessTasks(
+    proof.filter((p) => p.taskId !== 'T-267'),
+    { passed: true },
+  );
+  assert.equal(blocked.find((t) => t.id === 'T-297').status, 'BLOCKED');
+  const unverified = assessTasks(
+    proof.map((p) => ({ ...p, artifactHashesVerified: false })),
+    null,
+  );
+  assert.equal(
+    unverified.every((t) => t.status !== 'PASS'),
+    true,
+  );
+});
+test('clean profiles and automatic host checks do not prove a clean Windows or a release', () => {
+  const r = receipt('T-288', 'cleanWindows', {
+    freshProvisionedWindows: false,
+    provisionReceiptVerified: false,
+    developerToolsAbsent: true,
+    installPassed: true,
+    updatePassed: true,
+    firstRunPassed: true,
+    frozenWorkerInsideBundle: true,
+    unicodeSpacePath: true,
+    projectCopyPreserved: true,
+    protectionsIntact: true,
+    securityBypasses: 0,
+  });
+  assert.equal(evaluateReceipt(r, candidate, now).passed, false);
+  assert.equal(
+    evaluateReceipt(receipt('T-295', 'release', { releaseChecks: [] }), candidate, now).passed,
+    false,
+  );
+});

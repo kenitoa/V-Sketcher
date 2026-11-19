@@ -1,0 +1,53 @@
+{
+  "scope": "Single 4096x4096 8-bit RGBA PNG decode during avatar export. Six fresh Node 24.22.3 processes, timing excludes reading the PNG and hashing the pixels. Memory is process.resourceUsage().maxRSS immediately after decode.",
+  "input": {
+    "recipe": "Using Pillow, form a 4096-pixel horizontal 0..255 repeating ramp; RGBA channels are horizontal, vertical, horizontal, vertical. Save with default PNG options.",
+    "bytes": 75625,
+    "sha256": "6c071466878996fa5c5ee2be106e1b57b60b878539b4f312eb38f87eddda310f"
+  },
+  "sourceSHA256": {
+    "before": "4b1efa68d3abd5035fcd27c08c0944b0312e3c530025c05bd7fb861b2c9c69cc",
+    "after": "6cba0ec69e051898ec5ccbc65a20c4ee95b5ec36c129cc2f39c487515d1d6121"
+  },
+  "allDecodedRgbaSha256": "a51e11541d108de514365ddea7ff894cd93d9d4f1006ceebcafeb129ca660579",
+  "runs": [
+    {
+      "variant": "before",
+      "elapsedMs": 935.3285,
+      "peakWorkingSetKiB": 259768
+    },
+    {
+      "variant": "after",
+      "elapsedMs": 698.7663,
+      "peakWorkingSetKiB": 192216
+    },
+    {
+      "variant": "after",
+      "elapsedMs": 592.3352,
+      "peakWorkingSetKiB": 192184
+    },
+    {
+      "variant": "before",
+      "elapsedMs": 905.3501,
+      "peakWorkingSetKiB": 259472
+    },
+    {
+      "variant": "before",
+      "elapsedMs": 1027.0086,
+      "peakWorkingSetKiB": 259500
+    },
+    {
+      "variant": "after",
+      "elapsedMs": 524.702,
+      "peakWorkingSetKiB": 192448
+    }
+  ],
+  "maximumPeakKiB": {
+    "before": 259768,
+    "after": 192448
+  },
+  "medianDecodeMs": {
+    "before": 935.3285,
+    "after": 592.3352
+  }
+}

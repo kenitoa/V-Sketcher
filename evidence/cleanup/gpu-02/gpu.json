@@ -1,0 +1,140 @@
+{
+  "passed": true,
+  "cycles": [
+    {
+      "cycle": 0,
+      "visiblePixels": 611555,
+      "releasedTextureMiB": 0
+    },
+    {
+      "cycle": 1,
+      "visiblePixels": 611555,
+      "releasedTextureMiB": 0
+    },
+    {
+      "cycle": 2,
+      "visiblePixels": 611555,
+      "releasedTextureMiB": 0
+    },
+    {
+      "cycle": 3,
+      "visiblePixels": 611555,
+      "releasedTextureMiB": 0
+    },
+    {
+      "cycle": 4,
+      "visiblePixels": 611555,
+      "releasedTextureMiB": 0
+    },
+    {
+      "cycle": 5,
+      "visiblePixels": 611555,
+      "releasedTextureMiB": 0
+    },
+    {
+      "cycle": 6,
+      "visiblePixels": 611555,
+      "releasedTextureMiB": 0
+    },
+    {
+      "cycle": 7,
+      "visiblePixels": 611555,
+      "releasedTextureMiB": 0
+    },
+    {
+      "cycle": 8,
+      "visiblePixels": 611555,
+      "releasedTextureMiB": 0
+    },
+    {
+      "cycle": 9,
+      "visiblePixels": 611555,
+      "releasedTextureMiB": 0
+    },
+    {
+      "cycle": 10,
+      "visiblePixels": 611555,
+      "releasedTextureMiB": 0
+    },
+    {
+      "cycle": 11,
+      "visiblePixels": 611555,
+      "releasedTextureMiB": 0
+    }
+  ],
+  "stages": [
+    {
+      "width": 1280,
+      "height": 720,
+      "fps": 15,
+      "stress": false,
+      "durationMs": 12002,
+      "completedFrames": 180,
+      "completedFps": 14.997500416597234,
+      "completionWallP95Ms": 0.9000000953674316,
+      "completionWallMaxMs": 1.7999999523162842,
+      "frameIntervalP95Ms": 79,
+      "stallsOver100ms": 0,
+      "textureEstimateMiB": 6.1746826171875
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "fps": 30,
+      "stress": false,
+      "durationMs": 12040.799999952316,
+      "completedFrames": 361,
+      "completedFps": 29.981147588694768,
+      "completionWallP95Ms": 0.7999999523162842,
+      "completionWallMaxMs": 2.700000047683716,
+      "frameIntervalP95Ms": 47.10000002384186,
+      "stallsOver100ms": 0,
+      "textureEstimateMiB": 6.1746826171875
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "fps": 30,
+      "stress": true,
+      "durationMs": 12002.399999976158,
+      "completedFrames": 360,
+      "completedFps": 29.99400119981963,
+      "completionWallP95Ms": 9,
+      "completionWallMaxMs": 11.699999928474426,
+      "frameIntervalP95Ms": 34.90000009536743,
+      "stallsOver100ms": 0,
+      "textureEstimateMiB": 6.1746826171875
+    }
+  ],
+  "backend": "WebKit WebGL",
+  "webglVersion": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "glError": 0,
+  "scope": "Actual shared product renderer on one premium scene; draw plus gl.finish wall time, not GPU-only timestamps, camera/OBS delivery or release performance acceptance",
+  "actualGPUContext": true,
+  "physicalDevicesOpened": false,
+  "actualOBSVerified": false,
+  "performanceAcceptance": false,
+  "twoHourAcceptance": false,
+  "gpuFeatures": {
+    "2d_canvas": "enabled",
+    "direct_rendering_display_compositor": "disabled_off_ok",
+    "gpu_compositing": "enabled",
+    "multiple_raster_threads": "enabled_on",
+    "opengl": "enabled_on",
+    "rasterization": "enabled",
+    "raw_draw": "disabled_off_ok",
+    "skia_graphite": "disabled_off",
+    "trees_in_viz": "disabled_off",
+    "video_decode": "enabled",
+    "video_encode": "enabled",
+    "webgl": "enabled",
+    "webgpu": "enabled",
+    "webnn": "disabled_off"
+  },
+  "protections": {
+    "sandbox": true,
+    "contextIsolation": true,
+    "nodeIntegration": false,
+    "networkBlocked": true
+  }
+}

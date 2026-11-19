@@ -1,0 +1,12 @@
+{
+  "format": "2dsketcher-cache-archive/1",
+  "group": "generated-phase15-type-baseline",
+  "verified": true,
+  "files": 119,
+  "logicalBytes": 1245488,
+  "everyFileReconstructedAndSourceHashMatched": true,
+  "sourceRemoved": false,
+  "maxObjectMiB": 4.0,
+  "readCacheMiBLimit": 32,
+  "historicalEvidenceModified": false
+}

@@ -1,175 +1,581 @@
-import {assertTracking} from '../tracking';
-import {assertCorrection} from '../single-image/correction-types';
-import {configuration,assertConfig,issues as splitIssues} from '../split-image/types';
+import { assertTracking } from '../tracking';
+import { assertCorrection } from '../single-image/correction-types';
+import { configuration, assertConfig, issues as splitIssues } from '../split-image/types';
 import type { ValidateFunction } from 'ajv';
-import { inverse,multiply,transform, type Affine } from '../coordinates';
+import { inverse, multiply, transform, type Affine } from '../coordinates';
 import { projectStructure, machineStructure } from './structure.generated';
 import type { Project, MachineSettings, ValidationIssue } from './types';
 import { deformPoint } from '../motion/geometry';
 import { NEUTRAL } from '../scene-core';
-import {assertReport} from '../single-image/types';
-const check = projectStructure as ValidateFunction<Project>; const checkMachine = machineStructure as ValidateFunction<MachineSettings>;
+import { assertReport } from '../single-image/types';
+const check = projectStructure as ValidateFunction<Project>;
+const checkMachine = machineStructure as ValidateFunction<MachineSettings>;
 export function portableResourcePath(value: string): boolean {
-  return value.length <= 240 && value.normalize('NFC') === value && value.startsWith('resources/') && !/[\\:\x00-\x1f%<>"|?*]/.test(value) &&
-    value.split('/').every(part => part.length > 0 && part !== '.' && part !== '..' && !/[. ]$/.test(part) && !/^(con|prn|aux|nul|com[0-9]|lpt[0-9])(?:\.|$)/i.test(part));
+  return (
+    value.length <= 240 &&
+    value.normalize('NFC') === value &&
+    value.startsWith('resources/') &&
+    !/[\\:\x00-\x1f%<>"|?*]/.test(value) &&
+    value
+      .split('/')
+      .every(
+        (part) =>
+          part.length > 0 &&
+          part !== '.' &&
+          part !== '..' &&
+          !/[. ]$/.test(part) &&
+          !/^(con|prn|aux|nul|com[0-9]|lpt[0-9])(?:\.|$)/i.test(part),
+      )
+  );
 }
 export function validateProject(value: unknown): ValidationIssue[] {
-  if (!check(value)) return [{ code:'E_PROJECT_SCHEMA',location:check.errors?.[0]?.instancePath ?? '' }];
-  const p = value; const issues: ValidationIssue[] = []; const ids = new Set<string>();
-  const issue = (code: string, location: string): void => { issues.push({ code,location }); };
-  const unique = <T extends { id:string }>(items: T[], location: string): Map<string,T> => {
-    const map = new Map<string,T>(); items.forEach((item,i) => { if (ids.has(item.id)) issue('E_DUPLICATE_ID',`${location}/${i}/id`); ids.add(item.id); map.set(item.id,item); }); return map;
+  if (!check(value))
+    return [{ code: 'E_PROJECT_SCHEMA', location: check.errors?.[0]?.instancePath ?? '' }];
+  const p = value;
+  const issues: ValidationIssue[] = [];
+  const ids = new Set<string>();
+  const issue = (code: string, location: string): void => {
+    issues.push({ code, location });
+  };
+  const unique = <T extends { id: string }>(items: T[], location: string): Map<string, T> => {
+    const map = new Map<string, T>();
+    items.forEach((item, i) => {
+      if (ids.has(item.id)) issue('E_DUPLICATE_ID', `${location}/${i}/id`);
+      ids.add(item.id);
+      map.set(item.id, item);
+    });
+    return map;
   };
   ids.add(p.projectId);
-  if(p.tracking){try{assertTracking(p.tracking);if(p.schemaVersion.minor<9)issue('E_TRACKING_VERSION','/tracking');}catch{issue('E_TRACKING_SETTINGS','/tracking');}}
-  const assets = unique(p.assets,'/assets'); const parts = unique(p.parts,'/parts'); const groups = unique(p.groups,'/groups');
-  if(p.groups.some(g=>g.opacity!==undefined)&&p.schemaVersion.minor<6)issue('E_SPLIT_VERSION','/groups');
-  if(p.split){const d=p.split.draft;if(p.schemaVersion.minor<6||p.sourceType!=='split-image')issue('E_SPLIT_VERSION','/split');try{assertConfig(configuration(d));if(splitIssues(d).some(v=>v.level==='block'))issue('E_SPLIT_INCOMPLETE','/split');}catch{issue('E_SPLIT_MODEL','/split');}for(const l of d.layers){const a=assets.get(l.originalAssetId),b=assets.get(l.imageAssetId);if(!parts.has(l.id)&&!p.detail?.baselines.some(b=>b.part.id===l.id)||!a||!b||a.fingerprint.sha256!==l.sourceHash||b.fingerprint.sha256!==l.imageHash||b.dimensions.width!==l.image.width||b.dimensions.height!==l.image.height)issue('E_SPLIT_REFERENCE','/split/layers');}}
-  if(p.structure){const s=p.structure;try{assertReport(s.report);}catch{issue('E_STRUCTURE_REPORT','/structure');}if(p.schemaVersion.minor<4||p.sourceType!=='single-image'||!p.inputPreparation||s.inputAssetId!==p.inputPreparation.selectedAssetId||!assets.has(s.inputAssetId)||s.inputRevision>p.revision)issue('E_STRUCTURE_REFERENCE','/structure');for(const r of s.report.regions)if(r.rect.x+r.rect.width>p.canvas.width||r.rect.y+r.rect.height>p.canvas.height)issue('E_STRUCTURE_REGION','/structure');}
-  if(p.structure?.corrections){const c=p.structure.corrections;try{c.entries.forEach(e=>assertCorrection(e,p.canvas.width,p.canvas.height));assertReport(c.automatic);}catch{issue('E_CORRECTION_MODEL','/structure/corrections');}if(p.schemaVersion.minor<5||new Set(c.entries.map(e=>e.key)).size!==c.entries.length)issue('E_CORRECTION_MODEL','/structure/corrections');}
-  if(p.structure?.report.regions.some(r=>r.masks!==undefined||r.order!==undefined)&&p.schemaVersion.minor<5)issue('E_CORRECTION_VERSION','/structure');
-  if (p.inputPreparation) {
-    const i=p.inputPreparation;const o=assets.get(i.originalAssetId),n=assets.get(i.normalizedAssetId),s=assets.get(i.selectedAssetId),a=assets.get(i.analysisAssetId);
-    if (p.schemaVersion.minor<2 || !o || !n || !s || !a || o.kind!=='original-image' || !p.inputAssetIds.includes(o.id) || !n.parentAssetIds.includes(o.id) || !s.parentAssetIds.includes(n.id) || !a.parentAssetIds.includes(s.id)) issue('E_INPUT_REFERENCE','/inputPreparation');
-    if (o && (o.dimensions.width!==i.probe.originalSize.width || o.dimensions.height!==i.probe.originalSize.height) || n && (n.dimensions.width!==i.probe.size.width || n.dimensions.height!==i.probe.size.height) || s && (s.dimensions.width!==i.analysis.crop.width || s.dimensions.height!==i.analysis.crop.height) || a && (a.dimensions.width!==i.analysis.analysisSize.width || a.dimensions.height!==i.analysis.analysisSize.height)) issue('E_INPUT_GEOMETRY','/inputPreparation');
-    try { inverse(i.probe.sourceToNormalized); } catch { issue('E_INPUT_GEOMETRY','/inputPreparation/probe'); }
-    const inside=(r:{ x:number;y:number;width:number;height:number }) => r.x+r.width<=i.probe.size.width && r.y+r.height<=i.probe.size.height;
-    if (![i.selection.rect,i.analysis.crop,...i.selection.masks.map(m=>m.rect),...i.probe.candidates.map(c=>c.rect)].every(inside) || i.analysis.faces.length>1) issue('E_INPUT_REGION','/inputPreparation');
-  }
-  if (p.assembly && (p.schemaVersion.minor<3 || p.assembly.choices.length!==6 || new Set(p.assembly.choices.map(c=>c.slot)).size!==6 || new Set(p.assembly.adjustments.map(a=>a.key)).size!==p.assembly.adjustments.length))issue('E_PARTS_MODEL','/assembly');
-  if(p.parts.some(v=>(v.library||v.color)&&p.schemaVersion.minor<3))issue('E_PARTS_VERSION','/parts');
-  const parameters = unique(p.parameters,'/parameters'); unique(p.partBindings,'/partBindings'); unique(p.inputBindings,'/inputBindings');
-  const expressions = unique(p.expressions,'/expressions'); unique([p.runtimeProfile],'/runtimeProfile'); unique(p.broadcastProfiles,'/broadcastProfiles'); unique(p.exportProfiles,'/exportProfiles');
-  if(p.detail){
-    if(p.schemaVersion.minor<7)issue('E_DETAIL_VERSION','/detail');
-    const baselineIds=new Set(p.detail.baselines.map(b=>b.part.id));if([...p.detail.partOrder,...p.detail.meshOrder].some(id=>!parts.has(id)&&!baselineIds.has(id)))issue('E_DETAIL_BASELINE','/detail');if(baselineIds.size!==p.detail.baselines.length||new Set(p.detail.groups.map(g=>g.id)).size!==p.detail.groups.length)issue('E_DETAIL_BASELINE','/detail');
-    for(const b of p.detail.baselines){const v=b.part;try{inverse(v.localTransform);for(const t of v.textures)inverse(t.assetToLocal);}catch{issue('E_DETAIL_BASELINE','/detail');}
-      if(v.parentId&&!parts.has(v.parentId)&&!baselineIds.has(v.parentId)||v.groupId&&!groups.has(v.groupId)||b.mesh&&(b.mesh.partId!==v.id||b.mesh.triangles.length%3||b.mesh.triangles.some(i=>i>=b.mesh!.vertices.length)||b.mesh.yawParameterId&&parameters.get(b.mesh.yawParameterId)?.previewKey!=='head_yaw'||b.mesh.rollParameterId&&parameters.get(b.mesh.rollParameterId)?.previewKey!=='head_roll'))issue('E_DETAIL_BASELINE','/detail');
-      for(const t of v.textures)if(assets.get(t.assetId)?.version!==t.assetVersion)issue('E_DETAIL_BASELINE','/detail');
-      for(const binding of b.bindings)if(binding.partId!==v.id||!parameters.has(binding.parameterId)||binding.kind==='state-blend'&&[binding.mapping.minimumState,binding.mapping.maximumState,...binding.mapping.middleState?[binding.mapping.middleState]:[]].some(s=>!v.textures.some(t=>t.state===s)))issue('E_DETAIL_BASELINE','/detail');
+  if (p.tracking) {
+    try {
+      assertTracking(p.tracking);
+      if (p.schemaVersion.minor < 9) issue('E_TRACKING_VERSION', '/tracking');
+    } catch {
+      issue('E_TRACKING_SETTINGS', '/tracking');
     }
-    for(const g of p.detail.groups)if(!groups.has(g.id)||g.parentGroupId&&!groups.has(g.parentGroupId))issue('E_DETAIL_BASELINE','/detail');
   }
-  const matrix = (m: Affine, location: string): void => { try { inverse(m); } catch { issue('E_TRANSFORM_INVALID',location); } };
-  const graph = (edges: Map<string,string[]>, location: string): void => {
-    const state = new Map<string,number>();
+  const assets = unique(p.assets, '/assets');
+  const parts = unique(p.parts, '/parts');
+  const groups = unique(p.groups, '/groups');
+  if (p.groups.some((g) => g.opacity !== undefined) && p.schemaVersion.minor < 6)
+    issue('E_SPLIT_VERSION', '/groups');
+  if (p.split) {
+    const d = p.split.draft;
+    if (p.schemaVersion.minor < 6 || p.sourceType !== 'split-image')
+      issue('E_SPLIT_VERSION', '/split');
+    try {
+      assertConfig(configuration(d));
+      if (splitIssues(d).some((v) => v.level === 'block')) issue('E_SPLIT_INCOMPLETE', '/split');
+    } catch {
+      issue('E_SPLIT_MODEL', '/split');
+    }
+    for (const l of d.layers) {
+      const a = assets.get(l.originalAssetId),
+        b = assets.get(l.imageAssetId);
+      if (
+        (!parts.has(l.id) && !p.detail?.baselines.some((b) => b.part.id === l.id)) ||
+        !a ||
+        !b ||
+        a.fingerprint.sha256 !== l.sourceHash ||
+        b.fingerprint.sha256 !== l.imageHash ||
+        b.dimensions.width !== l.image.width ||
+        b.dimensions.height !== l.image.height
+      )
+        issue('E_SPLIT_REFERENCE', '/split/layers');
+    }
+  }
+  if (p.structure) {
+    const s = p.structure;
+    try {
+      assertReport(s.report);
+    } catch {
+      issue('E_STRUCTURE_REPORT', '/structure');
+    }
+    if (
+      p.schemaVersion.minor < 4 ||
+      p.sourceType !== 'single-image' ||
+      !p.inputPreparation ||
+      s.inputAssetId !== p.inputPreparation.selectedAssetId ||
+      !assets.has(s.inputAssetId) ||
+      s.inputRevision > p.revision
+    )
+      issue('E_STRUCTURE_REFERENCE', '/structure');
+    for (const r of s.report.regions)
+      if (r.rect.x + r.rect.width > p.canvas.width || r.rect.y + r.rect.height > p.canvas.height)
+        issue('E_STRUCTURE_REGION', '/structure');
+  }
+  if (p.structure?.corrections) {
+    const c = p.structure.corrections;
+    try {
+      c.entries.forEach((e) => assertCorrection(e, p.canvas.width, p.canvas.height));
+      assertReport(c.automatic);
+    } catch {
+      issue('E_CORRECTION_MODEL', '/structure/corrections');
+    }
+    if (p.schemaVersion.minor < 5 || new Set(c.entries.map((e) => e.key)).size !== c.entries.length)
+      issue('E_CORRECTION_MODEL', '/structure/corrections');
+  }
+  if (
+    p.structure?.report.regions.some((r) => r.masks !== undefined || r.order !== undefined) &&
+    p.schemaVersion.minor < 5
+  )
+    issue('E_CORRECTION_VERSION', '/structure');
+  if (p.inputPreparation) {
+    const i = p.inputPreparation;
+    const o = assets.get(i.originalAssetId),
+      n = assets.get(i.normalizedAssetId),
+      s = assets.get(i.selectedAssetId),
+      a = assets.get(i.analysisAssetId);
+    if (
+      p.schemaVersion.minor < 2 ||
+      !o ||
+      !n ||
+      !s ||
+      !a ||
+      o.kind !== 'original-image' ||
+      !p.inputAssetIds.includes(o.id) ||
+      !n.parentAssetIds.includes(o.id) ||
+      !s.parentAssetIds.includes(n.id) ||
+      !a.parentAssetIds.includes(s.id)
+    )
+      issue('E_INPUT_REFERENCE', '/inputPreparation');
+    if (
+      (o &&
+        (o.dimensions.width !== i.probe.originalSize.width ||
+          o.dimensions.height !== i.probe.originalSize.height)) ||
+      (n &&
+        (n.dimensions.width !== i.probe.size.width ||
+          n.dimensions.height !== i.probe.size.height)) ||
+      (s &&
+        (s.dimensions.width !== i.analysis.crop.width ||
+          s.dimensions.height !== i.analysis.crop.height)) ||
+      (a &&
+        (a.dimensions.width !== i.analysis.analysisSize.width ||
+          a.dimensions.height !== i.analysis.analysisSize.height))
+    )
+      issue('E_INPUT_GEOMETRY', '/inputPreparation');
+    try {
+      inverse(i.probe.sourceToNormalized);
+    } catch {
+      issue('E_INPUT_GEOMETRY', '/inputPreparation/probe');
+    }
+    const inside = (r: { x: number; y: number; width: number; height: number }) =>
+      r.x + r.width <= i.probe.size.width && r.y + r.height <= i.probe.size.height;
+    if (
+      ![
+        i.selection.rect,
+        i.analysis.crop,
+        ...i.selection.masks.map((m) => m.rect),
+        ...i.probe.candidates.map((c) => c.rect),
+      ].every(inside) ||
+      i.analysis.faces.length > 1
+    )
+      issue('E_INPUT_REGION', '/inputPreparation');
+  }
+  if (
+    p.assembly &&
+    (p.schemaVersion.minor < 3 ||
+      p.assembly.choices.length !== 6 ||
+      new Set(p.assembly.choices.map((c) => c.slot)).size !== 6 ||
+      new Set(p.assembly.adjustments.map((a) => a.key)).size !== p.assembly.adjustments.length)
+  )
+    issue('E_PARTS_MODEL', '/assembly');
+  if (p.parts.some((v) => (v.library || v.color) && p.schemaVersion.minor < 3))
+    issue('E_PARTS_VERSION', '/parts');
+  const parameters = unique(p.parameters, '/parameters');
+  unique(p.partBindings, '/partBindings');
+  unique(p.inputBindings, '/inputBindings');
+  const expressions = unique(p.expressions, '/expressions');
+  unique([p.runtimeProfile], '/runtimeProfile');
+  unique(p.broadcastProfiles, '/broadcastProfiles');
+  unique(p.exportProfiles, '/exportProfiles');
+  if (p.detail) {
+    if (p.schemaVersion.minor < 7) issue('E_DETAIL_VERSION', '/detail');
+    const baselineIds = new Set(p.detail.baselines.map((b) => b.part.id));
+    if (
+      [...p.detail.partOrder, ...p.detail.meshOrder].some(
+        (id) => !parts.has(id) && !baselineIds.has(id),
+      )
+    )
+      issue('E_DETAIL_BASELINE', '/detail');
+    if (
+      baselineIds.size !== p.detail.baselines.length ||
+      new Set(p.detail.groups.map((g) => g.id)).size !== p.detail.groups.length
+    )
+      issue('E_DETAIL_BASELINE', '/detail');
+    for (const b of p.detail.baselines) {
+      const v = b.part;
+      try {
+        inverse(v.localTransform);
+        for (const t of v.textures) inverse(t.assetToLocal);
+      } catch {
+        issue('E_DETAIL_BASELINE', '/detail');
+      }
+      if (
+        (v.parentId && !parts.has(v.parentId) && !baselineIds.has(v.parentId)) ||
+        (v.groupId && !groups.has(v.groupId)) ||
+        (b.mesh &&
+          (b.mesh.partId !== v.id ||
+            b.mesh.triangles.length % 3 ||
+            b.mesh.triangles.some((i) => i >= b.mesh!.vertices.length) ||
+            (b.mesh.yawParameterId &&
+              parameters.get(b.mesh.yawParameterId)?.previewKey !== 'head_yaw') ||
+            (b.mesh.rollParameterId &&
+              parameters.get(b.mesh.rollParameterId)?.previewKey !== 'head_roll')))
+      )
+        issue('E_DETAIL_BASELINE', '/detail');
+      for (const t of v.textures)
+        if (assets.get(t.assetId)?.version !== t.assetVersion)
+          issue('E_DETAIL_BASELINE', '/detail');
+      for (const binding of b.bindings)
+        if (
+          binding.partId !== v.id ||
+          !parameters.has(binding.parameterId) ||
+          (binding.kind === 'state-blend' &&
+            [
+              binding.mapping.minimumState,
+              binding.mapping.maximumState,
+              ...(binding.mapping.middleState ? [binding.mapping.middleState] : []),
+            ].some((s) => !v.textures.some((t) => t.state === s)))
+        )
+          issue('E_DETAIL_BASELINE', '/detail');
+    }
+    for (const g of p.detail.groups)
+      if (!groups.has(g.id) || (g.parentGroupId && !groups.has(g.parentGroupId)))
+        issue('E_DETAIL_BASELINE', '/detail');
+  }
+  const matrix = (m: Affine, location: string): void => {
+    try {
+      inverse(m);
+    } catch {
+      issue('E_TRANSFORM_INVALID', location);
+    }
+  };
+  const graph = (edges: Map<string, string[]>, location: string): void => {
+    const state = new Map<string, number>();
     const visit = (id: string): void => {
-      if (state.get(id) === 1) { issue('E_REFERENCE_CYCLE',location); return; }
-      if (state.get(id) === 2) return; state.set(id,1);
-      for (const parent of edges.get(id) ?? []) { if (!edges.has(parent)) issue('E_REFERENCE_MISSING',location); else visit(parent); }
-      state.set(id,2);
+      if (state.get(id) === 1) {
+        issue('E_REFERENCE_CYCLE', location);
+        return;
+      }
+      if (state.get(id) === 2) return;
+      state.set(id, 1);
+      for (const parent of edges.get(id) ?? []) {
+        if (!edges.has(parent)) issue('E_REFERENCE_MISSING', location);
+        else visit(parent);
+      }
+      state.set(id, 2);
     };
     for (const id of edges.keys()) visit(id);
   };
-  graph(new Map(p.assets.map(a => [a.id,a.parentAssetIds])),'/assets/parentAssetIds');
-  graph(new Map(p.parts.map(a => [a.id,a.parentId ? [a.parentId] : []])),'/parts/parentId');
-  graph(new Map(p.groups.map(a => [a.id,a.parentGroupId ? [a.parentGroupId] : []])),'/groups/parentGroupId');
-  if (p.displayName.trim() !== p.displayName || !p.displayName.trim()) issue('E_PROJECT_NAME','/displayName');
-  if (![p.createdAt,p.modifiedAt].every(date => Number.isFinite(Date.parse(date)) && new Date(date).toISOString() === date) || p.modifiedAt < p.createdAt) issue('E_PROJECT_TIME','/modifiedAt');
-  if (p.savedRevision !== null && p.savedRevision > p.revision) issue('E_REVISION_RANGE','/savedRevision');
-  const paths = new Map<string,{ path:string; hash:string; bytes:number }>();
-  p.assets.forEach((a,i) => {
-    const location = `/assets/${i}`; matrix(a.sourceToEdited,location+'/sourceToEdited');
-    if (!portableResourcePath(a.storage.path)) issue('E_RESOURCE_PATH',location+'/storage/path');
+  graph(new Map(p.assets.map((a) => [a.id, a.parentAssetIds])), '/assets/parentAssetIds');
+  graph(new Map(p.parts.map((a) => [a.id, a.parentId ? [a.parentId] : []])), '/parts/parentId');
+  graph(
+    new Map(p.groups.map((a) => [a.id, a.parentGroupId ? [a.parentGroupId] : []])),
+    '/groups/parentGroupId',
+  );
+  if (p.displayName.trim() !== p.displayName || !p.displayName.trim())
+    issue('E_PROJECT_NAME', '/displayName');
+  if (
+    ![p.createdAt, p.modifiedAt].every(
+      (date) => Number.isFinite(Date.parse(date)) && new Date(date).toISOString() === date,
+    ) ||
+    p.modifiedAt < p.createdAt
+  )
+    issue('E_PROJECT_TIME', '/modifiedAt');
+  if (p.savedRevision !== null && p.savedRevision > p.revision)
+    issue('E_REVISION_RANGE', '/savedRevision');
+  const paths = new Map<string, { path: string; hash: string; bytes: number }>();
+  p.assets.forEach((a, i) => {
+    const location = `/assets/${i}`;
+    matrix(a.sourceToEdited, location + '/sourceToEdited');
+    if (!portableResourcePath(a.storage.path)) issue('E_RESOURCE_PATH', location + '/storage/path');
     const prior = paths.get(a.storage.path.toLowerCase());
-    if (prior && (prior.path !== a.storage.path || prior.hash !== a.fingerprint.sha256 || prior.bytes !== a.fingerprint.bytes)) issue('E_RESOURCE_PATH_COLLISION',location+'/storage/path');
-    paths.set(a.storage.path.toLowerCase(),{ path:a.storage.path,hash:a.fingerprint.sha256,bytes:a.fingerprint.bytes });
+    if (
+      prior &&
+      (prior.path !== a.storage.path ||
+        prior.hash !== a.fingerprint.sha256 ||
+        prior.bytes !== a.fingerprint.bytes)
+    )
+      issue('E_RESOURCE_PATH_COLLISION', location + '/storage/path');
+    paths.set(a.storage.path.toLowerCase(), {
+      path: a.storage.path,
+      hash: a.fingerprint.sha256,
+      bytes: a.fingerprint.bytes,
+    });
     const r = a.sourceRegion;
-    if (r.x < 0 || r.y < 0 || r.x+r.width > a.dimensions.width || r.y+r.height > a.dimensions.height) issue('E_RESOURCE_REGION',location+'/sourceRegion');
-    if (['auto-preparation','auto-completion','manual-edit'].includes(a.origin) && !a.parentAssetIds.length) issue('E_PROVENANCE_PARENT',location+'/parentAssetIds');
-    if (a.kind === 'original-image' && a.parentAssetIds.length) issue('E_PROVENANCE_ORIGINAL',location+'/parentAssetIds');
-    if (a.mediaType === 'image/jpeg' && a.alphaMode !== 'opaque') issue('E_RESOURCE_ALPHA',location+'/alphaMode');
+    if (
+      r.x < 0 ||
+      r.y < 0 ||
+      r.x + r.width > a.dimensions.width ||
+      r.y + r.height > a.dimensions.height
+    )
+      issue('E_RESOURCE_REGION', location + '/sourceRegion');
+    if (
+      ['auto-preparation', 'auto-completion', 'manual-edit'].includes(a.origin) &&
+      !a.parentAssetIds.length
+    )
+      issue('E_PROVENANCE_PARENT', location + '/parentAssetIds');
+    if (a.kind === 'original-image' && a.parentAssetIds.length)
+      issue('E_PROVENANCE_ORIGINAL', location + '/parentAssetIds');
+    if (a.mediaType === 'image/jpeg' && a.alphaMode !== 'opaque')
+      issue('E_RESOURCE_ALPHA', location + '/alphaMode');
   });
-  p.inputAssetIds.forEach(id => { if (!assets.has(id)) issue('E_REFERENCE_MISSING','/inputAssetIds'); });
-  p.parts.forEach((part,i) => {
-    const location = `/parts/${i}`; matrix(part.localTransform,location+'/localTransform');
-    if (part.groupId && !groups.has(part.groupId)) issue('E_REFERENCE_MISSING',location+'/groupId');
+  p.inputAssetIds.forEach((id) => {
+    if (!assets.has(id)) issue('E_REFERENCE_MISSING', '/inputAssetIds');
+  });
+  p.parts.forEach((part, i) => {
+    const location = `/parts/${i}`;
+    matrix(part.localTransform, location + '/localTransform');
+    if (part.groupId && !groups.has(part.groupId))
+      issue('E_REFERENCE_MISSING', location + '/groupId');
     const states = new Set<string>();
-    part.textures.forEach((texture,j) => {
-      matrix(texture.assetToLocal,`${location}/textures/${j}/assetToLocal`);
-      if (states.has(texture.state)) issue('E_TEXTURE_STATE_DUPLICATE',location+'/textures'); states.add(texture.state);
+    part.textures.forEach((texture, j) => {
+      matrix(texture.assetToLocal, `${location}/textures/${j}/assetToLocal`);
+      if (states.has(texture.state)) issue('E_TEXTURE_STATE_DUPLICATE', location + '/textures');
+      states.add(texture.state);
       const a = assets.get(texture.assetId);
-      if (!a) issue('E_REFERENCE_MISSING',location+'/textures'); else if (a.version !== texture.assetVersion) issue('E_RESOURCE_VERSION',location+'/textures');
+      if (!a) issue('E_REFERENCE_MISSING', location + '/textures');
+      else if (a.version !== texture.assetVersion)
+        issue('E_RESOURCE_VERSION', location + '/textures');
     });
   });
   const previewKeys = new Set<string>();
-  p.parameters.forEach((parameter,i) => {
-    if (!(Number.isFinite(parameter.max-parameter.min) && parameter.min < parameter.max && parameter.min <= parameter.neutral && parameter.neutral <= parameter.max)) issue('E_PARAMETER_RANGE',`/parameters/${i}`);
-    if (parameter.previewKey) { if (previewKeys.has(parameter.previewKey)) issue('E_PARAMETER_SEMANTIC',`/parameters/${i}`); previewKeys.add(parameter.previewKey); }
+  p.parameters.forEach((parameter, i) => {
+    if (!(
+      Number.isFinite(parameter.max - parameter.min) &&
+      parameter.min < parameter.max &&
+      parameter.min <= parameter.neutral &&
+      parameter.neutral <= parameter.max
+    ))
+      issue('E_PARAMETER_RANGE', `/parameters/${i}`);
+    if (parameter.previewKey) {
+      if (previewKeys.has(parameter.previewKey)) issue('E_PARAMETER_SEMANTIC', `/parameters/${i}`);
+      previewKeys.add(parameter.previewKey);
+    }
   });
   const boundParts = new Set<string>();
-  p.partBindings.forEach((binding,i) => {
-    if (!parts.has(binding.partId) || !parameters.has(binding.parameterId)) issue('E_REFERENCE_MISSING',`/partBindings/${i}`);
-    if (binding.kind === 'transform' && !Number.isFinite(binding.mapping.outputRange[1]-binding.mapping.outputRange[0])) issue('E_MOTION_RANGE',`/partBindings/${i}`);
+  p.partBindings.forEach((binding, i) => {
+    if (!parts.has(binding.partId) || !parameters.has(binding.parameterId))
+      issue('E_REFERENCE_MISSING', `/partBindings/${i}`);
+    if (
+      binding.kind === 'transform' &&
+      !Number.isFinite(binding.mapping.outputRange[1] - binding.mapping.outputRange[0])
+    )
+      issue('E_MOTION_RANGE', `/partBindings/${i}`);
     if (binding.kind === 'state-blend') {
-      const states = new Set(parts.get(binding.partId)?.textures.map(t => t.state));
-      if (binding.mapping.middleState && (!states.has(binding.mapping.middleState) || [binding.mapping.minimumState,binding.mapping.maximumState].includes(binding.mapping.middleState))) issue('E_BINDING_STATES',`/partBindings/${i}`);
-      if (!states.has(binding.mapping.minimumState) || !states.has(binding.mapping.maximumState) || binding.mapping.minimumState === binding.mapping.maximumState) issue('E_BINDING_STATES',`/partBindings/${i}`);
+      const states = new Set(parts.get(binding.partId)?.textures.map((t) => t.state));
+      if (
+        binding.mapping.middleState &&
+        (!states.has(binding.mapping.middleState) ||
+          [binding.mapping.minimumState, binding.mapping.maximumState].includes(
+            binding.mapping.middleState,
+          ))
+      )
+        issue('E_BINDING_STATES', `/partBindings/${i}`);
+      if (
+        !states.has(binding.mapping.minimumState) ||
+        !states.has(binding.mapping.maximumState) ||
+        binding.mapping.minimumState === binding.mapping.maximumState
+      )
+        issue('E_BINDING_STATES', `/partBindings/${i}`);
     }
-    const key = binding.partId+'/'+binding.kind+(binding.kind === 'transform' ? '/'+binding.mapping.component : '');
-    if (boundParts.has(key)) issue('E_BINDING_AMBIGUOUS',`/partBindings/${i}`); boundParts.add(key);
+    const key =
+      binding.partId +
+      '/' +
+      binding.kind +
+      (binding.kind === 'transform' ? '/' + binding.mapping.component : '');
+    if (boundParts.has(key)) issue('E_BINDING_AMBIGUOUS', `/partBindings/${i}`);
+    boundParts.add(key);
   });
   const inputParameters = new Set<string>();
-  p.inputBindings.forEach((binding,i) => {
+  p.inputBindings.forEach((binding, i) => {
     const parameter = parameters.get(binding.parameterId);
-    if (!parameter) issue('E_REFERENCE_MISSING',`/inputBindings/${i}`);
-    if (inputParameters.has(binding.parameterId)) issue('E_INPUT_AMBIGUOUS',`/inputBindings/${i}`); inputParameters.add(binding.parameterId);
-    if (binding.inputRange[0] >= binding.inputRange[1]) issue('E_INPUT_RANGE',`/inputBindings/${i}`);
-    if (parameter && (binding.fallback.value < parameter.min || binding.fallback.value > parameter.max)) issue('E_PARAMETER_RANGE',`/inputBindings/${i}/fallback`);
+    if (!parameter) issue('E_REFERENCE_MISSING', `/inputBindings/${i}`);
+    if (inputParameters.has(binding.parameterId)) issue('E_INPUT_AMBIGUOUS', `/inputBindings/${i}`);
+    inputParameters.add(binding.parameterId);
+    if (binding.inputRange[0] >= binding.inputRange[1])
+      issue('E_INPUT_RANGE', `/inputBindings/${i}`);
+    if (
+      parameter &&
+      (binding.fallback.value < parameter.min || binding.fallback.value > parameter.max)
+    )
+      issue('E_PARAMETER_RANGE', `/inputBindings/${i}/fallback`);
   });
-  if(p.expressionSettings){if(p.schemaVersion.minor<8)issue('E_EXPRESSION_VERSION','/expressionSettings');for(const id of p.expressionSettings.shortcuts)if(id!==null&&!expressions.has(id))issue('E_REFERENCE_MISSING','/expressionSettings/shortcuts');}
-  p.expressions.forEach((expression,i) => {
-    if((expression.releaseMs!==undefined||expression.values.some(v=>v.partIds!==undefined))&&p.schemaVersion.minor<8)issue('E_EXPRESSION_VERSION',`/expressions/${i}`);
+  if (p.expressionSettings) {
+    if (p.schemaVersion.minor < 8) issue('E_EXPRESSION_VERSION', '/expressionSettings');
+    for (const id of p.expressionSettings.shortcuts)
+      if (id !== null && !expressions.has(id))
+        issue('E_REFERENCE_MISSING', '/expressionSettings/shortcuts');
+  }
+  p.expressions.forEach((expression, i) => {
+    if (
+      (expression.releaseMs !== undefined ||
+        expression.values.some((v) => v.partIds !== undefined)) &&
+      p.schemaVersion.minor < 8
+    )
+      issue('E_EXPRESSION_VERSION', `/expressions/${i}`);
     const targets = new Set<string>();
-    expression.values.forEach(target => {
+    expression.values.forEach((target) => {
       const parameter = parameters.get(target.parameterId);
-      if (!parameter) issue('E_REFERENCE_MISSING',`/expressions/${i}`);
-      else if (target.value < parameter.min || target.value > parameter.max) issue('E_PARAMETER_RANGE',`/expressions/${i}`);
-      if (targets.has(target.parameterId)) issue('E_EXPRESSION_DUPLICATE',`/expressions/${i}`); targets.add(target.parameterId);
+      if (!parameter) issue('E_REFERENCE_MISSING', `/expressions/${i}`);
+      else if (target.value < parameter.min || target.value > parameter.max)
+        issue('E_PARAMETER_RANGE', `/expressions/${i}`);
+      if (targets.has(target.parameterId)) issue('E_EXPRESSION_DUPLICATE', `/expressions/${i}`);
+      targets.add(target.parameterId);
     });
   });
-  if (p.runtimeProfile.fallbackExpressionId && !expressions.has(p.runtimeProfile.fallbackExpressionId)) issue('E_REFERENCE_MISSING','/runtimeProfile/fallbackExpressionId');
+  if (
+    p.runtimeProfile.fallbackExpressionId &&
+    !expressions.has(p.runtimeProfile.fallbackExpressionId)
+  )
+    issue('E_REFERENCE_MISSING', '/runtimeProfile/fallbackExpressionId');
   for (const profile of p.exportProfiles) {
-    const targets = new Set<string>(); const sources = new Set<string>();
+    const targets = new Set<string>();
+    const sources = new Set<string>();
     for (const mapping of profile.parameterMap) {
-      if (!parameters.has(mapping.parameterId)) issue('E_REFERENCE_MISSING','/exportProfiles/parameterMap');
-      if (targets.has(mapping.targetName) || sources.has(mapping.parameterId)) issue('E_EXPORT_MAPPING_DUPLICATE','/exportProfiles/parameterMap');
-      targets.add(mapping.targetName); sources.add(mapping.parameterId);
+      if (!parameters.has(mapping.parameterId))
+        issue('E_REFERENCE_MISSING', '/exportProfiles/parameterMap');
+      if (targets.has(mapping.targetName) || sources.has(mapping.parameterId))
+        issue('E_EXPORT_MAPPING_DUPLICATE', '/exportProfiles/parameterMap');
+      targets.add(mapping.targetName);
+      sources.add(mapping.parameterId);
     }
   }
-  if (p.derivedProjects.some(v => v.projectId === p.projectId) || new Set(p.derivedProjects.map(v => v.projectId)).size !== p.derivedProjects.length) issue('E_DERIVED_PROJECT_REFERENCE','/derivedProjects');
+  if (
+    p.derivedProjects.some((v) => v.projectId === p.projectId) ||
+    new Set(p.derivedProjects.map((v) => v.projectId)).size !== p.derivedProjects.length
+  )
+    issue('E_DERIVED_PROJECT_REFERENCE', '/derivedProjects');
   if (p.motion) {
-    if (p.schemaVersion.minor < 1 || p.motion.faceWidth > p.canvas.width) issue('E_MOTION_VERSION','/motion');
-    const seen = new Set<string>(); const world = (id:string,depth = 0):Affine => { const part = parts.get(id); if (!part || depth>64) return [1,0,0,1,0,0]; return part.parentId ? multiply(world(part.parentId,depth+1),part.localTransform) : part.localTransform; };
+    if (p.schemaVersion.minor < 1 || p.motion.faceWidth > p.canvas.width)
+      issue('E_MOTION_VERSION', '/motion');
+    const seen = new Set<string>();
+    const world = (id: string, depth = 0): Affine => {
+      const part = parts.get(id);
+      if (!part || depth > 64) return [1, 0, 0, 1, 0, 0];
+      return part.parentId
+        ? multiply(world(part.parentId, depth + 1), part.localTransform)
+        : part.localTransform;
+    };
     for (const m of p.motion.meshes) {
-      if (seen.has(m.partId) || !parts.has(m.partId)) issue('E_MOTION_REFERENCE','/motion/meshes'); seen.add(m.partId);
-      if (m.yawParameterId && parameters.get(m.yawParameterId)?.previewKey !== 'head_yaw' || m.rollParameterId && parameters.get(m.rollParameterId)?.previewKey !== 'head_roll') issue('E_MOTION_REFERENCE','/motion/meshes');
-      if (m.triangles.length%3 || m.triangles.some(i => i>=m.vertices.length)) issue('E_MOTION_TRIANGLE','/motion/meshes');
-      for (let i=0;i<m.triangles.length;i+=3) { const a = m.vertices[m.triangles[i]!]!; const b = m.vertices[m.triangles[i+1]!]!; const c = m.vertices[m.triangles[i+2]!]!; if (!a || !b || !c) continue; const area = (b.position[0]-a.position[0])*(c.position[1]-a.position[1])-(b.position[1]-a.position[1])*(c.position[0]-a.position[0]); if (area<=1e-8) issue('E_MOTION_TRIANGLE','/motion/meshes'); }
-      const mtx = world(m.partId); const deltaLength = (v:[number,number]):number => Math.hypot(mtx[0]*v[0]+mtx[2]*v[1],mtx[1]*v[0]+mtx[3]*v[1]);
-      for (const v of m.vertices) if (![...v.position,...m.pivot].every(n => Math.abs(n)<=1e7) || deltaLength(v.minimum)>p.motion.faceWidth*.045+1e-6 || deltaLength(v.maximum)>p.motion.faceWidth*.045+1e-6) issue('E_MOTION_RANGE','/motion/meshes');
+      if (seen.has(m.partId) || !parts.has(m.partId)) issue('E_MOTION_REFERENCE', '/motion/meshes');
+      seen.add(m.partId);
+      if (
+        (m.yawParameterId && parameters.get(m.yawParameterId)?.previewKey !== 'head_yaw') ||
+        (m.rollParameterId && parameters.get(m.rollParameterId)?.previewKey !== 'head_roll')
+      )
+        issue('E_MOTION_REFERENCE', '/motion/meshes');
+      if (m.triangles.length % 3 || m.triangles.some((i) => i >= m.vertices.length))
+        issue('E_MOTION_TRIANGLE', '/motion/meshes');
+      for (let i = 0; i < m.triangles.length; i += 3) {
+        const a = m.vertices[m.triangles[i]!]!;
+        const b = m.vertices[m.triangles[i + 1]!]!;
+        const c = m.vertices[m.triangles[i + 2]!]!;
+        if (!a || !b || !c) continue;
+        const area =
+          (b.position[0] - a.position[0]) * (c.position[1] - a.position[1]) -
+          (b.position[1] - a.position[1]) * (c.position[0] - a.position[0]);
+        if (area <= 1e-8) issue('E_MOTION_TRIANGLE', '/motion/meshes');
+      }
+      const mtx = world(m.partId);
+      const deltaLength = (v: [number, number]): number =>
+        Math.hypot(mtx[0] * v[0] + mtx[2] * v[1], mtx[1] * v[0] + mtx[3] * v[1]);
+      for (const v of m.vertices)
+        if (
+          ![...v.position, ...m.pivot].every((n) => Math.abs(n) <= 1e7) ||
+          deltaLength(v.minimum) > p.motion.faceWidth * 0.045 + 1e-6 ||
+          deltaLength(v.maximum) > p.motion.faceWidth * 0.045 + 1e-6
+        )
+          issue('E_MOTION_RANGE', '/motion/meshes');
       if (!issues.length) {
-        const pivot = transform(mtx,{ x:m.pivot[0],y:m.pivot[1] }); const zero = transform(mtx,{ x:0,y:0 });
-        const vectors = m.vertices.map(v => { const position = transform(mtx,{ x:v.position[0],y:v.position[1] }); const min = transform(mtx,{ x:v.minimum[0],y:v.minimum[1] }); const max = transform(mtx,{ x:v.maximum[0],y:v.maximum[1] }); return { position,weight:v.weight,min:{ x:min.x-zero.x,y:min.y-zero.y },max:{ x:max.x-zero.x,y:max.y-zero.y } }; });
-        const layer = { id:m.partId,z:0,origin:[0,0] as [number,number],opacity:1,bind:null,states:{},mesh:{ pivot:[pivot.x,pivot.y] as [number,number],vertices:[],triangles:[],yaw:m.yawParameterId!==null,roll:m.rollParameterId!==null,maxRollDegrees:p.motion.maxRollDegrees,curve:m.curve } };
-        const area = (a:{ x:number;y:number },b:{ x:number;y:number },c:{ x:number;y:number }):number => (b.x-a.x)*(c.y-a.y)-(b.y-a.y)*(c.x-a.x);
-        for (const head_yaw of [-1,0,1]) for (const head_roll of [-1,0,1]) { const points = vectors.map(v => deformPoint(layer,v.position,v.weight,v.min,v.max,{ ...NEUTRAL,head_yaw,head_roll }));
-          for (let i=0;i<m.triangles.length;i+=3) { const [a,b,c] = m.triangles.slice(i,i+3) as [number,number,number]; const before = area(vectors[a]!.position,vectors[b]!.position,vectors[c]!.position); const after = area(points[a]!,points[b]!,points[c]!); if (!Number.isFinite(after) || after*before<=0 || Math.abs(after)<Math.abs(before)*.01) { issue('E_MOTION_FOLD','/motion/meshes'); break; } }
-        }
+        const pivot = transform(mtx, { x: m.pivot[0], y: m.pivot[1] });
+        const zero = transform(mtx, { x: 0, y: 0 });
+        const vectors = m.vertices.map((v) => {
+          const position = transform(mtx, { x: v.position[0], y: v.position[1] });
+          const min = transform(mtx, { x: v.minimum[0], y: v.minimum[1] });
+          const max = transform(mtx, { x: v.maximum[0], y: v.maximum[1] });
+          return {
+            position,
+            weight: v.weight,
+            min: { x: min.x - zero.x, y: min.y - zero.y },
+            max: { x: max.x - zero.x, y: max.y - zero.y },
+          };
+        });
+        const layer = {
+          id: m.partId,
+          z: 0,
+          origin: [0, 0] as [number, number],
+          opacity: 1,
+          bind: null,
+          states: {},
+          mesh: {
+            pivot: [pivot.x, pivot.y] as [number, number],
+            vertices: [],
+            triangles: [],
+            yaw: m.yawParameterId !== null,
+            roll: m.rollParameterId !== null,
+            maxRollDegrees: p.motion.maxRollDegrees,
+            curve: m.curve,
+          },
+        };
+        const area = (
+          a: { x: number; y: number },
+          b: { x: number; y: number },
+          c: { x: number; y: number },
+        ): number => (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
+        for (const head_yaw of [-1, 0, 1])
+          for (const head_roll of [-1, 0, 1]) {
+            const points = vectors.map((v) =>
+              deformPoint(layer, v.position, v.weight, v.min, v.max, {
+                ...NEUTRAL,
+                head_yaw,
+                head_roll,
+              }),
+            );
+            for (let i = 0; i < m.triangles.length; i += 3) {
+              const [a, b, c] = m.triangles.slice(i, i + 3) as [number, number, number];
+              const before = area(vectors[a]!.position, vectors[b]!.position, vectors[c]!.position);
+              const after = area(points[a]!, points[b]!, points[c]!);
+              if (
+                !Number.isFinite(after) ||
+                after * before <= 0 ||
+                Math.abs(after) < Math.abs(before) * 0.01
+              ) {
+                issue('E_MOTION_FOLD', '/motion/meshes');
+                break;
+              }
+            }
+          }
       }
     }
-    const pose = new Set<string>(); for (const v of p.motion.settings.pose) { const param = parameters.get(v.parameterId); if (!param || pose.has(v.parameterId)) issue('E_MOTION_REFERENCE','/motion/settings/pose'); else if (v.value<param.min || v.value>param.max) issue('E_PARAMETER_RANGE','/motion/settings/pose'); pose.add(v.parameterId); }
+    const pose = new Set<string>();
+    for (const v of p.motion.settings.pose) {
+      const param = parameters.get(v.parameterId);
+      if (!param || pose.has(v.parameterId)) issue('E_MOTION_REFERENCE', '/motion/settings/pose');
+      else if (v.value < param.min || v.value > param.max)
+        issue('E_PARAMETER_RANGE', '/motion/settings/pose');
+      pose.add(v.parameterId);
+    }
   }
   return issues;
 }
 export function assertProject(value: unknown): asserts value is Project {
-  const issues = validateProject(value); if (issues.length) throw new Error(issues[0]!.code);
+  const issues = validateProject(value);
+  if (issues.length) throw new Error(issues[0]!.code);
 }
-export function assertMachineSettings(value: unknown, project: Project): asserts value is MachineSettings {
+export function assertMachineSettings(
+  value: unknown,
+  project: Project,
+): asserts value is MachineSettings {
   if (!checkMachine(value)) throw new Error('E_MACHINE_SCHEMA');
   if (value.projectId !== project.projectId) throw new Error('E_MACHINE_PROJECT');
-  const ids = new Set<string>(); const bindings = new Set(project.inputBindings.map(v => v.id));
+  const ids = new Set<string>();
+  const bindings = new Set(project.inputBindings.map((v) => v.id));
   for (const c of value.calibrations) {
-    if (!bindings.has(c.bindingId) || ids.has(c.bindingId) || c.inputRange[0] >= c.inputRange[1]) throw new Error('E_MACHINE_CALIBRATION'); ids.add(c.bindingId);
+    if (!bindings.has(c.bindingId) || ids.has(c.bindingId) || c.inputRange[0] >= c.inputRange[1])
+      throw new Error('E_MACHINE_CALIBRATION');
+    ids.add(c.bindingId);
   }
 }

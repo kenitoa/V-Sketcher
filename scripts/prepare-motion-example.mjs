@@ -1,7 +1,13 @@
-import { readFileSync,writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { bin } from './common.mjs';
-bin('typescript','tsc',['-p','tsconfig.json','--outDir','.local/test-js']);
-const require = createRequire(import.meta.url); const { authorRig } = require('../.local/test-js/packages/motion');
-const file = 'assets/product/preview-project.json'; const project = JSON.parse(readFileSync(file,'utf8')); project.schemaVersion.minor = 1; delete project.motion; project.motion = authorRig(project); writeFileSync(file,JSON.stringify(project,null,2)+'\n');
+bin('typescript', 'tsc', ['-p', 'tsconfig.json', '--outDir', '.local/test-js']);
+const require = createRequire(import.meta.url);
+const { authorRig } = require('../.local/test-js/packages/motion');
+const file = 'assets/product/preview-project.json';
+const project = JSON.parse(readFileSync(file, 'utf8'));
+project.schemaVersion.minor = 1;
+delete project.motion;
+project.motion = authorRig(project);
+writeFileSync(file, JSON.stringify(project, null, 2) + '\n');
 console.log('Prepared explicit authored example motion mesh; source PNGs unchanged');

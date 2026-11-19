@@ -1,0 +1,6 @@
+{
+  "validForFinalPerformanceAcceptance": false,
+  "reason": "GPU allocation/disposal check overlapped the initial renderer comparison run",
+  "pixelsAndPickingRemainDiagnosticOnly": true,
+  "repeat": "bench-final-02 with GPU checks completed first"
+}

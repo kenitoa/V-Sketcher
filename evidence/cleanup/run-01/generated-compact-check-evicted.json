@@ -1,0 +1,12 @@
+{
+  "group": "generated-compact-check",
+  "removedFiles": 98,
+  "removedLogicalBytes": 88693475,
+  "retainedChangedOrProtectedFiles": 0,
+  "remainingSelectedFiles": 0,
+  "losslessArchiveRetained": true,
+  "wholeArchiveReconstructedBeforeFirstRemoval": true,
+  "sourceHashRecheckedBeforeEachRemoval": true,
+  "recursiveDeletionUsed": false,
+  "historicalEvidenceModified": false
+}

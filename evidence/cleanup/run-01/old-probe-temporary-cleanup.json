@@ -1,0 +1,47 @@
+{
+  "results": [
+    {
+      "candidateVersion": "0.22.1",
+      "candidateSha256": "e5e4f3a5820d4a3563dfcce9b8cba3eccc1ce50d8673db0cb45a0c4030590ad3",
+      "removedFiles": 1298,
+      "removedTemporaryBytes": 1142014816,
+      "failureReportsPreserved": [
+        {
+          "name": "owned-probe.json",
+          "sha256": "a0c774a019de0a36adc401405facfde9db5259d8499215143ab434eb184d9bb7"
+        },
+        {
+          "name": "private-stdout-1.log",
+          "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+        },
+        {
+          "name": "report-1.json",
+          "sha256": "34e1ec5c005cdd49a347a3d6de9fb80e34526441c7bf8bf00b6cfe20887eb325"
+        }
+      ],
+      "recursiveDeletionUsed": false
+    },
+    {
+      "candidateVersion": "0.22.2",
+      "candidateSha256": "cd18146db71602a868c513e2b374b53388867d687b45d7b644ce501f713f175b",
+      "removedFiles": 1287,
+      "removedTemporaryBytes": 1067013379,
+      "failureReportsPreserved": [
+        {
+          "name": "owned-probe.json",
+          "sha256": "f1e812e987d8160be5c0316c38bc3146634ba1240af085614bd7e32e47f2eb31"
+        },
+        {
+          "name": "private-stdout-1.log",
+          "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+        },
+        {
+          "name": "report-1.json",
+          "sha256": "da02baac3651d58b48eb3a8adb1ca355d1be199756d332d2c0e3e720c5a9c7a0"
+        }
+      ],
+      "recursiveDeletionUsed": false
+    }
+  ],
+  "unrelatedTemporaryDirectoriesTouched": false
+}

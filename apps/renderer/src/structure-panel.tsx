@@ -1,17 +1,226 @@
-import React,{useEffect,useRef,useState} from 'react';
-import type {SessionView,SessionCommand} from '../../../packages/project-session/contracts';
-import {AvatarRenderer} from '../../../packages/avatar-renderer';
-import {MotionPlayer} from '../../../packages/motion';
-const labels:Record<string,string>={eye_left:'왼쪽 눈',eye_right:'오른쪽 눈',mouth:'입','hair-front':'앞머리 분리','hair-back':'뒷머리 분리',eyebrows:'눈썹 분리','body-separation':'몸통 독립 분리'};
-const warnings:Record<string,string>={FACE_NOT_FOUND:'얼굴을 찾지 못했어요. 정면 얼굴이 충분히 크게 보이는 그림과 대상 영역을 확인해 주세요.',MULTIPLE_FACES:'얼굴이 여러 개예요. 대상 선택에서 한 명만 남겨 주세요.',SMALL_FACE:'얼굴이 작아 눈·입을 확정하지 않았어요. 더 큰 원본을 사용해 주세요.',OCCLUSION_REPORTED:'가림을 표시해 눈·입 추정을 연결하지 않았어요. 보이는 원화와 작은 고개 동작을 유지합니다.',POSE_UNSUPPORTED:'얼굴 방향이 지원 범위를 벗어나 눈·입 동작을 제한했어요.',PLANAR_HEAD_ONLY:'작은 평면 고개만 제공합니다. 옆·뒷모습이나 머리카락 뒤는 복원하지 않습니다.'};
-export function StructurePanel({view,command,onNext}:{view:SessionView;command:(c:SessionCommand)=>void;onNext:()=>void}){
- const s=view.structure,p=view.project;const canvas=useRef<HTMLCanvasElement>(null);const [play,setPlay]=useState(false);const [failed,setFailed]=useState(false);
- const scene=s?.scene,model=s?.project;const key=JSON.stringify(scene);useEffect(()=>{if(!scene||!model||!canvas.current)return;let disposed=false,frame=0;const player=new MotionPlayer();player.setProject(model);if(play)player.play('all',true);let renderer:AvatarRenderer;try{renderer=new AvatarRenderer(canvas.current,scene);}catch{setFailed(true);return;}setFailed(false);void renderer.load(document.baseURI).then(()=>{if(disposed)return;const draw=(now:number)=>{renderer.draw(player.frame(now).parameters);frame=requestAnimationFrame(draw);};frame=requestAnimationFrame(draw);}).catch(()=>setFailed(true));return()=>{disposed=true;cancelAnimationFrame(frame);renderer.dispose();};},[key,play]);
- if(!p?.inputPreparation||p.sourceType!=='single-image')return null;const revision=p.revision;const r=s?.canApply?s.report:p.structure?.report??s?.report;const busy=!!s?.busy||!!view.input?.busy||!!view.correction?.busy;const protectedEdits=!!p.structure?.corrections;
- return <section className="structure-panel" aria-label="한 장 자동 구조화" data-structure-state={s?.state}><h3>그림 한 장 → 자동 움직임 준비</h3><button data-structure-start disabled={busy||protectedEdits} onClick={()=>{setPlay(true);command({type:'structure-start',expectedRevision:revision,completion:'estimated'});}}>눈·입과 제한 고개 자동 준비</button><button data-structure-restrict disabled={busy||protectedEdits} onClick={()=>{setPlay(true);command({type:'structure-start',expectedRevision:revision,completion:'restrict'});}}>추정 표정 없이 원화·작은 고개만 준비</button>
- {s?.busy&&<><p role="status">{s.earlyReady?'얼굴 준비 완료 · 제한 고개를 먼저 시험할 수 있어요. 눈·입 보완 준비 중입니다.':'얼굴·눈·입 후보를 분석하고 있어요.'}</p><button data-structure-cancel onClick={()=>command({type:'structure-cancel'})}>자동 준비 취소 · 정상 결과 유지</button></>}
- {scene&&<div className="structure-result"><h4>{s?.state==='review'?'적용 전 자동 결과':'먼저 준비된 움직임 · 최종 결과 아님'}</h4><canvas ref={canvas} width="400" height="500" aria-label="자동 구조화 움직임 미리보기"/><button data-structure-play onClick={()=>setPlay(v=>!v)}>{play?'시험 멈추기 · 기본 모습':'준비된 움직임 시험'}</button>{failed&&<p role="alert">미리보기를 읽지 못했어요. 적용하지 말고 다시 준비해 주세요.</p>}</div>}
- {r&&<><p role="status">{r.status==='ready'?'눈·입 후보 준비됨':r.status==='partial'?'일부 부위 확인 필요 · 가능한 동작만 준비':'전체 분석 실패 · 기존 모습 유지'}</p>{r.warnings.map(v=><p role="note" key={v}>{warnings[v]??v}</p>)}<ul>{r.regions.map(v=><li key={v.key}>{labels[v.key]}: {v.observed?'원본에서 확인한 후보':'미확인 · 자동 연결 안 함'}{v.enabled?' · 표정의 다른 상태는 추정 그림':''}</li>)}</ul><details><summary>원본과 추정 영역·미확인 부위</summary><p>눈 감기와 입 안은 원본이 아닌 별도 추정 자원입니다. 원본의 눈·입 사각 영역에만 국소 보완하며, 원본 바이트와 연결 정보를 저장합니다. 추정 표정 없는 대체안 또는 결과 폐기로 돌아갈 수 있어요.</p><ul>{r.unconfirmed.map(v=><li key={v}>{labels[v]??v}: 독립 동작을 연결하지 않아요.</li>)}</ul>{r.regions.map(v=><p key={v.key}>{labels[v.key]} 원본 영역: {v.rect.x}, {v.rect.y} · {v.rect.width}×{v.rect.height}</p>)}</details></>}
- {s?.errorCode&&<p role="alert">{s.errorCode==='E_INPUT_TIMEOUT'?'준비 시간이 길어 작업을 멈췄어요. 다른 작업이 끝난 뒤 다시 준비해 주세요.':s.errorCode==='E_INPUT_STALE'?'분석 중 편집이 바뀌어 적용하지 않았어요. 현재 그림에서 다시 준비해 주세요.':'자동 준비를 끝내지 못했어요. 대상·가림을 확인하거나 추정 없는 제한 동작으로 다시 준비해 주세요.'} 원본과 마지막 정상 결과는 보존됩니다.</p>}{s?.canRetry&&<button data-structure-retry disabled={busy} onClick={()=>command({type:'structure-retry',expectedRevision:revision})}>현재 그림으로 다시 준비</button>}
- {s?.canApply&&<><p>이 결과를 적용하면 현재 구조를 교체하고 변경 전 복구본과 되돌리기 이력을 보관합니다.</p><button className="primary" data-structure-apply disabled={failed||busy} onClick={()=>command({type:'structure-apply',expectedRevision:revision})}>비교한 자동 결과 적용</button><button data-structure-discard onClick={()=>command({type:'structure-cancel'})}>이 결과 폐기 · 기존 모습 유지</button></>}{p.structure&&<button data-correction-open onClick={()=>window.dispatchEvent(new Event('studio:correction'))}>모양 고치기 · 넓은 보정 화면 열기</button>}{protectedEdits&&<p>적용한 보정이 있어요. 부위별 재분석에서 유지/덮어쓰기를 선택하세요.</p>}{p.structure&&<button data-structure-motion onClick={onNext}>적용한 결과의 움직임 시험 →</button>}</section>;
+import { useEffect, useRef, useState } from 'react';
+import type { SessionView, SessionCommand } from '../../../packages/project-session/contracts';
+import { AvatarRenderer } from '../../../packages/avatar-renderer';
+import { MotionPlayer } from '../../../packages/motion';
+const labels: Record<string, string> = {
+  eye_left: '왼쪽 눈',
+  eye_right: '오른쪽 눈',
+  mouth: '입',
+  'hair-front': '앞머리 분리',
+  'hair-back': '뒷머리 분리',
+  eyebrows: '눈썹 분리',
+  'body-separation': '몸통 독립 분리',
+};
+const warnings: Record<string, string> = {
+  FACE_NOT_FOUND:
+    '얼굴을 찾지 못했어요. 정면 얼굴이 충분히 크게 보이는 그림과 대상 영역을 확인해 주세요.',
+  MULTIPLE_FACES: '얼굴이 여러 개예요. 대상 선택에서 한 명만 남겨 주세요.',
+  SMALL_FACE: '얼굴이 작아 눈·입을 확정하지 않았어요. 더 큰 원본을 사용해 주세요.',
+  OCCLUSION_REPORTED:
+    '가림을 표시해 눈·입 추정을 연결하지 않았어요. 보이는 원화와 작은 고개 동작을 유지합니다.',
+  POSE_UNSUPPORTED: '얼굴 방향이 지원 범위를 벗어나 눈·입 동작을 제한했어요.',
+  PLANAR_HEAD_ONLY: '작은 평면 고개만 제공합니다. 옆·뒷모습이나 머리카락 뒤는 복원하지 않습니다.',
+};
+export function StructurePanel({
+  view,
+  command,
+  onNext,
+}: {
+  view: SessionView;
+  command: (c: SessionCommand) => void;
+  onNext: () => void;
+}) {
+  const s = view.structure,
+    p = view.project;
+  const canvas = useRef<HTMLCanvasElement>(null);
+  const [play, setPlay] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const scene = s?.scene,
+    model = s?.project;
+  const key = JSON.stringify(scene);
+  useEffect(() => {
+    if (!scene || !model || !canvas.current) return;
+    let disposed = false,
+      frame = 0;
+    const player = new MotionPlayer();
+    player.setProject(model);
+    if (play) player.play('all', true);
+    let renderer: AvatarRenderer;
+    try {
+      renderer = new AvatarRenderer(canvas.current, scene);
+    } catch {
+      setFailed(true);
+      return;
+    }
+    setFailed(false);
+    void renderer
+      .load(document.baseURI)
+      .then(() => {
+        if (disposed) return;
+        const draw = (now: number) => {
+          renderer.draw(player.frame(now).parameters);
+          frame = requestAnimationFrame(draw);
+        };
+        frame = requestAnimationFrame(draw);
+      })
+      .catch(() => setFailed(true));
+    return () => {
+      disposed = true;
+      cancelAnimationFrame(frame);
+      renderer.dispose();
+    };
+  }, [key, play]);
+  if (!p?.inputPreparation || p.sourceType !== 'single-image') return null;
+  const revision = p.revision;
+  const r = s?.canApply ? s.report : (p.structure?.report ?? s?.report);
+  const busy = !!s?.busy || !!view.input?.busy || !!view.correction?.busy;
+  const protectedEdits = !!p.structure?.corrections;
+  return (
+    <section
+      className="structure-panel"
+      aria-label="한 장 자동 구조화"
+      data-structure-state={s?.state}
+    >
+      <h3>그림 한 장 → 자동 움직임 준비</h3>
+      <button
+        data-structure-start
+        disabled={busy || protectedEdits}
+        onClick={() => {
+          setPlay(true);
+          command({ type: 'structure-start', expectedRevision: revision, completion: 'estimated' });
+        }}
+      >
+        눈·입과 제한 고개 자동 준비
+      </button>
+      <button
+        data-structure-restrict
+        disabled={busy || protectedEdits}
+        onClick={() => {
+          setPlay(true);
+          command({ type: 'structure-start', expectedRevision: revision, completion: 'restrict' });
+        }}
+      >
+        추정 표정 없이 원화·작은 고개만 준비
+      </button>
+      {s?.busy && (
+        <>
+          <p role="status">
+            {s.earlyReady
+              ? '얼굴 준비 완료 · 제한 고개를 먼저 시험할 수 있어요. 눈·입 보완 준비 중입니다.'
+              : '얼굴·눈·입 후보를 분석하고 있어요.'}
+          </p>
+          <button data-structure-cancel onClick={() => command({ type: 'structure-cancel' })}>
+            자동 준비 취소 · 정상 결과 유지
+          </button>
+        </>
+      )}
+      {scene && (
+        <div className="structure-result">
+          <h4>
+            {s?.state === 'review' ? '적용 전 자동 결과' : '먼저 준비된 움직임 · 최종 결과 아님'}
+          </h4>
+          <canvas ref={canvas} width="400" height="500" aria-label="자동 구조화 움직임 미리보기" />
+          <button data-structure-play onClick={() => setPlay((v) => !v)}>
+            {play ? '시험 멈추기 · 기본 모습' : '준비된 움직임 시험'}
+          </button>
+          {failed && (
+            <p role="alert">미리보기를 읽지 못했어요. 적용하지 말고 다시 준비해 주세요.</p>
+          )}
+        </div>
+      )}
+      {r && (
+        <>
+          <p role="status">
+            {r.status === 'ready'
+              ? '눈·입 후보 준비됨'
+              : r.status === 'partial'
+                ? '일부 부위 확인 필요 · 가능한 동작만 준비'
+                : '전체 분석 실패 · 기존 모습 유지'}
+          </p>
+          {r.warnings.map((v) => (
+            <p role="note" key={v}>
+              {warnings[v] ?? v}
+            </p>
+          ))}
+          <ul>
+            {r.regions.map((v) => (
+              <li key={v.key}>
+                {labels[v.key]}: {v.observed ? '원본에서 확인한 후보' : '미확인 · 자동 연결 안 함'}
+                {v.enabled ? ' · 표정의 다른 상태는 추정 그림' : ''}
+              </li>
+            ))}
+          </ul>
+          <details>
+            <summary>원본과 추정 영역·미확인 부위</summary>
+            <p>
+              눈 감기와 입 안은 원본이 아닌 별도 추정 자원입니다. 원본의 눈·입 사각 영역에만 국소
+              보완하며, 원본 바이트와 연결 정보를 저장합니다. 추정 표정 없는 대체안 또는 결과 폐기로
+              돌아갈 수 있어요.
+            </p>
+            <ul>
+              {r.unconfirmed.map((v) => (
+                <li key={v}>{labels[v] ?? v}: 독립 동작을 연결하지 않아요.</li>
+              ))}
+            </ul>
+            {r.regions.map((v) => (
+              <p key={v.key}>
+                {labels[v.key]} 원본 영역: {v.rect.x}, {v.rect.y} · {v.rect.width}×{v.rect.height}
+              </p>
+            ))}
+          </details>
+        </>
+      )}
+      {s?.errorCode && (
+        <p role="alert">
+          {s.errorCode === 'E_INPUT_TIMEOUT'
+            ? '준비 시간이 길어 작업을 멈췄어요. 다른 작업이 끝난 뒤 다시 준비해 주세요.'
+            : s.errorCode === 'E_INPUT_STALE'
+              ? '분석 중 편집이 바뀌어 적용하지 않았어요. 현재 그림에서 다시 준비해 주세요.'
+              : '자동 준비를 끝내지 못했어요. 대상·가림을 확인하거나 추정 없는 제한 동작으로 다시 준비해 주세요.'}{' '}
+          원본과 마지막 정상 결과는 보존됩니다.
+        </p>
+      )}
+      {s?.canRetry && (
+        <button
+          data-structure-retry
+          disabled={busy}
+          onClick={() => command({ type: 'structure-retry', expectedRevision: revision })}
+        >
+          현재 그림으로 다시 준비
+        </button>
+      )}
+      {s?.canApply && (
+        <>
+          <p>
+            이 결과를 적용하면 현재 구조를 교체하고 변경 전 복구본과 되돌리기 이력을 보관합니다.
+          </p>
+          <button
+            className="primary"
+            data-structure-apply
+            disabled={failed || busy}
+            onClick={() => command({ type: 'structure-apply', expectedRevision: revision })}
+          >
+            비교한 자동 결과 적용
+          </button>
+          <button data-structure-discard onClick={() => command({ type: 'structure-cancel' })}>
+            이 결과 폐기 · 기존 모습 유지
+          </button>
+        </>
+      )}
+      {p.structure && (
+        <button
+          data-correction-open
+          onClick={() => window.dispatchEvent(new Event('studio:correction'))}
+        >
+          모양 고치기 · 넓은 보정 화면 열기
+        </button>
+      )}
+      {protectedEdits && <p>적용한 보정이 있어요. 부위별 재분석에서 유지/덮어쓰기를 선택하세요.</p>}
+      {p.structure && (
+        <button data-structure-motion onClick={onNext}>
+          적용한 결과의 움직임 시험 →
+        </button>
+      )}
+    </section>
+  );
 }

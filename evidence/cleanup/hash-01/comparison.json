@@ -1,0 +1,37 @@
+{
+  "passed": true,
+  "inputBytes": 1677246742,
+  "inputKind": "pinned public TripoSR checkpoint",
+  "runs": [
+    {
+      "mode": "before",
+      "sha256": "429e2c6b22a0923967459de24d67f05962b235f79cde6b032aa7ed2ffcd970ee",
+      "elapsedMs": 6907.79189998284,
+      "peakWorkingSetBytes": 1701801984
+    },
+    {
+      "mode": "after",
+      "sha256": "429e2c6b22a0923967459de24d67f05962b235f79cde6b032aa7ed2ffcd970ee",
+      "elapsedMs": 3085.892600007355,
+      "peakWorkingSetBytes": 24383488
+    },
+    {
+      "mode": "after",
+      "sha256": "429e2c6b22a0923967459de24d67f05962b235f79cde6b032aa7ed2ffcd970ee",
+      "elapsedMs": 3087.2995000099763,
+      "peakWorkingSetBytes": 24530944
+    },
+    {
+      "mode": "before",
+      "sha256": "429e2c6b22a0923967459de24d67f05962b235f79cde6b032aa7ed2ffcd970ee",
+      "elapsedMs": 4215.956799918786,
+      "peakWorkingSetBytes": 1701281792
+    }
+  ],
+  "maximumBeforeBytes": 1701801984,
+  "maximumAfterBytes": 24530944,
+  "peakReduction": 0.985585312374392,
+  "measurement": "GetProcessMemoryInfo.PeakWorkingSetSize in fresh CPython child processes",
+  "scope": "model-file checksum only; no inference or model precision change",
+  "workerSource": "\nimport ctypes,hashlib,importlib.util,json,sys,time\nfrom pathlib import Path\nspec=importlib.util.spec_from_file_location('prepare_hash','scripts/three-d-learned-prepare.py')\nmodule=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)\nmode=sys.argv[1];source=Path(sys.argv[2]);started=time.perf_counter()\nchecksum=hashlib.sha256(source.read_bytes()).hexdigest() if mode=='before' else module.file_sha256(source)\nelapsed=(time.perf_counter()-started)*1000\nclass Memory(ctypes.Structure):\n _fields_=[('cb',ctypes.c_ulong),('faults',ctypes.c_ulong)]+[(name,ctypes.c_size_t) for name in ['peak','working','quotaPeakPaged','quotaPaged','quotaPeakNonPaged','quotaNonPaged','pagefile','peakPagefile']]\nmem=Memory();mem.cb=ctypes.sizeof(mem)\nk=ctypes.WinDLL('kernel32');k.GetCurrentProcess.restype=ctypes.c_void_p\np=ctypes.WinDLL('psapi');p.GetProcessMemoryInfo.argtypes=[ctypes.c_void_p,ctypes.c_void_p,ctypes.c_ulong]\nassert p.GetProcessMemoryInfo(k.GetCurrentProcess(),ctypes.byref(mem),ctypes.sizeof(mem))\nprint(json.dumps({'mode':mode,'sha256':checksum,'elapsedMs':elapsed,'peakWorkingSetBytes':mem.peak}))\n"
+}

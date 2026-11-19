@@ -1,0 +1,12 @@
+{
+  "group": "validation-inochi-01",
+  "removedFiles": 2329,
+  "removedLogicalBytes": 606506368,
+  "retainedChangedOrProtectedFiles": 0,
+  "remainingSelectedFiles": 0,
+  "losslessArchiveRetained": true,
+  "wholeArchiveReconstructedBeforeFirstRemoval": true,
+  "sourceHashRecheckedBeforeEachRemoval": true,
+  "recursiveDeletionUsed": false,
+  "historicalEvidenceModified": false
+}

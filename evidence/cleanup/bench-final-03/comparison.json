@@ -1,0 +1,42 @@
+{
+  "passed": false,
+  "before": {
+    "variant": "before",
+    "medianLoadMs": 196.59999990463257,
+    "medianHitMs": 262.3000000715256,
+    "drawP95Ms": 1.100000023841858,
+    "frameIntervalP95Ms": 46.89999997615814,
+    "medianCompletedFPS": 29.996200481320045,
+    "ownedAlphaBytes": 0,
+    "referencedDecodedRGBABytesEstimate": 6474624,
+    "medianRendererWorkingSetKiB": 145080,
+    "medianRendererPeakWorkingSetKiB": 149516,
+    "maximumRendererPeakWorkingSetKiB": 149856
+  },
+  "after": {
+    "variant": "after",
+    "medianLoadMs": 215.60000002384186,
+    "medianHitMs": 150.60000002384186,
+    "drawP95Ms": 1.2999999523162842,
+    "frameIntervalP95Ms": 47,
+    "medianCompletedFPS": 29.997200261356618,
+    "ownedAlphaBytes": 1618656,
+    "referencedDecodedRGBABytesEstimate": 0,
+    "medianRendererWorkingSetKiB": 143448,
+    "medianRendererPeakWorkingSetKiB": 151216,
+    "maximumRendererPeakWorkingSetKiB": 151720
+  },
+  "pixelsIdentical": true,
+  "pickingIdentical": true,
+  "noFrameRegression": false,
+  "noLoadRegression": false,
+  "noPickingRegression": true,
+  "noMemoryRegression": true,
+  "memorySamplePhase": "active-renderer-before-disposal",
+  "timingWindow": "GPU-completed 15-second draw loop; excludes PNG and diagnostic readback",
+  "alphaCacheVsPriorRGBAEstimateReduction": 0.75,
+  "physicalDevicesOpened": false,
+  "actualOBS": false,
+  "releasePerformanceAcceptance": false,
+  "scope": "Six interleaved fresh-process premium-renderer runs; exact six-pose pixels and 625 picking points. RSS includes caches/shared pages; decoded RGBA is an estimate. Device/OBS/2h acceptance is separate."
+}

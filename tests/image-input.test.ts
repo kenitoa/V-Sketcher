@@ -1,26 +1,290 @@
+import { scratchPath } from './temp';
 import { execFileSync } from 'node:child_process';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdir,mkdtemp,readFile,writeFile,readdir } from 'node:fs/promises';
-import { resolve,join } from 'node:path';
+import { mkdir, mkdtemp, readFile, writeFile, readdir } from 'node:fs/promises';
+import { resolve, join } from 'node:path';
 import { imageProcessor } from '../apps/desktop/image-processor';
 import { ProjectSession } from '../packages/project-session';
-import { readProject,validateProject,type Project } from '../packages/project-model';
-import { assertSelection,type InputProcessor,type Selection,type Probe } from '../packages/image-input/types';
+import { readProject, validateProject, type Project } from '../packages/project-model';
+import {
+  assertSelection,
+  type InputProcessor,
+  type Selection,
+  type Probe,
+} from '../packages/image-input/types';
 import { parseSessionCommand } from '../packages/project-session/contracts';
 import { sha256 } from '../packages/project-storage/archive';
 import { transform } from '../packages/coordinates';
-const pause=()=>new Promise(r=>setTimeout(r,15));
-const until=async (condition:()=>boolean):Promise<void> => { const start=Date.now();while(!condition()) { if(Date.now()-start>60000)throw new Error('E_TEST_INPUT_TIMEOUT');await pause(); } };
-async function setup(processor?:InputProcessor) { await mkdir('.local/input-tests',{recursive:true});const dir=await mkdtemp(resolve('.local/input-tests/run-'));const read=readProject(await readFile('assets/product/preview-project.json','utf8'));if(read.mode!=='read-write')throw new Error('fixture');const bundled=read.project;const original=bundled.assets.find(a=>a.id===bundled.inputAssetIds[0])!;const bytes=await readFile(join('assets/product/preview',original.fingerprint.sha256+'.png'));const file=join(dir,'source.png');await writeFile(file,bytes);let chosen:string|null=file;const actual=imageProcessor(resolve('.venv-product/Scripts/python.exe'),['-I','-u',resolve('worker/main.py')],join(dir,'work'),process.env);const s=new ProjectSession({dataDir:dir,bundled,bundledBytes:new Map(await Promise.all(bundled.assets.map(async a=>[a.id,await readFile(join('assets/product/preview',a.fingerprint.sha256+'.png'))] as const))),inputProcessor:processor??actual,dialogs:{chooseImage:async()=>chosen,openProject:async()=>null,saveProject:async()=>join(dir,'saved.2dsketch'),relinkImage:async()=>null,unsaved:async()=>'discard'},autoTimers:false});await s.init();await s.newProject('Input test','single-image');return {s,actual,file,bytes,dir,choose:(v:string|null)=>{chosen=v;}}; }
-async function probe(s:ProjectSession) { await s.dispatch({type:'import-image'});await until(()=>!s.view().input!.busy);assert.equal(s.view().input!.errorCode,null);return s.view().input!.draft!; }
-function selection(probe:Probe):Selection { return {rect:{x:0,y:0,...probe.size},backgroundTolerance:null,masks:[],occluded:false}; }
-async function apply(s:ProjectSession) { const d=s.view().input!.draft!;await s.dispatch({type:'input-apply',draftId:d.id,selection:selection(d.probe)});await until(()=>!s.view().input!.busy);assert.equal(s.view().input!.errorCode,null); }
-test('T111/T112: bounded real file import validates premium PNG and keeps draft outside project until confirmation',async()=>{const {s,bytes}=await setup();const before=JSON.stringify(s.view().project);const d=await probe(s);assert.equal(d.probe.originalSize.width,1254);assert.equal(d.probe.format,'png');assert.ok(d.probe.candidates.length);assert.equal(JSON.stringify(s.view().project),before);const staged=await s.resource(d.id,d.preview.split('/').at(-1)!);assert.ok(staged && staged.subarray(1,4).toString()==='PNG');assert.ok(!JSON.stringify(s.view()).includes(resolve('.local')));await s.shutdown();});
-test('T113/T116/T119: actual selected image persists transforms/resources; source preserved, replacement invalidates rig, undo/redo and ZIP reopen reproduce selection',async()=>{const {s,file,bytes,dir}=await setup();await s.dispatch({type:'sample'});assert.ok(s.view().project!.motion);const authored=structuredClone({parameters:s.view().project!.parameters,expressions:s.view().project!.expressions});await probe(s);await apply(s);await s.dispatch({type:'undo'});assert.ok(s.view().project!.motion);assert.equal(s.view().project!.inputPreparation,undefined);await s.dispatch({type:'redo'});let p=s.view().project!;assert.ok(p.inputPreparation);assert.equal(p.schemaVersion.minor,9);const selected=p.inputPreparation!;const original=p.assets.find(a=>a.id===selected.originalAssetId)!;assert.equal(sha256(await readFile(file)),sha256(bytes));assert.equal(sha256((await s.cache.read(original))!),sha256(bytes));assert.equal(p.motion,undefined);assert.equal(p.parts.length,1);assert.equal(p.parameters.length,5);assert.deepEqual({parameters:p.parameters,expressions:p.expressions},authored);await s.save(false);await s.openFile(join(dir,'saved.2dsketch'));assert.deepEqual(s.view().project!.inputPreparation,selected);const prior=JSON.stringify(s.view().project!.parts);const d=await probe(s);const rect={x:100,y:80,width:900,height:1000};await s.dispatch({type:'input-apply',draftId:d.id,selection:{...selection(d.probe),rect,occluded:true,masks:[{mode:'erase',rect:{x:100,y:80,width:20,height:20}}]}});await until(()=>!s.view().input!.busy);assert.equal(s.view().input!.errorCode,null);p=s.view().project!;assert.deepEqual(p.canvas,{width:900,height:1000});assert.ok(p.assets.some(a=>a.id===original.id));assert.equal(p.inputPreparation!.analysis.crop.x,100);const n=p.assets.find(a=>a.id===p.inputPreparation!.normalizedAssetId)!;assert.deepEqual(transform(n.sourceToEdited,{x:100,y:80}),{x:0,y:0});await s.dispatch({type:'undo'});assert.equal(JSON.stringify(s.view().project!.parts),prior);assert.deepEqual(s.view().project!.inputPreparation,selected);await s.dispatch({type:'redo'});assert.equal(s.view().project!.inputPreparation!.analysis.crop.x,100);await s.shutdown();});
-test('T112/T118/T120: corrupt file is never registered; retry rereads repaired bytes and cancelled file dialog preserves draft',async()=>{const {s,file,bytes,choose}=await setup();await writeFile(file,Buffer.from('invalid'));await s.dispatch({type:'import-image'});await until(()=>!s.view().input!.busy);assert.equal(s.view().input!.errorCode,'E_INPUT_SIGNATURE');assert.equal(s.view().project!.assets.length,0);assert.ok(s.view().input!.canRetry);await writeFile(file,bytes);await s.dispatch({type:'input-retry'});await until(()=>!s.view().input!.busy);assert.ok(s.view().input!.draft);const id=s.view().input!.draft!.id;choose(null);await s.dispatch({type:'import-image'});assert.equal(s.view().input!.draft!.id,id);await s.shutdown();});
-test('T118/T120: real subprocess abort cleans temporary files and does not commit resources',async()=>{const {s,actual,bytes,dir}=await setup();const controller=new AbortController();const operation=actual.run('probe',bytes,'.png',null,controller.signal);setTimeout(()=>controller.abort(),40);await assert.rejects(operation,/E_JOB_CANCELLED/);assert.deepEqual(await readdir(join(dir,'work')),[]);assert.equal(s.view().project!.assets.length,0);await s.dispatch({type:'import-image'});await s.dispatch({type:'input-cancel'});await until(()=>!s.view().input!.busy);assert.equal(s.view().project!.assets.length,0);await s.shutdown();});
-test('T118/T119: project switch revokes actual pending import without cross-project draft or resources',async()=>{const {s}=await setup();await s.dispatch({type:'import-image'});await s.newProject('Other','split-image');await pause();assert.equal(s.view().project!.sourceType,'split-image');assert.equal(s.view().input!.draft,null);assert.equal(s.view().project!.assets.length,0);await s.shutdown();});
-test('T119/T120: manual revision change during real preparation rejects stale output and preserves edit',async()=>{const {s}=await setup();await s.dispatch({type:'import-image'});const p=s.view().project!;await s.dispatch({type:'edit',target:'project-name',id:null,parameterId:null,value:'Kept edit',expectedRevision:p.revision,groupId:null});await until(()=>!s.view().input!.busy);assert.equal(s.view().input!.errorCode,'E_INPUT_STALE');assert.equal(s.view().project!.displayName,'Kept edit');assert.equal(s.view().project!.assets.length,0);await s.shutdown();});
-test('T115/T117: two real premium alpha subjects are proposed separately and selected region excludes the other',async()=>{const {s,actual,file,dir}=await setup();const multi=join(dir,'multi.png');execFileSync(resolve('.venv-product/Scripts/python.exe'),['-I','-c',"from PIL import Image;import sys;im=Image.open(sys.argv[1]).convert('RGBA');im=im.crop(im.getbbox());im.thumbnail((520,580));out=Image.new('RGBA',(1200,600));out.alpha_composite(im,(20,10));out.alpha_composite(im,(650,10));out.save(sys.argv[2])",file,multi],{windowsHide:true});const first=await actual.run('probe',await readFile(multi),'.png',null,new AbortController().signal);const d=first.report as Probe;assert.equal(d.candidates.length,2);const sel=selection(d);sel.rect={x:0,y:0,width:Math.floor(d.size.width/2),height:d.size.height};sel.occluded=true;const result=await actual.run('select',first.files.get('normalized.png')!,'.png',sel,new AbortController().signal);assert.ok('warnings' in result.report && result.report.warnings.includes('OCCLUDED_USER_REPORTED'));assert.equal((result.report as any).crop.width,sel.rect.width);await s.shutdown();});
-test('T102/T120: forged selection/IPC fields and invalid persisted references cannot enter project',async()=>{assert.throws(()=>assertSelection({rect:{x:0,y:0,width:1,height:NaN},masks:[],backgroundTolerance:null,occluded:false}));assert.throws(()=>parseSessionCommand({type:'import-image',path:'private'}));assert.throws(()=>parseSessionCommand({type:'input-apply',draftId:'bad',selection:{}}));const {s}=await setup();await probe(s);await apply(s);const p=structuredClone(s.view().project!) as Project;p.inputPreparation!.selectedAssetId='missing';assert.ok(validateProject(p).length);await s.shutdown();});
+const pause = () => new Promise((r) => setTimeout(r, 15));
+const until = async (condition: () => boolean): Promise<void> => {
+  const start = Date.now();
+  while (!condition()) {
+    if (Date.now() - start > 60000) throw new Error('E_TEST_INPUT_TIMEOUT');
+    await pause();
+  }
+};
+async function setup(processor?: InputProcessor) {
+  await mkdir(scratchPath('input-tests'), { recursive: true });
+  const dir = await mkdtemp(scratchPath('input-tests/run-'));
+  const read = readProject(await readFile('assets/product/preview-project.json', 'utf8'));
+  if (read.mode !== 'read-write') throw new Error('fixture');
+  const bundled = read.project;
+  const original = bundled.assets.find((a) => a.id === bundled.inputAssetIds[0])!;
+  const bytes = await readFile(
+    join('assets/product/preview', original.fingerprint.sha256 + '.png'),
+  );
+  const file = join(dir, 'source.png');
+  await writeFile(file, bytes);
+  let chosen: string | null = file;
+  const actual = imageProcessor(
+    resolve('.venv-product/Scripts/python.exe'),
+    ['-I', '-u', resolve('worker/main.py')],
+    join(dir, 'work'),
+    process.env,
+  );
+  const s = new ProjectSession({
+    dataDir: dir,
+    bundled,
+    bundledBytes: new Map(
+      await Promise.all(
+        bundled.assets.map(
+          async (a) =>
+            [
+              a.id,
+              await readFile(join('assets/product/preview', a.fingerprint.sha256 + '.png')),
+            ] as const,
+        ),
+      ),
+    ),
+    inputProcessor: processor ?? actual,
+    dialogs: {
+      chooseImage: async () => chosen,
+      openProject: async () => null,
+      saveProject: async () => join(dir, 'saved.2dsketch'),
+      relinkImage: async () => null,
+      unsaved: async () => 'discard',
+    },
+    autoTimers: false,
+  });
+  await s.init();
+  await s.newProject('Input test', 'single-image');
+  return {
+    s,
+    actual,
+    file,
+    bytes,
+    dir,
+    choose: (v: string | null) => {
+      chosen = v;
+    },
+  };
+}
+async function probe(s: ProjectSession) {
+  await s.dispatch({ type: 'import-image' });
+  await until(() => !s.view().input!.busy);
+  assert.equal(s.view().input!.errorCode, null);
+  return s.view().input!.draft!;
+}
+function selection(probe: Probe): Selection {
+  return {
+    rect: { x: 0, y: 0, ...probe.size },
+    backgroundTolerance: null,
+    masks: [],
+    occluded: false,
+  };
+}
+async function apply(s: ProjectSession) {
+  const d = s.view().input!.draft!;
+  await s.dispatch({ type: 'input-apply', draftId: d.id, selection: selection(d.probe) });
+  await until(() => !s.view().input!.busy);
+  assert.equal(s.view().input!.errorCode, null);
+}
+test('T111/T112: bounded real file import validates premium PNG and keeps draft outside project until confirmation', async () => {
+  const { s } = await setup();
+  const before = JSON.stringify(s.view().project);
+  const d = await probe(s);
+  assert.equal(d.probe.originalSize.width, 1254);
+  assert.equal(d.probe.format, 'png');
+  assert.ok(d.probe.candidates.length);
+  assert.equal(JSON.stringify(s.view().project), before);
+  const staged = await s.resource(d.id, d.preview.split('/').at(-1)!);
+  assert.ok(staged && staged.subarray(1, 4).toString() === 'PNG');
+  assert.ok(!JSON.stringify(s.view()).includes(resolve('.local')));
+  await s.shutdown();
+});
+test('T113/T116/T119: actual selected image persists transforms/resources; source preserved, replacement invalidates rig, undo/redo and ZIP reopen reproduce selection', async () => {
+  const { s, file, bytes, dir } = await setup();
+  await s.dispatch({ type: 'sample' });
+  assert.ok(s.view().project!.motion);
+  const authored = structuredClone({
+    parameters: s.view().project!.parameters,
+    expressions: s.view().project!.expressions,
+  });
+  await probe(s);
+  await apply(s);
+  await s.dispatch({ type: 'undo' });
+  assert.ok(s.view().project!.motion);
+  assert.equal(s.view().project!.inputPreparation, undefined);
+  await s.dispatch({ type: 'redo' });
+  let p = s.view().project!;
+  assert.ok(p.inputPreparation);
+  assert.equal(p.schemaVersion.minor, 9);
+  const selected = p.inputPreparation!;
+  const original = p.assets.find((a) => a.id === selected.originalAssetId)!;
+  assert.equal(sha256(await readFile(file)), sha256(bytes));
+  assert.equal(sha256((await s.cache.read(original))!), sha256(bytes));
+  assert.equal(p.motion, undefined);
+  assert.equal(p.parts.length, 1);
+  assert.equal(p.parameters.length, 5);
+  assert.deepEqual({ parameters: p.parameters, expressions: p.expressions }, authored);
+  await s.save(false);
+  await s.openFile(join(dir, 'saved.2dsketch'));
+  assert.deepEqual(s.view().project!.inputPreparation, selected);
+  const prior = JSON.stringify(s.view().project!.parts);
+  const d = await probe(s);
+  const rect = { x: 100, y: 80, width: 900, height: 1000 };
+  await s.dispatch({
+    type: 'input-apply',
+    draftId: d.id,
+    selection: {
+      ...selection(d.probe),
+      rect,
+      occluded: true,
+      masks: [{ mode: 'erase', rect: { x: 100, y: 80, width: 20, height: 20 } }],
+    },
+  });
+  await until(() => !s.view().input!.busy);
+  assert.equal(s.view().input!.errorCode, null);
+  p = s.view().project!;
+  assert.deepEqual(p.canvas, { width: 900, height: 1000 });
+  assert.ok(p.assets.some((a) => a.id === original.id));
+  assert.equal(p.inputPreparation!.analysis.crop.x, 100);
+  const n = p.assets.find((a) => a.id === p.inputPreparation!.normalizedAssetId)!;
+  assert.deepEqual(transform(n.sourceToEdited, { x: 100, y: 80 }), { x: 0, y: 0 });
+  await s.dispatch({ type: 'undo' });
+  assert.equal(JSON.stringify(s.view().project!.parts), prior);
+  assert.deepEqual(s.view().project!.inputPreparation, selected);
+  await s.dispatch({ type: 'redo' });
+  assert.equal(s.view().project!.inputPreparation!.analysis.crop.x, 100);
+  await s.shutdown();
+});
+test('T112/T118/T120: corrupt file is never registered; retry rereads repaired bytes and cancelled file dialog preserves draft', async () => {
+  const { s, file, bytes, choose } = await setup();
+  await writeFile(file, Buffer.from('invalid'));
+  await s.dispatch({ type: 'import-image' });
+  await until(() => !s.view().input!.busy);
+  assert.equal(s.view().input!.errorCode, 'E_INPUT_SIGNATURE');
+  assert.equal(s.view().project!.assets.length, 0);
+  assert.ok(s.view().input!.canRetry);
+  await writeFile(file, bytes);
+  await s.dispatch({ type: 'input-retry' });
+  await until(() => !s.view().input!.busy);
+  assert.ok(s.view().input!.draft);
+  const id = s.view().input!.draft!.id;
+  choose(null);
+  await s.dispatch({ type: 'import-image' });
+  assert.equal(s.view().input!.draft!.id, id);
+  await s.shutdown();
+});
+test('T118/T120: real subprocess abort cleans temporary files and does not commit resources', async () => {
+  const { s, actual, bytes, dir } = await setup();
+  const controller = new AbortController();
+  const operation = actual.run('probe', bytes, '.png', null, controller.signal);
+  setTimeout(() => controller.abort(), 40);
+  await assert.rejects(operation, /E_JOB_CANCELLED/);
+  assert.deepEqual(await readdir(join(dir, 'work')), []);
+  assert.equal(s.view().project!.assets.length, 0);
+  await s.dispatch({ type: 'import-image' });
+  await s.dispatch({ type: 'input-cancel' });
+  await until(() => !s.view().input!.busy);
+  assert.equal(s.view().project!.assets.length, 0);
+  await s.shutdown();
+});
+test('T118/T119: project switch revokes actual pending import without cross-project draft or resources', async () => {
+  const { s } = await setup();
+  await s.dispatch({ type: 'import-image' });
+  await s.newProject('Other', 'split-image');
+  await pause();
+  assert.equal(s.view().project!.sourceType, 'split-image');
+  assert.equal(s.view().input!.draft, null);
+  assert.equal(s.view().project!.assets.length, 0);
+  await s.shutdown();
+});
+test('T119/T120: manual revision change during real preparation rejects stale output and preserves edit', async () => {
+  const { s } = await setup();
+  await s.dispatch({ type: 'import-image' });
+  const p = s.view().project!;
+  await s.dispatch({
+    type: 'edit',
+    target: 'project-name',
+    id: null,
+    parameterId: null,
+    value: 'Kept edit',
+    expectedRevision: p.revision,
+    groupId: null,
+  });
+  await until(() => !s.view().input!.busy);
+  assert.equal(s.view().input!.errorCode, 'E_INPUT_STALE');
+  assert.equal(s.view().project!.displayName, 'Kept edit');
+  assert.equal(s.view().project!.assets.length, 0);
+  await s.shutdown();
+});
+test('T115/T117: two real premium alpha subjects are proposed separately and selected region excludes the other', async () => {
+  const { s, actual, file, dir } = await setup();
+  const multi = join(dir, 'multi.png');
+  execFileSync(
+    resolve('.venv-product/Scripts/python.exe'),
+    [
+      '-I',
+      '-c',
+      "from PIL import Image;import sys;im=Image.open(sys.argv[1]).convert('RGBA');im=im.crop(im.getbbox());im.thumbnail((520,580));out=Image.new('RGBA',(1200,600));out.alpha_composite(im,(20,10));out.alpha_composite(im,(650,10));out.save(sys.argv[2])",
+      file,
+      multi,
+    ],
+    { windowsHide: true },
+  );
+  const first = await actual.run(
+    'probe',
+    await readFile(multi),
+    '.png',
+    null,
+    new AbortController().signal,
+  );
+  const d = first.report as Probe;
+  assert.equal(d.candidates.length, 2);
+  const sel = selection(d);
+  sel.rect = { x: 0, y: 0, width: Math.floor(d.size.width / 2), height: d.size.height };
+  sel.occluded = true;
+  const result = await actual.run(
+    'select',
+    first.files.get('normalized.png')!,
+    '.png',
+    sel,
+    new AbortController().signal,
+  );
+  assert.ok(
+    'warnings' in result.report && result.report.warnings.includes('OCCLUDED_USER_REPORTED'),
+  );
+  assert.equal((result.report as any).crop.width, sel.rect.width);
+  await s.shutdown();
+});
+test('T102/T120: forged selection/IPC fields and invalid persisted references cannot enter project', async () => {
+  assert.throws(() =>
+    assertSelection({
+      rect: { x: 0, y: 0, width: 1, height: NaN },
+      masks: [],
+      backgroundTolerance: null,
+      occluded: false,
+    }),
+  );
+  assert.throws(() => parseSessionCommand({ type: 'import-image', path: 'private' }));
+  assert.throws(() => parseSessionCommand({ type: 'input-apply', draftId: 'bad', selection: {} }));
+  const { s } = await setup();
+  await probe(s);
+  await apply(s);
+  const p = structuredClone(s.view().project!) as Project;
+  p.inputPreparation!.selectedAssetId = 'missing';
+  assert.ok(validateProject(p).length);
+  await s.shutdown();
+});

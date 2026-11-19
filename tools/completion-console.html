@@ -1,77 +1,219 @@
 <!doctype html>
-<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'none'; img-src data:; base-uri 'none'; form-action 'none'">
-<title>2DSketcher 익명 관찰 기록</title>
-<style>
-*{box-sizing:border-box}body{margin:0;background:#f5f2f8;color:#292136;font:16px/1.6 system-ui,sans-serif}main{max-width:1020px;margin:auto;padding:32px}h1{font-size:29px;margin:0 0 8px}h2{font-size:20px;margin:0 0 12px}.card{background:white;padding:24px;border:1px solid #e2d9eb;border-radius:16px;margin:18px 0}.muted{color:#655c70;font-size:14px}label{display:block;margin:9px 0}input,select,button{font:inherit;border:1px solid #a59aae;border-radius:8px;padding:9px}button{background:#664187;color:white;cursor:pointer;margin:5px}button:disabled{opacity:.45;cursor:default}button.secondary{background:#fff;color:#4f306b}#clock{font-size:32px;font-variant-numeric:tabular-nums}#events{max-height:260px;overflow:auto;padding-left:24px}.grid{display:flex;flex-wrap:wrap;gap:12px}.grid>*{flex:1;min-width:210px}#message{white-space:pre-wrap}input[type=checkbox]{width:18px;height:18px;vertical-align:middle}.badge{padding:4px 10px;background:#eee6f5;border-radius:20px}details{margin-top:12px}a{color:#664187}
-#candidate{overflow-wrap:anywhere}
-</style></head><body><main>
-<h1>초보자 관찰 기록</h1><p>참여자가 앱에서 직접 작업하는 동안 관찰자가 시간·막힘·도움을 기록합니다. 실제 이름·연락처·얼굴 영상·음성을 저장하거나 전송하지 않습니다.</p>
-<p class="muted" id="candidate"></p>
-<section class="card" id="setup"><h2>관찰 시작</h2>
-<div class="grid"><label>익명 참여자 ID <input id="participant" value="U29-002" pattern="U29-[0-9]{3,4}"></label><label>첫 제작 경로 <select id="route"><option value="single-image">한 장 그림</option><option value="split-image">분리 그림</option><option value="parts">파츠</option></select></label></div>
-<label><input id="consent" type="checkbox"> 참여자가 익명 결과·시간 기록에 동의했다.</label>
-<label><input id="novice" type="checkbox"> 참여자가 리깅·버튜버 제작 도구를 처음 쓴다.</label>
-<label>기록 근거 <select id="origin"><option value="direct-observation">관찰자가 직접 수행을 지켜봄</option><option value="consented-self-report">참여자의 자기보고만 받음</option><option value="simulation">개발용 모의 기록</option></select></label>
-<label>관찰자 역할 <select id="observer"><option value="independent-observer">진행 방법을 알려주거나 대신 조작하지 않는 관찰자</option><option value="developer">개발자 점검</option></select></label>
-<button id="start">타이머 시작</button><p class="muted">U29-001의 과거 자기보고를 새 직접 관찰로 옮기지 않습니다. 첫 경로 파츠·한 장·분리 그림 각 10명을 모집하며 이후 경로는 학습 후 과제로 구분합니다.</p></section>
-<section class="card"><h2>과제와 구간 기록</h2><div id="clock">00:00</div>
-<label>현재 구간 <select id="segment" disabled><option value="active">직접 조작</option><option value="wait">시스템 대기</option><option value="blocked">막힘</option><option value="pause">관찰 일시 정지</option></select></label>
-<div id="milestones"><button data-kind="automatic-result">첫 자동 결과 확인</button><button data-kind="first-motion">눈·입·고개 첫 움직임 확인</button><button data-kind="saved-reopened">저장·닫기·재열기 확인</button><button data-kind="obs-received">실제 OBS 수신 확인</button><button data-kind="independent-runtime">앱 종료 후 외부 독립 구동 확인</button></div>
-<div class="grid"><label>보정 부위 <select id="part"><option value="face">얼굴</option><option value="eye-left">왼쪽 눈</option><option value="eye-right">오른쪽 눈</option><option value="mouth">입</option><option value="hair">머리카락</option><option value="body">몸통</option><option value="arm-left">왼팔</option><option value="arm-right">오른팔</option><option value="other">기타</option></select></label><div><button id="correction">보정 행동 +1</button><button id="reanalysis">재분석 +1</button></div></div>
-<div><button id="help">앱 도움말 사용</button><button id="hint">다른 사람이 힌트 제공</button><button id="proxy">다른 사람이 대신 조작</button></div>
-<label>막힌 지점 <select id="obstacle"><option value="none">없음</option><option value="terminology">용어 이해</option><option value="next-action">다음 행동 찾기</option><option value="art-correction">모양·부위 보정</option><option value="device">장치·추적</option><option value="broadcast">방송 연결</option><option value="external">외부 파일 사용</option><option value="installation">설치·업데이트</option><option value="other">기타</option></select></label><button id="blocked">막힘 기록</button>
-<ol id="events"></ol><div><button id="finish-success">관찰 종료: 성공</button><button id="finish-blocked">관찰 종료: 막힘</button><button id="finish-abandoned">관찰 종료: 중단</button></div>
-</section>
-<section class="card"><h2>기록 저장·재관찰</h2><p>JSON 파일은 이 기기에만 저장합니다. 같은 ID의 기존 파일을 불러와 7일·14일 재관찰을 덧붙일 수 있습니다.</p>
-<button id="download" disabled>JSON 저장</button><label>기존 기록 불러오기 <input type="file" id="load" accept="application/json,.json"></label>
-<label>재관찰 결과 <select id="follow-outcome"><option value="reopened-and-reused">저장한 프로젝트를 다시 열어 재사용함</option><option value="failed">재사용 실패</option><option value="not-used">재사용하지 않음</option></select></label>
-<label><input type="checkbox" id="follow-direct"> 재사용 결과를 직접 관찰했다.</label><button id="follow" disabled>오늘 재관찰 추가</button>
-<p id="window-state" class="muted"></p><p id="message" role="status" aria-live="polite"></p>
-<details><summary>관찰자가 확인할 과제</summary><ol><li>배정한 경로에서 캐릭터를 만들고 원하는 한 군데를 보정한다.</li><li>눈·입·고개를 움직여 보고 저장·닫기·재열기로 보존을 확인한다.</li><li>실제 OBS 미리보기에서 투명 아바타와 움직임·표정을 확인한다.</li><li>INP를 저장하고 앱을 종료한 상태에서 Inochi Session으로 독립 사용한다.</li><li>실패·중단도 종료 기록에 포함한다. 앱 도움말은 허용하되 힌트·대리 클릭은 별도 기록한다.</li></ol><p>개발자/모의 기록·자기보고는 직접 관찰 성공률로 합산하지 않습니다. 기록 파일은 관찰자의 증언이며 참여자 신원을 인증하지 않습니다. 7일/14일이 지나기 전에는 관찰창 완료가 아닙니다.</p></details>
-</section></main><script>
-'use strict';
-const CANDIDATE=__CANDIDATE__;
-const $=id=>document.getElementById(id),safe=v=>typeof v==='string'&&!/(?:(?<![A-Za-z])[A-Za-z]:[\\/]|data:(?:image|audio)|@)/i.test(v);
-let record=null,started=0,last=0,segment='active',timer=null,running=false;
-const labels={'automatic-result':'첫 자동 결과','first-motion':'첫 움직임','saved-reopened':'저장·재열기','obs-received':'OBS 수신','independent-runtime':'외부 독립 구동','correction':'보정','reanalysis':'재분석','help':'앱 도움말','hint':'힌트','proxy-click':'대리 조작','blocked':'막힘'};
-function message(text){$('message').textContent=text;}
-function elapsed(){return Math.max(0,Math.round(performance.now()-started));}
-function accrue(){const now=elapsed();record.segmentsMs[segment]+=now-last;last=now;}
-function controls(){for(const button of document.querySelectorAll('#milestones button,#correction,#reanalysis,#help,#hint,#proxy,#blocked,#finish-success,#finish-blocked,#finish-abandoned'))button.disabled=!running;for(const id of ['participant','route','consent','novice','origin','observer'])$(id).disabled=!!record;$('segment').disabled=!running;$('start').disabled=!!record;$('download').disabled=!record||running;$('follow').disabled=!record||running||!record.finishedAt;}
-function windows(){if(!record?.finishedAt)return;const begin=Date.parse(record.startedAt),saved=record.events.find(e=>e.kind==='saved-reopened'&&e.outcome==='success');const days=Math.max(0,(Date.now()-begin)/86400000),repeat=saved?Math.max(0,(Date.now()-begin-saved.elapsedMs)/86400000):0;$('window-state').textContent='첫 사용 관찰 '+days.toFixed(1)+'/7일 · 정상 저장 후 반복 관찰 '+repeat.toFixed(1)+'/14일. 경과하지 않은 창은 진행 중입니다.';}
-function render(){const list=$('events');list.replaceChildren();for(const e of record?.events??[]){const li=document.createElement('li');li.textContent=(e.elapsedMs/1000).toFixed(1)+'초 · '+(labels[e.kind]??e.kind)+(e.part?' · '+e.part:'')+(e.obstacle?' · '+e.obstacle:'');list.append(li);}controls();windows();}
-function event(kind,extra={}){if(!running)return;accrue();if(['first-motion','saved-reopened','obs-received','independent-runtime','automatic-result'].includes(kind)&&record.events.some(e=>e.kind===kind)){message('이 도달 시점은 이미 기록되어 있습니다. 최초 시간을 덮어쓰지 않습니다.');return;}record.events.push({kind,elapsedMs:elapsed(),outcome:'success',...extra});render();}
-$('candidate').textContent='후보 '+CANDIDATE.version+' · SHA-256 '+CANDIDATE.sha256;
-$('start').onclick=()=>{
- const id=$('participant').value.trim();if(!/^U29-\d{3,4}$/.test(id)||!$('consent').checked||!$('novice').checked){message('익명 ID·참여자 동의·초보자 자격을 기록한 뒤 시작하세요.');return;}
- if(id==='U29-001'){message('U29-001은 기존 자기보고가 있습니다. 새 관찰에는 다른 익명 ID를 사용하세요.');return;}
- record={format:'2dsketcher-completion/1',kind:'novice-session',candidate:CANDIDATE,participantId:id,firstRoute:$('route').value,consent:true,novice:true,origin:$('origin').value,observerRole:$('observer').value,startedAt:new Date().toISOString(),finishedAt:null,collectedAt:null,events:[],segmentsMs:{wait:0,active:0,blocked:0,pause:0},corrections:0,correctedParts:0,followups:[],outcome:null};started=performance.now();last=0;segment='active';$('segment').value='active';running=true;
- timer=setInterval(()=>{const sec=Math.floor(elapsed()/1000);$('clock').textContent=String(Math.floor(sec/60)).padStart(2,'0')+':'+String(sec%60).padStart(2,'0');},250);render();message('실제 수행을 관찰해 도달 시점을 기록하세요.');
-};
-$('segment').onchange=()=>{if(running){accrue();segment=$('segment').value;}};
-for(const b of document.querySelectorAll('[data-kind]'))b.onclick=()=>event(b.dataset.kind);
-$('correction').onclick=()=>{if(!running)return;record.corrections++;event('correction',{part:$('part').value});record.correctedParts=new Set(record.events.filter(e=>e.kind==='correction').map(e=>e.part)).size;};
-for(const [id,kind]of [['reanalysis','reanalysis'],['help','help'],['hint','hint'],['proxy','proxy-click']])$(id).onclick=()=>event(kind);
-$('blocked').onclick=()=>event('blocked',{obstacle:$('obstacle').value});
-for(const outcome of ['success','blocked','abandoned'])$('finish-'+outcome).onclick=()=>{if(!running)return;accrue();record.finishedAt=new Date().toISOString();record.collectedAt=record.finishedAt;record.outcome=outcome;running=false;clearInterval(timer);render();message('종료 기록을 JSON으로 저장하세요. 성공 선택만으로 모든 과제 완료가 되지는 않습니다.');};
-$('download').onclick=()=>{if(!record||running)return;const blob=new Blob([JSON.stringify(record,null,2)+'\n'],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=record.participantId+'-'+record.collectedAt.replaceAll(/[:.]/g,'-')+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
-function checkImport(r){
- const keys=['format','kind','candidate','participantId','firstRoute','consent','novice','origin','observerRole','startedAt','finishedAt','collectedAt','events','segmentsMs','corrections','correctedParts','followups','outcome'];
- if(!r||Object.keys(r).some(k=>!keys.includes(k)))throw Error();
- const inspect=(v,key='')=>{if(['participantName','email','contact','cameraFrame','pcm','deviceId','password','accessToken'].includes(key))throw Error();if(typeof v==='string'&&(!safe(v)||v.length>2000))throw Error();if(Array.isArray(v))v.forEach(x=>inspect(x));else if(v&&typeof v==='object')for(const [k,x]of Object.entries(v))inspect(x,k);};inspect(r);
- if(r.format!=='2dsketcher-completion/1'||r.kind!=='novice-session'||!/^U29-\d{3,4}$/.test(r.participantId)||r.candidate?.sha256!==CANDIDATE.sha256||r.candidate.version!==CANDIDATE.version||!['parts','single-image','split-image'].includes(r.firstRoute)||r.consent!==true||r.novice!==true||!['direct-observation','consented-self-report','simulation'].includes(r.origin)||!['independent-observer','developer'].includes(r.observerRole)||!['success','blocked','abandoned'].includes(r.outcome)||!Array.isArray(r.followups)||!Array.isArray(r.events)||r.events.length>10000)throw Error();
- for(const key of ['startedAt','finishedAt','collectedAt'])if(!Number.isFinite(Date.parse(r[key]))||Date.parse(r[key])>Date.now()+60000)throw Error();
- const elapsed=Date.parse(r.finishedAt)-Date.parse(r.startedAt);if(elapsed<0||Object.keys(r.segmentsMs??{}).length!==4||!['wait','active','blocked','pause'].every(k=>Number.isFinite(r.segmentsMs[k])&&r.segmentsMs[k]>=0)||Math.abs(Object.values(r.segmentsMs).reduce((a,b)=>a+b,0)-elapsed)>5000)throw Error();
- if(r.events.some((e,i)=>!Object.keys(e).every(k=>['kind','elapsedMs','outcome','part','obstacle'].includes(k))||!Object.keys(labels).includes(e.kind)||!Number.isFinite(e.elapsedMs)||e.elapsedMs<0||e.elapsedMs>elapsed+5000||(i&&e.elapsedMs<r.events[i-1].elapsedMs)))throw Error();
- if(r.followups.some(f=>Object.keys(f).some(k=>!['at','outcome','directObservation'].includes(k))||!Number.isFinite(Date.parse(f.at))||Date.parse(f.at)>Date.now()+60000||!['reopened-and-reused','failed','not-used'].includes(f.outcome)||typeof f.directObservation!=='boolean'))throw Error();
- if(r.corrections!==r.events.filter(e=>e.kind==='correction').length||r.correctedParts!==new Set(r.events.filter(e=>e.kind==='correction').map(e=>e.part)).size)throw Error();
- return r;
-}
-$('load').onchange=async()=>{
- if(running){message('관찰을 종료한 뒤 기존 파일을 불러오세요.');return;}
- try{const file=$('load').files[0];if(!file||file.size>2*1024*1024)throw Error();record=checkImport(JSON.parse(await file.text()));$('participant').value=record.participantId;$('route').value=record.firstRoute;$('origin').value=record.origin;$('observer').value=record.observerRole;$('consent').checked=record.consent;$('novice').checked=record.novice;render();message('기존 기록을 불러왔습니다. 원래 시작/도달/종료 시간을 유지합니다.');}catch{message('E_OBSERVATION_IMPORT — 이 후보의 정상 익명 관찰 파일을 선택하세요.');}
-};
-$('follow').onclick=()=>{if(!record?.finishedAt||running)return;record.followups.push({at:new Date().toISOString(),outcome:$('follow-outcome').value,directObservation:$('follow-direct').checked});record.collectedAt=new Date().toISOString();render();message('오늘 재관찰을 추가했습니다. JSON을 새 파일로 저장하세요.');};
-window.addEventListener('beforeunload',e=>{if(running){e.preventDefault();e.returnValue='';}});controls();
-</script></body></html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'none'; img-src data:; base-uri 'none'; form-action 'none'"
+    />
+    <title>2DSketcher 익명 관찰 기록</title>
+    <style>
+      *{box-sizing:border-box}body{margin:0;background:#f5f2f8;color:#292136;font:16px/1.6 system-ui,sans-serif}main{max-width:1020px;margin:auto;padding:32px}h1{font-size:29px;margin:0 0 8px}h2{font-size:20px;margin:0 0 12px}.card{background:white;padding:24px;border:1px solid #e2d9eb;border-radius:16px;margin:18px 0}.muted{color:#655c70;font-size:14px}label{display:block;margin:9px 0}input,select,button{font:inherit;border:1px solid #a59aae;border-radius:8px;padding:9px}button{background:#664187;color:white;cursor:pointer;margin:5px}button:disabled{opacity:.45;cursor:default}button.secondary{background:#fff;color:#4f306b}#clock{font-size:32px;font-variant-numeric:tabular-nums}#events{max-height:260px;overflow:auto;padding-left:24px}.grid{display:flex;flex-wrap:wrap;gap:12px}.grid>*{flex:1;min-width:210px}#message{white-space:pre-wrap}input[type=checkbox]{width:18px;height:18px;vertical-align:middle}.badge{padding:4px 10px;background:#eee6f5;border-radius:20px}details{margin-top:12px}a{color:#664187}
+      #candidate{overflow-wrap:anywhere}
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>초보자 관찰 기록</h1>
+      <p>
+        참여자가 앱에서 직접 작업하는 동안 관찰자가 시간·막힘·도움을 기록합니다. 실제
+        이름·연락처·얼굴 영상·음성을 저장하거나 전송하지 않습니다.
+      </p>
+      <p class="muted" id="candidate"></p>
+      <section class="card" id="setup">
+        <h2>관찰 시작</h2>
+        <div class="grid">
+          <label
+            >익명 참여자 ID
+            <input id="participant" value="U29-002" pattern="U29-[0-9]{3,4}" /></label
+          ><label
+            >첫 제작 경로
+            <select id="route">
+              <option value="single-image">한 장 그림</option>
+              <option value="split-image">분리 그림</option>
+              <option value="parts">파츠</option>
+            </select></label
+          >
+        </div>
+        <label
+          ><input id="consent" type="checkbox" /> 참여자가 익명 결과·시간 기록에 동의했다.</label
+        >
+        <label
+          ><input id="novice" type="checkbox" /> 참여자가 리깅·버튜버 제작 도구를 처음 쓴다.</label
+        >
+        <label
+          >기록 근거
+          <select id="origin">
+            <option value="direct-observation">관찰자가 직접 수행을 지켜봄</option>
+            <option value="consented-self-report">참여자의 자기보고만 받음</option>
+            <option value="simulation">개발용 모의 기록</option>
+          </select></label
+        >
+        <label
+          >관찰자 역할
+          <select id="observer">
+            <option value="independent-observer">
+              진행 방법을 알려주거나 대신 조작하지 않는 관찰자
+            </option>
+            <option value="developer">개발자 점검</option>
+          </select></label
+        >
+        <button id="start">타이머 시작</button>
+        <p class="muted">
+          U29-001의 과거 자기보고를 새 직접 관찰로 옮기지 않습니다. 첫 경로 파츠·한 장·분리 그림 각
+          10명을 모집하며 이후 경로는 학습 후 과제로 구분합니다.
+        </p>
+      </section>
+      <section class="card">
+        <h2>과제와 구간 기록</h2>
+        <div id="clock">00:00</div>
+        <label
+          >현재 구간
+          <select id="segment" disabled>
+            <option value="active">직접 조작</option>
+            <option value="wait">시스템 대기</option>
+            <option value="blocked">막힘</option>
+            <option value="pause">관찰 일시 정지</option>
+          </select></label
+        >
+        <div id="milestones">
+          <button data-kind="automatic-result">첫 자동 결과 확인</button
+          ><button data-kind="first-motion">눈·입·고개 첫 움직임 확인</button
+          ><button data-kind="saved-reopened">저장·닫기·재열기 확인</button
+          ><button data-kind="obs-received">실제 OBS 수신 확인</button
+          ><button data-kind="independent-runtime">앱 종료 후 외부 독립 구동 확인</button>
+        </div>
+        <div class="grid">
+          <label
+            >보정 부위
+            <select id="part">
+              <option value="face">얼굴</option>
+              <option value="eye-left">왼쪽 눈</option>
+              <option value="eye-right">오른쪽 눈</option>
+              <option value="mouth">입</option>
+              <option value="hair">머리카락</option>
+              <option value="body">몸통</option>
+              <option value="arm-left">왼팔</option>
+              <option value="arm-right">오른팔</option>
+              <option value="other">기타</option>
+            </select></label
+          >
+          <div>
+            <button id="correction">보정 행동 +1</button><button id="reanalysis">재분석 +1</button>
+          </div>
+        </div>
+        <div>
+          <button id="help">앱 도움말 사용</button><button id="hint">다른 사람이 힌트 제공</button
+          ><button id="proxy">다른 사람이 대신 조작</button>
+        </div>
+        <label
+          >막힌 지점
+          <select id="obstacle">
+            <option value="none">없음</option>
+            <option value="terminology">용어 이해</option>
+            <option value="next-action">다음 행동 찾기</option>
+            <option value="art-correction">모양·부위 보정</option>
+            <option value="device">장치·추적</option>
+            <option value="broadcast">방송 연결</option>
+            <option value="external">외부 파일 사용</option>
+            <option value="installation">설치·업데이트</option>
+            <option value="other">기타</option>
+          </select></label
+        ><button id="blocked">막힘 기록</button>
+        <ol id="events"></ol>
+        <div>
+          <button id="finish-success">관찰 종료: 성공</button
+          ><button id="finish-blocked">관찰 종료: 막힘</button
+          ><button id="finish-abandoned">관찰 종료: 중단</button>
+        </div>
+      </section>
+      <section class="card">
+        <h2>기록 저장·재관찰</h2>
+        <p>
+          JSON 파일은 이 기기에만 저장합니다. 같은 ID의 기존 파일을 불러와 7일·14일 재관찰을 덧붙일
+          수 있습니다.
+        </p>
+        <button id="download" disabled>JSON 저장</button
+        ><label
+          >기존 기록 불러오기 <input type="file" id="load" accept="application/json,.json"
+        /></label>
+        <label
+          >재관찰 결과
+          <select id="follow-outcome">
+            <option value="reopened-and-reused">저장한 프로젝트를 다시 열어 재사용함</option>
+            <option value="failed">재사용 실패</option>
+            <option value="not-used">재사용하지 않음</option>
+          </select></label
+        >
+        <label><input type="checkbox" id="follow-direct" /> 재사용 결과를 직접 관찰했다.</label
+        ><button id="follow" disabled>오늘 재관찰 추가</button>
+        <p id="window-state" class="muted"></p>
+        <p id="message" role="status" aria-live="polite"></p>
+        <details>
+          <summary>관찰자가 확인할 과제</summary>
+          <ol>
+            <li>배정한 경로에서 캐릭터를 만들고 원하는 한 군데를 보정한다.</li>
+            <li>눈·입·고개를 움직여 보고 저장·닫기·재열기로 보존을 확인한다.</li>
+            <li>실제 OBS 미리보기에서 투명 아바타와 움직임·표정을 확인한다.</li>
+            <li>INP를 저장하고 앱을 종료한 상태에서 Inochi Session으로 독립 사용한다.</li>
+            <li>
+              실패·중단도 종료 기록에 포함한다. 앱 도움말은 허용하되 힌트·대리 클릭은 별도 기록한다.
+            </li>
+          </ol>
+          <p>
+            개발자/모의 기록·자기보고는 직접 관찰 성공률로 합산하지 않습니다. 기록 파일은 관찰자의
+            증언이며 참여자 신원을 인증하지 않습니다. 7일/14일이 지나기 전에는 관찰창 완료가
+            아닙니다.
+          </p>
+        </details>
+      </section>
+    </main>
+    <script>
+      'use strict';
+      const CANDIDATE=__CANDIDATE__;
+      const $=id=>document.getElementById(id),safe=v=>typeof v==='string'&&!/(?:(?<![A-Za-z])[A-Za-z]:[\\/]|data:(?:image|audio)|@)/i.test(v);
+      let record=null,started=0,last=0,segment='active',timer=null,running=false;
+      const labels={'automatic-result':'첫 자동 결과','first-motion':'첫 움직임','saved-reopened':'저장·재열기','obs-received':'OBS 수신','independent-runtime':'외부 독립 구동','correction':'보정','reanalysis':'재분석','help':'앱 도움말','hint':'힌트','proxy-click':'대리 조작','blocked':'막힘'};
+      function message(text){$('message').textContent=text;}
+      function elapsed(){return Math.max(0,Math.round(performance.now()-started));}
+      function accrue(){const now=elapsed();record.segmentsMs[segment]+=now-last;last=now;}
+      function controls(){for(const button of document.querySelectorAll('#milestones button,#correction,#reanalysis,#help,#hint,#proxy,#blocked,#finish-success,#finish-blocked,#finish-abandoned'))button.disabled=!running;for(const id of ['participant','route','consent','novice','origin','observer'])$(id).disabled=!!record;$('segment').disabled=!running;$('start').disabled=!!record;$('download').disabled=!record||running;$('follow').disabled=!record||running||!record.finishedAt;}
+      function windows(){if(!record?.finishedAt)return;const begin=Date.parse(record.startedAt),saved=record.events.find(e=>e.kind==='saved-reopened'&&e.outcome==='success');const days=Math.max(0,(Date.now()-begin)/86400000),repeat=saved?Math.max(0,(Date.now()-begin-saved.elapsedMs)/86400000):0;$('window-state').textContent='첫 사용 관찰 '+days.toFixed(1)+'/7일 · 정상 저장 후 반복 관찰 '+repeat.toFixed(1)+'/14일. 경과하지 않은 창은 진행 중입니다.';}
+      function render(){const list=$('events');list.replaceChildren();for(const e of record?.events??[]){const li=document.createElement('li');li.textContent=(e.elapsedMs/1000).toFixed(1)+'초 · '+(labels[e.kind]??e.kind)+(e.part?' · '+e.part:'')+(e.obstacle?' · '+e.obstacle:'');list.append(li);}controls();windows();}
+      function event(kind,extra={}){if(!running)return;accrue();if(['first-motion','saved-reopened','obs-received','independent-runtime','automatic-result'].includes(kind)&&record.events.some(e=>e.kind===kind)){message('이 도달 시점은 이미 기록되어 있습니다. 최초 시간을 덮어쓰지 않습니다.');return;}record.events.push({kind,elapsedMs:elapsed(),outcome:'success',...extra});render();}
+      $('candidate').textContent='후보 '+CANDIDATE.version+' · SHA-256 '+CANDIDATE.sha256;
+      $('start').onclick=()=>{
+       const id=$('participant').value.trim();if(!/^U29-\d{3,4}$/.test(id)||!$('consent').checked||!$('novice').checked){message('익명 ID·참여자 동의·초보자 자격을 기록한 뒤 시작하세요.');return;}
+       if(id==='U29-001'){message('U29-001은 기존 자기보고가 있습니다. 새 관찰에는 다른 익명 ID를 사용하세요.');return;}
+       record={format:'2dsketcher-completion/1',kind:'novice-session',candidate:CANDIDATE,participantId:id,firstRoute:$('route').value,consent:true,novice:true,origin:$('origin').value,observerRole:$('observer').value,startedAt:new Date().toISOString(),finishedAt:null,collectedAt:null,events:[],segmentsMs:{wait:0,active:0,blocked:0,pause:0},corrections:0,correctedParts:0,followups:[],outcome:null};started=performance.now();last=0;segment='active';$('segment').value='active';running=true;
+       timer=setInterval(()=>{const sec=Math.floor(elapsed()/1000);$('clock').textContent=String(Math.floor(sec/60)).padStart(2,'0')+':'+String(sec%60).padStart(2,'0');},250);render();message('실제 수행을 관찰해 도달 시점을 기록하세요.');
+      };
+      $('segment').onchange=()=>{if(running){accrue();segment=$('segment').value;}};
+      for(const b of document.querySelectorAll('[data-kind]'))b.onclick=()=>event(b.dataset.kind);
+      $('correction').onclick=()=>{if(!running)return;record.corrections++;event('correction',{part:$('part').value});record.correctedParts=new Set(record.events.filter(e=>e.kind==='correction').map(e=>e.part)).size;};
+      for(const [id,kind]of [['reanalysis','reanalysis'],['help','help'],['hint','hint'],['proxy','proxy-click']])$(id).onclick=()=>event(kind);
+      $('blocked').onclick=()=>event('blocked',{obstacle:$('obstacle').value});
+      for(const outcome of ['success','blocked','abandoned'])$('finish-'+outcome).onclick=()=>{if(!running)return;accrue();record.finishedAt=new Date().toISOString();record.collectedAt=record.finishedAt;record.outcome=outcome;running=false;clearInterval(timer);render();message('종료 기록을 JSON으로 저장하세요. 성공 선택만으로 모든 과제 완료가 되지는 않습니다.');};
+      $('download').onclick=()=>{if(!record||running)return;const blob=new Blob([JSON.stringify(record,null,2)+'\n'],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=record.participantId+'-'+record.collectedAt.replaceAll(/[:.]/g,'-')+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
+      function checkImport(r){
+       const keys=['format','kind','candidate','participantId','firstRoute','consent','novice','origin','observerRole','startedAt','finishedAt','collectedAt','events','segmentsMs','corrections','correctedParts','followups','outcome'];
+       if(!r||Object.keys(r).some(k=>!keys.includes(k)))throw Error();
+       const inspect=(v,key='')=>{if(['participantName','email','contact','cameraFrame','pcm','deviceId','password','accessToken'].includes(key))throw Error();if(typeof v==='string'&&(!safe(v)||v.length>2000))throw Error();if(Array.isArray(v))v.forEach(x=>inspect(x));else if(v&&typeof v==='object')for(const [k,x]of Object.entries(v))inspect(x,k);};inspect(r);
+       if(r.format!=='2dsketcher-completion/1'||r.kind!=='novice-session'||!/^U29-\d{3,4}$/.test(r.participantId)||r.candidate?.sha256!==CANDIDATE.sha256||r.candidate.version!==CANDIDATE.version||!['parts','single-image','split-image'].includes(r.firstRoute)||r.consent!==true||r.novice!==true||!['direct-observation','consented-self-report','simulation'].includes(r.origin)||!['independent-observer','developer'].includes(r.observerRole)||!['success','blocked','abandoned'].includes(r.outcome)||!Array.isArray(r.followups)||!Array.isArray(r.events)||r.events.length>10000)throw Error();
+       for(const key of ['startedAt','finishedAt','collectedAt'])if(!Number.isFinite(Date.parse(r[key]))||Date.parse(r[key])>Date.now()+60000)throw Error();
+       const elapsed=Date.parse(r.finishedAt)-Date.parse(r.startedAt);if(elapsed<0||Object.keys(r.segmentsMs??{}).length!==4||!['wait','active','blocked','pause'].every(k=>Number.isFinite(r.segmentsMs[k])&&r.segmentsMs[k]>=0)||Math.abs(Object.values(r.segmentsMs).reduce((a,b)=>a+b,0)-elapsed)>5000)throw Error();
+       if(r.events.some((e,i)=>!Object.keys(e).every(k=>['kind','elapsedMs','outcome','part','obstacle'].includes(k))||!Object.keys(labels).includes(e.kind)||!Number.isFinite(e.elapsedMs)||e.elapsedMs<0||e.elapsedMs>elapsed+5000||(i&&e.elapsedMs<r.events[i-1].elapsedMs)))throw Error();
+       if(r.followups.some(f=>Object.keys(f).some(k=>!['at','outcome','directObservation'].includes(k))||!Number.isFinite(Date.parse(f.at))||Date.parse(f.at)>Date.now()+60000||!['reopened-and-reused','failed','not-used'].includes(f.outcome)||typeof f.directObservation!=='boolean'))throw Error();
+       if(r.corrections!==r.events.filter(e=>e.kind==='correction').length||r.correctedParts!==new Set(r.events.filter(e=>e.kind==='correction').map(e=>e.part)).size)throw Error();
+       return r;
+      }
+      $('load').onchange=async()=>{
+       if(running){message('관찰을 종료한 뒤 기존 파일을 불러오세요.');return;}
+       try{const file=$('load').files[0];if(!file||file.size>2*1024*1024)throw Error();record=checkImport(JSON.parse(await file.text()));$('participant').value=record.participantId;$('route').value=record.firstRoute;$('origin').value=record.origin;$('observer').value=record.observerRole;$('consent').checked=record.consent;$('novice').checked=record.novice;render();message('기존 기록을 불러왔습니다. 원래 시작/도달/종료 시간을 유지합니다.');}catch{message('E_OBSERVATION_IMPORT — 이 후보의 정상 익명 관찰 파일을 선택하세요.');}
+      };
+      $('follow').onclick=()=>{if(!record?.finishedAt||running)return;record.followups.push({at:new Date().toISOString(),outcome:$('follow-outcome').value,directObservation:$('follow-direct').checked});record.collectedAt=new Date().toISOString();render();message('오늘 재관찰을 추가했습니다. JSON을 새 파일로 저장하세요.');};
+      window.addEventListener('beforeunload',e=>{if(running){e.preventDefault();e.returnValue='';}});controls();
+    </script>
+  </body>
+</html>

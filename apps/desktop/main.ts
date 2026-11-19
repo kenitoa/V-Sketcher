@@ -1,313 +1,2531 @@
-import {SettingsStore} from '../../packages/settings/store';
-import {installEnvironment} from './environment';
-import {encodeBundle,sha256} from '../../packages/project-storage/archive';
-import {parseINP} from '../../packages/avatar-export/inp';
-import {randomUUID} from 'node:crypto';
-import {nativeImage} from 'electron';
-import {FileOutputs} from './file-outputs';
-import {broadcastOBSBridge} from './broadcast-obs-bridge';
-import {checkBroadcastUI} from './broadcast-self-check';
-import {installBroadcast} from './broadcast-ipc';
-import type {BroadcastServer} from './broadcast-server';
-import {InputOwnership} from '../../packages/execution/ownership';
-import {assertChangeRequest,concurrentCommand} from '../../packages/execution/changes';
-import {RunShortcuts,RunPreferenceStore} from './run-shortcuts';
-import {availableRunActions,RUN_MODES,type RunMode} from '../../packages/execution';
-import {MicrophoneProfiles} from './microphone-profiles';
-import {CameraTracker,CameraProfiles} from './camera-tracker';
-import {assertCalibration} from '../../packages/tracking';
-import {assertCatalog,combination,type Catalog} from '../../packages/parts-library';
-import { app, BrowserWindow, ipcMain, protocol, session, screen, dialog, globalShortcut } from 'electron';
-import { readdir,readFile, writeFile, mkdir, rename } from 'node:fs/promises';
+import { SettingsStore } from '../../packages/settings/store';
+import { installEnvironment } from './environment';
+import { encodeBundle, sha256 } from '../../packages/project-storage/archive';
+import { parseINP } from '../../packages/avatar-export/inp';
+import { randomUUID } from 'node:crypto';
+import { nativeImage } from 'electron';
+import { FileOutputs } from './file-outputs';
+import { broadcastOBSBridge } from './broadcast-obs-bridge';
+import { checkBroadcastUI } from './broadcast-self-check';
+import { installBroadcast } from './broadcast-ipc';
+import type { BroadcastServer } from './broadcast-server';
+import { InputOwnership } from '../../packages/execution/ownership';
+import { assertChangeRequest, concurrentCommand } from '../../packages/execution/changes';
+import { RunShortcuts, RunPreferenceStore } from './run-shortcuts';
+import { RUN_MODES, type RunMode } from '../../packages/execution';
+import { MicrophoneProfiles } from './microphone-profiles';
+import { CameraTracker, CameraProfiles } from './camera-tracker';
+import { assertCalibration } from '../../packages/tracking';
+import { assertCatalog, combination, type Catalog } from '../../packages/parts-library';
+import {
+  app,
+  BrowserWindow,
+  ipcMain,
+  protocol,
+  session,
+  screen,
+  dialog,
+  globalShortcut,
+} from 'electron';
+import { readdir, readFile, writeFile, mkdir, rename } from 'node:fs/promises';
 import { join, resolve, relative, isAbsolute, extname } from 'node:path';
 import { WorkerClient } from './worker-client';
 import { imageProcessor } from './image-processor';
-import {splitProcessor} from './split-processor';
-import {readArchive,hash as splitHash} from '../../packages/split-image/archive';
+import { splitProcessor } from './split-processor';
+import { readArchive, hash as splitHash } from '../../packages/split-image/archive';
 import { DiagnosticLog } from '../../packages/diagnostics';
 import type { BuildProfile, StudioInfo } from '../../packages/contracts';
 import { ProjectSession, type ProjectDialogs } from '../../packages/project-session';
 import { projectToPreview } from '../../packages/project-model/preview';
 import { readProject } from '../../packages/project-model';
 
-protocol.registerSchemesAsPrivileged([{ scheme: 'sketcher', privileges: { standard: true, secure: true, supportFetchAPI: true, corsEnabled: true } }]);
-const argument = (name: string): string | undefined => process.argv.find(v => v.startsWith(`--${name}=`))?.slice(name.length + 3);
-const reportPath = argument('self-check-report')??argument('live-environment-report')??argument('live-tracking-report')??argument('live-input-report');
+protocol.registerSchemesAsPrivileged([
+  {
+    scheme: 'sketcher',
+    privileges: { standard: true, secure: true, supportFetchAPI: true, corsEnabled: true },
+  },
+]);
+const argument = (name: string): string | undefined =>
+  process.argv.find((v) => v.startsWith(`--${name}=`))?.slice(name.length + 3);
+const reportPath =
+  argument('self-check-report') ??
+  argument('live-environment-report') ??
+  argument('live-tracking-report') ??
+  argument('live-input-report');
 const profileDir = argument('profile-dir');
 if (profileDir) app.setPath('userData', resolve(profileDir));
-app.setAppUserModelId('local.2dsketcher.studio'); app.setName('2DSketcher');
-let cameraTracker:CameraTracker|undefined;let cameraGeneration=0;let cameraAllowed=false;let microphoneAllowed=false;
-let runShortcuts:RunShortcuts|undefined;
-let broadcast:BroadcastServer|undefined;let broadcastFramesHeld=false;
+app.setAppUserModelId('local.2dsketcher.studio');
+app.setName('2DSketcher');
+let cameraTracker: CameraTracker | undefined;
+let cameraGeneration = 0;
+let cameraAllowed = false;
+let microphoneAllowed = false;
+let runShortcuts: RunShortcuts | undefined;
+let broadcast: BroadcastServer | undefined;
+let broadcastFramesHeld = false;
 let worker: WorkerClient | undefined;
 let log: DiagnosticLog;
 let quitting = false;
-let projectSession:ProjectSession | undefined;let fileOutputs:FileOutputs|undefined;
+let projectSession: ProjectSession | undefined;
+let fileOutputs: FileOutputs | undefined;
 let exitPending = false;
-async function requestExit():Promise<void> {
-  if (exitPending || quitting) return; exitPending = true;
-  try { runShortcuts?.modal(true);if (projectSession && !await projectSession.requestClose()) return; fileOutputs?.close();await broadcast?.close(); await projectSession?.shutdown(); await cameraTracker?.stop(); await worker?.stop(); runShortcuts?.close();quitting = true; log.write('app-stop'); app.exit(); }
-  catch { log.write('app-error',{ code:'E_SAVE_LEAVE' }); }
-  finally { runShortcuts?.modal(false);exitPending = false; }
+async function requestExit(): Promise<void> {
+  if (exitPending || quitting) return;
+  exitPending = true;
+  try {
+    runShortcuts?.modal(true);
+    if (projectSession && !(await projectSession.requestClose())) return;
+    fileOutputs?.close();
+    await broadcast?.close();
+    await projectSession?.shutdown();
+    await cameraTracker?.stop();
+    await worker?.stop();
+    runShortcuts?.close();
+    quitting = true;
+    log.write('app-stop');
+    app.exit();
+  } catch {
+    log.write('app-error', { code: 'E_SAVE_LEAVE' });
+  } finally {
+    runShortcuts?.modal(false);
+    exitPending = false;
+  }
 }
 
-app.on('before-quit', event => {
-  if (!quitting) { event.preventDefault(); void requestExit(); }
+app.on('before-quit', (event) => {
+  if (!quitting) {
+    event.preventDefault();
+    void requestExit();
+  }
 });
 app.on('window-all-closed', () => app.quit());
 
-app.whenReady().then(async () => {
-  const root = app.getAppPath(); const rendererRoot = join(root, 'dist/renderer');
-  const build = JSON.parse(await readFile(join(root, 'dist/runtime-config.json'), 'utf8')) as BuildProfile;
-  const environment=new SettingsStore(join(app.getPath('userData'),'machine'));await environment.init();
-  log = new DiagnosticLog(join(app.getPath('userData'), 'logs')); log.configure(environment.view().value.localDiagnostics); log.write('app-start', { version: build.version, protocol: 1 });
-  session.defaultSession.setPermissionRequestHandler((_contents, _permission, callback) => callback(false));
-  session.defaultSession.webRequest.onBeforeRequest({ urls: ['http://*/*', 'https://*/*', 'ws://*/*', 'wss://*/*'] }, (_details, callback) => callback({ cancel: true }));
-  protocol.handle('sketcher', async request => {
-    try {
-      const url = new URL(request.url); if (url.hostname !== 'app' || request.method !== 'GET') return new Response(null, { status: 403 });
-      const part = decodeURIComponent(url.pathname).slice(1) || 'index.html';
-      if (part.includes('\\') || part.includes('\0') || part.split('/').includes('..')) return new Response(null, { status: 403 });
-      const resource = /^assets\/session\/([a-z0-9-]+)\/([a-f0-9]{64}\.(png|jpg))$/.exec(part);
-      if (resource) { const bytes = await projectSession?.resource(resource[1]!,resource[2]!); return bytes ? new Response(new Uint8Array(bytes),{ headers:{ 'Content-Type':resource[3] === 'png' ? 'image/png' : 'image/jpeg','Cache-Control':'no-store' } }) : new Response(null,{ status:404 }); }
-      if(part.startsWith('assets/avatar-export/')||part.startsWith('assets/image-export/')||part.startsWith('assets/check-export/')){const bytes=fileOutputs?.resource(part);return bytes?new Response(new Uint8Array(bytes),{headers:{'Content-Type':part.endsWith('.jpg')?'image/jpeg':'image/png','Cache-Control':'no-store'}}):new Response(null,{status:404});}
-      const file = resolve(rendererRoot, part); const inside = relative(rendererRoot, file);
-      if (inside.startsWith('..') || isAbsolute(inside)) return new Response(null, { status: 403 });
-      const type: Record<string, string> = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.png': 'image/png', '.svg': 'image/svg+xml' };
-      const content = await readFile(file);
-      return new Response(content, { headers: { 'Content-Type': type[extname(file)] ?? 'application/octet-stream', 'Cache-Control': 'no-store' } });
-    } catch { return new Response(null, { status: 404 }); }
-  });
-  const env: NodeJS.ProcessEnv = { ...process.env, MPLBACKEND: 'Agg', MPLCONFIGDIR: join(app.getPath('userData'), 'worker-cache') };
-  for (const key of ['PYTHONHOME', 'PYTHONPATH', 'PYTHONSTARTUP', 'ELECTRON_RUN_AS_NODE']) delete env[key];
-  const executable = app.isPackaged ? join(process.resourcesPath, 'worker/worker.exe') : join(root, '.venv-product/Scripts/python.exe');
-  worker = new WorkerClient(executable, app.isPackaged ? [] : ['-I', '-u', join(root, 'worker/main.py')], env, log);
-  let ready = false; const workerReady = worker.request('ping').then(() => { ready = true; log.write('worker-ready'); }).catch(() => log.write('worker-error', { code: 'E_WORKER_START' }));
-  const workArea = screen.getPrimaryDisplay().workAreaSize;
-  const window = new BrowserWindow({ width: Math.min(1380, workArea.width - 48), height: Math.min(900, workArea.height - 48),
-    minWidth: 1080, minHeight: 720, show: false, backgroundColor: '#f5f2ed', autoHideMenuBar: true,
-    title: '2DSketcher Studio', webPreferences: { preload: join(__dirname, 'preload.js'), sandbox: true, contextIsolation: true,
-      nodeIntegration: false, webSecurity: true, devTools: build.channel !== 'release', backgroundThrottling: false } });
-  session.defaultSession.setPermissionCheckHandler((contents,permission,origin,details)=>contents===window.webContents&&permission==='media'&&(origin==='sketcher://app'||origin==='sketcher://app/')&&(details.mediaType==='video'?cameraAllowed:details.mediaType==='audio'?microphoneAllowed:false));
-  session.defaultSession.setPermissionRequestHandler((contents,permission,callback,details)=>callback(contents===window.webContents&&permission==='media'&&'mediaTypes' in details&&!!details.mediaTypes?.length&&details.mediaTypes.every(type=>type==='video'?cameraAllowed:type==='audio'?microphoneAllowed:false)));
-  cameraTracker=new CameraTracker(executable,app.isPackaged?[]:['-I','-u',join(root,'worker/main.py')],env);const cameraProfiles=new CameraProfiles(join(app.getPath('userData'),'machine'));
-  window.webContents.once('destroyed',()=>{++cameraGeneration;cameraAllowed=false;microphoneAllowed=false;runShortcuts?.close();void cameraTracker?.stop();});
-  window.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
-  window.webContents.on('will-navigate', event => event.preventDefault());
-  window.on('close',event => { if (!quitting) { event.preventDefault(); void requestExit(); } });
-  const testSaves = reportPath ? ['project-a.2dsketch','project-b.2dsketch','project-premium.2dsketch','project-other.2dsketch','project-copy.2dsketch','project-recovered.2dsketch','input-project.2dsketch','parts-project.2dsketch','parts-copy.2dsketch','structure-project.2dsketch','structure-copy.2dsketch','corrected-project.2dsketch','corrected-copy.2dsketch','split-project.2dsketch','split-copy.2dsketch','split-folder.2dsketch'].map(name => join(app.getPath('userData'),name)) : [];
-  let testLeave:'cancel' | 'discard' = 'cancel';
-  const dialogs:ProjectDialogs = {
-    chooseDetailTexture:async()=>{if(reportPath)return join(app.getPath('userData'),'input-check.png');const picked=await dialog.showOpenDialog(window,{title:'부위 그림 교체 · PNG',properties:['openFile'],filters:[{name:'PNG RGB/RGBA 8bit',extensions:['png']}]});return picked.canceled?null:picked.filePaths[0]??null;},
-    chooseSplit:async kind=>{if(reportPath)return join(app.getPath('userData'),kind==='folder'?'split-input':'split-input.2dparts');const picked=await dialog.showOpenDialog(window,{title:kind==='folder'?'분리 PNG 폴더':'분리 그림 묶음',properties:kind==='folder'?['openDirectory']:['openFile'],...(kind==='2dparts'?{filters:[{name:'분리 PNG 묶음',extensions:['2dparts']}]}:{})});return picked.canceled?null:picked.filePaths[0]??null;},
-    saveSplit:async suggested=>{if(reportPath)return join(app.getPath('userData'),'split-output.2dparts');const picked=await dialog.showSaveDialog(window,{title:'분리 PNG 자료 묶음 저장',defaultPath:join(environment.folder??app.getPath('documents'),suggested.replace(/[<>:"/\\|?*\u0000-\u001f]/g,'_')),filters:[{name:'분리 PNG 묶음',extensions:['2dparts']}]});return picked.canceled?null:picked.filePath??null;},
-    chooseImage:async () => { if(reportPath)return join(app.getPath('userData'),'input-check.png');const result=await dialog.showOpenDialog(window,{ title:'캐릭터 그림 가져오기 · PNG/JPEG',properties:['openFile'],filters:[{ name:'RGB/RGBA 8bit · 256~4096px · 최대 64MiB',extensions:['png','jpg','jpeg'] }] });return result.canceled ? null : result.filePaths[0] ?? null; },
-    openProject:async () => { if (reportPath) return join(app.getPath('userData'),'project-a.2dsketch'); const result = await dialog.showOpenDialog(window,{ title:'프로젝트 열기',properties:['openFile'],filters:[{ name:'2DSketcher 프로젝트',extensions:['2dsketch'] }] }); return result.canceled ? null : result.filePaths[0] ?? null; },
-    saveProject:async suggested => { const safeName = suggested.replace(/[<>:"/\\|?*\u0000-\u001f]/g,'_');if(reportPath)return argument('settings-only')&&environment.folder?join(environment.folder,safeName):testSaves.shift()??null; const result = await dialog.showSaveDialog(window,{ title:'프로젝트 저장',defaultPath:join(environment.folder??app.getPath('documents'),safeName),filters:[{ name:'2DSketcher 프로젝트',extensions:['2dsketch'] }] }); return result.canceled ? null : result.filePath ?? null; },
-    relinkImage:async () => { const result = await dialog.showOpenDialog(window,{ title:'같은 원본 이미지 다시 연결',properties:['openFile'],filters:[{ name:'이미지',extensions:['png','jpg','jpeg'] }] }); return result.canceled ? null : result.filePaths[0] ?? null; },
-    unsaved:async name => { if (reportPath) return testLeave; const result = await dialog.showMessageBox(window,{ type:'question',title:'저장하지 않은 변경',message:`“${name}”의 변경 내용을 저장할까요?`,detail:'자동 복구본은 명시적으로 저장한 프로젝트 파일과 별도로 보관됩니다.',buttons:['저장','저장하지 않고 나가기','계속 편집'],defaultId:0,cancelId:2,noLink:true }); return (['save','discard','cancel'] as const)[result.response] ?? 'cancel'; }
-  };
-  const bundled = readProject(await readFile(join(rendererRoot,'assets/preview-project.json'),'utf8')); if (bundled.mode !== 'read-write') throw new Error('E_BUNDLED_PROJECT');
-  const bundledBytes = new Map<string,Buffer>(); for (const asset of bundled.project.assets) bundledBytes.set(asset.id,await readFile(join(rendererRoot,'assets/preview',asset.fingerprint.sha256+'.png')));
-  if(reportPath)await writeFile(join(app.getPath('userData'),'input-check.png'),bundledBytes.get(bundled.project.inputAssetIds[0]!)!);
-  const catalog=JSON.parse(await readFile(join(rendererRoot,'assets/parts/catalog.json'),'utf8')) as Catalog;assertCatalog(catalog);const partBytes=new Map<string,Buffer>();const partFiles=new Map<string,Buffer>();for(const a of catalog.assets){let bytes=partFiles.get(a.fingerprint.sha256);if(!bytes){bytes=await readFile(join(rendererRoot,'assets',catalog.files[a.fingerprint.sha256]!));partFiles.set(a.fingerprint.sha256,bytes);}partBytes.set(a.id,bytes);}
-  const splitExample=await readFile(join(rendererRoot,'assets/split/premium-example.2dparts'));const splitRegistry=JSON.parse(await readFile(join(rendererRoot,'assets/split/manifest.json'),'utf8'));if(splitHash(splitExample)!==splitRegistry.sha256)throw new Error('E_SPLIT_EXAMPLE_HASH');
-  if(reportPath){await writeFile(join(app.getPath('userData'),'split-input.2dparts'),splitExample);const sample=await readArchive(splitExample),folder=join(app.getPath('userData'),'split-input');await mkdir(folder,{recursive:true});for(let i=0;i<sample.layers.length;i++)await writeFile(join(folder,'fragment-'+String(i).padStart(2,'0')+'.png'),sample.files.get(sample.layers[i]!.path)!);await writeFile(join(folder,'README.txt'),'Source metadata intentionally absent; confirm layout and roles.');}
-  for(const key of Object.keys(dialogs) as (keyof ProjectDialogs)[]){const operation=dialogs[key];if(operation)Object.assign(dialogs,{[key]:async(...args:unknown[])=>{runShortcuts?.modal(true);try{return await (operation as (...values:unknown[])=>Promise<unknown>)(...args);}finally{runShortcuts?.modal(false);}}});}
-  projectSession = new ProjectSession({ splitExample,splitProcessor:splitProcessor(executable,app.isPackaged?[]:['-I','-u',join(root,'worker/main.py')],join(app.getPath('userData'),'split-work'),env),parts:{catalog,bytes:partBytes},dataDir:app.getPath('userData'),dialogs,bundled:bundled.project,bundledBytes,inputProcessor:imageProcessor(executable,app.isPackaged ? [] : ['-I','-u',join(root,'worker/main.py')],join(app.getPath('userData'),'input-work'),env) }); await projectSession.init();await projectSession.configureRecovery(environment.view().value.recovery);
-  projectSession.subscribe(() => { if (!window.isDestroyed()) window.webContents.send('projects:changed',projectSession!.view()); });
-  const trusted = (event: Electron.IpcMainInvokeEvent): void => {
-    if (event.sender !== window.webContents || event.senderFrame !== window.webContents.mainFrame || !event.senderFrame.url.startsWith('sketcher://app/')) throw new Error('E_IPC_ORIGIN');
-  };
-  broadcast=await installBroadcast(window,projectSession,join(app.getPath('userData'),'machine'),rendererRoot,trusted,()=>!broadcastFramesHeld);
-  const info: StudioInfo = { name: '2DSketcher', version: build.version, channel: build.channel, features: { creation: false, tracking: false, preview: true, projects:true } };
-  const microphoneProfiles=new MicrophoneProfiles(join(app.getPath('userData'),'machine'));
-  const runStore=new RunPreferenceStore(join(app.getPath('userData'),'machine'));runShortcuts=new RunShortcuts(globalShortcut,()=>window.isFocused(),(requestId,action)=>{if(!window.isDestroyed())window.webContents.send('run:shortcut',{requestId,action});});let runPreferencesOK=true;try{runShortcuts.configure(await runStore.read());}catch{runPreferencesOK=false;}window.on('focus',()=>runShortcuts?.refresh());window.on('blur',()=>runShortcuts?.refresh());
-  let imageSaveSerial=0;
-  fileOutputs=new FileOutputs(window,projectSession,trusted,value=>runShortcuts?.modal(value),reportPath?async()=>join(app.getPath('userData'),'character-image-'+(++imageSaveSerial)+'.png'):undefined,reportPath?{choose:async name=>join(app.getPath('userData'),name),locate:async()=>join(app.getPath('userData'),'moved-avatar.inp')}:undefined,()=>environment.folder??app.getPath('documents'));
-  const inputOwners=new InputOwnership(()=>projectSession!.runtimeOwner(),()=>!!projectSession!.view().project);
-  const runError=(e:unknown,fallback='E_RUN_CHANGE')=>e instanceof Error&&/^E_[A-Z_]{1,48}$/.test(e.message)?e.message:fallback;
-  await installEnvironment(window,environment,trusted,root,build.version,async value=>{log.configure(value.localDiagnostics);await projectSession!.configureRecovery(value.recovery);if(!value.cameraRequests){++cameraGeneration;cameraAllowed=false;await cameraTracker?.stop();}if(!value.microphoneRequests)microphoneAllowed=false;},value=>runShortcuts?.modal(value),reportPath?app.getPath('userData'):undefined);
-  ipcMain.handle('run:prepare-change',async(event,request:unknown)=>{trusted(event);try{assertChangeRequest(request);return {ok:true,lease:await projectSession!.prepareRuntimeChange(request)};}catch(e){return {ok:false,errorCode:runError(e)};}});
-  ipcMain.handle('run:commit-change',(event,request:unknown)=>{trusted(event);try{const r=request as {ownerId:string;baseId:string;requestId:string;restart:boolean};if(!r||Object.keys(r).sort().join(',')!=='baseId,ownerId,requestId,restart'||![r.ownerId,r.baseId,r.requestId].every(id=>typeof id==='string'&&/^[a-f0-9-]{36}$/.test(id))||typeof r.restart!=='boolean')throw new Error('E_RUN_REQUEST');projectSession!.commitRuntimeChange(r.ownerId,r.baseId,r.requestId,r.restart);runShortcuts!.activate(r.requestId,projectSession!.runtimeActions(r.requestId));return {ok:true};}catch(e){return {ok:false,errorCode:runError(e)};}});
-  ipcMain.handle('run:rollback-change',(event,owner:unknown,id:unknown,base:unknown)=>{trusted(event);try{if(![owner,id,base].every(v=>typeof v==='string'&&/^[a-f0-9-]{36}$/.test(v)))throw new Error('E_RUN_REQUEST');projectSession!.rollbackRuntimeChange(owner as string,id as string,base as string);runShortcuts!.activate(base as string,projectSession!.runtimeActions(base as string));return {ok:true};}catch(e){return {ok:false,errorCode:runError(e)};}});
-  ipcMain.handle('run:stop',async(event,owner:unknown)=>{trusted(event);if(typeof owner!=='string'||!projectSession!.stopRuntime(owner))return;broadcast?.stop();runShortcuts!.activate(null);if(inputOwners.release('microphone',owner))microphoneAllowed=false;if(inputOwners.release('camera',owner)){++cameraGeneration;cameraAllowed=false;await cameraTracker!.stop();}});
-  ipcMain.handle('run:transition',async(event,command:unknown,baseId:unknown)=>{trusted(event);if(!command||concurrentCommand(String((command as {type?:unknown}).type))!=='transition'||typeof baseId!=='string'||!projectSession!.activeRuntime(baseId))return {view:projectSession!.view()};return projectSession!.dispatch(command,baseId);});
-  ipcMain.handle('run:input-basis',(event,source:unknown,projectId:unknown,revision:unknown)=>{trusted(event);try{if(!['working','execution'].includes(String(source))||typeof projectId!=='string'||!Number.isSafeInteger(revision))throw new Error('E_RUN_REQUEST');return {ok:true,basis:projectSession!.runtimeInputBasis(source as 'working'|'execution',projectId,revision as number)};}catch(e){return {ok:false,errorCode:runError(e)};}});
-  ipcMain.handle('run:prepare',async(event,value:unknown)=>{trusted(event);try{const v=value as {requestId:string;sessionId:string;revision:number;mode:RunMode};if(!v||Object.keys(v).sort().join(',')!=='mode,requestId,revision,sessionId'||typeof v.requestId!=='string'||typeof v.sessionId!=='string'||!Number.isSafeInteger(v.revision)||v.revision<0||!RUN_MODES.includes(v.mode))throw new Error('E_RUN_REQUEST');const lease=await projectSession!.prepareRuntime(v);return {ok:true,lease};}catch(e){const code=e instanceof Error&&/^E_[A-Z_]{1,48}$/.test(e.message)?e.message:'E_RUN_PREPARE';return {ok:false,errorCode:code};}});
-  ipcMain.handle('run:release',async(event,id:unknown)=>{trusted(event);if(typeof id!=='string'||!/^[a-f0-9-]{36}$/.test(id))return;projectSession!.releaseRuntime(id);if(!projectSession!.runtimeBusy())runShortcuts!.activate(null);});
-  ipcMain.handle('run:preferences',event=>{trusted(event);return {ok:runPreferencesOK,value:runShortcuts!.preferences(),statuses:runShortcuts!.status()};});
-  ipcMain.handle('run:configure',async(event,value:unknown)=>{trusted(event);try{const v=value as import('../../packages/execution').RunPreferences;await runStore.save(v);const statuses=runShortcuts!.configure(v);runPreferencesOK=true;return {ok:true,statuses};}catch(e){return {ok:false,errorCode:e instanceof Error&&/^E_RUN_[A-Z_]+$/.test(e.message)?e.message:'E_RUN_PREFERENCES',statuses:runShortcuts!.status()};}});
-  ipcMain.handle('run:active',(event,id:unknown,active:unknown)=>{trusted(event);if(typeof id!=='string'||typeof active!=='boolean'||!projectSession!.activeRuntime(id))return runShortcuts!.status();const view=projectSession!.view();return runShortcuts!.activate(active?id:null,active?projectSession!.runtimeActions(id):[]);});
-  ipcMain.handle('run:context',(event,suspended:unknown,editing:unknown=false)=>{trusted(event);return typeof suspended==='boolean'&&typeof editing==='boolean'?runShortcuts!.context(suspended,editing):runShortcuts!.status();});
-  ipcMain.handle('microphone:begin',(event,owner:unknown)=>{trusted(event);if(!environment.view().value.microphoneRequests||!inputOwners.claim('microphone',owner))return false;microphoneAllowed=true;return true;});
-  ipcMain.handle('microphone:end',(event,owner:unknown)=>{trusted(event);if(inputOwners.release('microphone',owner))microphoneAllowed=false;});
-  ipcMain.handle('microphone:profiles',async event=>{trusted(event);try{return {ok:true,profiles:await microphoneProfiles.read()};}catch{return {ok:false,profiles:[]};}});
-  ipcMain.handle('microphone:save',async(event,value:unknown)=>{trusted(event);try{await microphoneProfiles.save(value as import('../../packages/input-control').MicrophoneProfile);return true;}catch{return false;}});
-  ipcMain.handle('tracking:begin',async(event,owner:unknown)=>{trusted(event);if(!environment.view().value.cameraRequests)return {ok:false,errorCode:'E_CAMERA_PERMISSION',reason:'settings'};if(!inputOwners.claim('camera',owner))return {ok:false,errorCode:'E_RUN_INPUT_OWNER'};const generation=++cameraGeneration;cameraAllowed=true;try{const ok=await cameraTracker!.begin();if(generation!==cameraGeneration)return {ok:false,errorCode:'E_TRACKING_WORKER',reason:'superseded'};cameraAllowed=ok;return {ok,errorCode:ok?undefined:cameraTracker!.startReason==='deadline'?'E_TRACKING_TIMEOUT':'E_TRACKING_WORKER',reason:cameraTracker!.startReason};}catch{if(generation===cameraGeneration)cameraAllowed=false;return {ok:false,errorCode:'E_TRACKING_WORKER'};}});
-  ipcMain.handle('tracking:end',async(event,owner:unknown)=>{trusted(event);if(!inputOwners.release('camera',owner))return;++cameraGeneration;cameraAllowed=false;await cameraTracker!.stop();});
-  ipcMain.handle('tracking:frame',async(event,seq:unknown,bytes:unknown,owner:unknown)=>{trusted(event);try{if(!inputOwners.owns('camera',owner)||!cameraAllowed||typeof seq!=='number'||!(bytes instanceof Uint8Array))throw new Error();const result=await cameraTracker!.frame(seq,bytes);return result?{ok:true,result}:{ok:false,errorCode:'E_TRACKING_RESULT'};}catch{return {ok:false,errorCode:'E_TRACKING_RESULT'};}});
-  ipcMain.handle('tracking:profiles',async event=>{trusted(event);try{return {ok:true,profiles:await cameraProfiles.read()};}catch{return {ok:false,profiles:[]};}});
-  ipcMain.handle('tracking:calibration',async(event,value:unknown)=>{trusted(event);try{assertCalibration(value);await cameraProfiles.save(value);return {ok:true};}catch{return {ok:false,errorCode:'E_TRACKING_CALIBRATION'};}});
-  ipcMain.handle('studio:info', event => { trusted(event); return info; });
-  ipcMain.handle('studio:health', async event => { trusted(event); await workerReady; return { ready }; });
-  ipcMain.handle('projects:view',event => { trusted(event); return projectSession!.view(); });
-  ipcMain.handle('projects:drop-image',(event,file:unknown) => { trusted(event);if(typeof file!=='string' || file.length>32768 || !isAbsolute(file) || file.startsWith('\\\\'))throw new Error('E_INPUT_NATIVE_FILE');return projectSession!.dropImage(file); });
-  ipcMain.handle('projects:command',async (event,command:unknown) => { trusted(event); return projectSession!.dispatch(command); });
-  if (!reportPath) window.once('ready-to-show', () => window.show());
-  await window.loadURL('sketcher://app/index.html');
-  if (reportPath) window.showInactive();
-  if(argument('input-recovery-only')){setInterval(()=>{if(!window.isDestroyed())void window.webContents.executeJavaScript('window.editorFailureState??{}').then(v=>writeFile(reportPath!+'.progress.json',JSON.stringify(v)+'\n')).catch(()=>{});},1000);}
-  if(argument('live-environment-report')||argument('live-tracking-report')||argument('live-input-report')){window.show();window.focus();}
-  if (reportPath) {
-    let passed = false;
-    let stage = 'worker';
-    try {
-      await workerReady;
-      const health = await worker.request('validate-runtime');
-      stage = 'renderer-ready';
-      await window.webContents.executeJavaScript(`new Promise((resolve,reject)=>{const start=Date.now();const timer=setInterval(()=>{if(typeof window.foundationSelfCheck==='function'){clearInterval(timer);resolve(true)}else if(Date.now()-start>30000){clearInterval(timer);reject(new Error('E_RENDER_TIMEOUT'))}},50)})`);
-      stage = 'renderer-check';
-      const renderer = await window.webContents.executeJavaScript('window.foundationSelfCheck()') as Record<string, unknown>;
-      if(argument('live-input-report')){stage='live-input';testLeave='discard';const timer=setInterval(()=>{void window.webContents.executeJavaScript('window.microphoneReviewPhase??{}').then(v=>writeFile(reportPath+'.progress.json',JSON.stringify(v)+'\n')).catch(()=>{});},1000);let inputLive;try{inputLive=await window.webContents.executeJavaScript('window.microphoneLiveCheck('+JSON.stringify(argument('live-input-scenes')==='true')+')') as Record<string,unknown>;}finally{clearInterval(timer);}await projectSession.shutdown();await worker.stop();worker=undefined;await writeFile(reportPath,JSON.stringify({passed:inputLive.passed,inputLive,appVersion:build.version,packaged:app.isPackaged,channel:build.channel,workerStopped:true},null,2)+'\n');quitting=true;app.exit(inputLive.passed===true?0:1);return;}
-      if(argument('live-tracking-report')){stage='live-tracking';testLeave='discard';const progress=argument('live-tracking-report')!+'.progress.json';const timer=setInterval(()=>{void window.webContents.executeJavaScript('window.liveReviewPhase??{phase:"preparing",seconds:0}').then(value=>writeFile(progress,JSON.stringify(value)+'\n')).catch(()=>{});},1000);let tracking;try{tracking=await window.webContents.executeJavaScript('window.cameraLiveCheck('+JSON.stringify(argument('live-camera-hint')??null)+')') as Record<string,unknown>;}finally{clearInterval(timer);}await cameraTracker?.stop();await projectSession.shutdown();await worker.stop();worker=undefined;await mkdir(resolve(reportPath,'..'),{recursive:true});await writeFile(reportPath,JSON.stringify({passed:tracking.passed,tracking,appVersion:build.version,packaged:app.isPackaged,channel:build.channel,workerStopped:true},null,2)+'\n');log.write('app-stop');quitting=true;app.exit(tracking.passed===true?0:1);return;}
-      if(argument('execution-keys-review')==='true'){stage='execution-keys-review';testLeave='discard';const prepared=await window.webContents.executeJavaScript('window.prepareExecutionKeys()') as {registered:boolean;revision:number};if(!prepared.registered)throw new Error('E_RUN_KEY_CONFLICT');const outside=new BrowserWindow({width:650,height:400,title:'2DSketcher key verification',webPreferences:{sandbox:true,contextIsolation:true,nodeIntegration:false,webSecurity:true}});await outside.loadURL('data:text/html;charset=utf-8,'+encodeURIComponent('<!doctype html><html lang="ko"><meta charset="utf-8"><title>2DSketcher key verification</title><body style="font:18px sans-serif;padding:30px;background:#f7f3ed;color:#352f3d"><h1>Shortcut verification in another window</h1><p>Keep this window focused. Press each chord once, in order.</p><p>1. Ctrl + Alt + Shift + F8 (local: no action)</p><p>2. Ctrl + Alt + Shift + F9 (global: hide character)</p><p>The window closes when the global callback arrives.</p></body></html>'));outside.show();outside.focus();await writeFile(reportPath+'.ready.json',JSON.stringify({ready:true,registered:true,mainFocused:window.isFocused(),outsideFocused:outside.isFocused()})+'\n');let state:{hidden:boolean;neutral:boolean;active:boolean;lastAction:string|null}|null=null;const deadline=Date.now()+1200000;let outsideAtDelivery=false;while(Date.now()<deadline&&!outside.isDestroyed()){state=await window.webContents.executeJavaScript('window.executionKeyState()');if(state?.hidden){outsideAtDelivery=outside.isFocused()&&!window.isFocused();break;}await new Promise(r=>setTimeout(r,250));}const observed=!!state?.hidden&&state.active&&!state.neutral&&state.lastAction==='hide'&&outsideAtDelivery;await window.webContents.executeJavaScript("document.querySelector('[data-run-close]').click()");await new Promise(r=>setTimeout(r,300));runShortcuts.close();const chord='Control+Alt+Shift+F9';const released=!globalShortcut.isRegistered(chord);if(!outside.isDestroyed())outside.close();await projectSession.shutdown();await worker.stop();worker=undefined;await writeFile(reportPath,JSON.stringify({passed:observed&&released,appVersion:build.version,registeredBeforeInput:true,actualGlobalCallbackOutsideMain:observed,localNeutralDidNotFire:!state?.neutral,ownedChordReleased:released,requestedSequence:'local F8 then global F9',userSequenceAttestation:'PENDING',rawKeysRecorded:false,physicalDevicesOpened:false,protections:{sandbox:true,contextIsolation:true,nodeIntegration:false,externalNetworkBlocked:true}},null,2)+'\n');quitting=true;app.exit(observed&&released?0:1);return;}
-      if(argument('live-environment-report')){
-        stage='environment-live';testLeave='discard';const bridge=argument('environment-bridge')??join(app.getPath('userData'),'live-bridge');await mkdir(bridge,{recursive:true});const timer=setInterval(()=>{if(!window.isDestroyed())void window.webContents.executeJavaScript('window.environmentLiveState??{}').then(async state=>{await writeFile(join(bridge,'progress.json'),JSON.stringify(state)+'\n');if(broadcast?.url())await writeFile(join(bridge,'connection.json'),JSON.stringify({url:broadcast.url()}));}).catch(()=>{});},250);let live:Record<string,unknown>;try{live=await window.webContents.executeJavaScript('window.environmentLiveCheck()');}finally{clearInterval(timer);}const ready=await readFile(join(bridge,'obs-result.json'),'utf8').then(v=>JSON.parse(v)).catch(()=>null);fileOutputs.close();await broadcast?.close();await cameraTracker?.stop();await projectSession.shutdown();await worker.stop();worker=undefined;runShortcuts.close();await writeFile(reportPath,JSON.stringify({passed:live.passed===true,live,obs:ready,appVersion:build.version,workerStopped:true,m0:'HOLD',cameraFramesStored:false,microphonePCMStored:false},null,2)+'\n');quitting=true;app.exit(live.passed===true?0:1);return;
-      }
-      if(argument('guide-only')==='true'){
-        stage='guide-ui';testLeave='discard';if(argument('compact-editor')==='true')window.setSize(1080,720);
-        const reopen=argument('guide-reopen-existing')==='true',existing=join(app.getPath('userData'),'project-a.2dsketch'),before=reopen?sha256(await readFile(existing)):null;
-        testSaves.splice(0,testSaves.length,join(app.getPath('userData'),'guide-example.2dsketch'));
-        const guide=await window.webContents.executeJavaScript('window.guideSelfCheck('+JSON.stringify(reopen)+')') as Record<string,unknown>;
-        if(reopen&&sha256(await readFile(existing))!==before)throw new Error('E_GUIDE_EXISTING_CHANGED');
-        const output=argument('guide-evidence')??join(app.getPath('userData'),'guide-check');await mkdir(output,{recursive:true});
-        for(const topic of ['start','broadcast','save','recovery','devices','install','rights']){
-          await window.webContents.executeJavaScript("document.querySelector('[data-guide-topic="+topic+"]')?.click()");await new Promise(r=>setTimeout(r,150));await writeFile(join(output,'guide-'+topic+'.png'),(await window.webContents.capturePage()).toPNG());
+app
+  .whenReady()
+  .then(async () => {
+    const root = app.getAppPath();
+    const rendererRoot = join(root, 'dist/renderer');
+    const build = JSON.parse(
+      await readFile(join(root, 'dist/runtime-config.json'), 'utf8'),
+    ) as BuildProfile;
+    const environment = new SettingsStore(join(app.getPath('userData'), 'machine'));
+    await environment.init();
+    log = new DiagnosticLog(join(app.getPath('userData'), 'logs'));
+    log.configure(environment.view().value.localDiagnostics);
+    log.write('app-start', { version: build.version, protocol: 1 });
+    session.defaultSession.setPermissionRequestHandler((_contents, _permission, callback) =>
+      callback(false),
+    );
+    session.defaultSession.webRequest.onBeforeRequest(
+      { urls: ['http://*/*', 'https://*/*', 'ws://*/*', 'wss://*/*'] },
+      (_details, callback) => callback({ cancel: true }),
+    );
+    protocol.handle('sketcher', async (request) => {
+      try {
+        const url = new URL(request.url);
+        if (url.hostname !== 'app' || request.method !== 'GET')
+          return new Response(null, { status: 403 });
+        const part = decodeURIComponent(url.pathname).slice(1) || 'index.html';
+        if (part.includes('\\') || part.includes('\0') || part.split('/').includes('..'))
+          return new Response(null, { status: 403 });
+        const resource = /^assets\/session\/([a-z0-9-]+)\/([a-f0-9]{64}\.(png|jpg))$/.exec(part);
+        if (resource) {
+          const bytes = await projectSession?.resource(resource[1]!, resource[2]!);
+          return bytes
+            ? new Response(new Uint8Array(bytes), {
+                headers: {
+                  'Content-Type': resource[3] === 'png' ? 'image/png' : 'image/jpeg',
+                  'Cache-Control': 'no-store',
+                },
+              })
+            : new Response(null, { status: 404 });
         }
-        fileOutputs.close();await broadcast?.close();await cameraTracker?.stop();await projectSession.shutdown();await worker.stop();worker=undefined;runShortcuts.close();
-        await writeFile(reportPath,JSON.stringify({passed:guide.passed===true,guide,appVersion:build.version,channel:build.channel,packaged:app.isPackaged,windowSize:window.getSize(),worker:health,workerStopped:true,protections:{sandbox:true,contextIsolation:true,nodeIntegration:false,externalNetworkBlocked:true},m0:'HOLD'},null,2)+'\n');quitting=true;app.exit(guide.passed===true?0:1);return;
+        if (
+          part.startsWith('assets/avatar-export/') ||
+          part.startsWith('assets/image-export/') ||
+          part.startsWith('assets/check-export/')
+        ) {
+          const bytes = fileOutputs?.resource(part);
+          return bytes
+            ? new Response(new Uint8Array(bytes), {
+                headers: {
+                  'Content-Type': part.endsWith('.jpg') ? 'image/jpeg' : 'image/png',
+                  'Cache-Control': 'no-store',
+                },
+              })
+            : new Response(null, { status: 404 });
+        }
+        const file = resolve(rendererRoot, part);
+        const inside = relative(rendererRoot, file);
+        if (inside.startsWith('..') || isAbsolute(inside))
+          return new Response(null, { status: 403 });
+        const type: Record<string, string> = {
+          '.html': 'text/html; charset=utf-8',
+          '.js': 'text/javascript',
+          '.css': 'text/css',
+          '.json': 'application/json',
+          '.png': 'image/png',
+          '.svg': 'image/svg+xml',
+        };
+        const content = await readFile(file);
+        return new Response(content, {
+          headers: {
+            'Content-Type': type[extname(file)] ?? 'application/octet-stream',
+            'Cache-Control': 'no-store',
+          },
+        });
+      } catch {
+        return new Response(null, { status: 404 });
       }
-      if(argument('settings-only')==='true'){
-        stage='environment-ui';testLeave='discard';if(argument('compact-editor')==='true')window.setSize(1080,720);const settings=await window.webContents.executeJavaScript('window.environmentSelfCheck()') as Record<string,unknown>;const output=argument('settings-evidence')??join(app.getPath('userData'),'settings-check');await mkdir(output,{recursive:true});await writeFile(join(output,'environment-ui.png'),(await window.webContents.capturePage()).toPNG());for(const tab of ['environment','privacy','performance','support']){await window.webContents.executeJavaScript("document.querySelector('[data-settings-tab="+tab+"]')?.click()");await new Promise(r=>setTimeout(r,180));await writeFile(join(output,'environment-'+tab+'.png'),(await window.webContents.capturePage()).toPNG());}const diagnostic=JSON.parse(await readFile(join(app.getPath('userData'),'minimal-diagnostic.json'),'utf8'));if(JSON.stringify(diagnostic).includes(app.getPath('userData'))||diagnostic.networkTransmission!==false)throw new Error('E_DIAGNOSTIC_PRIVACY');await writeFile(join(output,'minimal-diagnostic.json'),JSON.stringify(diagnostic,null,2)+'\n');const defaultsSaved=(await environment.view()).value;const reopened=new SettingsStore(join(app.getPath('userData'),'machine'));await reopened.init();if(JSON.stringify(reopened.view().value)!==JSON.stringify(defaultsSaved))throw new Error('E_SETTINGS_REOPEN');const saves=await readdir(join(app.getPath('userData'),'default-saves'));if(!saves.some(n=>n.endsWith('.2dsketch')))throw new Error('E_SETTINGS_DEFAULT_SAVE');fileOutputs.close();await broadcast?.close();await cameraTracker?.stop();await projectSession.shutdown();await worker.stop();worker=undefined;runShortcuts.close();await writeFile(reportPath,JSON.stringify({passed:settings.passed===true,settings:{...settings,persistenceReopened:true,defaultFolderFileExists:true,diagnosticPrivacyChecked:true},appVersion:build.version,channel:build.channel,packaged:app.isPackaged,windowSize:window.getSize(),worker:health,workerStopped:true,protections:{sandbox:true,contextIsolation:true,nodeIntegration:false,externalNetworkBlocked:true}},null,2)+'\n');quitting=true;app.exit(settings.passed===true?0:1);return;
+    });
+    const env: NodeJS.ProcessEnv = {
+      ...process.env,
+      MPLBACKEND: 'Agg',
+      MPLCONFIGDIR: join(app.getPath('userData'), 'worker-cache'),
+    };
+    for (const key of ['PYTHONHOME', 'PYTHONPATH', 'PYTHONSTARTUP', 'ELECTRON_RUN_AS_NODE'])
+      delete env[key];
+    const executable = app.isPackaged
+      ? join(process.resourcesPath, 'worker/worker.exe')
+      : join(root, '.venv-product/Scripts/python.exe');
+    worker = new WorkerClient(
+      executable,
+      app.isPackaged ? [] : ['-I', '-u', join(root, 'worker/main.py')],
+      env,
+      log,
+    );
+    let ready = false;
+    const workerReady = worker
+      .request('ping')
+      .then(() => {
+        ready = true;
+        log.write('worker-ready');
+      })
+      .catch(() => log.write('worker-error', { code: 'E_WORKER_START' }));
+    const workArea = screen.getPrimaryDisplay().workAreaSize;
+    const window = new BrowserWindow({
+      width: Math.min(1380, workArea.width - 48),
+      height: Math.min(900, workArea.height - 48),
+      minWidth: 1080,
+      minHeight: 720,
+      show: false,
+      backgroundColor: '#f5f2ed',
+      autoHideMenuBar: true,
+      title: '2DSketcher Studio',
+      webPreferences: {
+        preload: join(__dirname, 'preload.js'),
+        sandbox: true,
+        contextIsolation: true,
+        nodeIntegration: false,
+        webSecurity: true,
+        devTools: build.channel !== 'release',
+        backgroundThrottling: false,
+      },
+    });
+    session.defaultSession.setPermissionCheckHandler(
+      (contents, permission, origin, details) =>
+        contents === window.webContents &&
+        permission === 'media' &&
+        (origin === 'sketcher://app' || origin === 'sketcher://app/') &&
+        (details.mediaType === 'video'
+          ? cameraAllowed
+          : details.mediaType === 'audio'
+            ? microphoneAllowed
+            : false),
+    );
+    session.defaultSession.setPermissionRequestHandler((contents, permission, callback, details) =>
+      callback(
+        contents === window.webContents &&
+          permission === 'media' &&
+          'mediaTypes' in details &&
+          !!details.mediaTypes?.length &&
+          details.mediaTypes.every((type) =>
+            type === 'video' ? cameraAllowed : type === 'audio' ? microphoneAllowed : false,
+          ),
+      ),
+    );
+    cameraTracker = new CameraTracker(
+      executable,
+      app.isPackaged ? [] : ['-I', '-u', join(root, 'worker/main.py')],
+      env,
+    );
+    const cameraProfiles = new CameraProfiles(join(app.getPath('userData'), 'machine'));
+    window.webContents.once('destroyed', () => {
+      ++cameraGeneration;
+      cameraAllowed = false;
+      microphoneAllowed = false;
+      runShortcuts?.close();
+      void cameraTracker?.stop();
+    });
+    window.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
+    window.webContents.on('will-navigate', (event) => event.preventDefault());
+    window.on('close', (event) => {
+      if (!quitting) {
+        event.preventDefault();
+        void requestExit();
       }
-      if(argument('avatar-export-only')==='true'){
-        stage='avatar-export-ui';testLeave='discard';testSaves.splice(0,testSaves.length,...['avatar-parts','avatar-single','avatar-split'].map(n=>join(app.getPath('userData'),n+'.2dsketch')));if(argument('compact-editor')==='true')window.setSize(1080,720);
-        const result=await window.webContents.executeJavaScript('window.avatarExportSelfCheck()') as {passed:boolean;artifacts:{route:string;label:string;original:string;converted:string;target:string}[];outputs:{route:string;version:number;id:string;name:string;sha256:string}[]};
-        const output=argument('avatar-export-evidence')??join(app.getPath('userData'),'avatar-export-check');await mkdir(output,{recursive:true});const images=[];for(const image of result.artifacts){const row={route:image.route,label:image.label,original:image.route+'-'+image.label+'-original.png',converted:image.route+'-'+image.label+'-converted.png',target:image.route+'-'+image.label+'-target-reference.png'};for(const kind of ['original','converted','target'] as const){const b=Buffer.from(image[kind].slice('data:image/png;base64,'.length),'base64');await writeFile(join(output,row[kind]),b);}images.push(row);}
-        const files=[];for(const row of result.outputs){if(!/^character-r[0-9]+-[a-f0-9]{8}\.inp$/.test(row.name))throw new Error('E_AVATAR_TEST_NAME');const bytes=await readFile(join(app.getPath('userData'),row.name));if(sha256(bytes)!==row.sha256)throw new Error('E_AVATAR_TEST_HASH');const parsed=parseINP(bytes),name='avatar-'+row.route+'-v'+row.version+'.inp';await writeFile(join(output,name),bytes);files.push({...row,name,bytes:bytes.length,textureCount:parsed.textures.length,parameterCount:parsed.model.param.length,animationCount:Object.keys(parsed.model.animations).length});}
-        const last=result.outputs.at(-1)!;const original=join(app.getPath('userData'),last.name),moved=join(app.getPath('userData'),'moved-avatar.inp');await rename(original,moved);if((await fileOutputs.avatar.list()).find(r=>r.id===last.id)?.fileState!=='MISSING')throw new Error('E_AVATAR_MOVE_DETECTION');await fileOutputs.avatar.relocate(last.id);if((await fileOutputs.avatar.list()).find(r=>r.id===last.id)?.fileState!=='PRESENT')throw new Error('E_AVATAR_MOVE_RECONNECT');
-        await writeFile(join(output,argument('compact-editor')==='true'?'avatar-export-ui-compact.png':'avatar-export-ui.png'),(await window.webContents.capturePage()).toPNG());fileOutputs.close();const released=fileOutputs.avatar.stats();await broadcast?.close();await cameraTracker?.stop();await projectSession.shutdown();await worker.stop();worker=undefined;runShortcuts.close();const {artifacts:_artifacts,outputs:_outputs,...summary}=result;await writeFile(reportPath,JSON.stringify({passed:result.passed&&!released.prepared&&released.resources===0,avatarExport:{...summary,images,files,actualFileMoveReconnected:true,resourcesReleased:true},appVersion:build.version,channel:build.channel,packaged:app.isPackaged,windowSize:window.getSize(),worker:health,workerStopped:true,protections:{sandbox:true,contextIsolation:true,nodeIntegration:false,externalNetworkBlocked:true}},null,2)+'\n');quitting=true;app.exit(0);return;
+    });
+    const testSaves = reportPath
+      ? [
+          'project-a.2dsketch',
+          'project-b.2dsketch',
+          'project-premium.2dsketch',
+          'project-other.2dsketch',
+          'project-copy.2dsketch',
+          'project-recovered.2dsketch',
+          'input-project.2dsketch',
+          'parts-project.2dsketch',
+          'parts-copy.2dsketch',
+          'structure-project.2dsketch',
+          'structure-copy.2dsketch',
+          'corrected-project.2dsketch',
+          'corrected-copy.2dsketch',
+          'split-project.2dsketch',
+          'split-copy.2dsketch',
+          'split-folder.2dsketch',
+        ].map((name) => join(app.getPath('userData'), name))
+      : [];
+    let testLeave: 'cancel' | 'discard' = 'cancel';
+    const dialogs: ProjectDialogs = {
+      chooseDetailTexture: async () => {
+        if (reportPath) return join(app.getPath('userData'), 'input-check.png');
+        const picked = await dialog.showOpenDialog(window, {
+          title: '부위 그림 교체 · PNG',
+          properties: ['openFile'],
+          filters: [{ name: 'PNG RGB/RGBA 8bit', extensions: ['png'] }],
+        });
+        return picked.canceled ? null : (picked.filePaths[0] ?? null);
+      },
+      chooseSplit: async (kind) => {
+        if (reportPath)
+          return join(
+            app.getPath('userData'),
+            kind === 'folder' ? 'split-input' : 'split-input.2dparts',
+          );
+        const picked = await dialog.showOpenDialog(window, {
+          title: kind === 'folder' ? '분리 PNG 폴더' : '분리 그림 묶음',
+          properties: kind === 'folder' ? ['openDirectory'] : ['openFile'],
+          ...(kind === '2dparts'
+            ? { filters: [{ name: '분리 PNG 묶음', extensions: ['2dparts'] }] }
+            : {}),
+        });
+        return picked.canceled ? null : (picked.filePaths[0] ?? null);
+      },
+      saveSplit: async (suggested) => {
+        if (reportPath) return join(app.getPath('userData'), 'split-output.2dparts');
+        const picked = await dialog.showSaveDialog(window, {
+          title: '분리 PNG 자료 묶음 저장',
+          defaultPath: join(
+            environment.folder ?? app.getPath('documents'),
+            suggested.replace(/[<>:"/\\|?*\u0000-\u001f]/g, '_'),
+          ),
+          filters: [{ name: '분리 PNG 묶음', extensions: ['2dparts'] }],
+        });
+        return picked.canceled ? null : (picked.filePath ?? null);
+      },
+      chooseImage: async () => {
+        if (reportPath) return join(app.getPath('userData'), 'input-check.png');
+        const result = await dialog.showOpenDialog(window, {
+          title: '캐릭터 그림 가져오기 · PNG/JPEG',
+          properties: ['openFile'],
+          filters: [
+            { name: 'RGB/RGBA 8bit · 256~4096px · 최대 64MiB', extensions: ['png', 'jpg', 'jpeg'] },
+          ],
+        });
+        return result.canceled ? null : (result.filePaths[0] ?? null);
+      },
+      openProject: async () => {
+        if (reportPath) return join(app.getPath('userData'), 'project-a.2dsketch');
+        const result = await dialog.showOpenDialog(window, {
+          title: '프로젝트 열기',
+          properties: ['openFile'],
+          filters: [{ name: '2DSketcher 프로젝트', extensions: ['2dsketch'] }],
+        });
+        return result.canceled ? null : (result.filePaths[0] ?? null);
+      },
+      saveProject: async (suggested) => {
+        const safeName = suggested.replace(/[<>:"/\\|?*\u0000-\u001f]/g, '_');
+        if (reportPath)
+          return argument('settings-only') && environment.folder
+            ? join(environment.folder, safeName)
+            : (testSaves.shift() ?? null);
+        const result = await dialog.showSaveDialog(window, {
+          title: '프로젝트 저장',
+          defaultPath: join(environment.folder ?? app.getPath('documents'), safeName),
+          filters: [{ name: '2DSketcher 프로젝트', extensions: ['2dsketch'] }],
+        });
+        return result.canceled ? null : (result.filePath ?? null);
+      },
+      relinkImage: async () => {
+        const result = await dialog.showOpenDialog(window, {
+          title: '같은 원본 이미지 다시 연결',
+          properties: ['openFile'],
+          filters: [{ name: '이미지', extensions: ['png', 'jpg', 'jpeg'] }],
+        });
+        return result.canceled ? null : (result.filePaths[0] ?? null);
+      },
+      unsaved: async (name) => {
+        if (reportPath) return testLeave;
+        const result = await dialog.showMessageBox(window, {
+          type: 'question',
+          title: '저장하지 않은 변경',
+          message: `“${name}”의 변경 내용을 저장할까요?`,
+          detail: '자동 복구본은 명시적으로 저장한 프로젝트 파일과 별도로 보관됩니다.',
+          buttons: ['저장', '저장하지 않고 나가기', '계속 편집'],
+          defaultId: 0,
+          cancelId: 2,
+          noLink: true,
+        });
+        return (['save', 'discard', 'cancel'] as const)[result.response] ?? 'cancel';
+      },
+    };
+    const bundled = readProject(
+      await readFile(join(rendererRoot, 'assets/preview-project.json'), 'utf8'),
+    );
+    if (bundled.mode !== 'read-write') throw new Error('E_BUNDLED_PROJECT');
+    const bundledBytes = new Map<string, Buffer>();
+    for (const asset of bundled.project.assets)
+      bundledBytes.set(
+        asset.id,
+        await readFile(join(rendererRoot, 'assets/preview', asset.fingerprint.sha256 + '.png')),
+      );
+    if (reportPath)
+      await writeFile(
+        join(app.getPath('userData'), 'input-check.png'),
+        bundledBytes.get(bundled.project.inputAssetIds[0]!)!,
+      );
+    const catalog = JSON.parse(
+      await readFile(join(rendererRoot, 'assets/parts/catalog.json'), 'utf8'),
+    ) as Catalog;
+    assertCatalog(catalog);
+    const partBytes = new Map<string, Buffer>();
+    const partFiles = new Map<string, Buffer>();
+    for (const a of catalog.assets) {
+      let bytes = partFiles.get(a.fingerprint.sha256);
+      if (!bytes) {
+        bytes = await readFile(join(rendererRoot, 'assets', catalog.files[a.fingerprint.sha256]!));
+        partFiles.set(a.fingerprint.sha256, bytes);
       }
-      if(argument('file-output-only')==='true'){
-        stage='file-output-ui';testLeave='discard';testSaves.splice(0,testSaves.length,...['file-parts','file-single','file-split','file-positive'].map(n=>join(app.getPath('userData'),n+'.2dsketch')));
-        for(const kind of ['positive','static']){const p=structuredClone(bundled.project);p.projectId=randomUUID();p.displayName=kind==='positive'?'사전검사 양성 예제':'정지 그림 예제';p.revision=0;p.savedRevision=0;delete p.motion;if(kind==='static'){p.parameters=[];p.partBindings=[];p.expressions=[];p.inputBindings=[];p.exportProfiles=[];delete p.expressionSettings;p.runtimeProfile.fallbackExpressionId=null;}else{for(const key of ['head_yaw','head_roll']){const param=p.parameters.find(v=>v.previewKey===key)!;p.partBindings.push({id:randomUUID(),parameterId:param.id,partId:p.parts[0]!.id,kind:'transform',mapping:{component:key==='head_yaw'?'translate-x':'rotate-degrees',outputRange:[-1,1]}});}}const path=join(app.getPath('userData'),'file-'+kind+'-fixture.2dsketch');await writeFile(path,await encodeBundle(p,bundledBytes,'manual'));await projectSession.catalog.addRecent(path,p);}
-        if(argument('compact-editor')==='true')window.setSize(1080,720);
-        const fileOutput=await window.webContents.executeJavaScript('window.fileOutputSelfCheck()') as {passed:boolean;images:{name:string;sha256:string;route:string;variant:string}[]};
-        const output=argument('file-output-evidence')??join(app.getPath('userData'),'file-output-check');await mkdir(output,{recursive:true});const pngs=[];for(const image of fileOutput.images){if(!/^character-image-[0-9]+\.png$/.test(image.name))throw new Error('E_IMAGE_TEST_NAME');const bytes=await readFile(join(app.getPath('userData'),image.name));if(sha256(bytes)!==image.sha256)throw new Error('E_IMAGE_PREVIEW_SAVE_MISMATCH');const decoded=nativeImage.createFromBuffer(bytes),size=decoded.getSize(),pixels=decoded.toBitmap();let visible=0,transparent=0;for(let i=3;i<pixels.length;i+=4){if(pixels[i]!>0)visible++;else transparent++;}if(visible<1||image.variant==='background'&&transparent>0||image.variant!=='background'&&transparent<1)throw new Error('E_IMAGE_ALPHA');const name='image-'+image.route+'-'+image.variant+'.png';await writeFile(join(output,name),bytes);pngs.push({...image,name,...size,visiblePixels:visible,transparentPixels:transparent,bytes:bytes.length,previewSaveByteIdentical:true});}
-        await writeFile(join(output,argument('compact-editor')==='true'?'file-output-ui-compact.png':'file-output-ui.png'),(await window.webContents.capturePage()).toPNG());fileOutputs.close();const released=fileOutputs.image.stats();await broadcast?.close();await cameraTracker?.stop();await projectSession.shutdown();await worker.stop();worker=undefined;runShortcuts.close();await writeFile(reportPath,JSON.stringify({passed:fileOutput.passed&&released.tickets===0&&released.resources===0,fileOutput:{...fileOutput,images:pngs,allImageResourcesReleased:true},appVersion:build.version,channel:build.channel,packaged:app.isPackaged,windowSize:window.getSize(),worker:health,workerStopped:true,protections:{sandbox:true,contextIsolation:true,nodeIntegration:false,externalNetworkBlocked:true}},null,2)+'\n');quitting=true;app.exit(0);return;
-      }
-      if(argument('broadcast-only')==='true'){
-        stage='broadcast-ui';testLeave='discard';testSaves.splice(0,testSaves.length,...['broadcast-parts','broadcast-single','broadcast-split'].map(n=>join(app.getPath('userData'),n+'.2dsketch')));
-        const broadcastUI=await checkBroadcastUI({window,output:broadcast!,hold:value=>{broadcastFramesHeld=value;},directory:argument('broadcast-evidence')??join(app.getPath('userData'),'broadcast-check'),compact:argument('compact-editor')==='true'});
-        const obsProof=argument('broadcast-obs-bridge')?await broadcastOBSBridge({window,output:broadcast!,directory:argument('broadcast-obs-bridge')!,hold:value=>{broadcastFramesHeld=value;}}):null;
-        await window.webContents.executeJavaScript("window.broadcastCheckStep('stop')");await broadcast!.close();await cameraTracker?.stop();await projectSession.shutdown();await worker.stop();worker=undefined;runShortcuts.close();
-        await writeFile(reportPath,JSON.stringify({passed:broadcastUI.passed&&(!obsProof||obsProof.passed===true),broadcast:broadcastUI,obs:obsProof,appVersion:build.version,channel:build.channel,packaged:app.isPackaged,windowSize:window.getSize(),worker:health,workerStopped:true,protections:{sandbox:true,contextIsolation:true,nodeIntegration:false,externalNetworkBlocked:true}},null,2)+'\n');quitting=true;app.exit(0);return;
-      }
-      const checkRuntimeChanges=async()=>{stage='runtime-changes-ui';const oldSaves=[...testSaves],oldLeave=testLeave;testLeave='discard';testSaves.splice(0,testSaves.length,...['change-parts-a','change-parts-b','change-single-a','change-single-b','change-split-a','change-split-b'].map(n=>join(app.getPath('userData'),n+'.2dsketch')));try{const result=await window.webContents.executeJavaScript('window.runtimeChangesSelfCheck()') as Record<string,unknown>;await window.webContents.executeJavaScript('window.scrollTo(0,0)');await new Promise(r=>setTimeout(r,300));const path=argument('runtime-changes-screenshot');if(path){await mkdir(resolve(path,'..'),{recursive:true});await writeFile(path,(await window.webContents.capturePage()).toPNG());}await window.webContents.executeJavaScript('window.runtimeChangesStop()');return result;}finally{testSaves.splice(0,testSaves.length,...oldSaves);testLeave=oldLeave;}};
-      if(argument('runtime-changes-only')==='true'){if(argument('compact-editor')==='true')window.setSize(1080,720);const runtimeChanges=await checkRuntimeChanges();await cameraTracker?.stop();await projectSession.shutdown();await worker.stop();worker=undefined;runShortcuts.close();passed=runtimeChanges.passed===true&&renderer.webgl2===true&&renderer.glError===0&&renderer.nodeExposed===false&&renderer.shellExposed===false&&(renderer.modelPixels as {passed?:boolean})?.passed===true&&health.modelLoaded===true&&(!app.isPackaged||health.dependencyFilesInsideBundle===true);await mkdir(resolve(reportPath,'..'),{recursive:true});await writeFile(reportPath,JSON.stringify({passed,runtimeChanges,renderer,worker:health,workerStopped:true,packaged:app.isPackaged,channel:build.channel,appVersion:build.version,windowSize:window.getSize(),devicesOpened:false,protections:{sandbox:true,contextIsolation:true,nodeIntegration:false,externalNetworkBlocked:true},priorRouteUI:'NOT_RUN'},null,2)+'\n');log.write('app-stop');quitting=true;app.exit(passed?0:1);return;}
-      const checkExecution=async()=>{stage='execution-ui';const oldSaves=[...testSaves],oldLeave=testLeave;testLeave='discard';testSaves.splice(0,testSaves.length,...['run-parts','run-single','run-split'].map(n=>join(app.getPath('userData'),n+'.2dsketch')));try{const result=await window.webContents.executeJavaScript('window.executionSelfCheck()') as Record<string,unknown>;await new Promise(r=>setTimeout(r,500));const path=argument('execution-screenshot');if(path){await mkdir(resolve(path,'..'),{recursive:true});await writeFile(path,(await window.webContents.capturePage()).toPNG());}await window.webContents.executeJavaScript("(async()=>{document.querySelector('[data-run-close]').click();const end=Date.now()+15000;while(document.querySelector('[data-run-panel]')){if(Date.now()>end)throw new Error('E_RUN_CLOSE_TIMEOUT');await new Promise(r=>setTimeout(r,20));}})()");return result;}finally{testSaves.splice(0,testSaves.length,...oldSaves);testLeave=oldLeave;}};
-      if(argument('execution-only')==='true'){if(argument('compact-editor')==='true')window.setSize(1080,720);const execution=await checkExecution();await cameraTracker?.stop();await projectSession.shutdown();await worker.stop();worker=undefined;runShortcuts.close();passed=execution.passed===true&&renderer.webgl2===true&&renderer.glError===0&&renderer.nodeExposed===false&&renderer.shellExposed===false&&(renderer.modelPixels as {passed?:boolean})?.passed===true&&health.modelLoaded===true&&(!app.isPackaged||health.dependencyFilesInsideBundle===true);await mkdir(resolve(reportPath,'..'),{recursive:true});await writeFile(reportPath,JSON.stringify({passed,execution,renderer,worker:health,workerStopped:true,packaged:app.isPackaged,channel:build.channel,appVersion:build.version,windowSize:window.getSize(),devicesOpened:false,protections:{sandbox:true,contextIsolation:true,nodeIntegration:false,externalNetworkBlocked:true},priorRouteUI:'NOT_RUN'},null,2)+'\n');log.write('app-stop');quitting=true;app.exit(passed?0:1);return;}
-      const checkInputRecovery=async()=>{stage='input-recovery-ui';const oldSaves=[...testSaves],oldLeave=testLeave;testLeave='discard';testSaves.splice(0,testSaves.length,...['input-parts','input-parts-copy','input-single','input-single-copy','input-split','input-split-copy'].map(n=>join(app.getPath('userData'),n+'.2dsketch')));try{const result=await window.webContents.executeJavaScript('window.inputRecoverySelfCheck()') as Record<string,unknown>;await new Promise(resolve=>setTimeout(resolve,500));const path=argument('input-recovery-screenshot');if(path){await mkdir(resolve(path,'..'),{recursive:true});await writeFile(path,(await window.webContents.capturePage()).toPNG());}await window.webContents.executeJavaScript("document.querySelector('[data-input-close]').click()");return result;}finally{testSaves.splice(0,testSaves.length,...oldSaves);testLeave=oldLeave;}};
-      if(argument('input-recovery-only')==='true'){if(argument('compact-editor')==='true')window.setSize(1080,720);const inputRecovery=await checkInputRecovery();await cameraTracker?.stop();await projectSession.shutdown();await worker.stop();worker=undefined;passed=inputRecovery.passed===true&&renderer.webgl2===true&&renderer.glError===0&&renderer.nodeExposed===false&&renderer.shellExposed===false&&(renderer.modelPixels as {passed?:boolean})?.passed===true&&health.modelLoaded===true&&(!app.isPackaged||health.dependencyFilesInsideBundle===true);await mkdir(resolve(reportPath,'..'),{recursive:true});await writeFile(reportPath,JSON.stringify({passed,inputRecovery,renderer,worker:health,workerStopped:true,packaged:app.isPackaged,channel:build.channel,appVersion:build.version,windowSize:window.getSize(),devicesOpened:false,protections:{sandbox:true,contextIsolation:true,nodeIntegration:false,externalNetworkBlocked:true},priorRouteUI:'NOT_RUN',scope:'AudioWorklet, actual local face inference and bounded recovery on three actual routes using synthetic media; physical unplug/human voice are NOT_RUN, M0 HOLD'},null,2)+'\n');log.write('app-stop');quitting=true;app.exit(passed?0:1);return;}
-      const checkSplit=async()=>{testLeave='discard';stage='split-ui';const source=await readArchive(splitExample);const rows=source.layers.map((l,i)=>({name:'fragment-'+String(i).padStart(2,'0')+'.png',sourceId:l.id,origin:l.origin,role:l.role,side:l.side,z:l.z,visible:l.visible,opacity:l.opacity,usage:l.usage,variantOf:l.variantOf,state:l.state}));const split=await window.webContents.executeJavaScript('window.splitSelfCheck('+JSON.stringify(rows)+')') as Record<string,unknown>;const screenshot=argument('split-screenshot');if(screenshot){await mkdir(resolve(screenshot,'..'),{recursive:true});await writeFile(screenshot,(await window.webContents.capturePage()).toPNG());}const extremes=argument('split-extremes');if(extremes){const data=await window.webContents.executeJavaScript('window.splitExtremeData') as string;await mkdir(resolve(extremes,'..'),{recursive:true});await writeFile(extremes,Buffer.from(data.split(',')[1]!,'base64'));}await window.webContents.executeJavaScript("document.querySelector('[data-split-close]').click()");await window.webContents.executeJavaScript("window.studio.projects.command({type:'split-cancel'})");return split;};
-      const checkDetail=async()=>{stage='detail-ui';testLeave='discard';testSaves.splice(0,testSaves.length,...['detail-parts.2dsketch','detail-parts-copy.2dsketch','detail-single.2dsketch','detail-single-copy.2dsketch','detail-split.2dsketch','detail-split-copy.2dsketch'].map(name=>join(app.getPath('userData'),name)));const detail=await window.webContents.executeJavaScript('window.detailSelfCheck()') as Record<string,unknown>;const screenshot=argument('detail-screenshot');if(screenshot){await mkdir(resolve(screenshot,'..'),{recursive:true});await writeFile(screenshot,(await window.webContents.capturePage()).toPNG());}const extremes=argument('detail-extremes');if(extremes){const data=await window.webContents.executeJavaScript('window.detailExtremeData') as string;await mkdir(resolve(extremes,'..'),{recursive:true});await writeFile(extremes,Buffer.from(data.split(',')[1]!,'base64'));}await window.webContents.executeJavaScript("document.querySelector('[data-detail-close]').click()");await window.webContents.executeJavaScript("window.studio.projects.command({type:'detail-cancel'})");return detail;};
-      const checkExpressions=async()=>{stage='expression-ui';testLeave='discard';testSaves.splice(0,testSaves.length,...['expression-parts.2dsketch','expression-parts-copy.2dsketch','expression-single.2dsketch','expression-single-copy.2dsketch','expression-split.2dsketch','expression-split-copy.2dsketch'].map(name=>join(app.getPath('userData'),name)));const expressions=await window.webContents.executeJavaScript('window.expressionSelfCheck()') as Record<string,unknown>;for(const [arg,mode]of [['expression-screenshot','ui'],['expression-extremes','gpu']]){const path=argument(arg!);if(path){await mkdir(resolve(path,'..'),{recursive:true});await writeFile(path,mode==='ui'?(await window.webContents.capturePage()).toPNG():Buffer.from((await window.webContents.executeJavaScript('window.expressionExtremeData') as string).split(',')[1]!,'base64'));}}return expressions;};
-      const checkTracking=async()=>{stage='tracking-ui';testLeave='discard';testSaves.splice(0,testSaves.length,...['tracking-parts.2dsketch','tracking-parts-copy.2dsketch','tracking-single.2dsketch','tracking-single-copy.2dsketch','tracking-split.2dsketch','tracking-split-copy.2dsketch'].map(name=>join(app.getPath('userData'),name)));const tracking=await window.webContents.executeJavaScript('window.trackingSelfCheck()') as Record<string,unknown>;await new Promise(resolve=>setTimeout(resolve,500));const path=argument('tracking-screenshot');if(path){await mkdir(resolve(path,'..'),{recursive:true});await writeFile(path,(await window.webContents.capturePage()).toPNG());}return tracking;};
-      if(argument('tracking-only')==='true'){
-        if(argument('compact-editor')==='true')window.setSize(1080,720);const tracking=await checkTracking();await cameraTracker?.stop();await projectSession.shutdown();await worker.stop();worker=undefined;passed=tracking.passed===true&&renderer.webgl2===true&&renderer.glError===0&&renderer.nodeExposed===false&&renderer.shellExposed===false&&(renderer.modelPixels as {passed?:boolean})?.passed===true&&health.modelLoaded===true&&(!app.isPackaged||health.dependencyFilesInsideBundle===true);
-        await mkdir(resolve(reportPath,'..'),{recursive:true});await writeFile(reportPath,JSON.stringify({passed,tracking,renderer,worker:health,workerStopped:true,packaged:app.isPackaged,channel:build.channel,appVersion:build.version,windowSize:window.getSize(),devicesOpened:false,protections:{sandbox:true,contextIsolation:true,nodeIntegration:false,externalNetworkBlocked:true},priorRouteUI:'NOT_RUN',scope:'Targeted camera UI and real local inference using synthetic canvas media on three actual routes; same PC, real device/environment separately recorded, M0 HOLD'},null,2)+'\n');log.write('app-stop');quitting=true;app.exit(passed?0:1);return;
-      }
-      if(argument('expression-only')==='true'){
-        if(argument('compact-editor')==='true')window.setSize(1080,720);const expressions=await checkExpressions();await projectSession.shutdown();await worker.stop();worker=undefined;passed=expressions.passed===true&&renderer.webgl2===true&&renderer.glError===0&&renderer.nodeExposed===false&&renderer.shellExposed===false&&(renderer.modelPixels as {passed?:boolean})?.passed===true&&(renderer.workflowCore as {passed?:boolean})?.passed===true&&health.modelLoaded===true&&(!app.isPackaged||health.dependencyFilesInsideBundle===true);
-        await mkdir(resolve(reportPath,'..'),{recursive:true});await writeFile(reportPath,JSON.stringify({passed,expressions,renderer,worker:health,workerStopped:true,packaged:app.isPackaged,channel:build.channel,appVersion:build.version,windowSize:window.getSize(),devicesOpened:false,protections:{sandbox:true,contextIsolation:true,nodeIntegration:false,externalNetworkBlocked:true},priorRouteUI:'NOT_RUN',scope:'Targeted expression and M2 creation flow on three actual routes plus foundation core; same PC, synthetic inputs, M0 HOLD'},null,2)+'\n');log.write('app-stop');quitting=true;app.exit(passed?0:1);return;
-      }
-      if(argument('detail-only')==='true'){
-        if(argument('compact-editor')==='true')window.setSize(1080,720);const detail=await checkDetail();await projectSession.shutdown();await worker.stop();worker=undefined;passed=detail.passed===true&&renderer.webgl2===true&&renderer.glError===0&&renderer.nodeExposed===false&&renderer.shellExposed===false&&(renderer.modelPixels as {passed?:boolean})?.passed===true&&(renderer.workflowCore as {passed?:boolean})?.passed===true&&health.modelLoaded===true&&(!app.isPackaged||health.dependencyFilesInsideBundle===true);
-        await mkdir(resolve(reportPath,'..'),{recursive:true});await writeFile(reportPath,JSON.stringify({passed,detail,renderer,worker:health,workerStopped:true,packaged:app.isPackaged,channel:build.channel,appVersion:build.version,windowSize:window.getSize(),devicesOpened:false,protections:{sandbox:true,contextIsolation:true,nodeIntegration:false,externalNetworkBlocked:true},priorRouteUI:'NOT_RUN',scope:'Targeted detailed editor on three actual creation routes, PNG replacement worker, GPU, save/reopen plus foundation core; prior feature UI is NOT_RUN in this scope; same PC, no clean OS, M2 exit or M0 claim'},null,2)+'\n');log.write('app-stop');quitting=true;app.exit(passed?0:1);return;
-      }
-      if(argument('split-only')==='true'){
-        if(argument('compact-editor')==='true')window.setSize(1080,720);const split=await checkSplit();await projectSession.shutdown();await worker.stop();worker=undefined;passed=split.passed===true&&renderer.webgl2===true&&renderer.glError===0&&renderer.nodeExposed===false&&renderer.shellExposed===false&&(renderer.modelPixels as {passed?:boolean})?.passed===true&&(renderer.workflowCore as {passed?:boolean})?.passed===true&&health.modelLoaded===true&&(!app.isPackaged||health.dependencyFilesInsideBundle===true);
-        await mkdir(resolve(reportPath,'..'),{recursive:true});await writeFile(reportPath,JSON.stringify({passed,split,renderer,worker:health,workerStopped:true,packaged:app.isPackaged,channel:build.channel,appVersion:build.version,windowSize:window.getSize(),devicesOpened:false,protections:{sandbox:true,contextIsolation:true,nodeIntegration:false,externalNetworkBlocked:true},priorRouteUI:'NOT_RUN',scope:'Targeted split artwork UI, actual source PNG worker, GPU, save/reopen/export plus foundation core; same PC, no clean OS or M0 claim'},null,2)+'\n');log.write('app-stop');quitting=true;app.exit(passed?0:1);return;
-      }
-      const changeRecents=new Set(projectSession.view().recent.map(r=>r.id));const runtimeChanges=await checkRuntimeChanges();await projectSession.dispatch({type:'close'});for(const recent of projectSession.view().recent)if(!changeRecents.has(recent.id))await projectSession.dispatch({type:'remove-recent',id:recent.id});await new Promise(r=>setTimeout(r,100));
-      const executionRecents=new Set(projectSession.view().recent.map(r=>r.id));const execution=await checkExecution();await projectSession.dispatch({type:'close'});for(const recent of projectSession.view().recent)if(!executionRecents.has(recent.id))await projectSession.dispatch({type:'remove-recent',id:recent.id});await new Promise(r=>setTimeout(r,100));
-      const initialRecents=new Set(projectSession.view().recent.map(r=>r.id));const inputRecovery=await checkInputRecovery();await projectSession.dispatch({type:'close'});for(const recent of projectSession.view().recent)if(!initialRecents.has(recent.id))await projectSession.dispatch({type:'remove-recent',id:recent.id});await new Promise(r=>setTimeout(r,100));
-      stage = 'project-ui';
-      const projects = await window.webContents.executeJavaScript('window.projectSelfCheck()') as Record<string,unknown>;
-      stage = 'editor-ui';
-      if (argument('compact-editor') === 'true') { window.setSize(1080,720); await window.webContents.executeJavaScript('new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))'); }
-      const editor = await window.webContents.executeJavaScript('window.editorSelfCheck()') as Record<string,unknown>;
-      stage = 'motion-ui'; const motion = await window.webContents.executeJavaScript('window.motionSelfCheck()') as Record<string,unknown>;
-      stage='input-ui';const input=await window.webContents.executeJavaScript('window.inputSelfCheck()') as Record<string,unknown>;
-      stage='parts-ui';const parts=await window.webContents.executeJavaScript('window.partsSelfCheck()') as Record<string,unknown>;
-      stage='parts-pixels';const scenes=Array.from({length:64},(_,i)=>projectToPreview(combination(catalog,i),a=>'assets/'+catalog.files[a.fingerprint.sha256]+'?asset='+a.id));renderer.partsPixels=await window.webContents.executeJavaScript('window.partsPixels('+JSON.stringify(scenes)+')');
-      const partsContact=argument('parts-contact');if(partsContact){const data=await window.webContents.executeJavaScript('window.partsContactData') as string;await mkdir(resolve(partsContact,'..'),{recursive:true});await writeFile(partsContact,Buffer.from(data.split(',')[1]!,'base64'));}
-      const partsExtremes=argument('parts-extremes');if(partsExtremes){const data=await window.webContents.executeJavaScript('window.partsExtremeData') as string;await mkdir(resolve(partsExtremes,'..'),{recursive:true});await writeFile(partsExtremes,Buffer.from(data.split(',')[1]!,'base64'));}
-      stage='structure-ui';const structure=await window.webContents.executeJavaScript('window.structureSelfCheck()') as Record<string,unknown>;
-      const structureScreenshot=argument('structure-screenshot');if(structureScreenshot){await mkdir(resolve(structureScreenshot,'..'),{recursive:true});await writeFile(structureScreenshot,(await window.webContents.capturePage()).toPNG());}
-      const structureExtremes=argument('structure-extremes');if(structureExtremes){const data=await window.webContents.executeJavaScript('window.structureExtremeData') as string;await mkdir(resolve(structureExtremes,'..'),{recursive:true});await writeFile(structureExtremes,Buffer.from(data.split(',')[1]!,'base64'));}
-      await window.webContents.executeJavaScript("window.studio.projects.command({type:'structure-cancel'})");
-      stage='correction-ui';const corrections=await window.webContents.executeJavaScript('window.correctionSelfCheck()') as Record<string,unknown>;
-      const correctionScreenshot=argument('correction-screenshot');if(correctionScreenshot){await mkdir(resolve(correctionScreenshot,'..'),{recursive:true});await writeFile(correctionScreenshot,(await window.webContents.capturePage()).toPNG());}
-      const correctionExtremes=argument('correction-extremes');if(correctionExtremes){const data=await window.webContents.executeJavaScript('window.correctionExtremeData') as string;await mkdir(resolve(correctionExtremes,'..'),{recursive:true});await writeFile(correctionExtremes,Buffer.from(data.split(',')[1]!,'base64'));}
-      await window.webContents.executeJavaScript("document.querySelector('[data-correction-close]').click()");await window.webContents.executeJavaScript("window.studio.projects.command({type:'correction-cancel'})");
-
-      await projectSession.dispatch({ type:'new',name:'Exit guard check',sourceType:'parts' }); const guardedId = projectSession.view().project?.projectId;
-      window.close(); await new Promise(resolve => setTimeout(resolve,100));
-      projects.windowCloseCancelled = !window.isDestroyed() && projectSession.view().project?.projectId === guardedId;
-      app.quit(); await new Promise(resolve => setTimeout(resolve,100)); projects.appQuitCancelled = !window.isDestroyed() && !quitting;
-      if (!projects.windowCloseCancelled || !projects.appQuitCancelled) throw new Error('E_PROJECT_EXIT_GUARD');
-      testLeave = 'discard'; await projectSession.dispatch({ type:'close' }); testLeave = 'cancel';
-      const projectScreenshot = argument('project-screenshot');
-      if (projectScreenshot) { await window.webContents.executeJavaScript('window.projectSelfCheckCapture()'); await window.webContents.executeJavaScript('new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))'); await mkdir(resolve(projectScreenshot,'..'),{ recursive:true }); await writeFile(projectScreenshot,(await window.webContents.capturePage()).toPNG()); await window.webContents.executeJavaScript("window.studio.projects.command({type:'close'})"); }
-      const editorScreenshot = argument('editor-screenshot');
-      if (editorScreenshot) { await window.webContents.executeJavaScript('window.editorCapture()'); await window.webContents.executeJavaScript('new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))'); await mkdir(resolve(editorScreenshot,'..'),{ recursive:true }); await writeFile(editorScreenshot,(await window.webContents.capturePage()).toPNG()); await window.webContents.executeJavaScript("window.studio.projects.command({type:'close'})"); }
-      await window.webContents.executeJavaScript('new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))');
-      const motionScreenshot = argument('motion-screenshot');
-      if (motionScreenshot) { await window.webContents.executeJavaScript('window.motionCapture()'); await window.webContents.executeJavaScript('new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))'); await mkdir(resolve(motionScreenshot,'..'),{ recursive:true }); await writeFile(motionScreenshot,(await window.webContents.capturePage()).toPNG()); await window.webContents.executeJavaScript("window.studio.projects.command({type:'close'})"); }
-      await window.webContents.executeJavaScript('new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))');
-      const inputScreenshot=argument('input-screenshot');if(inputScreenshot){await window.webContents.executeJavaScript('window.inputCapture()');await mkdir(resolve(inputScreenshot,'..'),{recursive:true});await writeFile(inputScreenshot,(await window.webContents.capturePage()).toPNG());await window.webContents.executeJavaScript("window.studio.projects.command({type:'close'})");}
-      const partsScreenshot=argument('parts-screenshot');if(partsScreenshot){await window.webContents.executeJavaScript('window.partsCapture()');await mkdir(resolve(partsScreenshot,'..'),{recursive:true});await writeFile(partsScreenshot,(await window.webContents.capturePage()).toPNG());await window.webContents.executeJavaScript("window.studio.projects.command({type:'close'})");}
-      await window.webContents.executeJavaScript('new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))');
-      stage = 'capture';
-      const screenshotPath = argument('screenshot');
-      if (screenshotPath) { await mkdir(resolve(screenshotPath, '..'), { recursive: true }); await writeFile(screenshotPath, (await window.webContents.capturePage()).toPNG()); }
-      const workflowScreenshot = argument('workflow-screenshot');
-      if (workflowScreenshot && build.channel !== 'release') {
-        await window.webContents.executeJavaScript(`(async()=>{document.querySelector('[data-workflow-lab]').click();const start=Date.now();while(!window.workflowLabCheck){if(Date.now()-start>5000)throw new Error('E_WORKFLOW_UI_TIMEOUT');await new Promise(r=>setTimeout(r,10))}return window.workflowLabCheck({holdForCapture:true})})()`);
-        await window.webContents.executeJavaScript(`new Promise((resolve,reject)=>{const timeout=setTimeout(()=>reject(new Error('E_CAPTURE_TIMEOUT')),3000);requestAnimationFrame(()=>requestAnimationFrame(()=>{clearTimeout(timeout);resolve(true)}))})`);
-        await mkdir(resolve(workflowScreenshot,'..'),{ recursive:true }); await writeFile(workflowScreenshot,(await window.webContents.capturePage()).toPNG());
-        await window.webContents.executeJavaScript(`(async()=>{document.querySelector('.workflow-lab .close').click();const start=Date.now();while(document.querySelector('.workflow-lab')){if(Date.now()-start>5000)throw new Error('E_WORKFLOW_UI_TIMEOUT');await new Promise(r=>setTimeout(r,10))}})()`);
-      }
-      const split=await checkSplit();const detail=await checkDetail();const expressions=await checkExpressions();const tracking=await checkTracking();
-      await projectSession.shutdown(); await worker.stop(); worker = undefined;
-      passed = renderer.webgl2 === true && Number(renderer.visiblePixels) > 1000 && Number(renderer.transparentPixels) > 1000 && renderer.glError === 0 && renderer.nodeExposed === false && renderer.shellExposed === false && renderer.appInfoDialog === true && (renderer.modelPixels as { passed?:boolean } | undefined)?.passed === true && (renderer.workflowCore as { passed?:boolean } | undefined)?.passed === true && (renderer.workflowUI as { passed?:boolean } | undefined)?.passed === true && renderer.sampleRuntimeFrozen === true && health.modelLoaded === true && (!app.isPackaged || health.dependencyFilesInsideBundle === true);
-      passed = passed && runtimeChanges.passed===true && execution.passed===true && inputRecovery.passed===true && tracking.passed===true && expressions.passed===true && detail.passed===true && split.passed===true && corrections.passed===true && structure.passed===true && parts.passed===true && (renderer.partsPixels as {passed?:boolean}).passed===true && input.passed === true && projects.passed === true && editor.passed === true && motion.passed === true && (renderer.motionPixels as { passed?:boolean } | undefined)?.passed === true;
-      const report = { passed, runtimeChanges, execution, inputRecovery, tracking, expressions, detail, split, projects, editor, motion, input, parts, structure, corrections, packaged: app.isPackaged, channel: build.channel, appVersion: build.version,
-        electron: process.versions.electron, node: process.versions.node, worker: health, workerStopped: true, renderer,
-        protections: { sandbox: true, contextIsolation: true, nodeIntegration: false, externalNetworkBlocked: true },
-        gpuFeatureStatus: app.getGPUFeatureStatus(), devicesOpened: false,
-        windowSize:window.getSize(),scope: 'Local project lifecycle/common editor, GPU and bundled worker; no live tracking, clean-OS or M0 performance claim' };
-      await mkdir(resolve(reportPath, '..'), { recursive: true }); await writeFile(reportPath, JSON.stringify(report, null, 2) + '\n');
-    } catch (error) {
-      const failureCapture = argument('editor-screenshot');
-      if (failureCapture && !window.isDestroyed()) { await mkdir(resolve(failureCapture,'..'),{ recursive:true }); await writeFile(failureCapture,(await window.webContents.capturePage()).toPNG()); }
-      if (worker) { await worker.stop(); worker = undefined; }
-      const detail = error instanceof Error ? error.message.match(/\bE_[A-Z_]{1,48}\b/)?.[0] : undefined;
-      const diagnostic = await window.webContents.executeJavaScript('window.editorFailureState ?? null').catch(() => null);
-      await mkdir(resolve(reportPath, '..'), { recursive: true }); await writeFile(reportPath, JSON.stringify({ passed: false, code: 'E_FOUNDATION_CHECK', stage, detail, diagnostic, packaged: app.isPackaged }) + '\n');
+      partBytes.set(a.id, bytes);
     }
-    log.write('app-stop'); quitting = true; app.exit(passed ? 0 : 1);
-  }
-}).catch(() => { if (log) log.write('worker-error', { code: 'E_APP_START' }); app.exit(1); });
+    const splitExample = await readFile(join(rendererRoot, 'assets/split/premium-example.2dparts'));
+    const splitRegistry = JSON.parse(
+      await readFile(join(rendererRoot, 'assets/split/manifest.json'), 'utf8'),
+    );
+    if (splitHash(splitExample) !== splitRegistry.sha256) throw new Error('E_SPLIT_EXAMPLE_HASH');
+    if (reportPath) {
+      await writeFile(join(app.getPath('userData'), 'split-input.2dparts'), splitExample);
+      const sample = await readArchive(splitExample),
+        folder = join(app.getPath('userData'), 'split-input');
+      await mkdir(folder, { recursive: true });
+      for (let i = 0; i < sample.layers.length; i++)
+        await writeFile(
+          join(folder, 'fragment-' + String(i).padStart(2, '0') + '.png'),
+          sample.files.get(sample.layers[i]!.path)!,
+        );
+      await writeFile(
+        join(folder, 'README.txt'),
+        'Source metadata intentionally absent; confirm layout and roles.',
+      );
+    }
+    for (const key of Object.keys(dialogs) as (keyof ProjectDialogs)[]) {
+      const operation = dialogs[key];
+      if (operation)
+        Object.assign(dialogs, {
+          [key]: async (...args: unknown[]) => {
+            runShortcuts?.modal(true);
+            try {
+              return await (operation as (...values: unknown[]) => Promise<unknown>)(...args);
+            } finally {
+              runShortcuts?.modal(false);
+            }
+          },
+        });
+    }
+    projectSession = new ProjectSession({
+      splitExample,
+      splitProcessor: splitProcessor(
+        executable,
+        app.isPackaged ? [] : ['-I', '-u', join(root, 'worker/main.py')],
+        join(app.getPath('userData'), 'split-work'),
+        env,
+      ),
+      parts: { catalog, bytes: partBytes },
+      dataDir: app.getPath('userData'),
+      dialogs,
+      bundled: bundled.project,
+      bundledBytes,
+      inputProcessor: imageProcessor(
+        executable,
+        app.isPackaged ? [] : ['-I', '-u', join(root, 'worker/main.py')],
+        join(app.getPath('userData'), 'input-work'),
+        env,
+      ),
+    });
+    await projectSession.init();
+    await projectSession.configureRecovery(environment.view().value.recovery);
+    projectSession.subscribe(() => {
+      if (!window.isDestroyed())
+        window.webContents.send('projects:changed', projectSession!.view());
+    });
+    const trusted = (event: Electron.IpcMainInvokeEvent): void => {
+      if (
+        event.sender !== window.webContents ||
+        event.senderFrame !== window.webContents.mainFrame ||
+        !event.senderFrame.url.startsWith('sketcher://app/')
+      )
+        throw new Error('E_IPC_ORIGIN');
+    };
+    broadcast = await installBroadcast(
+      window,
+      projectSession,
+      join(app.getPath('userData'), 'machine'),
+      rendererRoot,
+      trusted,
+      () => !broadcastFramesHeld,
+    );
+    const info: StudioInfo = {
+      name: '2DSketcher',
+      version: build.version,
+      channel: build.channel,
+      features: { creation: false, tracking: false, preview: true, projects: true },
+    };
+    const microphoneProfiles = new MicrophoneProfiles(join(app.getPath('userData'), 'machine'));
+    const runStore = new RunPreferenceStore(join(app.getPath('userData'), 'machine'));
+    runShortcuts = new RunShortcuts(
+      globalShortcut,
+      () => window.isFocused(),
+      (requestId, action) => {
+        if (!window.isDestroyed()) window.webContents.send('run:shortcut', { requestId, action });
+      },
+    );
+    let runPreferencesOK = true;
+    try {
+      runShortcuts.configure(await runStore.read());
+    } catch {
+      runPreferencesOK = false;
+    }
+    window.on('focus', () => runShortcuts?.refresh());
+    window.on('blur', () => runShortcuts?.refresh());
+    let imageSaveSerial = 0;
+    fileOutputs = new FileOutputs(
+      window,
+      projectSession,
+      trusted,
+      (value) => runShortcuts?.modal(value),
+      reportPath
+        ? async () => join(app.getPath('userData'), 'character-image-' + ++imageSaveSerial + '.png')
+        : undefined,
+      reportPath
+        ? {
+            choose: async (name) => join(app.getPath('userData'), name),
+            locate: async () => join(app.getPath('userData'), 'moved-avatar.inp'),
+          }
+        : undefined,
+      () => environment.folder ?? app.getPath('documents'),
+    );
+    const inputOwners = new InputOwnership(
+      () => projectSession!.runtimeOwner(),
+      () => !!projectSession!.view().project,
+    );
+    const runError = (e: unknown, fallback = 'E_RUN_CHANGE') =>
+      e instanceof Error && /^E_[A-Z_]{1,48}$/.test(e.message) ? e.message : fallback;
+    await installEnvironment(
+      window,
+      environment,
+      trusted,
+      root,
+      build.version,
+      async (value) => {
+        log.configure(value.localDiagnostics);
+        await projectSession!.configureRecovery(value.recovery);
+        if (!value.cameraRequests) {
+          ++cameraGeneration;
+          cameraAllowed = false;
+          await cameraTracker?.stop();
+        }
+        if (!value.microphoneRequests) microphoneAllowed = false;
+      },
+      (value) => runShortcuts?.modal(value),
+      reportPath ? app.getPath('userData') : undefined,
+    );
+    ipcMain.handle('run:prepare-change', async (event, request: unknown) => {
+      trusted(event);
+      try {
+        assertChangeRequest(request);
+        return { ok: true, lease: await projectSession!.prepareRuntimeChange(request) };
+      } catch (e) {
+        return { ok: false, errorCode: runError(e) };
+      }
+    });
+    ipcMain.handle('run:commit-change', (event, request: unknown) => {
+      trusted(event);
+      try {
+        const r = request as {
+          ownerId: string;
+          baseId: string;
+          requestId: string;
+          restart: boolean;
+        };
+        if (
+          !r ||
+          Object.keys(r).sort().join(',') !== 'baseId,ownerId,requestId,restart' ||
+          ![r.ownerId, r.baseId, r.requestId].every(
+            (id) => typeof id === 'string' && /^[a-f0-9-]{36}$/.test(id),
+          ) ||
+          typeof r.restart !== 'boolean'
+        )
+          throw new Error('E_RUN_REQUEST');
+        projectSession!.commitRuntimeChange(r.ownerId, r.baseId, r.requestId, r.restart);
+        runShortcuts!.activate(r.requestId, projectSession!.runtimeActions(r.requestId));
+        return { ok: true };
+      } catch (e) {
+        return { ok: false, errorCode: runError(e) };
+      }
+    });
+    ipcMain.handle('run:rollback-change', (event, owner: unknown, id: unknown, base: unknown) => {
+      trusted(event);
+      try {
+        if (![owner, id, base].every((v) => typeof v === 'string' && /^[a-f0-9-]{36}$/.test(v)))
+          throw new Error('E_RUN_REQUEST');
+        projectSession!.rollbackRuntimeChange(owner as string, id as string, base as string);
+        runShortcuts!.activate(base as string, projectSession!.runtimeActions(base as string));
+        return { ok: true };
+      } catch (e) {
+        return { ok: false, errorCode: runError(e) };
+      }
+    });
+    ipcMain.handle('run:stop', async (event, owner: unknown) => {
+      trusted(event);
+      if (typeof owner !== 'string' || !projectSession!.stopRuntime(owner)) return;
+      broadcast?.stop();
+      runShortcuts!.activate(null);
+      if (inputOwners.release('microphone', owner)) microphoneAllowed = false;
+      if (inputOwners.release('camera', owner)) {
+        ++cameraGeneration;
+        cameraAllowed = false;
+        await cameraTracker!.stop();
+      }
+    });
+    ipcMain.handle('run:transition', async (event, command: unknown, baseId: unknown) => {
+      trusted(event);
+      if (
+        !command ||
+        concurrentCommand(String((command as { type?: unknown }).type)) !== 'transition' ||
+        typeof baseId !== 'string' ||
+        !projectSession!.activeRuntime(baseId)
+      )
+        return { view: projectSession!.view() };
+      return projectSession!.dispatch(command, baseId);
+    });
+    ipcMain.handle(
+      'run:input-basis',
+      (event, source: unknown, projectId: unknown, revision: unknown) => {
+        trusted(event);
+        try {
+          if (
+            !['working', 'execution'].includes(String(source)) ||
+            typeof projectId !== 'string' ||
+            !Number.isSafeInteger(revision)
+          )
+            throw new Error('E_RUN_REQUEST');
+          return {
+            ok: true,
+            basis: projectSession!.runtimeInputBasis(
+              source as 'working' | 'execution',
+              projectId,
+              revision as number,
+            ),
+          };
+        } catch (e) {
+          return { ok: false, errorCode: runError(e) };
+        }
+      },
+    );
+    ipcMain.handle('run:prepare', async (event, value: unknown) => {
+      trusted(event);
+      try {
+        const v = value as {
+          requestId: string;
+          sessionId: string;
+          revision: number;
+          mode: RunMode;
+        };
+        if (
+          !v ||
+          Object.keys(v).sort().join(',') !== 'mode,requestId,revision,sessionId' ||
+          typeof v.requestId !== 'string' ||
+          typeof v.sessionId !== 'string' ||
+          !Number.isSafeInteger(v.revision) ||
+          v.revision < 0 ||
+          !RUN_MODES.includes(v.mode)
+        )
+          throw new Error('E_RUN_REQUEST');
+        const lease = await projectSession!.prepareRuntime(v);
+        return { ok: true, lease };
+      } catch (e) {
+        const code =
+          e instanceof Error && /^E_[A-Z_]{1,48}$/.test(e.message) ? e.message : 'E_RUN_PREPARE';
+        return { ok: false, errorCode: code };
+      }
+    });
+    ipcMain.handle('run:release', async (event, id: unknown) => {
+      trusted(event);
+      if (typeof id !== 'string' || !/^[a-f0-9-]{36}$/.test(id)) return;
+      projectSession!.releaseRuntime(id);
+      if (!projectSession!.runtimeBusy()) runShortcuts!.activate(null);
+    });
+    ipcMain.handle('run:preferences', (event) => {
+      trusted(event);
+      return {
+        ok: runPreferencesOK,
+        value: runShortcuts!.preferences(),
+        statuses: runShortcuts!.status(),
+      };
+    });
+    ipcMain.handle('run:configure', async (event, value: unknown) => {
+      trusted(event);
+      try {
+        const v = value as import('../../packages/execution').RunPreferences;
+        await runStore.save(v);
+        const statuses = runShortcuts!.configure(v);
+        runPreferencesOK = true;
+        return { ok: true, statuses };
+      } catch (e) {
+        return {
+          ok: false,
+          errorCode:
+            e instanceof Error && /^E_RUN_[A-Z_]+$/.test(e.message)
+              ? e.message
+              : 'E_RUN_PREFERENCES',
+          statuses: runShortcuts!.status(),
+        };
+      }
+    });
+    ipcMain.handle('run:active', (event, id: unknown, active: unknown) => {
+      trusted(event);
+      if (
+        typeof id !== 'string' ||
+        typeof active !== 'boolean' ||
+        !projectSession!.activeRuntime(id)
+      )
+        return runShortcuts!.status();
+      return runShortcuts!.activate(
+        active ? id : null,
+        active ? projectSession!.runtimeActions(id) : [],
+      );
+    });
+    ipcMain.handle('run:context', (event, suspended: unknown, editing: unknown = false) => {
+      trusted(event);
+      return typeof suspended === 'boolean' && typeof editing === 'boolean'
+        ? runShortcuts!.context(suspended, editing)
+        : runShortcuts!.status();
+    });
+    ipcMain.handle('microphone:begin', (event, owner: unknown) => {
+      trusted(event);
+      if (!environment.view().value.microphoneRequests || !inputOwners.claim('microphone', owner))
+        return false;
+      microphoneAllowed = true;
+      return true;
+    });
+    ipcMain.handle('microphone:end', (event, owner: unknown) => {
+      trusted(event);
+      if (inputOwners.release('microphone', owner)) microphoneAllowed = false;
+    });
+    ipcMain.handle('microphone:profiles', async (event) => {
+      trusted(event);
+      try {
+        return { ok: true, profiles: await microphoneProfiles.read() };
+      } catch {
+        return { ok: false, profiles: [] };
+      }
+    });
+    ipcMain.handle('microphone:save', async (event, value: unknown) => {
+      trusted(event);
+      try {
+        await microphoneProfiles.save(
+          value as import('../../packages/input-control').MicrophoneProfile,
+        );
+        return true;
+      } catch {
+        return false;
+      }
+    });
+    ipcMain.handle('tracking:begin', async (event, owner: unknown) => {
+      trusted(event);
+      if (!environment.view().value.cameraRequests)
+        return { ok: false, errorCode: 'E_CAMERA_PERMISSION', reason: 'settings' };
+      if (!inputOwners.claim('camera', owner)) return { ok: false, errorCode: 'E_RUN_INPUT_OWNER' };
+      const generation = ++cameraGeneration;
+      cameraAllowed = true;
+      try {
+        const ok = await cameraTracker!.begin();
+        if (generation !== cameraGeneration)
+          return { ok: false, errorCode: 'E_TRACKING_WORKER', reason: 'superseded' };
+        cameraAllowed = ok;
+        return {
+          ok,
+          errorCode: ok
+            ? undefined
+            : cameraTracker!.startReason === 'deadline'
+              ? 'E_TRACKING_TIMEOUT'
+              : 'E_TRACKING_WORKER',
+          reason: cameraTracker!.startReason,
+        };
+      } catch {
+        if (generation === cameraGeneration) cameraAllowed = false;
+        return { ok: false, errorCode: 'E_TRACKING_WORKER' };
+      }
+    });
+    ipcMain.handle('tracking:end', async (event, owner: unknown) => {
+      trusted(event);
+      if (!inputOwners.release('camera', owner)) return;
+      ++cameraGeneration;
+      cameraAllowed = false;
+      await cameraTracker!.stop();
+    });
+    ipcMain.handle(
+      'tracking:frame',
+      async (event, seq: unknown, bytes: unknown, owner: unknown) => {
+        trusted(event);
+        try {
+          if (
+            !inputOwners.owns('camera', owner) ||
+            !cameraAllowed ||
+            typeof seq !== 'number' ||
+            !(bytes instanceof Uint8Array)
+          )
+            throw new Error();
+          const result = await cameraTracker!.frame(seq, bytes);
+          return result ? { ok: true, result } : { ok: false, errorCode: 'E_TRACKING_RESULT' };
+        } catch {
+          return { ok: false, errorCode: 'E_TRACKING_RESULT' };
+        }
+      },
+    );
+    ipcMain.handle('tracking:profiles', async (event) => {
+      trusted(event);
+      try {
+        return { ok: true, profiles: await cameraProfiles.read() };
+      } catch {
+        return { ok: false, profiles: [] };
+      }
+    });
+    ipcMain.handle('tracking:calibration', async (event, value: unknown) => {
+      trusted(event);
+      try {
+        assertCalibration(value);
+        await cameraProfiles.save(value);
+        return { ok: true };
+      } catch {
+        return { ok: false, errorCode: 'E_TRACKING_CALIBRATION' };
+      }
+    });
+    ipcMain.handle('studio:info', (event) => {
+      trusted(event);
+      return info;
+    });
+    ipcMain.handle('studio:health', async (event) => {
+      trusted(event);
+      await workerReady;
+      return { ready };
+    });
+    ipcMain.handle('projects:view', (event) => {
+      trusted(event);
+      return projectSession!.view();
+    });
+    ipcMain.handle('projects:drop-image', (event, file: unknown) => {
+      trusted(event);
+      if (
+        typeof file !== 'string' ||
+        file.length > 32768 ||
+        !isAbsolute(file) ||
+        file.startsWith('\\\\')
+      )
+        throw new Error('E_INPUT_NATIVE_FILE');
+      return projectSession!.dropImage(file);
+    });
+    ipcMain.handle('projects:command', async (event, command: unknown) => {
+      trusted(event);
+      return projectSession!.dispatch(command);
+    });
+    if (!reportPath) window.once('ready-to-show', () => window.show());
+    await window.loadURL('sketcher://app/index.html');
+    if (reportPath) window.showInactive();
+    if (argument('input-recovery-only')) {
+      setInterval(() => {
+        if (!window.isDestroyed())
+          void window.webContents
+            .executeJavaScript('window.editorFailureState??{}')
+            .then((v) => writeFile(reportPath! + '.progress.json', JSON.stringify(v) + '\n'))
+            .catch(() => {});
+      }, 1000);
+    }
+    if (
+      argument('live-environment-report') ||
+      argument('live-tracking-report') ||
+      argument('live-input-report')
+    ) {
+      window.show();
+      window.focus();
+    }
+    if (reportPath) {
+      let passed = false;
+      let stage = 'worker';
+      try {
+        await workerReady;
+        const health = await worker.request('validate-runtime');
+        stage = 'renderer-ready';
+        await window.webContents.executeJavaScript(
+          `new Promise((resolve,reject)=>{const start=Date.now();const timer=setInterval(()=>{if(typeof window.foundationSelfCheck==='function'){clearInterval(timer);resolve(true)}else if(Date.now()-start>30000){clearInterval(timer);reject(new Error('E_RENDER_TIMEOUT'))}},50)})`,
+        );
+        stage = 'renderer-check';
+        const renderer = (await window.webContents.executeJavaScript(
+          'window.foundationSelfCheck()',
+        )) as Record<string, unknown>;
+        if (argument('live-input-report')) {
+          stage = 'live-input';
+          testLeave = 'discard';
+          const timer = setInterval(() => {
+            void window.webContents
+              .executeJavaScript('window.microphoneReviewPhase??{}')
+              .then((v) => writeFile(reportPath + '.progress.json', JSON.stringify(v) + '\n'))
+              .catch(() => {});
+          }, 1000);
+          let inputLive;
+          try {
+            inputLive = (await window.webContents.executeJavaScript(
+              'window.microphoneLiveCheck(' +
+                JSON.stringify(argument('live-input-scenes') === 'true') +
+                ')',
+            )) as Record<string, unknown>;
+          } finally {
+            clearInterval(timer);
+          }
+          await projectSession.shutdown();
+          await worker.stop();
+          worker = undefined;
+          await writeFile(
+            reportPath,
+            JSON.stringify(
+              {
+                passed: inputLive.passed,
+                inputLive,
+                appVersion: build.version,
+                packaged: app.isPackaged,
+                channel: build.channel,
+                workerStopped: true,
+              },
+              null,
+              2,
+            ) + '\n',
+          );
+          quitting = true;
+          app.exit(inputLive.passed === true ? 0 : 1);
+          return;
+        }
+        if (argument('live-tracking-report')) {
+          stage = 'live-tracking';
+          testLeave = 'discard';
+          const progress = argument('live-tracking-report')! + '.progress.json';
+          const timer = setInterval(() => {
+            void window.webContents
+              .executeJavaScript('window.liveReviewPhase??{phase:"preparing",seconds:0}')
+              .then((value) => writeFile(progress, JSON.stringify(value) + '\n'))
+              .catch(() => {});
+          }, 1000);
+          let tracking;
+          try {
+            tracking = (await window.webContents.executeJavaScript(
+              'window.cameraLiveCheck(' +
+                JSON.stringify(argument('live-camera-hint') ?? null) +
+                ')',
+            )) as Record<string, unknown>;
+          } finally {
+            clearInterval(timer);
+          }
+          await cameraTracker?.stop();
+          await projectSession.shutdown();
+          await worker.stop();
+          worker = undefined;
+          await mkdir(resolve(reportPath, '..'), { recursive: true });
+          await writeFile(
+            reportPath,
+            JSON.stringify(
+              {
+                passed: tracking.passed,
+                tracking,
+                appVersion: build.version,
+                packaged: app.isPackaged,
+                channel: build.channel,
+                workerStopped: true,
+              },
+              null,
+              2,
+            ) + '\n',
+          );
+          log.write('app-stop');
+          quitting = true;
+          app.exit(tracking.passed === true ? 0 : 1);
+          return;
+        }
+        if (argument('execution-keys-review') === 'true') {
+          stage = 'execution-keys-review';
+          testLeave = 'discard';
+          const prepared = (await window.webContents.executeJavaScript(
+            'window.prepareExecutionKeys()',
+          )) as { registered: boolean; revision: number };
+          if (!prepared.registered) throw new Error('E_RUN_KEY_CONFLICT');
+          const outside = new BrowserWindow({
+            width: 650,
+            height: 400,
+            title: '2DSketcher key verification',
+            webPreferences: {
+              sandbox: true,
+              contextIsolation: true,
+              nodeIntegration: false,
+              webSecurity: true,
+            },
+          });
+          await outside.loadURL(
+            'data:text/html;charset=utf-8,' +
+              encodeURIComponent(
+                '<!doctype html><html lang="ko"><meta charset="utf-8"><title>2DSketcher key verification</title><body style="font:18px sans-serif;padding:30px;background:#f7f3ed;color:#352f3d"><h1>Shortcut verification in another window</h1><p>Keep this window focused. Press each chord once, in order.</p><p>1. Ctrl + Alt + Shift + F8 (local: no action)</p><p>2. Ctrl + Alt + Shift + F9 (global: hide character)</p><p>The window closes when the global callback arrives.</p></body></html>',
+              ),
+          );
+          outside.show();
+          outside.focus();
+          await writeFile(
+            reportPath + '.ready.json',
+            JSON.stringify({
+              ready: true,
+              registered: true,
+              mainFocused: window.isFocused(),
+              outsideFocused: outside.isFocused(),
+            }) + '\n',
+          );
+          let state: {
+            hidden: boolean;
+            neutral: boolean;
+            active: boolean;
+            lastAction: string | null;
+          } | null = null;
+          const deadline = Date.now() + 1200000;
+          let outsideAtDelivery = false;
+          while (Date.now() < deadline && !outside.isDestroyed()) {
+            state = await window.webContents.executeJavaScript('window.executionKeyState()');
+            if (state?.hidden) {
+              outsideAtDelivery = outside.isFocused() && !window.isFocused();
+              break;
+            }
+            await new Promise((r) => setTimeout(r, 250));
+          }
+          const observed =
+            !!state?.hidden &&
+            state.active &&
+            !state.neutral &&
+            state.lastAction === 'hide' &&
+            outsideAtDelivery;
+          await window.webContents.executeJavaScript(
+            "document.querySelector('[data-run-close]').click()",
+          );
+          await new Promise((r) => setTimeout(r, 300));
+          runShortcuts.close();
+          const chord = 'Control+Alt+Shift+F9';
+          const released = !globalShortcut.isRegistered(chord);
+          if (!outside.isDestroyed()) outside.close();
+          await projectSession.shutdown();
+          await worker.stop();
+          worker = undefined;
+          await writeFile(
+            reportPath,
+            JSON.stringify(
+              {
+                passed: observed && released,
+                appVersion: build.version,
+                registeredBeforeInput: true,
+                actualGlobalCallbackOutsideMain: observed,
+                localNeutralDidNotFire: !state?.neutral,
+                ownedChordReleased: released,
+                requestedSequence: 'local F8 then global F9',
+                userSequenceAttestation: 'PENDING',
+                rawKeysRecorded: false,
+                physicalDevicesOpened: false,
+                protections: {
+                  sandbox: true,
+                  contextIsolation: true,
+                  nodeIntegration: false,
+                  externalNetworkBlocked: true,
+                },
+              },
+              null,
+              2,
+            ) + '\n',
+          );
+          quitting = true;
+          app.exit(observed && released ? 0 : 1);
+          return;
+        }
+        if (argument('live-environment-report')) {
+          stage = 'environment-live';
+          testLeave = 'discard';
+          const bridge =
+            argument('environment-bridge') ?? join(app.getPath('userData'), 'live-bridge');
+          await mkdir(bridge, { recursive: true });
+          const timer = setInterval(() => {
+            if (!window.isDestroyed())
+              void window.webContents
+                .executeJavaScript('window.environmentLiveState??{}')
+                .then(async (state) => {
+                  await writeFile(join(bridge, 'progress.json'), JSON.stringify(state) + '\n');
+                  if (broadcast?.url())
+                    await writeFile(
+                      join(bridge, 'connection.json'),
+                      JSON.stringify({ url: broadcast.url() }),
+                    );
+                })
+                .catch(() => {});
+          }, 250);
+          let live: Record<string, unknown>;
+          try {
+            live = await window.webContents.executeJavaScript('window.environmentLiveCheck()');
+          } finally {
+            clearInterval(timer);
+          }
+          const ready = await readFile(join(bridge, 'obs-result.json'), 'utf8')
+            .then((v) => JSON.parse(v))
+            .catch(() => null);
+          fileOutputs.close();
+          await broadcast?.close();
+          await cameraTracker?.stop();
+          await projectSession.shutdown();
+          await worker.stop();
+          worker = undefined;
+          runShortcuts.close();
+          await writeFile(
+            reportPath,
+            JSON.stringify(
+              {
+                passed: live.passed === true,
+                live,
+                obs: ready,
+                appVersion: build.version,
+                workerStopped: true,
+                m0: 'HOLD',
+                cameraFramesStored: false,
+                microphonePCMStored: false,
+              },
+              null,
+              2,
+            ) + '\n',
+          );
+          quitting = true;
+          app.exit(live.passed === true ? 0 : 1);
+          return;
+        }
+        if (argument('guide-only') === 'true') {
+          stage = 'guide-ui';
+          testLeave = 'discard';
+          if (argument('compact-editor') === 'true') window.setSize(1080, 720);
+          const reopen = argument('guide-reopen-existing') === 'true',
+            existing = join(app.getPath('userData'), 'project-a.2dsketch'),
+            before = reopen ? sha256(await readFile(existing)) : null;
+          testSaves.splice(
+            0,
+            testSaves.length,
+            join(app.getPath('userData'), 'guide-example.2dsketch'),
+          );
+          const guide = (await window.webContents.executeJavaScript(
+            'window.guideSelfCheck(' + JSON.stringify(reopen) + ')',
+          )) as Record<string, unknown>;
+          if (reopen && sha256(await readFile(existing)) !== before)
+            throw new Error('E_GUIDE_EXISTING_CHANGED');
+          const output = argument('guide-evidence') ?? join(app.getPath('userData'), 'guide-check');
+          await mkdir(output, { recursive: true });
+          for (const topic of [
+            'start',
+            'broadcast',
+            'save',
+            'recovery',
+            'devices',
+            'install',
+            'rights',
+          ]) {
+            await window.webContents.executeJavaScript(
+              "document.querySelector('[data-guide-topic=" + topic + "]')?.click()",
+            );
+            await new Promise((r) => setTimeout(r, 150));
+            await writeFile(
+              join(output, 'guide-' + topic + '.png'),
+              (await window.webContents.capturePage()).toPNG(),
+            );
+          }
+          fileOutputs.close();
+          await broadcast?.close();
+          await cameraTracker?.stop();
+          await projectSession.shutdown();
+          await worker.stop();
+          worker = undefined;
+          runShortcuts.close();
+          await writeFile(
+            reportPath,
+            JSON.stringify(
+              {
+                passed: guide.passed === true,
+                guide,
+                appVersion: build.version,
+                channel: build.channel,
+                packaged: app.isPackaged,
+                windowSize: window.getSize(),
+                worker: health,
+                workerStopped: true,
+                protections: {
+                  sandbox: true,
+                  contextIsolation: true,
+                  nodeIntegration: false,
+                  externalNetworkBlocked: true,
+                },
+                m0: 'HOLD',
+              },
+              null,
+              2,
+            ) + '\n',
+          );
+          quitting = true;
+          app.exit(guide.passed === true ? 0 : 1);
+          return;
+        }
+        if (argument('settings-only') === 'true') {
+          stage = 'environment-ui';
+          testLeave = 'discard';
+          if (argument('compact-editor') === 'true') window.setSize(1080, 720);
+          const settings = (await window.webContents.executeJavaScript(
+            'window.environmentSelfCheck()',
+          )) as Record<string, unknown>;
+          const output =
+            argument('settings-evidence') ?? join(app.getPath('userData'), 'settings-check');
+          await mkdir(output, { recursive: true });
+          await writeFile(
+            join(output, 'environment-ui.png'),
+            (await window.webContents.capturePage()).toPNG(),
+          );
+          for (const tab of ['environment', 'privacy', 'performance', 'support']) {
+            await window.webContents.executeJavaScript(
+              "document.querySelector('[data-settings-tab=" + tab + "]')?.click()",
+            );
+            await new Promise((r) => setTimeout(r, 180));
+            await writeFile(
+              join(output, 'environment-' + tab + '.png'),
+              (await window.webContents.capturePage()).toPNG(),
+            );
+          }
+          const diagnostic = JSON.parse(
+            await readFile(join(app.getPath('userData'), 'minimal-diagnostic.json'), 'utf8'),
+          );
+          if (
+            JSON.stringify(diagnostic).includes(app.getPath('userData')) ||
+            diagnostic.networkTransmission !== false
+          )
+            throw new Error('E_DIAGNOSTIC_PRIVACY');
+          await writeFile(
+            join(output, 'minimal-diagnostic.json'),
+            JSON.stringify(diagnostic, null, 2) + '\n',
+          );
+          const defaultsSaved = (await environment.view()).value;
+          const reopened = new SettingsStore(join(app.getPath('userData'), 'machine'));
+          await reopened.init();
+          if (JSON.stringify(reopened.view().value) !== JSON.stringify(defaultsSaved))
+            throw new Error('E_SETTINGS_REOPEN');
+          const saves = await readdir(join(app.getPath('userData'), 'default-saves'));
+          if (!saves.some((n) => n.endsWith('.2dsketch')))
+            throw new Error('E_SETTINGS_DEFAULT_SAVE');
+          fileOutputs.close();
+          await broadcast?.close();
+          await cameraTracker?.stop();
+          await projectSession.shutdown();
+          await worker.stop();
+          worker = undefined;
+          runShortcuts.close();
+          await writeFile(
+            reportPath,
+            JSON.stringify(
+              {
+                passed: settings.passed === true,
+                settings: {
+                  ...settings,
+                  persistenceReopened: true,
+                  defaultFolderFileExists: true,
+                  diagnosticPrivacyChecked: true,
+                },
+                appVersion: build.version,
+                channel: build.channel,
+                packaged: app.isPackaged,
+                windowSize: window.getSize(),
+                worker: health,
+                workerStopped: true,
+                protections: {
+                  sandbox: true,
+                  contextIsolation: true,
+                  nodeIntegration: false,
+                  externalNetworkBlocked: true,
+                },
+              },
+              null,
+              2,
+            ) + '\n',
+          );
+          quitting = true;
+          app.exit(settings.passed === true ? 0 : 1);
+          return;
+        }
+        if (argument('avatar-export-only') === 'true') {
+          stage = 'avatar-export-ui';
+          testLeave = 'discard';
+          testSaves.splice(
+            0,
+            testSaves.length,
+            ...['avatar-parts', 'avatar-single', 'avatar-split'].map((n) =>
+              join(app.getPath('userData'), n + '.2dsketch'),
+            ),
+          );
+          if (argument('compact-editor') === 'true') window.setSize(1080, 720);
+          const result = (await window.webContents.executeJavaScript(
+            'window.avatarExportSelfCheck()',
+          )) as {
+            passed: boolean;
+            artifacts: {
+              route: string;
+              label: string;
+              original: string;
+              converted: string;
+              target: string;
+            }[];
+            outputs: { route: string; version: number; id: string; name: string; sha256: string }[];
+          };
+          const output =
+            argument('avatar-export-evidence') ??
+            join(app.getPath('userData'), 'avatar-export-check');
+          await mkdir(output, { recursive: true });
+          const images = [];
+          for (const image of result.artifacts) {
+            const row = {
+              route: image.route,
+              label: image.label,
+              original: image.route + '-' + image.label + '-original.png',
+              converted: image.route + '-' + image.label + '-converted.png',
+              target: image.route + '-' + image.label + '-target-reference.png',
+            };
+            for (const kind of ['original', 'converted', 'target'] as const) {
+              const b = Buffer.from(image[kind].slice('data:image/png;base64,'.length), 'base64');
+              await writeFile(join(output, row[kind]), b);
+            }
+            images.push(row);
+          }
+          const files = [];
+          for (const row of result.outputs) {
+            if (!/^character-r[0-9]+-[a-f0-9]{8}\.inp$/.test(row.name))
+              throw new Error('E_AVATAR_TEST_NAME');
+            const bytes = await readFile(join(app.getPath('userData'), row.name));
+            if (sha256(bytes) !== row.sha256) throw new Error('E_AVATAR_TEST_HASH');
+            const parsed = parseINP(bytes),
+              name = 'avatar-' + row.route + '-v' + row.version + '.inp';
+            await writeFile(join(output, name), bytes);
+            files.push({
+              ...row,
+              name,
+              bytes: bytes.length,
+              textureCount: parsed.textures.length,
+              parameterCount: parsed.model.param.length,
+              animationCount: Object.keys(parsed.model.animations).length,
+            });
+          }
+          const last = result.outputs.at(-1)!;
+          const original = join(app.getPath('userData'), last.name),
+            moved = join(app.getPath('userData'), 'moved-avatar.inp');
+          await rename(original, moved);
+          if (
+            (await fileOutputs.avatar.list()).find((r) => r.id === last.id)?.fileState !== 'MISSING'
+          )
+            throw new Error('E_AVATAR_MOVE_DETECTION');
+          await fileOutputs.avatar.relocate(last.id);
+          if (
+            (await fileOutputs.avatar.list()).find((r) => r.id === last.id)?.fileState !== 'PRESENT'
+          )
+            throw new Error('E_AVATAR_MOVE_RECONNECT');
+          await writeFile(
+            join(
+              output,
+              argument('compact-editor') === 'true'
+                ? 'avatar-export-ui-compact.png'
+                : 'avatar-export-ui.png',
+            ),
+            (await window.webContents.capturePage()).toPNG(),
+          );
+          fileOutputs.close();
+          const released = fileOutputs.avatar.stats();
+          await broadcast?.close();
+          await cameraTracker?.stop();
+          await projectSession.shutdown();
+          await worker.stop();
+          worker = undefined;
+          runShortcuts.close();
+          const { artifacts: _artifacts, outputs: _outputs, ...summary } = result;
+          await writeFile(
+            reportPath,
+            JSON.stringify(
+              {
+                passed: result.passed && !released.prepared && released.resources === 0,
+                avatarExport: {
+                  ...summary,
+                  images,
+                  files,
+                  actualFileMoveReconnected: true,
+                  resourcesReleased: true,
+                },
+                appVersion: build.version,
+                channel: build.channel,
+                packaged: app.isPackaged,
+                windowSize: window.getSize(),
+                worker: health,
+                workerStopped: true,
+                protections: {
+                  sandbox: true,
+                  contextIsolation: true,
+                  nodeIntegration: false,
+                  externalNetworkBlocked: true,
+                },
+              },
+              null,
+              2,
+            ) + '\n',
+          );
+          quitting = true;
+          app.exit(0);
+          return;
+        }
+        if (argument('file-output-only') === 'true') {
+          stage = 'file-output-ui';
+          testLeave = 'discard';
+          testSaves.splice(
+            0,
+            testSaves.length,
+            ...['file-parts', 'file-single', 'file-split', 'file-positive'].map((n) =>
+              join(app.getPath('userData'), n + '.2dsketch'),
+            ),
+          );
+          for (const kind of ['positive', 'static']) {
+            const p = structuredClone(bundled.project);
+            p.projectId = randomUUID();
+            p.displayName = kind === 'positive' ? '사전검사 양성 예제' : '정지 그림 예제';
+            p.revision = 0;
+            p.savedRevision = 0;
+            delete p.motion;
+            if (kind === 'static') {
+              p.parameters = [];
+              p.partBindings = [];
+              p.expressions = [];
+              p.inputBindings = [];
+              p.exportProfiles = [];
+              delete p.expressionSettings;
+              p.runtimeProfile.fallbackExpressionId = null;
+            } else {
+              for (const key of ['head_yaw', 'head_roll']) {
+                const param = p.parameters.find((v) => v.previewKey === key)!;
+                p.partBindings.push({
+                  id: randomUUID(),
+                  parameterId: param.id,
+                  partId: p.parts[0]!.id,
+                  kind: 'transform',
+                  mapping: {
+                    component: key === 'head_yaw' ? 'translate-x' : 'rotate-degrees',
+                    outputRange: [-1, 1],
+                  },
+                });
+              }
+            }
+            const path = join(app.getPath('userData'), 'file-' + kind + '-fixture.2dsketch');
+            await writeFile(path, await encodeBundle(p, bundledBytes, 'manual'));
+            await projectSession.catalog.addRecent(path, p);
+          }
+          if (argument('compact-editor') === 'true') window.setSize(1080, 720);
+          const fileOutput = (await window.webContents.executeJavaScript(
+            'window.fileOutputSelfCheck()',
+          )) as {
+            passed: boolean;
+            images: { name: string; sha256: string; route: string; variant: string }[];
+          };
+          const output =
+            argument('file-output-evidence') ?? join(app.getPath('userData'), 'file-output-check');
+          await mkdir(output, { recursive: true });
+          const pngs = [];
+          for (const image of fileOutput.images) {
+            if (!/^character-image-[0-9]+\.png$/.test(image.name))
+              throw new Error('E_IMAGE_TEST_NAME');
+            const bytes = await readFile(join(app.getPath('userData'), image.name));
+            if (sha256(bytes) !== image.sha256) throw new Error('E_IMAGE_PREVIEW_SAVE_MISMATCH');
+            const decoded = nativeImage.createFromBuffer(bytes),
+              size = decoded.getSize(),
+              pixels = decoded.toBitmap();
+            let visible = 0,
+              transparent = 0;
+            for (let i = 3; i < pixels.length; i += 4) {
+              if (pixels[i]! > 0) visible++;
+              else transparent++;
+            }
+            if (
+              visible < 1 ||
+              (image.variant === 'background' && transparent > 0) ||
+              (image.variant !== 'background' && transparent < 1)
+            )
+              throw new Error('E_IMAGE_ALPHA');
+            const name = 'image-' + image.route + '-' + image.variant + '.png';
+            await writeFile(join(output, name), bytes);
+            pngs.push({
+              ...image,
+              name,
+              ...size,
+              visiblePixels: visible,
+              transparentPixels: transparent,
+              bytes: bytes.length,
+              previewSaveByteIdentical: true,
+            });
+          }
+          await writeFile(
+            join(
+              output,
+              argument('compact-editor') === 'true'
+                ? 'file-output-ui-compact.png'
+                : 'file-output-ui.png',
+            ),
+            (await window.webContents.capturePage()).toPNG(),
+          );
+          fileOutputs.close();
+          const released = fileOutputs.image.stats();
+          await broadcast?.close();
+          await cameraTracker?.stop();
+          await projectSession.shutdown();
+          await worker.stop();
+          worker = undefined;
+          runShortcuts.close();
+          await writeFile(
+            reportPath,
+            JSON.stringify(
+              {
+                passed: fileOutput.passed && released.tickets === 0 && released.resources === 0,
+                fileOutput: { ...fileOutput, images: pngs, allImageResourcesReleased: true },
+                appVersion: build.version,
+                channel: build.channel,
+                packaged: app.isPackaged,
+                windowSize: window.getSize(),
+                worker: health,
+                workerStopped: true,
+                protections: {
+                  sandbox: true,
+                  contextIsolation: true,
+                  nodeIntegration: false,
+                  externalNetworkBlocked: true,
+                },
+              },
+              null,
+              2,
+            ) + '\n',
+          );
+          quitting = true;
+          app.exit(0);
+          return;
+        }
+        if (argument('broadcast-only') === 'true') {
+          stage = 'broadcast-ui';
+          testLeave = 'discard';
+          testSaves.splice(
+            0,
+            testSaves.length,
+            ...['broadcast-parts', 'broadcast-single', 'broadcast-split'].map((n) =>
+              join(app.getPath('userData'), n + '.2dsketch'),
+            ),
+          );
+          const broadcastUI = await checkBroadcastUI({
+            window,
+            output: broadcast!,
+            hold: (value) => {
+              broadcastFramesHeld = value;
+            },
+            directory:
+              argument('broadcast-evidence') ?? join(app.getPath('userData'), 'broadcast-check'),
+            compact: argument('compact-editor') === 'true',
+          });
+          const obsProof = argument('broadcast-obs-bridge')
+            ? await broadcastOBSBridge({
+                window,
+                output: broadcast!,
+                directory: argument('broadcast-obs-bridge')!,
+                hold: (value) => {
+                  broadcastFramesHeld = value;
+                },
+              })
+            : null;
+          await window.webContents.executeJavaScript("window.broadcastCheckStep('stop')");
+          await broadcast!.close();
+          await cameraTracker?.stop();
+          await projectSession.shutdown();
+          await worker.stop();
+          worker = undefined;
+          runShortcuts.close();
+          await writeFile(
+            reportPath,
+            JSON.stringify(
+              {
+                passed: broadcastUI.passed && (!obsProof || obsProof.passed === true),
+                broadcast: broadcastUI,
+                obs: obsProof,
+                appVersion: build.version,
+                channel: build.channel,
+                packaged: app.isPackaged,
+                windowSize: window.getSize(),
+                worker: health,
+                workerStopped: true,
+                protections: {
+                  sandbox: true,
+                  contextIsolation: true,
+                  nodeIntegration: false,
+                  externalNetworkBlocked: true,
+                },
+              },
+              null,
+              2,
+            ) + '\n',
+          );
+          quitting = true;
+          app.exit(0);
+          return;
+        }
+        const checkRuntimeChanges = async () => {
+          stage = 'runtime-changes-ui';
+          const oldSaves = [...testSaves],
+            oldLeave = testLeave;
+          testLeave = 'discard';
+          testSaves.splice(
+            0,
+            testSaves.length,
+            ...[
+              'change-parts-a',
+              'change-parts-b',
+              'change-single-a',
+              'change-single-b',
+              'change-split-a',
+              'change-split-b',
+            ].map((n) => join(app.getPath('userData'), n + '.2dsketch')),
+          );
+          try {
+            const result = (await window.webContents.executeJavaScript(
+              'window.runtimeChangesSelfCheck()',
+            )) as Record<string, unknown>;
+            await window.webContents.executeJavaScript('window.scrollTo(0,0)');
+            await new Promise((r) => setTimeout(r, 300));
+            const path = argument('runtime-changes-screenshot');
+            if (path) {
+              await mkdir(resolve(path, '..'), { recursive: true });
+              await writeFile(path, (await window.webContents.capturePage()).toPNG());
+            }
+            await window.webContents.executeJavaScript('window.runtimeChangesStop()');
+            return result;
+          } finally {
+            testSaves.splice(0, testSaves.length, ...oldSaves);
+            testLeave = oldLeave;
+          }
+        };
+        if (argument('runtime-changes-only') === 'true') {
+          if (argument('compact-editor') === 'true') window.setSize(1080, 720);
+          const runtimeChanges = await checkRuntimeChanges();
+          await cameraTracker?.stop();
+          await projectSession.shutdown();
+          await worker.stop();
+          worker = undefined;
+          runShortcuts.close();
+          passed =
+            runtimeChanges.passed === true &&
+            renderer.webgl2 === true &&
+            renderer.glError === 0 &&
+            renderer.nodeExposed === false &&
+            renderer.shellExposed === false &&
+            (renderer.modelPixels as { passed?: boolean })?.passed === true &&
+            health.modelLoaded === true &&
+            (!app.isPackaged || health.dependencyFilesInsideBundle === true);
+          await mkdir(resolve(reportPath, '..'), { recursive: true });
+          await writeFile(
+            reportPath,
+            JSON.stringify(
+              {
+                passed,
+                runtimeChanges,
+                renderer,
+                worker: health,
+                workerStopped: true,
+                packaged: app.isPackaged,
+                channel: build.channel,
+                appVersion: build.version,
+                windowSize: window.getSize(),
+                devicesOpened: false,
+                protections: {
+                  sandbox: true,
+                  contextIsolation: true,
+                  nodeIntegration: false,
+                  externalNetworkBlocked: true,
+                },
+                priorRouteUI: 'NOT_RUN',
+              },
+              null,
+              2,
+            ) + '\n',
+          );
+          log.write('app-stop');
+          quitting = true;
+          app.exit(passed ? 0 : 1);
+          return;
+        }
+        const checkExecution = async () => {
+          stage = 'execution-ui';
+          const oldSaves = [...testSaves],
+            oldLeave = testLeave;
+          testLeave = 'discard';
+          testSaves.splice(
+            0,
+            testSaves.length,
+            ...['run-parts', 'run-single', 'run-split'].map((n) =>
+              join(app.getPath('userData'), n + '.2dsketch'),
+            ),
+          );
+          try {
+            const result = (await window.webContents.executeJavaScript(
+              'window.executionSelfCheck()',
+            )) as Record<string, unknown>;
+            await new Promise((r) => setTimeout(r, 500));
+            const path = argument('execution-screenshot');
+            if (path) {
+              await mkdir(resolve(path, '..'), { recursive: true });
+              await writeFile(path, (await window.webContents.capturePage()).toPNG());
+            }
+            await window.webContents.executeJavaScript(
+              "(async()=>{document.querySelector('[data-run-close]').click();const end=Date.now()+15000;while(document.querySelector('[data-run-panel]')){if(Date.now()>end)throw new Error('E_RUN_CLOSE_TIMEOUT');await new Promise(r=>setTimeout(r,20));}})()",
+            );
+            return result;
+          } finally {
+            testSaves.splice(0, testSaves.length, ...oldSaves);
+            testLeave = oldLeave;
+          }
+        };
+        if (argument('execution-only') === 'true') {
+          if (argument('compact-editor') === 'true') window.setSize(1080, 720);
+          const execution = await checkExecution();
+          await cameraTracker?.stop();
+          await projectSession.shutdown();
+          await worker.stop();
+          worker = undefined;
+          runShortcuts.close();
+          passed =
+            execution.passed === true &&
+            renderer.webgl2 === true &&
+            renderer.glError === 0 &&
+            renderer.nodeExposed === false &&
+            renderer.shellExposed === false &&
+            (renderer.modelPixels as { passed?: boolean })?.passed === true &&
+            health.modelLoaded === true &&
+            (!app.isPackaged || health.dependencyFilesInsideBundle === true);
+          await mkdir(resolve(reportPath, '..'), { recursive: true });
+          await writeFile(
+            reportPath,
+            JSON.stringify(
+              {
+                passed,
+                execution,
+                renderer,
+                worker: health,
+                workerStopped: true,
+                packaged: app.isPackaged,
+                channel: build.channel,
+                appVersion: build.version,
+                windowSize: window.getSize(),
+                devicesOpened: false,
+                protections: {
+                  sandbox: true,
+                  contextIsolation: true,
+                  nodeIntegration: false,
+                  externalNetworkBlocked: true,
+                },
+                priorRouteUI: 'NOT_RUN',
+              },
+              null,
+              2,
+            ) + '\n',
+          );
+          log.write('app-stop');
+          quitting = true;
+          app.exit(passed ? 0 : 1);
+          return;
+        }
+        const checkInputRecovery = async () => {
+          stage = 'input-recovery-ui';
+          const oldSaves = [...testSaves],
+            oldLeave = testLeave;
+          testLeave = 'discard';
+          testSaves.splice(
+            0,
+            testSaves.length,
+            ...[
+              'input-parts',
+              'input-parts-copy',
+              'input-single',
+              'input-single-copy',
+              'input-split',
+              'input-split-copy',
+            ].map((n) => join(app.getPath('userData'), n + '.2dsketch')),
+          );
+          try {
+            const result = (await window.webContents.executeJavaScript(
+              'window.inputRecoverySelfCheck()',
+            )) as Record<string, unknown>;
+            await new Promise((resolve) => setTimeout(resolve, 500));
+            const path = argument('input-recovery-screenshot');
+            if (path) {
+              await mkdir(resolve(path, '..'), { recursive: true });
+              await writeFile(path, (await window.webContents.capturePage()).toPNG());
+            }
+            await window.webContents.executeJavaScript(
+              "document.querySelector('[data-input-close]').click()",
+            );
+            return result;
+          } finally {
+            testSaves.splice(0, testSaves.length, ...oldSaves);
+            testLeave = oldLeave;
+          }
+        };
+        if (argument('input-recovery-only') === 'true') {
+          if (argument('compact-editor') === 'true') window.setSize(1080, 720);
+          const inputRecovery = await checkInputRecovery();
+          await cameraTracker?.stop();
+          await projectSession.shutdown();
+          await worker.stop();
+          worker = undefined;
+          passed =
+            inputRecovery.passed === true &&
+            renderer.webgl2 === true &&
+            renderer.glError === 0 &&
+            renderer.nodeExposed === false &&
+            renderer.shellExposed === false &&
+            (renderer.modelPixels as { passed?: boolean })?.passed === true &&
+            health.modelLoaded === true &&
+            (!app.isPackaged || health.dependencyFilesInsideBundle === true);
+          await mkdir(resolve(reportPath, '..'), { recursive: true });
+          await writeFile(
+            reportPath,
+            JSON.stringify(
+              {
+                passed,
+                inputRecovery,
+                renderer,
+                worker: health,
+                workerStopped: true,
+                packaged: app.isPackaged,
+                channel: build.channel,
+                appVersion: build.version,
+                windowSize: window.getSize(),
+                devicesOpened: false,
+                protections: {
+                  sandbox: true,
+                  contextIsolation: true,
+                  nodeIntegration: false,
+                  externalNetworkBlocked: true,
+                },
+                priorRouteUI: 'NOT_RUN',
+                scope:
+                  'AudioWorklet, actual local face inference and bounded recovery on three actual routes using synthetic media; physical unplug/human voice are NOT_RUN, M0 HOLD',
+              },
+              null,
+              2,
+            ) + '\n',
+          );
+          log.write('app-stop');
+          quitting = true;
+          app.exit(passed ? 0 : 1);
+          return;
+        }
+        const checkSplit = async () => {
+          testLeave = 'discard';
+          stage = 'split-ui';
+          const source = await readArchive(splitExample);
+          const rows = source.layers.map((l, i) => ({
+            name: 'fragment-' + String(i).padStart(2, '0') + '.png',
+            sourceId: l.id,
+            origin: l.origin,
+            role: l.role,
+            side: l.side,
+            z: l.z,
+            visible: l.visible,
+            opacity: l.opacity,
+            usage: l.usage,
+            variantOf: l.variantOf,
+            state: l.state,
+          }));
+          const split = (await window.webContents.executeJavaScript(
+            'window.splitSelfCheck(' + JSON.stringify(rows) + ')',
+          )) as Record<string, unknown>;
+          const screenshot = argument('split-screenshot');
+          if (screenshot) {
+            await mkdir(resolve(screenshot, '..'), { recursive: true });
+            await writeFile(screenshot, (await window.webContents.capturePage()).toPNG());
+          }
+          const extremes = argument('split-extremes');
+          if (extremes) {
+            const data = (await window.webContents.executeJavaScript(
+              'window.splitExtremeData',
+            )) as string;
+            await mkdir(resolve(extremes, '..'), { recursive: true });
+            await writeFile(extremes, Buffer.from(data.split(',')[1]!, 'base64'));
+          }
+          await window.webContents.executeJavaScript(
+            "document.querySelector('[data-split-close]').click()",
+          );
+          await window.webContents.executeJavaScript(
+            "window.studio.projects.command({type:'split-cancel'})",
+          );
+          return split;
+        };
+        const checkDetail = async () => {
+          stage = 'detail-ui';
+          testLeave = 'discard';
+          testSaves.splice(
+            0,
+            testSaves.length,
+            ...[
+              'detail-parts.2dsketch',
+              'detail-parts-copy.2dsketch',
+              'detail-single.2dsketch',
+              'detail-single-copy.2dsketch',
+              'detail-split.2dsketch',
+              'detail-split-copy.2dsketch',
+            ].map((name) => join(app.getPath('userData'), name)),
+          );
+          const detail = (await window.webContents.executeJavaScript(
+            'window.detailSelfCheck()',
+          )) as Record<string, unknown>;
+          const screenshot = argument('detail-screenshot');
+          if (screenshot) {
+            await mkdir(resolve(screenshot, '..'), { recursive: true });
+            await writeFile(screenshot, (await window.webContents.capturePage()).toPNG());
+          }
+          const extremes = argument('detail-extremes');
+          if (extremes) {
+            const data = (await window.webContents.executeJavaScript(
+              'window.detailExtremeData',
+            )) as string;
+            await mkdir(resolve(extremes, '..'), { recursive: true });
+            await writeFile(extremes, Buffer.from(data.split(',')[1]!, 'base64'));
+          }
+          await window.webContents.executeJavaScript(
+            "document.querySelector('[data-detail-close]').click()",
+          );
+          await window.webContents.executeJavaScript(
+            "window.studio.projects.command({type:'detail-cancel'})",
+          );
+          return detail;
+        };
+        const checkExpressions = async () => {
+          stage = 'expression-ui';
+          testLeave = 'discard';
+          testSaves.splice(
+            0,
+            testSaves.length,
+            ...[
+              'expression-parts.2dsketch',
+              'expression-parts-copy.2dsketch',
+              'expression-single.2dsketch',
+              'expression-single-copy.2dsketch',
+              'expression-split.2dsketch',
+              'expression-split-copy.2dsketch',
+            ].map((name) => join(app.getPath('userData'), name)),
+          );
+          const expressions = (await window.webContents.executeJavaScript(
+            'window.expressionSelfCheck()',
+          )) as Record<string, unknown>;
+          for (const [arg, mode] of [
+            ['expression-screenshot', 'ui'],
+            ['expression-extremes', 'gpu'],
+          ]) {
+            const path = argument(arg!);
+            if (path) {
+              await mkdir(resolve(path, '..'), { recursive: true });
+              await writeFile(
+                path,
+                mode === 'ui'
+                  ? (await window.webContents.capturePage()).toPNG()
+                  : Buffer.from(
+                      (
+                        (await window.webContents.executeJavaScript(
+                          'window.expressionExtremeData',
+                        )) as string
+                      ).split(',')[1]!,
+                      'base64',
+                    ),
+              );
+            }
+          }
+          return expressions;
+        };
+        const checkTracking = async () => {
+          stage = 'tracking-ui';
+          testLeave = 'discard';
+          testSaves.splice(
+            0,
+            testSaves.length,
+            ...[
+              'tracking-parts.2dsketch',
+              'tracking-parts-copy.2dsketch',
+              'tracking-single.2dsketch',
+              'tracking-single-copy.2dsketch',
+              'tracking-split.2dsketch',
+              'tracking-split-copy.2dsketch',
+            ].map((name) => join(app.getPath('userData'), name)),
+          );
+          const tracking = (await window.webContents.executeJavaScript(
+            'window.trackingSelfCheck()',
+          )) as Record<string, unknown>;
+          await new Promise((resolve) => setTimeout(resolve, 500));
+          const path = argument('tracking-screenshot');
+          if (path) {
+            await mkdir(resolve(path, '..'), { recursive: true });
+            await writeFile(path, (await window.webContents.capturePage()).toPNG());
+          }
+          return tracking;
+        };
+        if (argument('tracking-only') === 'true') {
+          if (argument('compact-editor') === 'true') window.setSize(1080, 720);
+          const tracking = await checkTracking();
+          await cameraTracker?.stop();
+          await projectSession.shutdown();
+          await worker.stop();
+          worker = undefined;
+          passed =
+            tracking.passed === true &&
+            renderer.webgl2 === true &&
+            renderer.glError === 0 &&
+            renderer.nodeExposed === false &&
+            renderer.shellExposed === false &&
+            (renderer.modelPixels as { passed?: boolean })?.passed === true &&
+            health.modelLoaded === true &&
+            (!app.isPackaged || health.dependencyFilesInsideBundle === true);
+          await mkdir(resolve(reportPath, '..'), { recursive: true });
+          await writeFile(
+            reportPath,
+            JSON.stringify(
+              {
+                passed,
+                tracking,
+                renderer,
+                worker: health,
+                workerStopped: true,
+                packaged: app.isPackaged,
+                channel: build.channel,
+                appVersion: build.version,
+                windowSize: window.getSize(),
+                devicesOpened: false,
+                protections: {
+                  sandbox: true,
+                  contextIsolation: true,
+                  nodeIntegration: false,
+                  externalNetworkBlocked: true,
+                },
+                priorRouteUI: 'NOT_RUN',
+                scope:
+                  'Targeted camera UI and real local inference using synthetic canvas media on three actual routes; same PC, real device/environment separately recorded, M0 HOLD',
+              },
+              null,
+              2,
+            ) + '\n',
+          );
+          log.write('app-stop');
+          quitting = true;
+          app.exit(passed ? 0 : 1);
+          return;
+        }
+        if (argument('expression-only') === 'true') {
+          if (argument('compact-editor') === 'true') window.setSize(1080, 720);
+          const expressions = await checkExpressions();
+          await projectSession.shutdown();
+          await worker.stop();
+          worker = undefined;
+          passed =
+            expressions.passed === true &&
+            renderer.webgl2 === true &&
+            renderer.glError === 0 &&
+            renderer.nodeExposed === false &&
+            renderer.shellExposed === false &&
+            (renderer.modelPixels as { passed?: boolean })?.passed === true &&
+            (renderer.workflowCore as { passed?: boolean })?.passed === true &&
+            health.modelLoaded === true &&
+            (!app.isPackaged || health.dependencyFilesInsideBundle === true);
+          await mkdir(resolve(reportPath, '..'), { recursive: true });
+          await writeFile(
+            reportPath,
+            JSON.stringify(
+              {
+                passed,
+                expressions,
+                renderer,
+                worker: health,
+                workerStopped: true,
+                packaged: app.isPackaged,
+                channel: build.channel,
+                appVersion: build.version,
+                windowSize: window.getSize(),
+                devicesOpened: false,
+                protections: {
+                  sandbox: true,
+                  contextIsolation: true,
+                  nodeIntegration: false,
+                  externalNetworkBlocked: true,
+                },
+                priorRouteUI: 'NOT_RUN',
+                scope:
+                  'Targeted expression and M2 creation flow on three actual routes plus foundation core; same PC, synthetic inputs, M0 HOLD',
+              },
+              null,
+              2,
+            ) + '\n',
+          );
+          log.write('app-stop');
+          quitting = true;
+          app.exit(passed ? 0 : 1);
+          return;
+        }
+        if (argument('detail-only') === 'true') {
+          if (argument('compact-editor') === 'true') window.setSize(1080, 720);
+          const detail = await checkDetail();
+          await projectSession.shutdown();
+          await worker.stop();
+          worker = undefined;
+          passed =
+            detail.passed === true &&
+            renderer.webgl2 === true &&
+            renderer.glError === 0 &&
+            renderer.nodeExposed === false &&
+            renderer.shellExposed === false &&
+            (renderer.modelPixels as { passed?: boolean })?.passed === true &&
+            (renderer.workflowCore as { passed?: boolean })?.passed === true &&
+            health.modelLoaded === true &&
+            (!app.isPackaged || health.dependencyFilesInsideBundle === true);
+          await mkdir(resolve(reportPath, '..'), { recursive: true });
+          await writeFile(
+            reportPath,
+            JSON.stringify(
+              {
+                passed,
+                detail,
+                renderer,
+                worker: health,
+                workerStopped: true,
+                packaged: app.isPackaged,
+                channel: build.channel,
+                appVersion: build.version,
+                windowSize: window.getSize(),
+                devicesOpened: false,
+                protections: {
+                  sandbox: true,
+                  contextIsolation: true,
+                  nodeIntegration: false,
+                  externalNetworkBlocked: true,
+                },
+                priorRouteUI: 'NOT_RUN',
+                scope:
+                  'Targeted detailed editor on three actual creation routes, PNG replacement worker, GPU, save/reopen plus foundation core; prior feature UI is NOT_RUN in this scope; same PC, no clean OS, M2 exit or M0 claim',
+              },
+              null,
+              2,
+            ) + '\n',
+          );
+          log.write('app-stop');
+          quitting = true;
+          app.exit(passed ? 0 : 1);
+          return;
+        }
+        if (argument('split-only') === 'true') {
+          if (argument('compact-editor') === 'true') window.setSize(1080, 720);
+          const split = await checkSplit();
+          await projectSession.shutdown();
+          await worker.stop();
+          worker = undefined;
+          passed =
+            split.passed === true &&
+            renderer.webgl2 === true &&
+            renderer.glError === 0 &&
+            renderer.nodeExposed === false &&
+            renderer.shellExposed === false &&
+            (renderer.modelPixels as { passed?: boolean })?.passed === true &&
+            (renderer.workflowCore as { passed?: boolean })?.passed === true &&
+            health.modelLoaded === true &&
+            (!app.isPackaged || health.dependencyFilesInsideBundle === true);
+          await mkdir(resolve(reportPath, '..'), { recursive: true });
+          await writeFile(
+            reportPath,
+            JSON.stringify(
+              {
+                passed,
+                split,
+                renderer,
+                worker: health,
+                workerStopped: true,
+                packaged: app.isPackaged,
+                channel: build.channel,
+                appVersion: build.version,
+                windowSize: window.getSize(),
+                devicesOpened: false,
+                protections: {
+                  sandbox: true,
+                  contextIsolation: true,
+                  nodeIntegration: false,
+                  externalNetworkBlocked: true,
+                },
+                priorRouteUI: 'NOT_RUN',
+                scope:
+                  'Targeted split artwork UI, actual source PNG worker, GPU, save/reopen/export plus foundation core; same PC, no clean OS or M0 claim',
+              },
+              null,
+              2,
+            ) + '\n',
+          );
+          log.write('app-stop');
+          quitting = true;
+          app.exit(passed ? 0 : 1);
+          return;
+        }
+        const changeRecents = new Set(projectSession.view().recent.map((r) => r.id));
+        const runtimeChanges = await checkRuntimeChanges();
+        await projectSession.dispatch({ type: 'close' });
+        for (const recent of projectSession.view().recent)
+          if (!changeRecents.has(recent.id))
+            await projectSession.dispatch({ type: 'remove-recent', id: recent.id });
+        await new Promise((r) => setTimeout(r, 100));
+        const executionRecents = new Set(projectSession.view().recent.map((r) => r.id));
+        const execution = await checkExecution();
+        await projectSession.dispatch({ type: 'close' });
+        for (const recent of projectSession.view().recent)
+          if (!executionRecents.has(recent.id))
+            await projectSession.dispatch({ type: 'remove-recent', id: recent.id });
+        await new Promise((r) => setTimeout(r, 100));
+        const initialRecents = new Set(projectSession.view().recent.map((r) => r.id));
+        const inputRecovery = await checkInputRecovery();
+        await projectSession.dispatch({ type: 'close' });
+        for (const recent of projectSession.view().recent)
+          if (!initialRecents.has(recent.id))
+            await projectSession.dispatch({ type: 'remove-recent', id: recent.id });
+        await new Promise((r) => setTimeout(r, 100));
+        stage = 'project-ui';
+        const projects = (await window.webContents.executeJavaScript(
+          'window.projectSelfCheck()',
+        )) as Record<string, unknown>;
+        stage = 'editor-ui';
+        if (argument('compact-editor') === 'true') {
+          window.setSize(1080, 720);
+          await window.webContents.executeJavaScript(
+            'new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))',
+          );
+        }
+        const editor = (await window.webContents.executeJavaScript(
+          'window.editorSelfCheck()',
+        )) as Record<string, unknown>;
+        stage = 'motion-ui';
+        const motion = (await window.webContents.executeJavaScript(
+          'window.motionSelfCheck()',
+        )) as Record<string, unknown>;
+        stage = 'input-ui';
+        const input = (await window.webContents.executeJavaScript(
+          'window.inputSelfCheck()',
+        )) as Record<string, unknown>;
+        stage = 'parts-ui';
+        const parts = (await window.webContents.executeJavaScript(
+          'window.partsSelfCheck()',
+        )) as Record<string, unknown>;
+        stage = 'parts-pixels';
+        const scenes = Array.from({ length: 64 }, (_, i) =>
+          projectToPreview(
+            combination(catalog, i),
+            (a) => 'assets/' + catalog.files[a.fingerprint.sha256] + '?asset=' + a.id,
+          ),
+        );
+        renderer.partsPixels = await window.webContents.executeJavaScript(
+          'window.partsPixels(' + JSON.stringify(scenes) + ')',
+        );
+        const partsContact = argument('parts-contact');
+        if (partsContact) {
+          const data = (await window.webContents.executeJavaScript(
+            'window.partsContactData',
+          )) as string;
+          await mkdir(resolve(partsContact, '..'), { recursive: true });
+          await writeFile(partsContact, Buffer.from(data.split(',')[1]!, 'base64'));
+        }
+        const partsExtremes = argument('parts-extremes');
+        if (partsExtremes) {
+          const data = (await window.webContents.executeJavaScript(
+            'window.partsExtremeData',
+          )) as string;
+          await mkdir(resolve(partsExtremes, '..'), { recursive: true });
+          await writeFile(partsExtremes, Buffer.from(data.split(',')[1]!, 'base64'));
+        }
+        stage = 'structure-ui';
+        const structure = (await window.webContents.executeJavaScript(
+          'window.structureSelfCheck()',
+        )) as Record<string, unknown>;
+        const structureScreenshot = argument('structure-screenshot');
+        if (structureScreenshot) {
+          await mkdir(resolve(structureScreenshot, '..'), { recursive: true });
+          await writeFile(structureScreenshot, (await window.webContents.capturePage()).toPNG());
+        }
+        const structureExtremes = argument('structure-extremes');
+        if (structureExtremes) {
+          const data = (await window.webContents.executeJavaScript(
+            'window.structureExtremeData',
+          )) as string;
+          await mkdir(resolve(structureExtremes, '..'), { recursive: true });
+          await writeFile(structureExtremes, Buffer.from(data.split(',')[1]!, 'base64'));
+        }
+        await window.webContents.executeJavaScript(
+          "window.studio.projects.command({type:'structure-cancel'})",
+        );
+        stage = 'correction-ui';
+        const corrections = (await window.webContents.executeJavaScript(
+          'window.correctionSelfCheck()',
+        )) as Record<string, unknown>;
+        const correctionScreenshot = argument('correction-screenshot');
+        if (correctionScreenshot) {
+          await mkdir(resolve(correctionScreenshot, '..'), { recursive: true });
+          await writeFile(correctionScreenshot, (await window.webContents.capturePage()).toPNG());
+        }
+        const correctionExtremes = argument('correction-extremes');
+        if (correctionExtremes) {
+          const data = (await window.webContents.executeJavaScript(
+            'window.correctionExtremeData',
+          )) as string;
+          await mkdir(resolve(correctionExtremes, '..'), { recursive: true });
+          await writeFile(correctionExtremes, Buffer.from(data.split(',')[1]!, 'base64'));
+        }
+        await window.webContents.executeJavaScript(
+          "document.querySelector('[data-correction-close]').click()",
+        );
+        await window.webContents.executeJavaScript(
+          "window.studio.projects.command({type:'correction-cancel'})",
+        );
+
+        await projectSession.dispatch({
+          type: 'new',
+          name: 'Exit guard check',
+          sourceType: 'parts',
+        });
+        const guardedId = projectSession.view().project?.projectId;
+        window.close();
+        await new Promise((resolve) => setTimeout(resolve, 100));
+        projects.windowCloseCancelled =
+          !window.isDestroyed() && projectSession.view().project?.projectId === guardedId;
+        app.quit();
+        await new Promise((resolve) => setTimeout(resolve, 100));
+        projects.appQuitCancelled = !window.isDestroyed() && !quitting;
+        if (!projects.windowCloseCancelled || !projects.appQuitCancelled)
+          throw new Error('E_PROJECT_EXIT_GUARD');
+        testLeave = 'discard';
+        await projectSession.dispatch({ type: 'close' });
+        testLeave = 'cancel';
+        const projectScreenshot = argument('project-screenshot');
+        if (projectScreenshot) {
+          await window.webContents.executeJavaScript('window.projectSelfCheckCapture()');
+          await window.webContents.executeJavaScript(
+            'new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))',
+          );
+          await mkdir(resolve(projectScreenshot, '..'), { recursive: true });
+          await writeFile(projectScreenshot, (await window.webContents.capturePage()).toPNG());
+          await window.webContents.executeJavaScript(
+            "window.studio.projects.command({type:'close'})",
+          );
+        }
+        const editorScreenshot = argument('editor-screenshot');
+        if (editorScreenshot) {
+          await window.webContents.executeJavaScript('window.editorCapture()');
+          await window.webContents.executeJavaScript(
+            'new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))',
+          );
+          await mkdir(resolve(editorScreenshot, '..'), { recursive: true });
+          await writeFile(editorScreenshot, (await window.webContents.capturePage()).toPNG());
+          await window.webContents.executeJavaScript(
+            "window.studio.projects.command({type:'close'})",
+          );
+        }
+        await window.webContents.executeJavaScript(
+          'new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))',
+        );
+        const motionScreenshot = argument('motion-screenshot');
+        if (motionScreenshot) {
+          await window.webContents.executeJavaScript('window.motionCapture()');
+          await window.webContents.executeJavaScript(
+            'new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))',
+          );
+          await mkdir(resolve(motionScreenshot, '..'), { recursive: true });
+          await writeFile(motionScreenshot, (await window.webContents.capturePage()).toPNG());
+          await window.webContents.executeJavaScript(
+            "window.studio.projects.command({type:'close'})",
+          );
+        }
+        await window.webContents.executeJavaScript(
+          'new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))',
+        );
+        const inputScreenshot = argument('input-screenshot');
+        if (inputScreenshot) {
+          await window.webContents.executeJavaScript('window.inputCapture()');
+          await mkdir(resolve(inputScreenshot, '..'), { recursive: true });
+          await writeFile(inputScreenshot, (await window.webContents.capturePage()).toPNG());
+          await window.webContents.executeJavaScript(
+            "window.studio.projects.command({type:'close'})",
+          );
+        }
+        const partsScreenshot = argument('parts-screenshot');
+        if (partsScreenshot) {
+          await window.webContents.executeJavaScript('window.partsCapture()');
+          await mkdir(resolve(partsScreenshot, '..'), { recursive: true });
+          await writeFile(partsScreenshot, (await window.webContents.capturePage()).toPNG());
+          await window.webContents.executeJavaScript(
+            "window.studio.projects.command({type:'close'})",
+          );
+        }
+        await window.webContents.executeJavaScript(
+          'new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))',
+        );
+        stage = 'capture';
+        const screenshotPath = argument('screenshot');
+        if (screenshotPath) {
+          await mkdir(resolve(screenshotPath, '..'), { recursive: true });
+          await writeFile(screenshotPath, (await window.webContents.capturePage()).toPNG());
+        }
+        const workflowScreenshot = argument('workflow-screenshot');
+        if (workflowScreenshot && build.channel !== 'release') {
+          await window.webContents.executeJavaScript(
+            `(async()=>{document.querySelector('[data-workflow-lab]').click();const start=Date.now();while(!window.workflowLabCheck){if(Date.now()-start>5000)throw new Error('E_WORKFLOW_UI_TIMEOUT');await new Promise(r=>setTimeout(r,10))}return window.workflowLabCheck({holdForCapture:true})})()`,
+          );
+          await window.webContents.executeJavaScript(
+            `new Promise((resolve,reject)=>{const timeout=setTimeout(()=>reject(new Error('E_CAPTURE_TIMEOUT')),3000);requestAnimationFrame(()=>requestAnimationFrame(()=>{clearTimeout(timeout);resolve(true)}))})`,
+          );
+          await mkdir(resolve(workflowScreenshot, '..'), { recursive: true });
+          await writeFile(workflowScreenshot, (await window.webContents.capturePage()).toPNG());
+          await window.webContents.executeJavaScript(
+            `(async()=>{document.querySelector('.workflow-lab .close').click();const start=Date.now();while(document.querySelector('.workflow-lab')){if(Date.now()-start>5000)throw new Error('E_WORKFLOW_UI_TIMEOUT');await new Promise(r=>setTimeout(r,10))}})()`,
+          );
+        }
+        const split = await checkSplit();
+        const detail = await checkDetail();
+        const expressions = await checkExpressions();
+        const tracking = await checkTracking();
+        await projectSession.shutdown();
+        await worker.stop();
+        worker = undefined;
+        passed =
+          renderer.webgl2 === true &&
+          Number(renderer.visiblePixels) > 1000 &&
+          Number(renderer.transparentPixels) > 1000 &&
+          renderer.glError === 0 &&
+          renderer.nodeExposed === false &&
+          renderer.shellExposed === false &&
+          renderer.appInfoDialog === true &&
+          (renderer.modelPixels as { passed?: boolean } | undefined)?.passed === true &&
+          (renderer.workflowCore as { passed?: boolean } | undefined)?.passed === true &&
+          (renderer.workflowUI as { passed?: boolean } | undefined)?.passed === true &&
+          renderer.sampleRuntimeFrozen === true &&
+          health.modelLoaded === true &&
+          (!app.isPackaged || health.dependencyFilesInsideBundle === true);
+        passed =
+          passed &&
+          runtimeChanges.passed === true &&
+          execution.passed === true &&
+          inputRecovery.passed === true &&
+          tracking.passed === true &&
+          expressions.passed === true &&
+          detail.passed === true &&
+          split.passed === true &&
+          corrections.passed === true &&
+          structure.passed === true &&
+          parts.passed === true &&
+          (renderer.partsPixels as { passed?: boolean }).passed === true &&
+          input.passed === true &&
+          projects.passed === true &&
+          editor.passed === true &&
+          motion.passed === true &&
+          (renderer.motionPixels as { passed?: boolean } | undefined)?.passed === true;
+        const report = {
+          passed,
+          runtimeChanges,
+          execution,
+          inputRecovery,
+          tracking,
+          expressions,
+          detail,
+          split,
+          projects,
+          editor,
+          motion,
+          input,
+          parts,
+          structure,
+          corrections,
+          packaged: app.isPackaged,
+          channel: build.channel,
+          appVersion: build.version,
+          electron: process.versions.electron,
+          node: process.versions.node,
+          worker: health,
+          workerStopped: true,
+          renderer,
+          protections: {
+            sandbox: true,
+            contextIsolation: true,
+            nodeIntegration: false,
+            externalNetworkBlocked: true,
+          },
+          gpuFeatureStatus: app.getGPUFeatureStatus(),
+          devicesOpened: false,
+          windowSize: window.getSize(),
+          scope:
+            'Local project lifecycle/common editor, GPU and bundled worker; no live tracking, clean-OS or M0 performance claim',
+        };
+        await mkdir(resolve(reportPath, '..'), { recursive: true });
+        await writeFile(reportPath, JSON.stringify(report, null, 2) + '\n');
+      } catch (error) {
+        const failureCapture = argument('editor-screenshot');
+        if (failureCapture && !window.isDestroyed()) {
+          await mkdir(resolve(failureCapture, '..'), { recursive: true });
+          await writeFile(failureCapture, (await window.webContents.capturePage()).toPNG());
+        }
+        if (worker) {
+          await worker.stop();
+          worker = undefined;
+        }
+        const detail =
+          error instanceof Error ? error.message.match(/\bE_[A-Z_]{1,48}\b/)?.[0] : undefined;
+        const diagnostic = await window.webContents
+          .executeJavaScript('window.editorFailureState ?? null')
+          .catch(() => null);
+        await mkdir(resolve(reportPath, '..'), { recursive: true });
+        await writeFile(
+          reportPath,
+          JSON.stringify({
+            passed: false,
+            code: 'E_FOUNDATION_CHECK',
+            stage,
+            detail,
+            diagnostic,
+            packaged: app.isPackaged,
+          }) + '\n',
+        );
+      }
+      log.write('app-stop');
+      quitting = true;
+      app.exit(passed ? 0 : 1);
+    }
+  })
+  .catch(() => {
+    if (log) log.write('worker-error', { code: 'E_APP_START' });
+    app.exit(1);
+  });

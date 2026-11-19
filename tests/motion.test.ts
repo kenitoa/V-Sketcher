@@ -1,31 +1,394 @@
+import { scratchPath } from './temp';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFile,writeFile,mkdir,mkdtemp } from 'node:fs/promises';
-import { join,resolve } from 'node:path';
-import { authorRig,MotionPlayer,capabilities,normalize,clampValue,KEYS } from '../packages/motion';
-import { deformPoint,barycentric } from '../packages/motion/geometry';
-import { assertProject,readProject,serializeProject,validateProject,type Project } from '../packages/project-model';
+import { readFile, writeFile, mkdir, mkdtemp } from 'node:fs/promises';
+import { join } from 'node:path';
+import {
+  authorRig,
+  MotionPlayer,
+  capabilities,
+  normalize,
+  clampValue,
+  KEYS,
+} from '../packages/motion';
+import { deformPoint, barycentric } from '../packages/motion/geometry';
+import {
+  assertProject,
+  readProject,
+  serializeProject,
+  validateProject,
+  type Project,
+} from '../packages/project-model';
 import { projectToPreview } from '../packages/project-model/preview';
 import { NEUTRAL } from '../packages/scene-core';
-import { encodeBundle,readBundle,decodeBundle,sha256 } from '../packages/project-storage/archive';
+import {
+  encodeBundle,
+  readBundle,
+  decodeBundle,
+  sha256,
+} from '../packages/project-storage/archive';
 import { ProjectSession } from '../packages/project-session';
-const load = async (route?:string):Promise<Project> => { const r = readProject(await readFile(route ? `tests/fixtures/common-model/${route}/project.json` : 'assets/product/preview-project.json','utf8')); if (r.mode !== 'read-write') throw new Error('fixture'); return r.project; };
-const close = (a:number,b:number):void => assert.ok(Math.abs(a-b)<1e-7,`${a} != ${b}`);
-function player(p:Project) { p.motion!.settings.smoothingMs = 0; const e = new MotionPlayer(); e.setProject(p); e.frame(0); return e; }
-test('T101: three genuinely different prepared structures author valid local meshes, pivots, weights, references and curves',async () => { for (const route of ['parts','single-image','split-image']) { const p = await load(route); const before = serializeProject(p); const rig = authorRig(p); assert.equal(serializeProject(p),before); p.schemaVersion.minor = 1; p.motion = rig; assertProject(p); assert.equal(rig.meshes.length,p.parts.filter(p => p.textures.length).length); assert.ok(rig.meshes.every(m => m.vertices.length===30 && m.triangles.length===120 && m.curve==='smoothstep')); } });
-test('T102: independent parameter ranges normalize correctly and reject nonfinite/overflow/degenerate inputs',async () => { const p = await load(); for (const param of p.parameters) { close(clampValue(param,-999),param.min); close(clampValue(param,999),param.max); assert.throws(() => clampValue(param,NaN)); assert.throws(() => normalize(param,Infinity)); close(normalize(param,param.min),param.previewKey!.startsWith('head') ? -1 : 0); close(normalize(param,param.max),1); } assert.throws(() => clampValue({ ...p.parameters[0]!,min:-1e308,max:1e308 },0)); });
-test('T103: left/right eye and mouth are independently controllable, bounded, and frame input does not edit project',async () => { const p = await load(); const e = player(p); const before = serializeProject(p); e.set('eye_left',0); let f = e.frame(16); assert.equal(f.parameters.eye_left,0); assert.equal(f.parameters.eye_right,1); assert.equal(f.parameters.mouth,0); e.set('eye_right',.4); e.set('mouth',999); f = e.frame(32); close(f.parameters.eye_right,.4); close(f.parameters.mouth,.65); assert.equal(serializeProject(p),before); assert.throws(() => e.set('mouth',NaN)); });
-test('T104: weighted GPU reference keeps pinned body vertices fixed and limits yaw/roll to authored contract',async () => { const p = await load(); const scene = projectToPreview(p); const layer = scene.layers[0]!; const mesh = layer.mesh!; const pinned = mesh.vertices.find(v => v.weight===0)!; const head = mesh.vertices.find(v => v.weight===1)!; assert.ok(pinned && head); for (const head_yaw of [-1,0,1]) for (const head_roll of [-1,0,1]) { const input = { ...NEUTRAL,head_yaw,head_roll }; const at = deformPoint(layer,{ x:pinned.position[0],y:pinned.position[1] },0,{ x:0,y:0 },{ x:0,y:0 },input); close(at.x,pinned.position[0]); close(at.y,pinned.position[1]); } const yaw = deformPoint(layer,{ x:head.position[0],y:head.position[1] },1,{ x:head.minimum[0],y:head.minimum[1] },{ x:head.maximum[0],y:head.maximum[1] },{ ...NEUTRAL,head_yaw:1 }); close(yaw.x-head.position[0],p.motion!.faceWidth*.045); assert.equal(mesh.maxRollDegrees,6); });
-test('T101/T104: barycentric hit coordinates and transform bindings match the deformation evaluator',async () => { assert.deepEqual(barycentric({ x:1,y:1 },{ x:0,y:0 },{ x:4,y:0 },{ x:0,y:4 }),[.5,.25,.25]); assert.equal(barycentric({ x:9,y:9 },{ x:0,y:0 },{ x:4,y:0 },{ x:0,y:4 }),null); const p = await load(); const layer = projectToPreview(p).layers[0]!; delete layer.mesh; layer.transforms = [{ key:'head_roll',component:'rotate-degrees',range:[-6,6],pivot:[0,0] }]; const q = deformPoint(layer,{ x:100,y:0 },0,{ x:0,y:0 },{ x:0,y:0 },{ ...NEUTRAL,head_roll:1 }); close(q.x,100*Math.cos(Math.PI/30)); close(q.y,100*Math.sin(Math.PI/30)); p.parts[1]!.parentId=p.parts[0]!.id; p.partBindings.push({ id:'parent-roll',partId:p.parts[0]!.id,parameterId:'parameter-head_roll',kind:'transform',mapping:{ component:'rotate-degrees',outputRange:[-6,6] } }); p.motion=authorRig(p); const inherited=projectToPreview(p).layers.find(l=>l.id===p.parts[1]!.id)!; assert.equal(inherited.transforms!.length,1); assert.equal(inherited.mesh!.roll,false); });
-test('T105: exponential smoothing is time based, strength zero preserves saved pose, stop restores pose exactly',async () => { const base = await load(); base.motion!.settings.smoothingMs = 200; const run = (hz:number):number => { const e = new MotionPlayer(); e.setProject(base); e.frame(0); e.set('eye_left',0); for (let i=1;i<=hz;i++) e.frame(i*1000/hz); return e.snapshot().parameters.eye_left; }; close(run(30),run(120)); const p = await load(); p.motion!.settings = { strength:0,smoothingMs:0,pose:[{ parameterId:'parameter-eye_left',value:.4 }] }; const e = new MotionPlayer(); e.setProject(p); e.set('eye_left',0); close(e.frame(0).parameters.eye_left,.4); e.stop(); close(e.snapshot().parameters.eye_left,.4); });
-test('T105: negative/long timestamps do not cause jumps or unstable values; invalid time is rejected',async () => { const p = await load(); const e = new MotionPlayer(); e.setProject(p); e.frame(1000); e.set('eye_left',0); assert.equal(e.frame(900).parameters.eye_left,1); const f = e.frame(100000); assert.equal(f.clamped,true); assert.ok(f.parameters.eye_left>0 && f.parameters.eye_left<1); assert.throws(() => e.frame(NaN)); });
-test('T106: single example visits min/neutral/max and stops at saved baseline without modifying the model',async () => { const p = await load(); const e = player(p); const before = serializeProject(p); e.play('head_yaw',false); for (let i=0;i<=240;i++) e.frame(i*1000/60); assert.equal(e.snapshot().playing,false); assert.equal(e.snapshot().parameters.head_yaw,0); assert.equal(serializeProject(p),before); });
-test('T107: combined looping motion survives repeated cycles, keeps independent eyes and restores all five controls',async () => { const p = await load(); const e = player(p); e.play('all',true); let independent = false; for (let i=0;i<600;i++) { const f = e.frame(i*1000/60); independent ||= Math.abs(f.parameters.eye_left-f.parameters.eye_right)>.1; for (const key of KEYS) assert.ok(f.parameters[key]>= (key.startsWith('head') ? -1 : 0) && f.parameters[key]<=1); assert.ok(f.parameters.mouth<=.65+1e-10); } assert.ok(e.snapshot().playing && independent); e.stop(); assert.deepEqual(e.snapshot().parameters,NEUTRAL); });
-test('T108: parameter names alone do not claim motion support; hidden/missing parts and unsupported inputs are unavailable',async () => { const p = await load(); delete p.motion; p.partBindings = []; assert.ok(capabilities(p).every(c => !c.supported)); const e = new MotionPlayer(); e.setProject(p); assert.throws(() => e.set('eye_left',0),/E_MOTION_UNSUPPORTED/); e.setProject(null); assert.equal(e.list().length,0); const full = await load(); const list = capabilities(full,new Set([full.parts[0]!.id])); assert.equal(list.find(c => c.key==='head_roll')!.supported,true); assert.equal(list.find(c => c.key==='eye_left')!.supported,false); });
-test('T104/T108: occluded provenance produces a narrower immutable deformation profile',async () => { const p = await load(); p.provenance.limitations.push('occluded portrait'); p.motion = authorRig(p); close(p.motion.maxRollDegrees,2.1); assert.ok(p.motion.meshes[0]!.vertices.every(v => Math.hypot(...v.maximum)<=p.motion!.faceWidth*.045*.35+1e-6)); });
-test('T101/T102: malformed mesh references, indices, winding, offsets and saved pose are rejected',async () => { const original = await load(); const bad = (change:(p:Project)=>void):void => { const p = structuredClone(original); change(p); assert.ok(validateProject(p).length); }; bad(p => { p.motion!.meshes[0]!.partId = 'missing'; }); bad(p => { p.motion!.meshes[0]!.triangles[0] = 999; }); bad(p => { p.motion!.meshes[0]!.triangles[1] = p.motion!.meshes[0]!.triangles[0]!; }); bad(p => { p.motion!.meshes[0]!.vertices[0]!.maximum = [999,0]; }); bad(p => { p.motion!.settings.pose = [{ parameterId:'missing',value:0 }]; }); bad(p => { p.parameters[0]!.max = Infinity; }); bad(p => { const m=p.motion!.meshes[1]!; m.vertices[0]!.maximum=[0,11]; m.vertices[1]!.maximum=[0,11]; m.vertices[5]!.maximum=[0,-11]; m.vertices[6]!.maximum=[0,-11]; }); });
-test('T110: legacy 1.0 stays readable; motion 1.1 is self-contained; newer minor remains read-only',async () => { const old = await load('parts'); assert.equal(old.schemaVersion.minor,0); const p = await load(); const future = readProject({ ...p,schemaVersion:{ major:1,minor:10 },futureMotion:{ keep:true } }); assert.equal(future.mode,'read-only'); if (future.mode==='read-only') assert.deepEqual((future.raw as Record<string,unknown>).futureMotion,{ keep:true }); });
-test('T110: actual three-route bundles reopen mesh, curves, range, pose and all original resources identically',async () => { for (const route of ['parts','single-image','split-image']) { const p = await load(route); p.schemaVersion.minor = 1; p.motion = authorRig(p); p.motion.settings.strength = .7; p.motion.settings.smoothingMs = 80; p.motion.settings.pose = [{ parameterId:p.parameters[0]!.id,value:p.parameters[0]!.neutral }]; const resources = new Map<string,Buffer>(); for (const a of p.assets) resources.set(a.id,await readFile(join('tests/fixtures/common-model',route,a.storage.path))); const bytes = await encodeBundle(p,resources,'manual'); const r = await decodeBundle(bytes,false); assert.deepEqual(r.project!.motion,p.motion); assert.deepEqual(r.project!.partBindings,p.partBindings); assert.equal(r.resources.size,new Set(p.assets.map(a => a.storage.path)).size); assert.ok(projectToPreview(r.project!).layers.every(l => !!l.mesh)); assert.deepEqual(projectToPreview(r.project!),projectToPreview(p)); } });
-test('T110: actual session prepares a legacy copy, checkpoints before upgrade, undoes/redoes and saves/reopens settings',async () => { await mkdir('.local/motion-tests',{ recursive:true }); const dir = await mkdtemp(resolve('.local/motion-tests/run-')); const p = await load(); const old = await load('parts'); const resources = new Map<string,Buffer>(); for (const a of old.assets) resources.set(a.id,await readFile(join('tests/fixtures/common-model/parts',a.storage.path))); const path = join(dir,'legacy.2dsketch'); await writeFile(path,await encodeBundle(old,resources,'manual'));
-  let output=path; const s = new ProjectSession({ dataDir:dir,dialogs:{ openProject:async () => null,saveProject:async () => output,relinkImage:async () => null,unsaved:async () => 'discard' },bundled:p,bundledBytes:new Map(),autoTimers:false }); await s.init(); await s.openFile(path); const original = sha256(await readFile(path)); const prepared = await s.dispatch({ type:'prepare-motion',expectedRevision:s.view().project!.revision }); assert.equal(prepared.view.errorCode,null); assert.ok(s.view().project!.motion); assert.equal(s.view().project!.schemaVersion.minor,1); assert.ok(s.view().recoveries.length); await s.dispatch({ type:'undo' }); assert.equal(s.view().project!.motion,undefined); await s.dispatch({ type:'redo' }); assert.ok(s.view().project!.motion); await s.dispatch({ type:'motion-settings',expectedRevision:s.view().project!.revision,strength:.5,smoothingMs:250,pose:[] }); await assert.rejects(s.save(false),/E_SAVE_MIGRATION_TARGET/); output=join(dir,'new.2dsketch'); await s.save(false); assert.equal(sha256(await readFile(path)),original); await s.openFile(join(dir,'new.2dsketch')); assert.equal(s.view().project!.motion!.settings.strength,.5); assert.equal((await readBundle(join(dir,'new.2dsketch'),false)).project!.motion!.settings.smoothingMs,250); await s.shutdown(); });
-test('T109: initial decision disables secondary dynamics and frame evaluation never accumulates project history/data',async () => { const p = await load(); assert.equal(p.motion!.secondary,'disabled'); const e = player(p); const before = serializeProject(p); e.play('all',true); for (let i=0;i<1000;i++) e.frame(i*1000/60); assert.equal(e.snapshot().values.size,p.parameters.length); assert.equal(serializeProject(p),before); const invalid = structuredClone(p); (invalid.motion as unknown as { secondary:string }).secondary = 'spring'; assert.throws(() => assertProject(invalid)); });
+const load = async (route?: string): Promise<Project> => {
+  const r = readProject(
+    await readFile(
+      route
+        ? `tests/fixtures/common-model/${route}/project.json`
+        : 'assets/product/preview-project.json',
+      'utf8',
+    ),
+  );
+  if (r.mode !== 'read-write') throw new Error('fixture');
+  return r.project;
+};
+const close = (a: number, b: number): void => assert.ok(Math.abs(a - b) < 1e-7, `${a} != ${b}`);
+function player(p: Project) {
+  p.motion!.settings.smoothingMs = 0;
+  const e = new MotionPlayer();
+  e.setProject(p);
+  e.frame(0);
+  return e;
+}
+test('T101: three genuinely different prepared structures author valid local meshes, pivots, weights, references and curves', async () => {
+  for (const route of ['parts', 'single-image', 'split-image']) {
+    const p = await load(route);
+    const before = serializeProject(p);
+    const rig = authorRig(p);
+    assert.equal(serializeProject(p), before);
+    p.schemaVersion.minor = 1;
+    p.motion = rig;
+    assertProject(p);
+    assert.equal(rig.meshes.length, p.parts.filter((p) => p.textures.length).length);
+    assert.ok(
+      rig.meshes.every(
+        (m) => m.vertices.length === 30 && m.triangles.length === 120 && m.curve === 'smoothstep',
+      ),
+    );
+  }
+});
+test('T102: independent parameter ranges normalize correctly and reject nonfinite/overflow/degenerate inputs', async () => {
+  const p = await load();
+  for (const param of p.parameters) {
+    close(clampValue(param, -999), param.min);
+    close(clampValue(param, 999), param.max);
+    assert.throws(() => clampValue(param, NaN));
+    assert.throws(() => normalize(param, Infinity));
+    close(normalize(param, param.min), param.previewKey!.startsWith('head') ? -1 : 0);
+    close(normalize(param, param.max), 1);
+  }
+  assert.throws(() => clampValue({ ...p.parameters[0]!, min: -1e308, max: 1e308 }, 0));
+});
+test('T103: left/right eye and mouth are independently controllable, bounded, and frame input does not edit project', async () => {
+  const p = await load();
+  const e = player(p);
+  const before = serializeProject(p);
+  e.set('eye_left', 0);
+  let f = e.frame(16);
+  assert.equal(f.parameters.eye_left, 0);
+  assert.equal(f.parameters.eye_right, 1);
+  assert.equal(f.parameters.mouth, 0);
+  e.set('eye_right', 0.4);
+  e.set('mouth', 999);
+  f = e.frame(32);
+  close(f.parameters.eye_right, 0.4);
+  close(f.parameters.mouth, 0.65);
+  assert.equal(serializeProject(p), before);
+  assert.throws(() => e.set('mouth', NaN));
+});
+test('T104: weighted GPU reference keeps pinned body vertices fixed and limits yaw/roll to authored contract', async () => {
+  const p = await load();
+  const scene = projectToPreview(p);
+  const layer = scene.layers[0]!;
+  const mesh = layer.mesh!;
+  const pinned = mesh.vertices.find((v) => v.weight === 0)!;
+  const head = mesh.vertices.find((v) => v.weight === 1)!;
+  assert.ok(pinned && head);
+  for (const head_yaw of [-1, 0, 1])
+    for (const head_roll of [-1, 0, 1]) {
+      const input = { ...NEUTRAL, head_yaw, head_roll };
+      const at = deformPoint(
+        layer,
+        { x: pinned.position[0], y: pinned.position[1] },
+        0,
+        { x: 0, y: 0 },
+        { x: 0, y: 0 },
+        input,
+      );
+      close(at.x, pinned.position[0]);
+      close(at.y, pinned.position[1]);
+    }
+  const yaw = deformPoint(
+    layer,
+    { x: head.position[0], y: head.position[1] },
+    1,
+    { x: head.minimum[0], y: head.minimum[1] },
+    { x: head.maximum[0], y: head.maximum[1] },
+    { ...NEUTRAL, head_yaw: 1 },
+  );
+  close(yaw.x - head.position[0], p.motion!.faceWidth * 0.045);
+  assert.equal(mesh.maxRollDegrees, 6);
+});
+test('T101/T104: barycentric hit coordinates and transform bindings match the deformation evaluator', async () => {
+  assert.deepEqual(
+    barycentric({ x: 1, y: 1 }, { x: 0, y: 0 }, { x: 4, y: 0 }, { x: 0, y: 4 }),
+    [0.5, 0.25, 0.25],
+  );
+  assert.equal(barycentric({ x: 9, y: 9 }, { x: 0, y: 0 }, { x: 4, y: 0 }, { x: 0, y: 4 }), null);
+  const p = await load();
+  const layer = projectToPreview(p).layers[0]!;
+  delete layer.mesh;
+  layer.transforms = [
+    { key: 'head_roll', component: 'rotate-degrees', range: [-6, 6], pivot: [0, 0] },
+  ];
+  const q = deformPoint(
+    layer,
+    { x: 100, y: 0 },
+    0,
+    { x: 0, y: 0 },
+    { x: 0, y: 0 },
+    { ...NEUTRAL, head_roll: 1 },
+  );
+  close(q.x, 100 * Math.cos(Math.PI / 30));
+  close(q.y, 100 * Math.sin(Math.PI / 30));
+  p.parts[1]!.parentId = p.parts[0]!.id;
+  p.partBindings.push({
+    id: 'parent-roll',
+    partId: p.parts[0]!.id,
+    parameterId: 'parameter-head_roll',
+    kind: 'transform',
+    mapping: { component: 'rotate-degrees', outputRange: [-6, 6] },
+  });
+  p.motion = authorRig(p);
+  const inherited = projectToPreview(p).layers.find((l) => l.id === p.parts[1]!.id)!;
+  assert.equal(inherited.transforms!.length, 1);
+  assert.equal(inherited.mesh!.roll, false);
+});
+test('T105: exponential smoothing is time based, strength zero preserves saved pose, stop restores pose exactly', async () => {
+  const base = await load();
+  base.motion!.settings.smoothingMs = 200;
+  const run = (hz: number): number => {
+    const e = new MotionPlayer();
+    e.setProject(base);
+    e.frame(0);
+    e.set('eye_left', 0);
+    for (let i = 1; i <= hz; i++) e.frame((i * 1000) / hz);
+    return e.snapshot().parameters.eye_left;
+  };
+  close(run(30), run(120));
+  const p = await load();
+  p.motion!.settings = {
+    strength: 0,
+    smoothingMs: 0,
+    pose: [{ parameterId: 'parameter-eye_left', value: 0.4 }],
+  };
+  const e = new MotionPlayer();
+  e.setProject(p);
+  e.set('eye_left', 0);
+  close(e.frame(0).parameters.eye_left, 0.4);
+  e.stop();
+  close(e.snapshot().parameters.eye_left, 0.4);
+});
+test('T105: negative/long timestamps do not cause jumps or unstable values; invalid time is rejected', async () => {
+  const p = await load();
+  const e = new MotionPlayer();
+  e.setProject(p);
+  e.frame(1000);
+  e.set('eye_left', 0);
+  assert.equal(e.frame(900).parameters.eye_left, 1);
+  const f = e.frame(100000);
+  assert.equal(f.clamped, true);
+  assert.ok(f.parameters.eye_left > 0 && f.parameters.eye_left < 1);
+  assert.throws(() => e.frame(NaN));
+});
+test('T106: single example visits min/neutral/max and stops at saved baseline without modifying the model', async () => {
+  const p = await load();
+  const e = player(p);
+  const before = serializeProject(p);
+  e.play('head_yaw', false);
+  for (let i = 0; i <= 240; i++) e.frame((i * 1000) / 60);
+  assert.equal(e.snapshot().playing, false);
+  assert.equal(e.snapshot().parameters.head_yaw, 0);
+  assert.equal(serializeProject(p), before);
+});
+test('T107: combined looping motion survives repeated cycles, keeps independent eyes and restores all five controls', async () => {
+  const p = await load();
+  const e = player(p);
+  e.play('all', true);
+  let independent = false;
+  for (let i = 0; i < 600; i++) {
+    const f = e.frame((i * 1000) / 60);
+    independent ||= Math.abs(f.parameters.eye_left - f.parameters.eye_right) > 0.1;
+    for (const key of KEYS)
+      assert.ok(f.parameters[key] >= (key.startsWith('head') ? -1 : 0) && f.parameters[key] <= 1);
+    assert.ok(f.parameters.mouth <= 0.65 + 1e-10);
+  }
+  assert.ok(e.snapshot().playing && independent);
+  e.stop();
+  assert.deepEqual(e.snapshot().parameters, NEUTRAL);
+});
+test('T108: parameter names alone do not claim motion support; hidden/missing parts and unsupported inputs are unavailable', async () => {
+  const p = await load();
+  delete p.motion;
+  p.partBindings = [];
+  assert.ok(capabilities(p).every((c) => !c.supported));
+  const e = new MotionPlayer();
+  e.setProject(p);
+  assert.throws(() => e.set('eye_left', 0), /E_MOTION_UNSUPPORTED/);
+  e.setProject(null);
+  assert.equal(e.list().length, 0);
+  const full = await load();
+  const list = capabilities(full, new Set([full.parts[0]!.id]));
+  assert.equal(list.find((c) => c.key === 'head_roll')!.supported, true);
+  assert.equal(list.find((c) => c.key === 'eye_left')!.supported, false);
+});
+test('T104/T108: occluded provenance produces a narrower immutable deformation profile', async () => {
+  const p = await load();
+  p.provenance.limitations.push('occluded portrait');
+  p.motion = authorRig(p);
+  close(p.motion.maxRollDegrees, 2.1);
+  assert.ok(
+    p.motion.meshes[0]!.vertices.every(
+      (v) => Math.hypot(...v.maximum) <= p.motion!.faceWidth * 0.045 * 0.35 + 1e-6,
+    ),
+  );
+});
+test('T101/T102: malformed mesh references, indices, winding, offsets and saved pose are rejected', async () => {
+  const original = await load();
+  const bad = (change: (p: Project) => void): void => {
+    const p = structuredClone(original);
+    change(p);
+    assert.ok(validateProject(p).length);
+  };
+  bad((p) => {
+    p.motion!.meshes[0]!.partId = 'missing';
+  });
+  bad((p) => {
+    p.motion!.meshes[0]!.triangles[0] = 999;
+  });
+  bad((p) => {
+    p.motion!.meshes[0]!.triangles[1] = p.motion!.meshes[0]!.triangles[0]!;
+  });
+  bad((p) => {
+    p.motion!.meshes[0]!.vertices[0]!.maximum = [999, 0];
+  });
+  bad((p) => {
+    p.motion!.settings.pose = [{ parameterId: 'missing', value: 0 }];
+  });
+  bad((p) => {
+    p.parameters[0]!.max = Infinity;
+  });
+  bad((p) => {
+    const m = p.motion!.meshes[1]!;
+    m.vertices[0]!.maximum = [0, 11];
+    m.vertices[1]!.maximum = [0, 11];
+    m.vertices[5]!.maximum = [0, -11];
+    m.vertices[6]!.maximum = [0, -11];
+  });
+});
+test('T110: legacy 1.0 stays readable; motion 1.1 is self-contained; newer minor remains read-only', async () => {
+  const old = await load('parts');
+  assert.equal(old.schemaVersion.minor, 0);
+  const p = await load();
+  const future = readProject({
+    ...p,
+    schemaVersion: { major: 1, minor: 10 },
+    futureMotion: { keep: true },
+  });
+  assert.equal(future.mode, 'read-only');
+  if (future.mode === 'read-only')
+    assert.deepEqual((future.raw as Record<string, unknown>).futureMotion, { keep: true });
+});
+test('T110: actual three-route bundles reopen mesh, curves, range, pose and all original resources identically', async () => {
+  for (const route of ['parts', 'single-image', 'split-image']) {
+    const p = await load(route);
+    p.schemaVersion.minor = 1;
+    p.motion = authorRig(p);
+    p.motion.settings.strength = 0.7;
+    p.motion.settings.smoothingMs = 80;
+    p.motion.settings.pose = [
+      { parameterId: p.parameters[0]!.id, value: p.parameters[0]!.neutral },
+    ];
+    const resources = new Map<string, Buffer>();
+    for (const a of p.assets)
+      resources.set(
+        a.id,
+        await readFile(join('tests/fixtures/common-model', route, a.storage.path)),
+      );
+    const bytes = await encodeBundle(p, resources, 'manual');
+    const r = await decodeBundle(bytes, false);
+    assert.deepEqual(r.project!.motion, p.motion);
+    assert.deepEqual(r.project!.partBindings, p.partBindings);
+    assert.equal(r.resources.size, new Set(p.assets.map((a) => a.storage.path)).size);
+    assert.ok(projectToPreview(r.project!).layers.every((l) => !!l.mesh));
+    assert.deepEqual(projectToPreview(r.project!), projectToPreview(p));
+  }
+});
+test('T110: actual session prepares a legacy copy, checkpoints before upgrade, undoes/redoes and saves/reopens settings', async () => {
+  await mkdir(scratchPath('motion-tests'), { recursive: true });
+  const dir = await mkdtemp(scratchPath('motion-tests/run-'));
+  const p = await load();
+  const old = await load('parts');
+  const resources = new Map<string, Buffer>();
+  for (const a of old.assets)
+    resources.set(a.id, await readFile(join('tests/fixtures/common-model/parts', a.storage.path)));
+  const path = join(dir, 'legacy.2dsketch');
+  await writeFile(path, await encodeBundle(old, resources, 'manual'));
+  let output = path;
+  const s = new ProjectSession({
+    dataDir: dir,
+    dialogs: {
+      openProject: async () => null,
+      saveProject: async () => output,
+      relinkImage: async () => null,
+      unsaved: async () => 'discard',
+    },
+    bundled: p,
+    bundledBytes: new Map(),
+    autoTimers: false,
+  });
+  await s.init();
+  await s.openFile(path);
+  const original = sha256(await readFile(path));
+  const prepared = await s.dispatch({
+    type: 'prepare-motion',
+    expectedRevision: s.view().project!.revision,
+  });
+  assert.equal(prepared.view.errorCode, null);
+  assert.ok(s.view().project!.motion);
+  assert.equal(s.view().project!.schemaVersion.minor, 1);
+  assert.ok(s.view().recoveries.length);
+  await s.dispatch({ type: 'undo' });
+  assert.equal(s.view().project!.motion, undefined);
+  await s.dispatch({ type: 'redo' });
+  assert.ok(s.view().project!.motion);
+  await s.dispatch({
+    type: 'motion-settings',
+    expectedRevision: s.view().project!.revision,
+    strength: 0.5,
+    smoothingMs: 250,
+    pose: [],
+  });
+  await assert.rejects(s.save(false), /E_SAVE_MIGRATION_TARGET/);
+  output = join(dir, 'new.2dsketch');
+  await s.save(false);
+  assert.equal(sha256(await readFile(path)), original);
+  await s.openFile(join(dir, 'new.2dsketch'));
+  assert.equal(s.view().project!.motion!.settings.strength, 0.5);
+  assert.equal(
+    (await readBundle(join(dir, 'new.2dsketch'), false)).project!.motion!.settings.smoothingMs,
+    250,
+  );
+  await s.shutdown();
+});
+test('T109: initial decision disables secondary dynamics and frame evaluation never accumulates project history/data', async () => {
+  const p = await load();
+  assert.equal(p.motion!.secondary, 'disabled');
+  const e = player(p);
+  const before = serializeProject(p);
+  e.play('all', true);
+  for (let i = 0; i < 1000; i++) e.frame((i * 1000) / 60);
+  assert.equal(e.snapshot().values.size, p.parameters.length);
+  assert.equal(serializeProject(p), before);
+  const invalid = structuredClone(p);
+  (invalid.motion as unknown as { secondary: string }).secondary = 'spring';
+  assert.throws(() => assertProject(invalid));
+});

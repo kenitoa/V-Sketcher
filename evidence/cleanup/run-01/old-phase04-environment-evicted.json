@@ -1,0 +1,12 @@
+{
+  "group": "old-phase04-environment",
+  "removedFiles": 5652,
+  "removedLogicalBytes": 369271601,
+  "retainedChangedOrProtectedFiles": 0,
+  "remainingSelectedFiles": 0,
+  "losslessArchiveRetained": true,
+  "wholeArchiveReconstructedBeforeFirstRemoval": true,
+  "sourceHashRecheckedBeforeEachRemoval": true,
+  "recursiveDeletionUsed": false,
+  "historicalEvidenceModified": false
+}

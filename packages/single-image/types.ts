@@ -1,9 +1,98 @@
 import type { Rect } from '../coordinates';
-export interface Region { key:'eye_left'|'eye_right'|'mouth';rect:Rect;observed:boolean;reason:string;estimatedStates:string[];enabled?:boolean;masks?:{mode:'erase'|'restore';rect:Rect}[];order?:number; }
-export interface StructureReport { version:'1.0.0';method:'mediapipe-landmarks-pixel-evidence';status:'ready'|'partial'|'failed';face:Rect|null;regions:Region[];unconfirmed:string[];warnings:string[];headGain:number;maxRollDegrees:number;completion:'estimated'|'restrict';files:string[]; }
-export interface StructureRecord { version:1;inputAssetId:string;inputRevision:number;configurationVersion:'1.0.0'|'1.1.0';report:StructureReport;corrections?:import('./correction-types').CorrectionRecord; }
-export type StructureOptions={occluded:boolean}|{report:StructureReport;completion:'estimated'|'restrict';keys?:import('./correction-types').FeatureKey[]};
-export function assertReport(value:unknown):asserts value is StructureReport {
- const r=value as StructureReport;const rect=(v:Rect|null)=>v&&[v.x,v.y,v.width,v.height].every(Number.isFinite)&&v.x>=0&&v.y>=0&&v.width>=1&&v.height>=1&&v.x+v.width<=4096&&v.y+v.height<=4096;
- if(!r||r.version!=='1.0.0'||r.method!=='mediapipe-landmarks-pixel-evidence'||!['ready','partial','failed'].includes(r.status)||r.face!==null&&!rect(r.face)||!Array.isArray(r.regions)||r.regions.length>3||new Set(r.regions.map(v=>v.key)).size!==r.regions.length||r.regions.some(v=>v.enabled===true&&!v.observed||!['eye_left','eye_right','mouth'].includes(v.key)||!rect(v.rect)||typeof v.observed!=='boolean'||v.enabled!==undefined&&typeof v.enabled!=='boolean'||!Array.isArray(v.estimatedStates)||v.estimatedStates.some(s=>!['open','closed'].includes(s)))||r.regions.some(v=>v.order!==undefined&&(!Number.isInteger(v.order)||v.order<5||v.order>20)||v.masks!==undefined&&(!Array.isArray(v.masks)||v.masks.length>32||v.masks.some(m=>!m||!['erase','restore'].includes(m.mode)||!rect(m.rect))))||![r.warnings,r.unconfirmed,r.files].every(a=>Array.isArray(a)&&a.length<=16&&a.every(v=>typeof v==='string'&&v.length<=128))||!['estimated','restrict'].includes(r.completion)||!Number.isFinite(r.headGain)||r.headGain<0||r.headGain>.65||!Number.isFinite(r.maxRollDegrees)||r.maxRollDegrees<0||r.maxRollDegrees>3.9+1e-8||r.status==='ready'&&(r.regions.length!==3||r.regions.some(v=>!v.observed))||new Set(r.files).size!==r.files.length||r.files.some(f=>!/^structure-(base|eye_(left|right)-(open|closed)|mouth-(open|closed))\.png$/.test(f)))throw new Error('E_INPUT_STRUCTURE_REPORT');
+export interface Region {
+  key: 'eye_left' | 'eye_right' | 'mouth';
+  rect: Rect;
+  observed: boolean;
+  reason: string;
+  estimatedStates: string[];
+  enabled?: boolean;
+  masks?: { mode: 'erase' | 'restore'; rect: Rect }[];
+  order?: number;
+}
+export interface StructureReport {
+  version: '1.0.0';
+  method: 'mediapipe-landmarks-pixel-evidence';
+  status: 'ready' | 'partial' | 'failed';
+  face: Rect | null;
+  regions: Region[];
+  unconfirmed: string[];
+  warnings: string[];
+  headGain: number;
+  maxRollDegrees: number;
+  completion: 'estimated' | 'restrict';
+  files: string[];
+}
+export interface StructureRecord {
+  version: 1;
+  inputAssetId: string;
+  inputRevision: number;
+  configurationVersion: '1.0.0' | '1.1.0';
+  report: StructureReport;
+  corrections?: import('./correction-types').CorrectionRecord;
+}
+export type StructureOptions =
+  | { occluded: boolean }
+  | {
+      report: StructureReport;
+      completion: 'estimated' | 'restrict';
+      keys?: import('./correction-types').FeatureKey[];
+    };
+export function assertReport(value: unknown): asserts value is StructureReport {
+  const r = value as StructureReport;
+  const rect = (v: Rect | null) =>
+    v &&
+    [v.x, v.y, v.width, v.height].every(Number.isFinite) &&
+    v.x >= 0 &&
+    v.y >= 0 &&
+    v.width >= 1 &&
+    v.height >= 1 &&
+    v.x + v.width <= 4096 &&
+    v.y + v.height <= 4096;
+  if (
+    !r ||
+    r.version !== '1.0.0' ||
+    r.method !== 'mediapipe-landmarks-pixel-evidence' ||
+    !['ready', 'partial', 'failed'].includes(r.status) ||
+    (r.face !== null && !rect(r.face)) ||
+    !Array.isArray(r.regions) ||
+    r.regions.length > 3 ||
+    new Set(r.regions.map((v) => v.key)).size !== r.regions.length ||
+    r.regions.some(
+      (v) =>
+        (v.enabled === true && !v.observed) ||
+        !['eye_left', 'eye_right', 'mouth'].includes(v.key) ||
+        !rect(v.rect) ||
+        typeof v.observed !== 'boolean' ||
+        (v.enabled !== undefined && typeof v.enabled !== 'boolean') ||
+        !Array.isArray(v.estimatedStates) ||
+        v.estimatedStates.some((s) => !['open', 'closed'].includes(s)),
+    ) ||
+    r.regions.some(
+      (v) =>
+        (v.order !== undefined && (!Number.isInteger(v.order) || v.order < 5 || v.order > 20)) ||
+        (v.masks !== undefined &&
+          (!Array.isArray(v.masks) ||
+            v.masks.length > 32 ||
+            v.masks.some((m) => !m || !['erase', 'restore'].includes(m.mode) || !rect(m.rect)))),
+    ) ||
+    ![r.warnings, r.unconfirmed, r.files].every(
+      (a) =>
+        Array.isArray(a) &&
+        a.length <= 16 &&
+        a.every((v) => typeof v === 'string' && v.length <= 128),
+    ) ||
+    !['estimated', 'restrict'].includes(r.completion) ||
+    !Number.isFinite(r.headGain) ||
+    r.headGain < 0 ||
+    r.headGain > 0.65 ||
+    !Number.isFinite(r.maxRollDegrees) ||
+    r.maxRollDegrees < 0 ||
+    r.maxRollDegrees > 3.9 + 1e-8 ||
+    (r.status === 'ready' && (r.regions.length !== 3 || r.regions.some((v) => !v.observed))) ||
+    new Set(r.files).size !== r.files.length ||
+    r.files.some(
+      (f) => !/^structure-(base|eye_(left|right)-(open|closed)|mouth-(open|closed))\.png$/.test(f),
+    )
+  )
+    throw new Error('E_INPUT_STRUCTURE_REPORT');
 }

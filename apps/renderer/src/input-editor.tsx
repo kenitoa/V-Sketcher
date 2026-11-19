@@ -1,20 +1,395 @@
-import React,{ useState,useRef } from 'react';
-import type { InputView,Selection } from '../../../packages/image-input/types';
+import React, { useState, useRef } from 'react';
+import type { InputView, Selection } from '../../../packages/image-input/types';
 import type { Rect } from '../../../packages/coordinates';
 import type { SessionCommand } from '../../../packages/project-session/contracts';
-export const inputWarnings:Record<string,string>={ DETECTOR_UNAVAILABLE:'자동 얼굴 분석기를 사용할 수 없어 직접 선택 경로로 진행했어요. 원본과 편집은 보존되며 자동 눈·입 연결은 하지 않습니다.',FACE_UNCONFIRMED:'얼굴을 확인하지 못했어요. 눈·입 가림이나 화풍을 확인하고 직접 영역을 조절해 주세요.',SMALL_FACE:'얼굴이 작아 눈·입 준비의 정확도가 낮을 수 있어요. 더 큰 원본이나 얼굴이 크게 보이는 그림을 선택해 주세요.',EDGE_CROPPED_POSSIBLE:'대상이 가장자리에서 잘렸거나 배경이 남아 있을 수 있어요. 원본과 영역을 확인해 주세요.',OCCLUDED_USER_REPORTED:'눈·입 가림을 표시했어요. 숨은 부위를 자동으로 연결하지 않으며 이후 보정이 필요해요.' };
-export function inputError(code:string):string { const messages:Record<string,string>={ E_INPUT_EMPTY:'빈 파일이에요. 그림이 들어 있는 파일을 선택해 주세요.',E_INPUT_BYTES:'파일이 64MiB를 넘어요. 원본을 보관하고 PNG/JPEG 사본을 줄여 주세요.',E_INPUT_SMALL:'가로·세로가 각각 256px 이상인 그림을 선택해 주세요.',E_INPUT_DIMENSIONS:'한 변 4096px·총 16,777,216픽셀을 넘어요. 원본을 보관하고 크기를 줄인 사본을 선택해 주세요.',E_INPUT_MEMORY:'이 그림은 편집 처리 메모리 예산을 넘어요. 더 작은 사본을 선택해 주세요.',E_INPUT_COLOR:'RGB/RGBA 8bit PNG 또는 RGB JPEG가 필요해요. CMYK·16bit·팔레트 그림은 sRGB 8bit 사본으로 변환해 주세요.',E_INPUT_ICC:'색상 프로필을 sRGB로 바꾸지 못했어요. 다른 도구에서 sRGB 사본으로 저장해 주세요.',E_INPUT_ANIMATED:'움직이는 PNG는 지원하지 않아요. 정지 그림으로 저장해 주세요.',E_INPUT_CORRUPT:'그림 데이터가 손상됐어요. 다시 저장한 파일을 선택해 주세요.',E_INPUT_SIGNATURE:'PNG/JPEG 데이터가 아니에요. 확장자만 바꾸지 말고 그림으로 변환해 주세요.',E_INPUT_EXTENSION_MISMATCH:'파일 이름과 실제 그림 형식이 달라요. 올바른 형식으로 다시 저장해 주세요.',E_INPUT_EXTENSION:'PNG·JPG·JPEG 파일을 선택해 주세요.',E_INPUT_TRANSPARENT:'전부 투명한 그림이에요. 보이는 캐릭터가 있는 파일을 선택해 주세요.',E_INPUT_MASK_EMPTY:'선택 영역이 전부 지워졌어요. 마스크를 되돌리거나 영역을 넓혀 주세요.',E_INPUT_REGION:'영역이 그림 밖이거나 크기가 잘못됐어요. 좌표를 확인해 주세요.',E_INPUT_MULTIPLE_SELECTED:'선택 영역에 얼굴이 여러 개 있어요. 캐릭터 한 명만 남도록 영역이나 지우기 마스크를 조절해 주세요.',E_INPUT_STALE:'작업 중 편집 내용이 바뀌었어요. 현재 내용을 보존했으니 새 그림/영역을 다시 확인해 주세요.' };return (messages[code] ?? '그림을 처리하지 못했어요. 다시 시도하거나 다른 그림·파츠/분리 그림 경로를 사용해 주세요.')+' 기존 프로젝트와 원본은 보존됩니다.'; }
-export function InputStatus({ input,command }:{ input:InputView | null;command:(c:SessionCommand)=>void }) { return <div className="input-status"><p>PNG RGB/RGBA 8bit · JPEG RGB 8bit<br/>가로·세로 256~4096px · 최대 64MiB · 총 16,777,216픽셀</p><p>PSD/PSB·분리 PNG 폴더·.2dparts 묶음은 분리 그림 가져오기 단계에서 연결됩니다. 여기서는 그림 한 장의 대상을 확인합니다.</p><button data-input-choose disabled={input?.busy} onClick={()=>command({ type:'import-image' })}>그림 파일 선택</button>{input?.busy && <><p role="status">그림 처리 중 · 단계는 아래 작업 상태에서 확인해 주세요.</p><button data-input-cancel onClick={()=>command({ type:'input-cancel' })}>처리 취소 · 기존 작업 유지</button></>}{input?.errorCode && <p role="alert" data-input-error>{inputError(input.errorCode)}</p>}{input?.canRetry && <button data-input-retry onClick={()=>command({ type:'input-retry' })}>그림 처리 다시 시도</button>}</div>; }
-export function InputEditor({ input,command,result,onNext }:{ input:InputView;command:(c:SessionCommand)=>void;result:React.ReactNode;onNext:()=>void }) {
-  const draft=input.draft!;const size=draft.probe.size;const full={ x:0,y:0,width:size.width,height:size.height };const first=draft.probe.candidates[0]!;
-  const [selection,setSelection]=useState<Selection>({ rect:draft.probe.candidates.length===1 && first.method!=='manual-required' ? first.rect : full,backgroundTolerance:null,masks:[],occluded:false });const [confirmed,setConfirmed]=useState(draft.probe.detectorAvailable && draft.probe.candidates.length===1 && first.method!=='manual-required');const [maskRect,setMaskRect]=useState<Rect>(full);const [tool,setTool]=useState<'crop'|'erase'|'restore'>('crop');const start=useRef<{x:number;y:number}|null>(null);const [drag,setDrag]=useState<Rect|null>(null);
-  const point=(e:React.PointerEvent<SVGSVGElement>) => { const svg=e.currentTarget;const p=svg.createSVGPoint();p.x=e.clientX;p.y=e.clientY;const q=p.matrixTransform(svg.getScreenCTM()!.inverse());return {x:Math.max(0,Math.min(size.width,Math.round(q.x))),y:Math.max(0,Math.min(size.height,Math.round(q.y)))}; };
-  const rectangle=(a:{x:number;y:number},b:{x:number;y:number}):Rect => ({ x:Math.min(a.x,b.x),y:Math.min(a.y,b.y),width:Math.abs(a.x-b.x),height:Math.abs(a.y-b.y) });
-  const maskId='input-mask-'+draft.id;
-  return <section className="input-workspace" aria-label="가져온 그림의 대상 선택"><div className="input-preview"><h2 tabIndex={-1} data-step-heading>사용할 캐릭터를 선택해 주세요</h2><p>번호를 누르거나 그림에서 영역을 드래그하세요. 수치 입력으로도 같은 좌표를 지정할 수 있어요.</p><svg data-input-preview role="img" aria-label="원화와 편집 대상 영역" viewBox={`0 0 ${size.width} ${size.height}`} onPointerDown={e=>{ if(input.busy)return;start.current=point(e);try{e.currentTarget.setPointerCapture(e.pointerId);}catch{/* Pointer may have ended before capture. */} }} onPointerMove={e=>{if(start.current)setDrag(rectangle(start.current,point(e)));}} onPointerCancel={()=>{start.current=null;setDrag(null);}} onPointerUp={e=>{if(!start.current)return;const rect=rectangle(start.current,point(e));start.current=null;setDrag(null);if(rect.width<1 || rect.height<1)return;if(tool==='crop'){setSelection(s=>({...s,rect}));setConfirmed(true);}else {setMaskRect(rect);setSelection(s=>s.masks.length>=64?s:({...s,masks:[...s.masks,{mode:tool,rect}]}));}}}>
-    <defs><mask id={maskId}><rect width={size.width} height={size.height} fill="white"/>{selection.masks.map((m,i)=><rect key={i} {...m.rect} fill={m.mode==='erase'?'black':'white'}/>)}</mask></defs><image href={draft.preview} width={size.width} height={size.height} mask={`url(#${maskId})`}/>{draft.probe.candidates.map((c,i)=><rect key={i} {...c.rect} fill="none" stroke="#c6a3e9" strokeWidth={size.width/450} strokeDasharray="8 8"/>)}<rect {...selection.rect} fill="none" stroke="#ffce78" strokeWidth={size.width/250}/>{drag&&<rect {...drag} fill="#ffce7833" stroke="#fff" strokeWidth={size.width/300}/>}</svg><p>노란 선: 분석할 영역 · 점선: 자동 제안. 배경 제거는 적용 후 결과에서 확인하세요.</p>{result&&<div className="input-result"><h3>적용된 실제 편집용 그림</h3>{result}</div>}</div>
-    <div className="input-settings"><InputStatus input={input} command={command}/>{!draft.probe.detectorAvailable&&<p role="note">{inputWarnings.DETECTOR_UNAVAILABLE}</p>}<fieldset disabled={input.busy}><legend>대상과 보정</legend><p>{draft.probe.candidates.length>1?'여러 대상을 찾았어요. 한 명을 선택한 뒤 영역을 확인해 주세요.':first.method==='manual-required'?'자동으로 대상을 확정하지 못했어요. 직접 영역을 확인해 주세요.':'자동 선택 제안입니다. 캐릭터 전체가 포함됐는지 확인해 주세요.'}</p><div className="input-candidates">{draft.probe.candidates.map((c,i)=><button data-input-candidate={i} key={i} onClick={()=>{setSelection(s=>({...s,rect:c.rect,masks:[]}));setConfirmed(true);}}>대상 {i+1} · {c.method==='alpha'?'투명 영역':c.method==='face'?'얼굴 기준':'직접 확인'}</button>)}</div><label>드래그 도구<select data-input-tool value={tool} onChange={e=>setTool(e.target.value as typeof tool)}><option value="crop">사용할 영역</option><option value="erase">사각 마스크 · 지우기</option><option value="restore">사각 마스크 · 원본 복원</option></select></label>
-    {(['x','y','width','height'] as const).map((key,i)=><label key={key}>{['왼쪽 좌표','위쪽 좌표','가로 크기','세로 크기'][i]}<input data-input-coordinate={key} type="number" min={i<2?0:1} max={i%2===0?size.width:size.height} step="1" value={(tool==='crop'?selection.rect:maskRect)[key]} onChange={e=>{if(tool==='crop'){setSelection(s=>({...s,rect:{...s.rect,[key]:Number(e.target.value)}}));setConfirmed(true);}else setMaskRect(r=>({...r,[key]:Number(e.target.value)}));}}/></label>)}
-    {tool!=='crop'&&<button data-input-add-mask disabled={selection.masks.length>=64} onClick={()=>setSelection(s=>({...s,masks:[...s.masks,{mode:tool,rect:maskRect}]}))}>현재 좌표에 마스크 추가</button>}
-    <button onClick={()=>{setSelection(s=>({...s,rect:full}));setConfirmed(true);}}>전체 영역으로</button><label><input type="checkbox" checked={selection.backgroundTolerance!==null} onChange={e=>setSelection(s=>({...s,backgroundTolerance:e.target.checked?20:null}))}/>가장자리와 연결된 단색 배경 지우기</label>{selection.backgroundTolerance!==null&&<label>비슷한 색 허용 범위<input type="range" min="0" max="80" value={selection.backgroundTolerance} onChange={e=>setSelection(s=>({...s,backgroundTolerance:Number(e.target.value)}))}/></label>}<p>좌상단 색과 비슷하고 그림 가장자리에 연결된 영역만 지웁니다. 복잡한 배경은 마스크로 보정해 주세요.</p><p>사각 마스크 {selection.masks.length}/64</p><button disabled={!selection.masks.length} onClick={()=>setSelection(s=>({...s,masks:s.masks.slice(0,-1)}))}>마지막 마스크 되돌리기</button><button onClick={()=>setSelection(s=>({...s,masks:[],backgroundTolerance:null}))}>배경·마스크 초기화</button><label><input data-input-occluded type="checkbox" checked={selection.occluded} onChange={e=>setSelection(s=>({...s,occluded:e.target.checked}))}/>눈·입이 가려졌거나 원본에서 잘렸어요</label><label><input data-input-confirm type="checkbox" checked={confirmed} onChange={e=>setConfirmed(e.target.checked)}/>이 영역의 캐릭터 한 명만 사용할게요</label><button className="primary" data-input-apply disabled={!confirmed} onClick={()=>command({ type:'input-apply',draftId:draft.id,selection })}>선택 영역 분석·적용</button></fieldset><p>원본 {draft.probe.originalSize.width}×{draft.probe.originalSize.height} → 편집 {size.width}×{size.height} · EXIF 방향 {draft.probe.orientation} · sRGB</p>{draft.probe.reduced&&<p role="note">편집용은 최대 2048px, 분석용은 최대 1024px로 줄입니다. 원본 바이트는 보존하며 향후 고해상도 출력은 별도 준비가 필요합니다.</p>}<p>그림 교체·영역 적용은 이전 분석/움직임 연결을 무효화합니다. 이전 원본과 편집 이력은 보관됩니다.</p><button onClick={onNext}>적용한 그림의 외형 확인으로 →</button></div></section>;
+export const inputWarnings: Record<string, string> = {
+  DETECTOR_UNAVAILABLE:
+    '자동 얼굴 분석기를 사용할 수 없어 직접 선택 경로로 진행했어요. 원본과 편집은 보존되며 자동 눈·입 연결은 하지 않습니다.',
+  FACE_UNCONFIRMED:
+    '얼굴을 확인하지 못했어요. 눈·입 가림이나 화풍을 확인하고 직접 영역을 조절해 주세요.',
+  SMALL_FACE:
+    '얼굴이 작아 눈·입 준비의 정확도가 낮을 수 있어요. 더 큰 원본이나 얼굴이 크게 보이는 그림을 선택해 주세요.',
+  EDGE_CROPPED_POSSIBLE:
+    '대상이 가장자리에서 잘렸거나 배경이 남아 있을 수 있어요. 원본과 영역을 확인해 주세요.',
+  OCCLUDED_USER_REPORTED:
+    '눈·입 가림을 표시했어요. 숨은 부위를 자동으로 연결하지 않으며 이후 보정이 필요해요.',
+};
+export function inputError(code: string): string {
+  const messages: Record<string, string> = {
+    E_INPUT_EMPTY: '빈 파일이에요. 그림이 들어 있는 파일을 선택해 주세요.',
+    E_INPUT_BYTES: '파일이 64MiB를 넘어요. 원본을 보관하고 PNG/JPEG 사본을 줄여 주세요.',
+    E_INPUT_SMALL: '가로·세로가 각각 256px 이상인 그림을 선택해 주세요.',
+    E_INPUT_DIMENSIONS:
+      '한 변 4096px·총 16,777,216픽셀을 넘어요. 원본을 보관하고 크기를 줄인 사본을 선택해 주세요.',
+    E_INPUT_MEMORY: '이 그림은 편집 처리 메모리 예산을 넘어요. 더 작은 사본을 선택해 주세요.',
+    E_INPUT_COLOR:
+      'RGB/RGBA 8bit PNG 또는 RGB JPEG가 필요해요. CMYK·16bit·팔레트 그림은 sRGB 8bit 사본으로 변환해 주세요.',
+    E_INPUT_ICC: '색상 프로필을 sRGB로 바꾸지 못했어요. 다른 도구에서 sRGB 사본으로 저장해 주세요.',
+    E_INPUT_ANIMATED: '움직이는 PNG는 지원하지 않아요. 정지 그림으로 저장해 주세요.',
+    E_INPUT_CORRUPT: '그림 데이터가 손상됐어요. 다시 저장한 파일을 선택해 주세요.',
+    E_INPUT_SIGNATURE: 'PNG/JPEG 데이터가 아니에요. 확장자만 바꾸지 말고 그림으로 변환해 주세요.',
+    E_INPUT_EXTENSION_MISMATCH:
+      '파일 이름과 실제 그림 형식이 달라요. 올바른 형식으로 다시 저장해 주세요.',
+    E_INPUT_EXTENSION: 'PNG·JPG·JPEG 파일을 선택해 주세요.',
+    E_INPUT_TRANSPARENT: '전부 투명한 그림이에요. 보이는 캐릭터가 있는 파일을 선택해 주세요.',
+    E_INPUT_MASK_EMPTY: '선택 영역이 전부 지워졌어요. 마스크를 되돌리거나 영역을 넓혀 주세요.',
+    E_INPUT_REGION: '영역이 그림 밖이거나 크기가 잘못됐어요. 좌표를 확인해 주세요.',
+    E_INPUT_MULTIPLE_SELECTED:
+      '선택 영역에 얼굴이 여러 개 있어요. 캐릭터 한 명만 남도록 영역이나 지우기 마스크를 조절해 주세요.',
+    E_INPUT_STALE:
+      '작업 중 편집 내용이 바뀌었어요. 현재 내용을 보존했으니 새 그림/영역을 다시 확인해 주세요.',
+  };
+  return (
+    (messages[code] ??
+      '그림을 처리하지 못했어요. 다시 시도하거나 다른 그림·파츠/분리 그림 경로를 사용해 주세요.') +
+    ' 기존 프로젝트와 원본은 보존됩니다.'
+  );
+}
+export function InputStatus({
+  input,
+  command,
+}: {
+  input: InputView | null;
+  command: (c: SessionCommand) => void;
+}) {
+  return (
+    <div className="input-status">
+      <p>
+        PNG RGB/RGBA 8bit · JPEG RGB 8bit
+        <br />
+        가로·세로 256~4096px · 최대 64MiB · 총 16,777,216픽셀
+      </p>
+      <p>
+        PSD/PSB·분리 PNG 폴더·.2dparts 묶음은 분리 그림 가져오기 단계에서 연결됩니다. 여기서는 그림
+        한 장의 대상을 확인합니다.
+      </p>
+      <button
+        data-input-choose
+        disabled={input?.busy}
+        onClick={() => command({ type: 'import-image' })}
+      >
+        그림 파일 선택
+      </button>
+      {input?.busy && (
+        <>
+          <p role="status">그림 처리 중 · 단계는 아래 작업 상태에서 확인해 주세요.</p>
+          <button data-input-cancel onClick={() => command({ type: 'input-cancel' })}>
+            처리 취소 · 기존 작업 유지
+          </button>
+        </>
+      )}
+      {input?.errorCode && (
+        <p role="alert" data-input-error>
+          {inputError(input.errorCode)}
+        </p>
+      )}
+      {input?.canRetry && (
+        <button data-input-retry onClick={() => command({ type: 'input-retry' })}>
+          그림 처리 다시 시도
+        </button>
+      )}
+    </div>
+  );
+}
+export function InputEditor({
+  input,
+  command,
+  result,
+  onNext,
+}: {
+  input: InputView;
+  command: (c: SessionCommand) => void;
+  result: React.ReactNode;
+  onNext: () => void;
+}) {
+  const draft = input.draft!;
+  const size = draft.probe.size;
+  const full = { x: 0, y: 0, width: size.width, height: size.height };
+  const first = draft.probe.candidates[0]!;
+  const [selection, setSelection] = useState<Selection>({
+    rect:
+      draft.probe.candidates.length === 1 && first.method !== 'manual-required' ? first.rect : full,
+    backgroundTolerance: null,
+    masks: [],
+    occluded: false,
+  });
+  const [confirmed, setConfirmed] = useState(
+    draft.probe.detectorAvailable &&
+      draft.probe.candidates.length === 1 &&
+      first.method !== 'manual-required',
+  );
+  const [maskRect, setMaskRect] = useState<Rect>(full);
+  const [tool, setTool] = useState<'crop' | 'erase' | 'restore'>('crop');
+  const start = useRef<{ x: number; y: number } | null>(null);
+  const [drag, setDrag] = useState<Rect | null>(null);
+  const point = (e: React.PointerEvent<SVGSVGElement>) => {
+    const svg = e.currentTarget;
+    const p = svg.createSVGPoint();
+    p.x = e.clientX;
+    p.y = e.clientY;
+    const q = p.matrixTransform(svg.getScreenCTM()!.inverse());
+    return {
+      x: Math.max(0, Math.min(size.width, Math.round(q.x))),
+      y: Math.max(0, Math.min(size.height, Math.round(q.y))),
+    };
+  };
+  const rectangle = (a: { x: number; y: number }, b: { x: number; y: number }): Rect => ({
+    x: Math.min(a.x, b.x),
+    y: Math.min(a.y, b.y),
+    width: Math.abs(a.x - b.x),
+    height: Math.abs(a.y - b.y),
+  });
+  const maskId = 'input-mask-' + draft.id;
+  return (
+    <section className="input-workspace" aria-label="가져온 그림의 대상 선택">
+      <div className="input-preview">
+        <h2 tabIndex={-1} data-step-heading>
+          사용할 캐릭터를 선택해 주세요
+        </h2>
+        <p>
+          번호를 누르거나 그림에서 영역을 드래그하세요. 수치 입력으로도 같은 좌표를 지정할 수
+          있어요.
+        </p>
+        <svg
+          data-input-preview
+          role="img"
+          aria-label="원화와 편집 대상 영역"
+          viewBox={`0 0 ${size.width} ${size.height}`}
+          onPointerDown={(e) => {
+            if (input.busy) return;
+            start.current = point(e);
+            try {
+              e.currentTarget.setPointerCapture(e.pointerId);
+            } catch {
+              /* Pointer may have ended before capture. */
+            }
+          }}
+          onPointerMove={(e) => {
+            if (start.current) setDrag(rectangle(start.current, point(e)));
+          }}
+          onPointerCancel={() => {
+            start.current = null;
+            setDrag(null);
+          }}
+          onPointerUp={(e) => {
+            if (!start.current) return;
+            const rect = rectangle(start.current, point(e));
+            start.current = null;
+            setDrag(null);
+            if (rect.width < 1 || rect.height < 1) return;
+            if (tool === 'crop') {
+              setSelection((s) => ({ ...s, rect }));
+              setConfirmed(true);
+            } else {
+              setMaskRect(rect);
+              setSelection((s) =>
+                s.masks.length >= 64 ? s : { ...s, masks: [...s.masks, { mode: tool, rect }] },
+              );
+            }
+          }}
+        >
+          <defs>
+            <mask id={maskId}>
+              <rect width={size.width} height={size.height} fill="white" />
+              {selection.masks.map((m, i) => (
+                <rect key={i} {...m.rect} fill={m.mode === 'erase' ? 'black' : 'white'} />
+              ))}
+            </mask>
+          </defs>
+          <image
+            href={draft.preview}
+            width={size.width}
+            height={size.height}
+            mask={`url(#${maskId})`}
+          />
+          {draft.probe.candidates.map((c, i) => (
+            <rect
+              key={i}
+              {...c.rect}
+              fill="none"
+              stroke="#c6a3e9"
+              strokeWidth={size.width / 450}
+              strokeDasharray="8 8"
+            />
+          ))}
+          <rect {...selection.rect} fill="none" stroke="#ffce78" strokeWidth={size.width / 250} />
+          {drag && <rect {...drag} fill="#ffce7833" stroke="#fff" strokeWidth={size.width / 300} />}
+        </svg>
+        <p>노란 선: 분석할 영역 · 점선: 자동 제안. 배경 제거는 적용 후 결과에서 확인하세요.</p>
+        {result && (
+          <div className="input-result">
+            <h3>적용된 실제 편집용 그림</h3>
+            {result}
+          </div>
+        )}
+      </div>
+      <div className="input-settings">
+        <InputStatus input={input} command={command} />
+        {!draft.probe.detectorAvailable && <p role="note">{inputWarnings.DETECTOR_UNAVAILABLE}</p>}
+        <fieldset disabled={input.busy}>
+          <legend>대상과 보정</legend>
+          <p>
+            {draft.probe.candidates.length > 1
+              ? '여러 대상을 찾았어요. 한 명을 선택한 뒤 영역을 확인해 주세요.'
+              : first.method === 'manual-required'
+                ? '자동으로 대상을 확정하지 못했어요. 직접 영역을 확인해 주세요.'
+                : '자동 선택 제안입니다. 캐릭터 전체가 포함됐는지 확인해 주세요.'}
+          </p>
+          <div className="input-candidates">
+            {draft.probe.candidates.map((c, i) => (
+              <button
+                data-input-candidate={i}
+                key={i}
+                onClick={() => {
+                  setSelection((s) => ({ ...s, rect: c.rect, masks: [] }));
+                  setConfirmed(true);
+                }}
+              >
+                대상 {i + 1} ·{' '}
+                {c.method === 'alpha'
+                  ? '투명 영역'
+                  : c.method === 'face'
+                    ? '얼굴 기준'
+                    : '직접 확인'}
+              </button>
+            ))}
+          </div>
+          <label>
+            드래그 도구
+            <select
+              data-input-tool
+              value={tool}
+              onChange={(e) => setTool(e.target.value as typeof tool)}
+            >
+              <option value="crop">사용할 영역</option>
+              <option value="erase">사각 마스크 · 지우기</option>
+              <option value="restore">사각 마스크 · 원본 복원</option>
+            </select>
+          </label>
+          {(['x', 'y', 'width', 'height'] as const).map((key, i) => (
+            <label key={key}>
+              {['왼쪽 좌표', '위쪽 좌표', '가로 크기', '세로 크기'][i]}
+              <input
+                data-input-coordinate={key}
+                type="number"
+                min={i < 2 ? 0 : 1}
+                max={i % 2 === 0 ? size.width : size.height}
+                step="1"
+                value={(tool === 'crop' ? selection.rect : maskRect)[key]}
+                onChange={(e) => {
+                  if (tool === 'crop') {
+                    setSelection((s) => ({
+                      ...s,
+                      rect: { ...s.rect, [key]: Number(e.target.value) },
+                    }));
+                    setConfirmed(true);
+                  } else setMaskRect((r) => ({ ...r, [key]: Number(e.target.value) }));
+                }}
+              />
+            </label>
+          ))}
+          {tool !== 'crop' && (
+            <button
+              data-input-add-mask
+              disabled={selection.masks.length >= 64}
+              onClick={() =>
+                setSelection((s) => ({ ...s, masks: [...s.masks, { mode: tool, rect: maskRect }] }))
+              }
+            >
+              현재 좌표에 마스크 추가
+            </button>
+          )}
+          <button
+            onClick={() => {
+              setSelection((s) => ({ ...s, rect: full }));
+              setConfirmed(true);
+            }}
+          >
+            전체 영역으로
+          </button>
+          <label>
+            <input
+              type="checkbox"
+              checked={selection.backgroundTolerance !== null}
+              onChange={(e) =>
+                setSelection((s) => ({ ...s, backgroundTolerance: e.target.checked ? 20 : null }))
+              }
+            />
+            가장자리와 연결된 단색 배경 지우기
+          </label>
+          {selection.backgroundTolerance !== null && (
+            <label>
+              비슷한 색 허용 범위
+              <input
+                type="range"
+                min="0"
+                max="80"
+                value={selection.backgroundTolerance}
+                onChange={(e) =>
+                  setSelection((s) => ({ ...s, backgroundTolerance: Number(e.target.value) }))
+                }
+              />
+            </label>
+          )}
+          <p>
+            좌상단 색과 비슷하고 그림 가장자리에 연결된 영역만 지웁니다. 복잡한 배경은 마스크로
+            보정해 주세요.
+          </p>
+          <p>사각 마스크 {selection.masks.length}/64</p>
+          <button
+            disabled={!selection.masks.length}
+            onClick={() => setSelection((s) => ({ ...s, masks: s.masks.slice(0, -1) }))}
+          >
+            마지막 마스크 되돌리기
+          </button>
+          <button
+            onClick={() => setSelection((s) => ({ ...s, masks: [], backgroundTolerance: null }))}
+          >
+            배경·마스크 초기화
+          </button>
+          <label>
+            <input
+              data-input-occluded
+              type="checkbox"
+              checked={selection.occluded}
+              onChange={(e) => setSelection((s) => ({ ...s, occluded: e.target.checked }))}
+            />
+            눈·입이 가려졌거나 원본에서 잘렸어요
+          </label>
+          <label>
+            <input
+              data-input-confirm
+              type="checkbox"
+              checked={confirmed}
+              onChange={(e) => setConfirmed(e.target.checked)}
+            />
+            이 영역의 캐릭터 한 명만 사용할게요
+          </label>
+          <button
+            className="primary"
+            data-input-apply
+            disabled={!confirmed}
+            onClick={() => command({ type: 'input-apply', draftId: draft.id, selection })}
+          >
+            선택 영역 분석·적용
+          </button>
+        </fieldset>
+        <p>
+          원본 {draft.probe.originalSize.width}×{draft.probe.originalSize.height} → 편집{' '}
+          {size.width}×{size.height} · EXIF 방향 {draft.probe.orientation} · sRGB
+        </p>
+        {draft.probe.reduced && (
+          <p role="note">
+            편집용은 최대 2048px, 분석용은 최대 1024px로 줄입니다. 원본 바이트는 보존하며 향후
+            고해상도 출력은 별도 준비가 필요합니다.
+          </p>
+        )}
+        <p>
+          그림 교체·영역 적용은 이전 분석/움직임 연결을 무효화합니다. 이전 원본과 편집 이력은
+          보관됩니다.
+        </p>
+        <button onClick={onNext}>적용한 그림의 외형 확인으로 →</button>
+      </div>
+    </section>
+  );
 }

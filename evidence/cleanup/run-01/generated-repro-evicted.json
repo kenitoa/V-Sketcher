@@ -1,0 +1,12 @@
+{
+  "group": "generated-repro",
+  "removedFiles": 20824,
+  "removedLogicalBytes": 1383913807,
+  "retainedChangedOrProtectedFiles": 0,
+  "remainingSelectedFiles": 0,
+  "losslessArchiveRetained": true,
+  "wholeArchiveReconstructedBeforeFirstRemoval": true,
+  "sourceHashRecheckedBeforeEachRemoval": true,
+  "recursiveDeletionUsed": false,
+  "historicalEvidenceModified": false
+}

@@ -1,37 +1,496 @@
+import { scratchPath } from './temp';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFile,writeFile,mkdir,mkdtemp,readdir} from 'node:fs/promises';
-import {resolve,join} from 'node:path';
-import {readProject,type Project,validateProject} from '../packages/project-model';
-import {ProjectSession} from '../packages/project-session';
-import {imageProcessor} from '../apps/desktop/image-processor';
-import type {InputProcessor} from '../packages/image-input/types';
-import {encodeBundle,sha256} from '../packages/project-storage/archive';
-import {fromRegion,assertCorrection,type FeatureCorrection,type FeatureKey} from '../packages/single-image/correction-types';
-import {proposal} from '../packages/single-image/corrections';
-import {originalRegion} from '../packages/single-image/correction-geometry';
-import {transform,inverse} from '../packages/coordinates';
-import {capabilities} from '../packages/motion';
-import {parseSessionCommand} from '../packages/project-session/contracts';
-import {transaction} from '../packages/workflow/transactions';
-import {impactedKeys,DerivedRegistry} from '../packages/workflow/dependencies';
-const sleep=()=>new Promise(r=>setTimeout(r,15));async function until(fn:()=>boolean){const t=Date.now();while(!fn()){if(Date.now()-t>300000)throw new Error('E_CORRECTION_TEST_TIMEOUT');await sleep();}}
-let memo:ReturnType<typeof fixture>|undefined;
-async function fixture(){await mkdir('.local/correction-tests',{recursive:true});const dir=await mkdtemp(resolve('.local/correction-tests/fixture-'));const read=readProject(await readFile('assets/product/preview-project.json','utf8'));if(read.mode!=='read-write')throw new Error('fixture');const bundled=read.project;const bundledBytes=new Map(await Promise.all(bundled.assets.map(async a=>[a.id,await readFile(join('assets/product/preview',a.fingerprint.sha256+'.png'))] as const)));const file=join(dir,'source.png');await writeFile(file,bundledBytes.get(bundled.inputAssetIds[0]!)!);const actual=imageProcessor(resolve('.venv-product/Scripts/python.exe'),['-I','-u',resolve('worker/main.py')],join(dir,'worker'),process.env);const s=new ProjectSession({dataDir:dir,bundled,bundledBytes,inputProcessor:actual,autoTimers:false,dialogs:{chooseImage:async()=>file,openProject:async()=>null,saveProject:async()=>null,relinkImage:async()=>null,unsaved:async()=>'discard'}});await s.init();await s.newProject('Correction fixture','single-image');await s.dispatch({type:'import-image'});await until(()=>!s.view().input!.busy);const d=s.view().input!.draft!;await s.dispatch({type:'input-apply',draftId:d.id,selection:{rect:{x:0,y:0,...d.probe.size},masks:[],backgroundTolerance:null,occluded:false}});await until(()=>!s.view().input!.busy);await s.dispatch({type:'structure-start',expectedRevision:s.view().project!.revision,completion:'estimated'});await until(()=>!s.view().structure!.busy);assert.equal(s.view().structure!.state,'review');await s.dispatch({type:'structure-apply',expectedRevision:s.view().project!.revision});const p=structuredClone(s.view().project!);const right=p.parameters.find(v=>v.previewKey==='eye_right')!;p.expressions.push({id:crypto.randomUUID(),displayName:'Keep right',values:[{parameterId:right.id,value:.7,locked:false}],transitionMs:80,release:'live-input'});p.inputBindings.push({id:crypto.randomUUID(),source:'manual',channel:'preserve',parameterId:right.id,inputRange:[0,1],invert:true,gain:.8,offset:0,smoothingMs:40,fallback:{mode:'neutral',value:1,returnMs:100}});p.motion!.settings.strength=.8;const bytes=await s.cache.bytes(p);await s.shutdown();return {p,bytes,bundled,bundledBytes,actual};}
-async function setup(processor?:InputProcessor){const f=await(memo??=fixture());const dir=await mkdtemp(resolve('.local/correction-tests/run-'));const file=join(dir,'original.2dsketch');await writeFile(file,await encodeBundle(f.p,f.bytes,'manual'));let output=join(dir,'saved.2dsketch');const s=new ProjectSession({dataDir:dir,bundled:f.bundled,bundledBytes:f.bundledBytes,inputProcessor:processor??f.actual,autoTimers:false,dialogs:{chooseImage:async()=>null,openProject:async()=>null,saveProject:async()=>output,relinkImage:async()=>null,unsaved:async()=>'discard'}});await s.init();await s.openFile(file);return {...f,s,dir,output:(v:string)=>{output=v;}};}
-const entry=(p:Project,key:FeatureKey='eye_left'):FeatureCorrection=>{const r=fromRegion(p.structure!.report.regions.find(v=>v.key===key)!);r.rect.x+=2;return r;};
-async function prepare(s:ProjectSession,entries=[entry(s.view().project!)]){await s.dispatch({type:'correction-start',expectedRevision:s.view().project!.revision,request:{kind:'edit',entries}});await until(()=>!s.view().correction!.busy);assert.equal(s.view().correction!.state,'review',JSON.stringify(s.view().correction));}
-async function apply(s:ProjectSession,keys:FeatureKey[]=['eye_left']){const r=await s.dispatch({type:'correction-apply',expectedRevision:s.view().project!.revision,keys});assert.equal(r.view.correction!.state,'applied',JSON.stringify(r.view.correction));}
-function feature(p:Project,key:FeatureKey){const param=p.parameters.find(v=>v.previewKey===key)!;const binding=p.partBindings.find(v=>v.parameterId===param.id&&v.kind==='state-blend')!;return {binding,part:p.parts.find(v=>v.id===binding.partId)!,mesh:p.motion!.meshes.find(v=>v.partId===binding.partId)!};}
-test('T142/143: strict IPC and geometry reject NaN, outside, duplicate and malformed mask values',async()=>{const f=await(memo??=fixture());const c=entry(f.p);assertCorrection(c);for(const bad of [{...c,rect:{...c.rect,x:-1}},{...c,order:99},{...c,protect:1},{...c,masks:[{mode:'erase',rect:{...c.rect,width:NaN}}]}])assert.throws(()=>assertCorrection(bad));assert.throws(()=>parseSessionCommand({type:'correction-start',expectedRevision:0,request:{kind:'edit',entries:[c,c]}}));assert.throws(()=>parseSessionCommand({type:'correction-apply',expectedRevision:0,keys:['eye_left','eye_left']}));assert.throws(()=>parseSessionCommand({type:'correction-start',expectedRevision:0,request:{kind:'reset',keys:['unknown']}}));});
-test('T142: original source coordinates honor crop/scale/EXIF affine instead of display zoom',async()=>{const f=await(memo??=fixture());const p=structuredClone(f.p);const a=p.assets.find(a=>a.id===p.inputPreparation!.originalAssetId)!;a.sourceToEdited=[0,.5,-.5,0,600,-50];const r={x:100,y:80,width:60,height:30};const actual=originalRegion(p,r),m=inverse(a.sourceToEdited);const x=transform(m,{x:r.x,y:r.y}),y=transform(m,{x:r.x+r.width,y:r.y+r.height});assert.equal(actual.x,Math.min(x.x,y.x));assert.equal(actual.y,Math.min(x.y,y.y));assert.equal(actual.width,Math.abs(x.x-y.x));assert.equal(actual.height,Math.abs(x.y-y.y));});
-test('T145/149: selected real patch changes; other IDs, textures, mesh, parameters, expressions, input and settings preserved',async()=>{const {s}=await setup();const before=structuredClone(s.view().project!);await prepare(s);assert.deepEqual(s.view().project,before);await apply(s);const p=s.view().project!;assert.deepEqual(feature(p,'eye_right'),feature(before,'eye_right'));assert.deepEqual(feature(p,'mouth'),feature(before,'mouth'));assert.equal(feature(p,'eye_left').part.id,feature(before,'eye_left').part.id);assert.notDeepEqual(feature(p,'eye_left').part.textures,feature(before,'eye_left').part.textures);assert.deepEqual(p.parameters,before.parameters);assert.deepEqual(p.expressions,before.expressions);assert.deepEqual(p.inputBindings,before.inputBindings);assert.deepEqual(p.motion!.settings,before.motion!.settings);assert.deepEqual(p.structure!.corrections!.invalidated.keys,['eye_left']);await s.shutdown();});
-test('T143/144: boundary mask and source-preserving foreground exclusion plus order persist',async()=>{const {s}=await setup();const c=entry(s.view().project!);c.order=17;c.masks=[{mode:'erase',rect:{...c.rect,width:10}}];await prepare(s,[c]);await apply(s);const p=s.view().project!;assert.equal(feature(p,'eye_left').part.drawOrder,17);assert.deepEqual(p.structure!.corrections!.entries,[c]);assert.equal(p.assets.find(a=>a.id===feature(p,'eye_left').part.textures[1]!.assetId)!.origin,'auto-completion');await s.shutdown();});
-test('T146: skip/block disable selected action; automatic reset restores it without touching other feature',async()=>{const {s}=await setup();const before=feature(s.view().project!,'eye_right');const c=entry(s.view().project!);c.decision='blocked';c.occluded=true;await prepare(s,[c]);await apply(s);assert.equal(capabilities(s.view().project!).find(v=>v.key==='eye_left')!.supported,false);assert.deepEqual(feature(s.view().project!,'eye_right').part,before.part);await s.dispatch({type:'correction-start',expectedRevision:s.view().project!.revision,request:{kind:'reset',keys:['eye_left']}});await until(()=>!s.view().correction!.busy);await apply(s);assert.equal(capabilities(s.view().project!).find(v=>v.key==='eye_left')!.supported,true);assert.deepEqual(s.view().project!.structure!.corrections!.entries,[]);await s.shutdown();});
-test('T147: reanalysis protects manual values by default; explicit overwrite replaces only selected correction',async()=>{const {s}=await setup();await prepare(s);await apply(s);const value=structuredClone(s.view().project!.structure!.corrections!.entries[0]);const bypass=await s.dispatch({type:'structure-start',expectedRevision:s.view().project!.revision,completion:'estimated'});assert.equal(bypass.view.errorCode,'E_CORRECTION_PROTECTED');await s.dispatch({type:'correction-start',expectedRevision:s.view().project!.revision,request:{kind:'reanalyse',keys:['eye_left'],overwrite:[]}});await until(()=>!s.view().correction!.busy);assert.equal(s.view().correction!.canApply,false);assert.equal(s.view().correction!.changes[0]!.action,'keep-protected');assert.deepEqual(s.view().project!.structure!.corrections!.entries[0],value);await s.dispatch({type:'correction-start',expectedRevision:s.view().project!.revision,request:{kind:'reanalyse',keys:['eye_left'],overwrite:['eye_left']}});await until(()=>!s.view().correction!.busy);await apply(s);assert.equal(s.view().project!.structure!.corrections!.entries.length,0);await s.shutdown();});
-test('T148: two-feature candidate applies only checked key and regenerates matching shared base',async()=>{const {s}=await setup();const before=structuredClone(s.view().project!);await prepare(s,[entry(before),entry(before,'mouth')]);assert.deepEqual(s.view().correction!.keys,['eye_left','mouth']);await apply(s,['eye_left']);assert.deepEqual(feature(s.view().project!,'mouth'),feature(before,'mouth'));assert.equal(s.view().project!.structure!.corrections!.entries.length,1);assert.deepEqual(s.view().project!.structure!.report.regions.find(v=>v.key==='mouth'),before.structure!.report.regions.find(v=>v.key==='mouth'));await s.shutdown();});
-test('T150: corrections undo/redo, save, duplicate and reopen retain original hashes and source links',async()=>{const {s,dir,output}=await setup();const before=structuredClone(s.view().project!);const original=before.assets.find(a=>a.id===before.inputAssetIds[0])!;await prepare(s);await apply(s);const corrections=structuredClone(s.view().project!.structure!.corrections);assert.ok(s.view().recoveries.length);await s.dispatch({type:'undo'});assert.equal(s.view().project!.structure!.corrections,undefined);await s.dispatch({type:'redo'});assert.deepEqual(s.view().project!.structure!.corrections,corrections);await s.save(true);output(join(dir,'copy.2dsketch'));await s.dispatch({type:'duplicate'});await s.openFile(join(dir,'copy.2dsketch'));assert.deepEqual(s.view().project!.structure!.corrections,corrections);assert.equal(sha256((await s.cache.read(s.view().project!.assets.find(a=>a.id===original.id)!))!),original.fingerprint.sha256);assert.equal(validateProject(s.view().project!).length,0);await s.shutdown();});
-test('T148: stale candidate cannot replace a newer manual edit',async()=>{const {s}=await setup();await prepare(s);const rev=s.view().project!.revision;await s.dispatch({type:'edit',target:'project-name',id:null,parameterId:null,value:'Keep latest',expectedRevision:rev,groupId:null});const r=await s.dispatch({type:'correction-apply',expectedRevision:rev,keys:['eye_left']});assert.equal(r.view.errorCode,'E_INPUT_STALE');assert.equal(r.view.project!.displayName,'Keep latest');assert.equal(r.view.project!.structure!.corrections,undefined);await s.shutdown();});
-test('T148/150: failed build preserves normal result and explicit retry prepares a new candidate',async()=>{const f=await(memo??=fixture());const timeoutDir=await mkdtemp(resolve('.local/correction-tests/timeout-'));const stalled=imageProcessor(process.execPath,['-e','process.stdin.resume();setInterval(()=>{},1000)','--'],timeoutDir,process.env,30);await assert.rejects(stalled.run('probe',Buffer.from('timeout fixture'),'.png',null,new AbortController().signal),/E_INPUT_TIMEOUT/);assert.deepEqual(await readdir(timeoutDir),[]);let fail=true;const processor:InputProcessor={run:f.actual.run,structure:async(op,b,o,s)=>{if(op==='build'&&fail)throw new Error('E_INPUT_PROCESSING');return f.actual.structure!(op,b,o,s);}};const {s}=await setup(processor);const before=JSON.stringify(s.view().project);await s.dispatch({type:'correction-start',expectedRevision:s.view().project!.revision,request:{kind:'edit',entries:[entry(s.view().project!)]}});await until(()=>!s.view().correction!.busy);assert.equal(s.view().correction!.state,'failed');assert.equal(JSON.stringify(s.view().project),before);fail=false;await s.dispatch({type:'correction-retry',expectedRevision:s.view().project!.revision});await until(()=>!s.view().correction!.busy);assert.equal(s.view().correction!.state,'review');await s.dispatch({type:'correction-cancel'});assert.equal(JSON.stringify(s.view().project),before);await s.shutdown();});
-test('T148/150: cancellation and project switch revoke delayed results',async()=>{const f=await(memo??=fixture());let release!:()=>void;const gate=new Promise<void>(r=>{release=r;});let waiting=false;const processor:InputProcessor={run:f.actual.run,structure:async(op,b,o,signal)=>{waiting=true;await gate;if(signal.aborted)throw new Error('E_JOB_CANCELLED');return f.actual.structure!(op,b,o,signal);}};const {s}=await setup(processor);await s.dispatch({type:'correction-start',expectedRevision:s.view().project!.revision,request:{kind:'edit',entries:[entry(s.view().project!)]}});await until(()=>waiting);const switched=s.newProject('Other document','parts');await sleep();release();await switched;assert.equal(s.view().project!.displayName,'Other document');assert.equal(s.view().correction!.canApply,false);assert.equal(s.view().project!.parts.length,0);await s.shutdown();});
-test('T149: dependency invalidation marks selected geometry and expression while unrelated part checks stay valid',async()=>{const {s}=await setup();const before=structuredClone(s.view().project!);await prepare(s);await apply(s);const after=s.view().project!;const left=feature(before,'eye_left'),right=feature(before,'eye_right');const keys=impactedKeys(before,after,transaction(before,after,'Selected correction'));const registry=new DerivedRegistry();registry.register('left',before.revision,['geometry:'+left.part.id]);registry.register('right',before.revision,['geometry:'+right.part.id]);registry.invalidate(keys);assert.equal(registry.state('left'),'STALE');assert.equal(registry.state('right'),'VALID');assert.ok(keys.has('compatibility:'+left.part.id));assert.ok(keys.has('export:'+left.part.id));assert.ok(!keys.has('geometry:'+right.part.id));assert.throws(()=>proposal(before,{kind:'edit',entries:[{...entry(before),rect:feature(before,'eye_right').part.textures.length?before.structure!.report.regions.find(r=>r.key==='eye_right')!.rect:entry(before).rect}]}),/OVERLAP/);await s.shutdown();});
+import { readFile, writeFile, mkdir, mkdtemp, readdir } from 'node:fs/promises';
+import { resolve, join } from 'node:path';
+import { readProject, type Project, validateProject } from '../packages/project-model';
+import { ProjectSession } from '../packages/project-session';
+import { imageProcessor } from '../apps/desktop/image-processor';
+import type { InputProcessor } from '../packages/image-input/types';
+import { encodeBundle, sha256 } from '../packages/project-storage/archive';
+import {
+  fromRegion,
+  assertCorrection,
+  type FeatureCorrection,
+  type FeatureKey,
+} from '../packages/single-image/correction-types';
+import { proposal } from '../packages/single-image/corrections';
+import { originalRegion } from '../packages/single-image/correction-geometry';
+import { transform, inverse } from '../packages/coordinates';
+import { capabilities } from '../packages/motion';
+import { parseSessionCommand } from '../packages/project-session/contracts';
+import { transaction } from '../packages/workflow/transactions';
+import { impactedKeys, DerivedRegistry } from '../packages/workflow/dependencies';
+const sleep = () => new Promise((r) => setTimeout(r, 15));
+async function until(fn: () => boolean) {
+  const t = Date.now();
+  while (!fn()) {
+    if (Date.now() - t > 300000) throw new Error('E_CORRECTION_TEST_TIMEOUT');
+    await sleep();
+  }
+}
+let memo: ReturnType<typeof fixture> | undefined;
+async function fixture() {
+  await mkdir(scratchPath('correction-tests'), { recursive: true });
+  const dir = await mkdtemp(scratchPath('correction-tests/fixture-'));
+  const read = readProject(await readFile('assets/product/preview-project.json', 'utf8'));
+  if (read.mode !== 'read-write') throw new Error('fixture');
+  const bundled = read.project;
+  const bundledBytes = new Map(
+    await Promise.all(
+      bundled.assets.map(
+        async (a) =>
+          [
+            a.id,
+            await readFile(join('assets/product/preview', a.fingerprint.sha256 + '.png')),
+          ] as const,
+      ),
+    ),
+  );
+  const file = join(dir, 'source.png');
+  await writeFile(file, bundledBytes.get(bundled.inputAssetIds[0]!)!);
+  const actual = imageProcessor(
+    resolve('.venv-product/Scripts/python.exe'),
+    ['-I', '-u', resolve('worker/main.py')],
+    join(dir, 'worker'),
+    process.env,
+  );
+  const s = new ProjectSession({
+    dataDir: dir,
+    bundled,
+    bundledBytes,
+    inputProcessor: actual,
+    autoTimers: false,
+    dialogs: {
+      chooseImage: async () => file,
+      openProject: async () => null,
+      saveProject: async () => null,
+      relinkImage: async () => null,
+      unsaved: async () => 'discard',
+    },
+  });
+  await s.init();
+  await s.newProject('Correction fixture', 'single-image');
+  await s.dispatch({ type: 'import-image' });
+  await until(() => !s.view().input!.busy);
+  const d = s.view().input!.draft!;
+  await s.dispatch({
+    type: 'input-apply',
+    draftId: d.id,
+    selection: {
+      rect: { x: 0, y: 0, ...d.probe.size },
+      masks: [],
+      backgroundTolerance: null,
+      occluded: false,
+    },
+  });
+  await until(() => !s.view().input!.busy);
+  await s.dispatch({
+    type: 'structure-start',
+    expectedRevision: s.view().project!.revision,
+    completion: 'estimated',
+  });
+  await until(() => !s.view().structure!.busy);
+  assert.equal(s.view().structure!.state, 'review');
+  await s.dispatch({ type: 'structure-apply', expectedRevision: s.view().project!.revision });
+  const p = structuredClone(s.view().project!);
+  const right = p.parameters.find((v) => v.previewKey === 'eye_right')!;
+  p.expressions.push({
+    id: crypto.randomUUID(),
+    displayName: 'Keep right',
+    values: [{ parameterId: right.id, value: 0.7, locked: false }],
+    transitionMs: 80,
+    release: 'live-input',
+  });
+  p.inputBindings.push({
+    id: crypto.randomUUID(),
+    source: 'manual',
+    channel: 'preserve',
+    parameterId: right.id,
+    inputRange: [0, 1],
+    invert: true,
+    gain: 0.8,
+    offset: 0,
+    smoothingMs: 40,
+    fallback: { mode: 'neutral', value: 1, returnMs: 100 },
+  });
+  p.motion!.settings.strength = 0.8;
+  const bytes = await s.cache.bytes(p);
+  await s.shutdown();
+  return { p, bytes, bundled, bundledBytes, actual };
+}
+async function setup(processor?: InputProcessor) {
+  const f = await (memo ??= fixture());
+  const dir = await mkdtemp(scratchPath('correction-tests/run-'));
+  const file = join(dir, 'original.2dsketch');
+  await writeFile(file, await encodeBundle(f.p, f.bytes, 'manual'));
+  let output = join(dir, 'saved.2dsketch');
+  const s = new ProjectSession({
+    dataDir: dir,
+    bundled: f.bundled,
+    bundledBytes: f.bundledBytes,
+    inputProcessor: processor ?? f.actual,
+    autoTimers: false,
+    dialogs: {
+      chooseImage: async () => null,
+      openProject: async () => null,
+      saveProject: async () => output,
+      relinkImage: async () => null,
+      unsaved: async () => 'discard',
+    },
+  });
+  await s.init();
+  await s.openFile(file);
+  return {
+    ...f,
+    s,
+    dir,
+    output: (v: string) => {
+      output = v;
+    },
+  };
+}
+const entry = (p: Project, key: FeatureKey = 'eye_left'): FeatureCorrection => {
+  const r = fromRegion(p.structure!.report.regions.find((v) => v.key === key)!);
+  r.rect.x += 2;
+  return r;
+};
+async function prepare(s: ProjectSession, entries = [entry(s.view().project!)]) {
+  await s.dispatch({
+    type: 'correction-start',
+    expectedRevision: s.view().project!.revision,
+    request: { kind: 'edit', entries },
+  });
+  await until(() => !s.view().correction!.busy);
+  assert.equal(s.view().correction!.state, 'review', JSON.stringify(s.view().correction));
+}
+async function apply(s: ProjectSession, keys: FeatureKey[] = ['eye_left']) {
+  const r = await s.dispatch({
+    type: 'correction-apply',
+    expectedRevision: s.view().project!.revision,
+    keys,
+  });
+  assert.equal(r.view.correction!.state, 'applied', JSON.stringify(r.view.correction));
+}
+function feature(p: Project, key: FeatureKey) {
+  const param = p.parameters.find((v) => v.previewKey === key)!;
+  const binding = p.partBindings.find(
+    (v) => v.parameterId === param.id && v.kind === 'state-blend',
+  )!;
+  return {
+    binding,
+    part: p.parts.find((v) => v.id === binding.partId)!,
+    mesh: p.motion!.meshes.find((v) => v.partId === binding.partId)!,
+  };
+}
+test('T142/143: strict IPC and geometry reject NaN, outside, duplicate and malformed mask values', async () => {
+  const f = await (memo ??= fixture());
+  const c = entry(f.p);
+  assertCorrection(c);
+  for (const bad of [
+    { ...c, rect: { ...c.rect, x: -1 } },
+    { ...c, order: 99 },
+    { ...c, protect: 1 },
+    { ...c, masks: [{ mode: 'erase', rect: { ...c.rect, width: NaN } }] },
+  ])
+    assert.throws(() => assertCorrection(bad));
+  assert.throws(() =>
+    parseSessionCommand({
+      type: 'correction-start',
+      expectedRevision: 0,
+      request: { kind: 'edit', entries: [c, c] },
+    }),
+  );
+  assert.throws(() =>
+    parseSessionCommand({
+      type: 'correction-apply',
+      expectedRevision: 0,
+      keys: ['eye_left', 'eye_left'],
+    }),
+  );
+  assert.throws(() =>
+    parseSessionCommand({
+      type: 'correction-start',
+      expectedRevision: 0,
+      request: { kind: 'reset', keys: ['unknown'] },
+    }),
+  );
+});
+test('T142: original source coordinates honor crop/scale/EXIF affine instead of display zoom', async () => {
+  const f = await (memo ??= fixture());
+  const p = structuredClone(f.p);
+  const a = p.assets.find((a) => a.id === p.inputPreparation!.originalAssetId)!;
+  a.sourceToEdited = [0, 0.5, -0.5, 0, 600, -50];
+  const r = { x: 100, y: 80, width: 60, height: 30 };
+  const actual = originalRegion(p, r),
+    m = inverse(a.sourceToEdited);
+  const x = transform(m, { x: r.x, y: r.y }),
+    y = transform(m, { x: r.x + r.width, y: r.y + r.height });
+  assert.equal(actual.x, Math.min(x.x, y.x));
+  assert.equal(actual.y, Math.min(x.y, y.y));
+  assert.equal(actual.width, Math.abs(x.x - y.x));
+  assert.equal(actual.height, Math.abs(x.y - y.y));
+});
+test('T145/149: selected real patch changes; other IDs, textures, mesh, parameters, expressions, input and settings preserved', async () => {
+  const { s } = await setup();
+  const before = structuredClone(s.view().project!);
+  await prepare(s);
+  assert.deepEqual(s.view().project, before);
+  await apply(s);
+  const p = s.view().project!;
+  assert.deepEqual(feature(p, 'eye_right'), feature(before, 'eye_right'));
+  assert.deepEqual(feature(p, 'mouth'), feature(before, 'mouth'));
+  assert.equal(feature(p, 'eye_left').part.id, feature(before, 'eye_left').part.id);
+  assert.notDeepEqual(
+    feature(p, 'eye_left').part.textures,
+    feature(before, 'eye_left').part.textures,
+  );
+  assert.deepEqual(p.parameters, before.parameters);
+  assert.deepEqual(p.expressions, before.expressions);
+  assert.deepEqual(p.inputBindings, before.inputBindings);
+  assert.deepEqual(p.motion!.settings, before.motion!.settings);
+  assert.deepEqual(p.structure!.corrections!.invalidated.keys, ['eye_left']);
+  await s.shutdown();
+});
+test('T143/144: boundary mask and source-preserving foreground exclusion plus order persist', async () => {
+  const { s } = await setup();
+  const c = entry(s.view().project!);
+  c.order = 17;
+  c.masks = [{ mode: 'erase', rect: { ...c.rect, width: 10 } }];
+  await prepare(s, [c]);
+  await apply(s);
+  const p = s.view().project!;
+  assert.equal(feature(p, 'eye_left').part.drawOrder, 17);
+  assert.deepEqual(p.structure!.corrections!.entries, [c]);
+  assert.equal(
+    p.assets.find((a) => a.id === feature(p, 'eye_left').part.textures[1]!.assetId)!.origin,
+    'auto-completion',
+  );
+  await s.shutdown();
+});
+test('T146: skip/block disable selected action; automatic reset restores it without touching other feature', async () => {
+  const { s } = await setup();
+  const before = feature(s.view().project!, 'eye_right');
+  const c = entry(s.view().project!);
+  c.decision = 'blocked';
+  c.occluded = true;
+  await prepare(s, [c]);
+  await apply(s);
+  assert.equal(capabilities(s.view().project!).find((v) => v.key === 'eye_left')!.supported, false);
+  assert.deepEqual(feature(s.view().project!, 'eye_right').part, before.part);
+  await s.dispatch({
+    type: 'correction-start',
+    expectedRevision: s.view().project!.revision,
+    request: { kind: 'reset', keys: ['eye_left'] },
+  });
+  await until(() => !s.view().correction!.busy);
+  await apply(s);
+  assert.equal(capabilities(s.view().project!).find((v) => v.key === 'eye_left')!.supported, true);
+  assert.deepEqual(s.view().project!.structure!.corrections!.entries, []);
+  await s.shutdown();
+});
+test('T147: reanalysis protects manual values by default; explicit overwrite replaces only selected correction', async () => {
+  const { s } = await setup();
+  await prepare(s);
+  await apply(s);
+  const value = structuredClone(s.view().project!.structure!.corrections!.entries[0]);
+  const bypass = await s.dispatch({
+    type: 'structure-start',
+    expectedRevision: s.view().project!.revision,
+    completion: 'estimated',
+  });
+  assert.equal(bypass.view.errorCode, 'E_CORRECTION_PROTECTED');
+  await s.dispatch({
+    type: 'correction-start',
+    expectedRevision: s.view().project!.revision,
+    request: { kind: 'reanalyse', keys: ['eye_left'], overwrite: [] },
+  });
+  await until(() => !s.view().correction!.busy);
+  assert.equal(s.view().correction!.canApply, false);
+  assert.equal(s.view().correction!.changes[0]!.action, 'keep-protected');
+  assert.deepEqual(s.view().project!.structure!.corrections!.entries[0], value);
+  await s.dispatch({
+    type: 'correction-start',
+    expectedRevision: s.view().project!.revision,
+    request: { kind: 'reanalyse', keys: ['eye_left'], overwrite: ['eye_left'] },
+  });
+  await until(() => !s.view().correction!.busy);
+  await apply(s);
+  assert.equal(s.view().project!.structure!.corrections!.entries.length, 0);
+  await s.shutdown();
+});
+test('T148: two-feature candidate applies only checked key and regenerates matching shared base', async () => {
+  const { s } = await setup();
+  const before = structuredClone(s.view().project!);
+  await prepare(s, [entry(before), entry(before, 'mouth')]);
+  assert.deepEqual(s.view().correction!.keys, ['eye_left', 'mouth']);
+  await apply(s, ['eye_left']);
+  assert.deepEqual(feature(s.view().project!, 'mouth'), feature(before, 'mouth'));
+  assert.equal(s.view().project!.structure!.corrections!.entries.length, 1);
+  assert.deepEqual(
+    s.view().project!.structure!.report.regions.find((v) => v.key === 'mouth'),
+    before.structure!.report.regions.find((v) => v.key === 'mouth'),
+  );
+  await s.shutdown();
+});
+test('T150: corrections undo/redo, save, duplicate and reopen retain original hashes and source links', async () => {
+  const { s, dir, output } = await setup();
+  const before = structuredClone(s.view().project!);
+  const original = before.assets.find((a) => a.id === before.inputAssetIds[0])!;
+  await prepare(s);
+  await apply(s);
+  const corrections = structuredClone(s.view().project!.structure!.corrections);
+  assert.ok(s.view().recoveries.length);
+  await s.dispatch({ type: 'undo' });
+  assert.equal(s.view().project!.structure!.corrections, undefined);
+  await s.dispatch({ type: 'redo' });
+  assert.deepEqual(s.view().project!.structure!.corrections, corrections);
+  await s.save(true);
+  output(join(dir, 'copy.2dsketch'));
+  await s.dispatch({ type: 'duplicate' });
+  await s.openFile(join(dir, 'copy.2dsketch'));
+  assert.deepEqual(s.view().project!.structure!.corrections, corrections);
+  assert.equal(
+    sha256((await s.cache.read(s.view().project!.assets.find((a) => a.id === original.id)!))!),
+    original.fingerprint.sha256,
+  );
+  assert.equal(validateProject(s.view().project!).length, 0);
+  await s.shutdown();
+});
+test('T148: stale candidate cannot replace a newer manual edit', async () => {
+  const { s } = await setup();
+  await prepare(s);
+  const rev = s.view().project!.revision;
+  await s.dispatch({
+    type: 'edit',
+    target: 'project-name',
+    id: null,
+    parameterId: null,
+    value: 'Keep latest',
+    expectedRevision: rev,
+    groupId: null,
+  });
+  const r = await s.dispatch({
+    type: 'correction-apply',
+    expectedRevision: rev,
+    keys: ['eye_left'],
+  });
+  assert.equal(r.view.errorCode, 'E_INPUT_STALE');
+  assert.equal(r.view.project!.displayName, 'Keep latest');
+  assert.equal(r.view.project!.structure!.corrections, undefined);
+  await s.shutdown();
+});
+test('T148/150: failed build preserves normal result and explicit retry prepares a new candidate', async () => {
+  const f = await (memo ??= fixture());
+  const timeoutDir = await mkdtemp(scratchPath('correction-tests/timeout-'));
+  const stalled = imageProcessor(
+    process.execPath,
+    ['-e', 'process.stdin.resume();setInterval(()=>{},1000)', '--'],
+    timeoutDir,
+    process.env,
+    30,
+  );
+  await assert.rejects(
+    stalled.run(
+      'probe',
+      Buffer.from('timeout fixture'),
+      '.png',
+      null,
+      new AbortController().signal,
+    ),
+    /E_INPUT_TIMEOUT/,
+  );
+  assert.deepEqual(await readdir(timeoutDir), []);
+  let fail = true;
+  const processor: InputProcessor = {
+    run: f.actual.run,
+    structure: async (op, b, o, s) => {
+      if (op === 'build' && fail) throw new Error('E_INPUT_PROCESSING');
+      return f.actual.structure!(op, b, o, s);
+    },
+  };
+  const { s } = await setup(processor);
+  const before = JSON.stringify(s.view().project);
+  await s.dispatch({
+    type: 'correction-start',
+    expectedRevision: s.view().project!.revision,
+    request: { kind: 'edit', entries: [entry(s.view().project!)] },
+  });
+  await until(() => !s.view().correction!.busy);
+  assert.equal(s.view().correction!.state, 'failed');
+  assert.equal(JSON.stringify(s.view().project), before);
+  fail = false;
+  await s.dispatch({ type: 'correction-retry', expectedRevision: s.view().project!.revision });
+  await until(() => !s.view().correction!.busy);
+  assert.equal(s.view().correction!.state, 'review');
+  await s.dispatch({ type: 'correction-cancel' });
+  assert.equal(JSON.stringify(s.view().project), before);
+  await s.shutdown();
+});
+test('T148/150: cancellation and project switch revoke delayed results', async () => {
+  const f = await (memo ??= fixture());
+  let release!: () => void;
+  const gate = new Promise<void>((r) => {
+    release = r;
+  });
+  let waiting = false;
+  const processor: InputProcessor = {
+    run: f.actual.run,
+    structure: async (op, b, o, signal) => {
+      waiting = true;
+      await gate;
+      if (signal.aborted) throw new Error('E_JOB_CANCELLED');
+      return f.actual.structure!(op, b, o, signal);
+    },
+  };
+  const { s } = await setup(processor);
+  await s.dispatch({
+    type: 'correction-start',
+    expectedRevision: s.view().project!.revision,
+    request: { kind: 'edit', entries: [entry(s.view().project!)] },
+  });
+  await until(() => waiting);
+  const switched = s.newProject('Other document', 'parts');
+  await sleep();
+  release();
+  await switched;
+  assert.equal(s.view().project!.displayName, 'Other document');
+  assert.equal(s.view().correction!.canApply, false);
+  assert.equal(s.view().project!.parts.length, 0);
+  await s.shutdown();
+});
+test('T149: dependency invalidation marks selected geometry and expression while unrelated part checks stay valid', async () => {
+  const { s } = await setup();
+  const before = structuredClone(s.view().project!);
+  await prepare(s);
+  await apply(s);
+  const after = s.view().project!;
+  const left = feature(before, 'eye_left'),
+    right = feature(before, 'eye_right');
+  const keys = impactedKeys(before, after, transaction(before, after, 'Selected correction'));
+  const registry = new DerivedRegistry();
+  registry.register('left', before.revision, ['geometry:' + left.part.id]);
+  registry.register('right', before.revision, ['geometry:' + right.part.id]);
+  registry.invalidate(keys);
+  assert.equal(registry.state('left'), 'STALE');
+  assert.equal(registry.state('right'), 'VALID');
+  assert.ok(keys.has('compatibility:' + left.part.id));
+  assert.ok(keys.has('export:' + left.part.id));
+  assert.ok(!keys.has('geometry:' + right.part.id));
+  assert.throws(
+    () =>
+      proposal(before, {
+        kind: 'edit',
+        entries: [
+          {
+            ...entry(before),
+            rect: feature(before, 'eye_right').part.textures.length
+              ? before.structure!.report.regions.find((r) => r.key === 'eye_right')!.rect
+              : entry(before).rect,
+          },
+        ],
+      }),
+    /OVERLAP/,
+  );
+  await s.shutdown();
+});

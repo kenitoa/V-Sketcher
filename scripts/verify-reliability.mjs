@@ -1,15 +1,122 @@
-import {spawnSync} from 'node:child_process';
-import {mkdirSync,readFileSync,writeFileSync,readdirSync,existsSync} from 'node:fs';
-import {resolve,join,dirname,relative} from 'node:path';
-import {createHash} from 'node:crypto';
+import { spawnSync } from 'node:child_process';
+import { mkdirSync, readFileSync, writeFileSync, readdirSync, existsSync } from 'node:fs';
+import { resolve, join, dirname, relative } from 'node:path';
+import { createHash } from 'node:crypto';
 import assert from 'node:assert/strict';
-import {python} from './common.mjs';
-const out=resolve(process.argv[2]??'evidence/phase28/run-'+Date.now());assert.ok(!existsSync(out),'E_RELIABILITY_EXISTS');mkdirSync(out,{recursive:true});const env={...process.env,PATH:dirname(process.execPath)+';'+process.env.PATH};delete env.ELECTRON_RUN_AS_NODE;
-const stages=[],sources={},hash=b=>createHash('sha256').update(b).digest('hex');function inventory(dir){for(const d of readdirSync(dir,{withFileTypes:true})){if(d.name==='__pycache__'||d.name.endsWith('.pyc'))continue;const p=join(dir,d.name);if(d.isDirectory())inventory(p);else sources[relative(process.cwd(),p).replaceAll('\\','/')]=hash(readFileSync(p));}}for(const dir of ['apps','packages','worker','scripts','tools','tests','assets/product'])inventory(dir);for(const p of ['package.json','package-lock.json','forge.config.cjs'])sources[p]=hash(readFileSync(p));
-let nodeTests=0,pythonTests=0;function run(name,command,args,timeout=1800000){console.log('Reliability stage: '+name);const r=spawnSync(command,args,{env,windowsHide:true,encoding:'utf8',timeout,maxBuffer:32*1024*1024}),text=(r.stdout??'')+(r.stderr??'');const passed=!r.error&&r.status===0;stages.push({name,passed});if(name==='required-check'){nodeTests=Number(text.match(/\btests (\d+)/)?.[1]);pythonTests=Number(text.match(/Ran (\d+) tests/)?.[1]);}writeFileSync(join(out,'progress.json'),JSON.stringify({stages},null,2)+'\n');assert.ok(passed,'E_RELIABILITY_'+name.toUpperCase().replaceAll('-','_'));}
-try{run('required-check',process.env.ComSpec??'cmd.exe',['/d','/c','tools\\dev.cmd','run','check']);assert.ok(nodeTests>=328&&pythonTests>=36);
- run('storage',process.execPath,['tools/reliability-storage.cjs',out]);run('cycles-and-privacy',process.execPath,['tools/reliability-cycles.cjs',out]);run('actual-gpu',process.execPath,['scripts/reliability-gpu.mjs',join(out,'gpu')]);run('notices',python,['scripts/reliability-notices.py','--output='+join(out,'notices.json')]);
- run('portable-build',process.env.ComSpec??'cmd.exe',['/d','/c','tools\\dev.cmd','run','make']);run('packaged-self-check',process.execPath,['scripts/environment-package-check.mjs','--evidence-dir='+join(out,'package')]);run('packaged-license-bytes',process.execPath,['scripts/reliability-package-notices.mjs',join(out,'package-license.json')]);
- for(const [p,digest]of Object.entries(sources))assert.equal(hash(readFileSync(p)),digest,'E_RELIABILITY_SOURCE_CHANGED');
- writeFileSync(join(out,'verification.json'),JSON.stringify({passed:true,scope:'BOUNDED_RELIABILITY_AND_PRIVATE_PACKAGE_CHECK',nodeTestGroups:nodeTests,pythonTestGroups:pythonTests,stages,sourceSha256:sources,physicalDiskFullVerified:false,twoHourRunsVerified:false,actualCameraToOBSLatencyVerified:false,cleanWindowsVerified:false,phase28Complete:false,publicDistributionApproved:false,m0:'HOLD'},null,2)+'\n');console.log('Bounded reliability and packaged checks passed; full live/endurance/release gates remain separate.');
-}catch(e){writeFileSync(join(out,'failure.json'),JSON.stringify({passed:false,code:e.message.match(/E_[A-Z_]+/)?.[0]??'E_RELIABILITY_ASSERTION',stages,m0:'HOLD'},null,2)+'\n');console.error('E_RELIABILITY_FAILED: inspect isolated stage reports');process.exitCode=1;}
+import { python } from './common.mjs';
+const out = resolve(process.argv[2] ?? 'evidence/phase28/run-' + Date.now());
+assert.ok(!existsSync(out), 'E_RELIABILITY_EXISTS');
+mkdirSync(out, { recursive: true });
+const env = { ...process.env, PATH: dirname(process.execPath) + ';' + process.env.PATH };
+delete env.ELECTRON_RUN_AS_NODE;
+const stages = [],
+  sources = {},
+  hash = (b) => createHash('sha256').update(b).digest('hex');
+function inventory(dir) {
+  for (const d of readdirSync(dir, { withFileTypes: true })) {
+    if (d.name === '__pycache__' || d.name.endsWith('.pyc')) continue;
+    const p = join(dir, d.name);
+    if (d.isDirectory()) inventory(p);
+    else sources[relative(process.cwd(), p).replaceAll('\\', '/')] = hash(readFileSync(p));
+  }
+}
+for (const dir of ['apps', 'packages', 'worker', 'scripts', 'tools', 'tests', 'assets/product'])
+  inventory(dir);
+for (const p of ['package.json', 'package-lock.json', 'forge.config.cjs'])
+  sources[p] = hash(readFileSync(p));
+let nodeTests = 0,
+  pythonTests = 0;
+function run(name, command, args, timeout = 1800000) {
+  console.log('Reliability stage: ' + name);
+  const r = spawnSync(command, args, {
+      env,
+      windowsHide: true,
+      encoding: 'utf8',
+      timeout,
+      maxBuffer: 32 * 1024 * 1024,
+    }),
+    text = (r.stdout ?? '') + (r.stderr ?? '');
+  const passed = !r.error && r.status === 0;
+  stages.push({ name, passed });
+  if (name === 'required-check') {
+    nodeTests = Number(text.match(/\btests (\d+)/)?.[1]);
+    pythonTests = Number(text.match(/Ran (\d+) tests/)?.[1]);
+  }
+  writeFileSync(join(out, 'progress.json'), JSON.stringify({ stages }, null, 2) + '\n');
+  assert.ok(passed, 'E_RELIABILITY_' + name.toUpperCase().replaceAll('-', '_'));
+}
+try {
+  run('required-check', process.env.ComSpec ?? 'cmd.exe', [
+    '/d',
+    '/c',
+    'tools\\dev.cmd',
+    'run',
+    'check',
+  ]);
+  assert.ok(nodeTests >= 328 && pythonTests >= 36);
+  run('storage', process.execPath, ['tools/reliability-storage.cjs', out]);
+  run('cycles-and-privacy', process.execPath, ['tools/reliability-cycles.cjs', out]);
+  run('actual-gpu', process.execPath, ['scripts/reliability-gpu.mjs', join(out, 'gpu')]);
+  run('notices', python, [
+    'scripts/reliability-notices.py',
+    '--output=' + join(out, 'notices.json'),
+  ]);
+  run('portable-build', process.env.ComSpec ?? 'cmd.exe', [
+    '/d',
+    '/c',
+    'tools\\dev.cmd',
+    'run',
+    'make',
+  ]);
+  run('packaged-self-check', process.execPath, [
+    'scripts/environment-package-check.mjs',
+    '--evidence-dir=' + join(out, 'package'),
+  ]);
+  run('packaged-license-bytes', process.execPath, [
+    'scripts/reliability-package-notices.mjs',
+    join(out, 'package-license.json'),
+  ]);
+  for (const [p, digest] of Object.entries(sources))
+    assert.equal(hash(readFileSync(p)), digest, 'E_RELIABILITY_SOURCE_CHANGED');
+  writeFileSync(
+    join(out, 'verification.json'),
+    JSON.stringify(
+      {
+        passed: true,
+        scope: 'BOUNDED_RELIABILITY_AND_PRIVATE_PACKAGE_CHECK',
+        nodeTestGroups: nodeTests,
+        pythonTestGroups: pythonTests,
+        stages,
+        sourceSha256: sources,
+        physicalDiskFullVerified: false,
+        twoHourRunsVerified: false,
+        actualCameraToOBSLatencyVerified: false,
+        cleanWindowsVerified: false,
+        phase28Complete: false,
+        publicDistributionApproved: false,
+        m0: 'HOLD',
+      },
+      null,
+      2,
+    ) + '\n',
+  );
+  console.log(
+    'Bounded reliability and packaged checks passed; full live/endurance/release gates remain separate.',
+  );
+} catch (e) {
+  writeFileSync(
+    join(out, 'failure.json'),
+    JSON.stringify(
+      {
+        passed: false,
+        code: e.message.match(/E_[A-Z_]+/)?.[0] ?? 'E_RELIABILITY_ASSERTION',
+        stages,
+        m0: 'HOLD',
+      },
+      null,
+      2,
+    ) + '\n',
+  );
+  console.error('E_RELIABILITY_FAILED: inspect isolated stage reports');
+  process.exitCode = 1;
+}

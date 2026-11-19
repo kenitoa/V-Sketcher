@@ -1,0 +1,13 @@
+{
+  "passed": false,
+  "code": "E_FOUNDATION_CHECK",
+  "stage": "environment-ui",
+  "detail": "E_SETTINGS_UI_TIMEOUT",
+  "diagnostic": {
+    "settingsStage": "[data-settings-close]",
+    "camera": "failed",
+    "microphone": "open",
+    "run": "idle"
+  },
+  "packaged": true
+}

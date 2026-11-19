@@ -1,0 +1,14 @@
+{
+  "beforeBytes": 1209193606,
+  "afterBytes": 679902020,
+  "allObjectsPreserved": true,
+  "refsUnchanged": true,
+  "trackedWorktreeStatusUnchanged": true,
+  "indexUnchanged": true,
+  "threads": 1,
+  "deltaWindowMemoryMiB": 16,
+  "pruneUnreachableRequested": false,
+  "published": false,
+  "seconds": 225.78,
+  "passed": true
+}

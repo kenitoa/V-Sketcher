@@ -1,0 +1,14 @@
+{
+  "format": "2dsketcher-cache-archive/1",
+  "group": "legacy-packages",
+  "verified": true,
+  "files": 21,
+  "logicalBytes": 6332561994,
+  "everyArchiveFileReconstructedAndHashMatched": true,
+  "originalSourceHashesRecordedAtPack": true,
+  "sourceHashRecheckedDuringVerify": false,
+  "sourceHashRequiredAgainBeforeEviction": true,
+  "indexSha256": "8c19442d478a06f8a31ff356efbb63bfc9ec4506a07367c5e5833a169529000e",
+  "sourceRemoved": false,
+  "historicalEvidenceModified": false
+}

@@ -1,20 +1,176 @@
-import React,{ useEffect,useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import type { JobView } from '../../../packages/workflow';
-import { guidance,type Guidance } from '../../../packages/editor-view/guidance';
-export const focusable = (root:HTMLElement):HTMLElement[] => [...root.querySelectorAll<HTMLElement>('button:not(:disabled),input:not(:disabled),select:not(:disabled),textarea:not(:disabled),a[href],[tabindex="0"],summary')].filter(el => !el.closest('[hidden],[inert]') && el.getClientRects().length > 0);
-export function Modal({ titleId,onClose,children,className = '' }:{ titleId:string;onClose:()=>void;children:React.ReactNode;className?:string }) {
-  const ref = useRef<HTMLElement>(null); const close = useRef(onClose); close.current = onClose;
-  useEffect(() => { const previous = document.activeElement as HTMLElement | null; const root = document.getElementById('root'); const wasInert = root?.inert ?? false; if (root) root.inert = true;
-    const panel = ref.current!; (panel.querySelector<HTMLElement>('[data-initial-focus]') ?? focusable(panel)[0] ?? panel).focus();
-    const key = (event:KeyboardEvent):void => { if (event.key === 'Escape') { event.preventDefault(); event.stopImmediatePropagation(); close.current(); } else if (event.key === 'Tab') { const items = focusable(panel); const index = items.indexOf(document.activeElement as HTMLElement); if (!items.length) { event.preventDefault(); panel.focus(); } else if (event.shiftKey && index <= 0) { event.preventDefault(); items.at(-1)!.focus(); } else if (!event.shiftKey && (index < 0 || index === items.length-1)) { event.preventDefault(); items[0]!.focus(); } } };
-    document.addEventListener('keydown',key,true); return () => { document.removeEventListener('keydown',key,true); if (root) root.inert = wasInert; if (previous?.isConnected) previous.focus(); };
-  },[]);
-  return createPortal(<div className="modal-backdrop"><section ref={ref} tabIndex={-1} className={`about ${className}`} role="dialog" aria-modal="true" aria-labelledby={titleId}><button className="close" aria-label="닫기" onClick={onClose}>×</button>{children}</section></div>,document.body);
+import { guidance, type Guidance } from '../../../packages/editor-view/guidance';
+export const focusable = (root: HTMLElement): HTMLElement[] =>
+  [
+    ...root.querySelectorAll<HTMLElement>(
+      'button:not(:disabled),input:not(:disabled),select:not(:disabled),textarea:not(:disabled),a[href],[tabindex="0"],summary',
+    ),
+  ].filter((el) => !el.closest('[hidden],[inert]') && el.getClientRects().length > 0);
+export function Modal({
+  titleId,
+  onClose,
+  children,
+  className = '',
+}: {
+  titleId: string;
+  onClose: () => void;
+  children: React.ReactNode;
+  className?: string;
+}) {
+  const ref = useRef<HTMLElement>(null);
+  const close = useRef(onClose);
+  close.current = onClose;
+  useEffect(() => {
+    const previous = document.activeElement as HTMLElement | null;
+    const root = document.getElementById('root');
+    const wasInert = root?.inert ?? false;
+    if (root) root.inert = true;
+    const panel = ref.current!;
+    (
+      panel.querySelector<HTMLElement>('[data-initial-focus]') ??
+      focusable(panel)[0] ??
+      panel
+    ).focus();
+    const key = (event: KeyboardEvent): void => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        close.current();
+      } else if (event.key === 'Tab') {
+        const items = focusable(panel);
+        const index = items.indexOf(document.activeElement as HTMLElement);
+        if (!items.length) {
+          event.preventDefault();
+          panel.focus();
+        } else if (event.shiftKey && index <= 0) {
+          event.preventDefault();
+          items.at(-1)!.focus();
+        } else if (!event.shiftKey && (index < 0 || index === items.length - 1)) {
+          event.preventDefault();
+          items[0]!.focus();
+        }
+      }
+    };
+    document.addEventListener('keydown', key, true);
+    return () => {
+      document.removeEventListener('keydown', key, true);
+      if (root) root.inert = wasInert;
+      if (previous?.isConnected) previous.focus();
+    };
+  }, []);
+  return createPortal(
+    <div className="modal-backdrop">
+      <section
+        ref={ref}
+        tabIndex={-1}
+        className={`about ${className}`}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+      >
+        <button className="close" aria-label="닫기" onClick={onClose}>
+          ×
+        </button>
+        {children}
+      </section>
+    </div>,
+    document.body,
+  );
 }
-const states:Record<JobView['state'],string> = { QUEUED:'대기 중',RUNNING:'확인 중',CANCEL_REQUESTED:'취소 요청 · 정리 중',RESULT_READY:'결과 검증 중',AWAITING_REVIEW:'현재 편집과 비교 필요',SUCCEEDED:'완료',FAILED:'실패 · 다시 시도 가능',CANCELLED:'취소 완료',DISCARDED:'결과 폐기됨' };
-export function TaskCard({ job,onCancel,onRetry,count }:{ job:JobView;onCancel:()=>void;onRetry:()=>void;count?:{ done:number;total:number;unit:string } }) {
-  const busy = ['QUEUED','RUNNING','RESULT_READY','CANCEL_REQUESTED'].includes(job.state); const measured = count && count.total > 0 && count.done >= 0 && count.done <= count.total;
-  return <section className="task-card" aria-label="현재 작업" aria-busy={busy}><div data-task-state={job.state} role="status" aria-live="polite"><strong>{job.label}</strong><span>{states[job.state]}</span></div><p>{job.stageId === 'verify-resources' ? '프로젝트에 필요한 그림의 내용과 연결을 확인합니다.' : job.stageId ? '현재 처리 단계를 진행합니다.' : '작업 순서를 기다립니다.'}</p>{busy && (measured ? <><progress aria-label="확인한 그림 수" max={count.total} value={count.done}/><small>{count.done}/{count.total} {count.unit}</small></> : <progress aria-label="처리 중 · 완료 시간 미정"/>)}<div className="edit-actions"><button data-task-cancel disabled={!busy || job.state === 'CANCEL_REQUESTED'} onClick={onCancel}>{job.state === 'CANCEL_REQUESTED' ? '정리를 기다려 주세요' : '작업 취소'}</button><button data-task-retry disabled={!['FAILED','CANCELLED'].includes(job.state)} onClick={onRetry}>다시 시도</button></div></section>;
+const states: Record<JobView['state'], string> = {
+  QUEUED: '대기 중',
+  RUNNING: '확인 중',
+  CANCEL_REQUESTED: '취소 요청 · 정리 중',
+  RESULT_READY: '결과 검증 중',
+  AWAITING_REVIEW: '현재 편집과 비교 필요',
+  SUCCEEDED: '완료',
+  FAILED: '실패 · 다시 시도 가능',
+  CANCELLED: '취소 완료',
+  DISCARDED: '결과 폐기됨',
+};
+export function TaskCard({
+  job,
+  onCancel,
+  onRetry,
+  count,
+}: {
+  job: JobView;
+  onCancel: () => void;
+  onRetry: () => void;
+  count?: { done: number; total: number; unit: string };
+}) {
+  const busy = ['QUEUED', 'RUNNING', 'RESULT_READY', 'CANCEL_REQUESTED'].includes(job.state);
+  const measured = count && count.total > 0 && count.done >= 0 && count.done <= count.total;
+  return (
+    <section className="task-card" aria-label="현재 작업" aria-busy={busy}>
+      <div data-task-state={job.state} role="status" aria-live="polite">
+        <strong>{job.label}</strong>
+        <span>{states[job.state]}</span>
+      </div>
+      <p>
+        {job.stageId === 'verify-resources'
+          ? '프로젝트에 필요한 그림의 내용과 연결을 확인합니다.'
+          : job.stageId
+            ? '현재 처리 단계를 진행합니다.'
+            : '작업 순서를 기다립니다.'}
+      </p>
+      {busy &&
+        (measured ? (
+          <>
+            <progress aria-label="확인한 그림 수" max={count.total} value={count.done} />
+            <small>
+              {count.done}/{count.total} {count.unit}
+            </small>
+          </>
+        ) : (
+          <progress aria-label="처리 중 · 완료 시간 미정" />
+        ))}
+      <div className="edit-actions">
+        <button
+          data-task-cancel
+          disabled={!busy || job.state === 'CANCEL_REQUESTED'}
+          onClick={onCancel}
+        >
+          {job.state === 'CANCEL_REQUESTED' ? '정리를 기다려 주세요' : '작업 취소'}
+        </button>
+        <button
+          data-task-retry
+          disabled={!['FAILED', 'CANCELLED'].includes(job.state)}
+          onClick={onRetry}
+        >
+          다시 시도
+        </button>
+      </div>
+    </section>
+  );
 }
-export function Notice({ code,onAction }:{ code:string;onAction:(action:Guidance['action'])=>void }) { const notice = guidance(code); return <section className={`notice notice-${notice.severity}`} role={notice.severity === '안내' ? 'status' : 'alert'}><strong><span>{notice.severity}</span> {notice.title}</strong><p>{notice.impact}</p><p>{notice.preserved}</p><button data-notice-action onClick={() => onAction(notice.action)}>{notice.actionLabel}</button><details><summary>진단 코드 보기</summary><code>{/^E_[A-Z_]{1,48}$/.test(code) ? code : 'E_TASK_FAILED'}</code></details></section>; }
+export function Notice({
+  code,
+  onAction,
+}: {
+  code: string;
+  onAction: (action: Guidance['action']) => void;
+}) {
+  const notice = guidance(code);
+  return (
+    <section
+      className={`notice notice-${notice.severity}`}
+      role={notice.severity === '안내' ? 'status' : 'alert'}
+    >
+      <strong>
+        <span>{notice.severity}</span> {notice.title}
+      </strong>
+      <p>{notice.impact}</p>
+      <p>{notice.preserved}</p>
+      <button data-notice-action onClick={() => onAction(notice.action)}>
+        {notice.actionLabel}
+      </button>
+      <details>
+        <summary>진단 코드 보기</summary>
+        <code>{/^E_[A-Z_]{1,48}$/.test(code) ? code : 'E_TASK_FAILED'}</code>
+      </details>
+    </section>
+  );
+}

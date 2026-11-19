@@ -18,6 +18,36 @@ public static class CompletionProbe {
     static Dictionary<string,object> ObjectValue(object value) { var d = value as Dictionary<string,object>; Need(d != null, "E_CLEAN_REPORT"); return d; }
     static bool Is(Dictionary<string,object> d, string key, object value) { object found; return d.TryGetValue(key, out found) && Object.Equals(found, value); }
     static string Arg(string key, string value) { Need(value.IndexOf('"') < 0, "E_CLEAN_ARGUMENT"); return "\"--" + key + "=" + value + "\""; }
+    static void RetryCleanup(Action operation) {
+        for (int attempt=0; ; attempt++) {
+            try { operation(); return; }
+            catch (IOException) { if(attempt>=7) throw; }
+            catch (UnauthorizedAccessException) { if(attempt>=7) throw; }
+            System.Threading.Thread.Sleep(Math.Min(200*(attempt+1),1000));
+        }
+    }
+    static void CleanupWork(string work, string run) {
+        var temp=Path.GetFullPath(Path.GetTempPath()).TrimEnd(Path.DirectorySeparatorChar)+Path.DirectorySeparatorChar;
+        Need(Path.GetFullPath(work).StartsWith(temp,StringComparison.OrdinalIgnoreCase) && Path.GetFileName(work).StartsWith("2DSC-") && (File.GetAttributes(work)&FileAttributes.ReparsePoint)==0,"E_CLEAN_WORK_ROOT");
+        var owner=ObjectValue(Json.DeserializeObject(File.ReadAllText(Path.Combine(work,"owned-probe.json"))));
+        Need(Is(owner,"format","2dsketcher-owned-probe/1") && Is(owner,"run",run),"E_CLEAN_WORK_OWNER");
+        var pending=new Stack<KeyValuePair<string,bool>>(); pending.Push(new KeyValuePair<string,bool>(work,false));
+        while(pending.Count>0) {
+            var item=pending.Pop();
+            Need(Path.GetFullPath(item.Key).Equals(work,StringComparison.OrdinalIgnoreCase) || Path.GetFullPath(item.Key).StartsWith(work+Path.DirectorySeparatorChar,StringComparison.OrdinalIgnoreCase),"E_CLEAN_WORK_ROOT");
+            if(item.Value) {
+                if(item.Key==work) RetryCleanup(()=>File.Delete(Path.Combine(work,"owned-probe.json")));
+                RetryCleanup(()=>Directory.Delete(item.Key,false)); continue;
+            }
+            if((File.GetAttributes(item.Key)&FileAttributes.ReparsePoint)!=0) { RetryCleanup(()=>Directory.Delete(item.Key,false)); continue; }
+            pending.Push(new KeyValuePair<string,bool>(item.Key,true));
+            foreach(var file in Directory.GetFiles(item.Key)) {
+                if(file==Path.Combine(work,"owned-probe.json")) continue;
+                var target=file; RetryCleanup(()=>File.Delete(target));
+            }
+            foreach(var directory in Directory.GetDirectories(item.Key)) pending.Push(new KeyValuePair<string,bool>(directory,false));
+        }
+    }
     static void Extract(string zip, string target) {
         Need(!Directory.Exists(target), "E_CLEAN_TARGET");
         long total = 0; var names = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -42,6 +72,7 @@ public static class CompletionProbe {
     public static int Main(string[] args) {
         var root = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
         var id = DateTime.UtcNow.ToString("yyyyMMdd-HHmmss-fff") + "-" + Guid.NewGuid().ToString("N").Substring(0,8);
+        string ownedWork=null;
         var result = new Dictionary<string,object> {
             {"format","2dsketcher-clean-probe/1"},{"collectedAt",DateTime.UtcNow.ToString("o")},
             {"passed",false},{"cleanWindowsVerified",false},{"updateVerified",false},{"physicalDevicesOpened",false},
@@ -73,6 +104,7 @@ public static class CompletionProbe {
                 Need(work.StartsWith(tempRoot.TrimEnd(Path.DirectorySeparatorChar)+Path.DirectorySeparatorChar,StringComparison.OrdinalIgnoreCase) && !Directory.Exists(work),"E_CLEAN_WORK_ROOT");
                 Directory.CreateDirectory(work);
                 File.WriteAllText(Path.Combine(work,"owned-probe.json"),Json.Serialize(new Dictionary<string,object>{{"format","2dsketcher-owned-probe/1"},{"run",id},{"candidate",manifest.candidate}}));
+                ownedWork=work;
                 result["privateWorkId"]=Path.GetFileName(work); result["stage"]="extract";
                 var bundle = Path.Combine(work,"new version 한글 경로"); Extract(zip,bundle);
                 var exes = Directory.GetFiles(bundle,"2DSketcher.exe",SearchOption.AllDirectories); Need(exes.Length == 1,"E_CLEAN_EXE");
@@ -87,6 +119,7 @@ public static class CompletionProbe {
                         WorkingDirectory=folder,UseShellExecute=false,CreateNoWindow=true,RedirectStandardOutput=true,RedirectStandardError=true
                     };
                     foreach (var key in new [] {"ELECTRON_RUN_AS_NODE","NODE_OPTIONS","PYTHONPATH","PYTHONHOME"}) start.EnvironmentVariables.Remove(key);
+                    start.EnvironmentVariables["PATH"]=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows),"System32");
                     using (var stdout=new StreamWriter(Path.Combine(work,"private-stdout-"+attempt+".log")))
                     using (var stderr=new StreamWriter(Path.Combine(work,"private-stderr-"+attempt+".log")))
                     using (var child=new Process { StartInfo=start }) {
@@ -94,7 +127,16 @@ public static class CompletionProbe {
                         child.ErrorDataReceived += (s,e) => { if(e.Data!=null)stderr.WriteLine(e.Data); };
                         child.Start(); child.BeginOutputReadLine(); child.BeginErrorReadLine();
                         if(!child.WaitForExit(1200000)) { child.Kill(); child.WaitForExit(); throw new InvalidOperationException("E_CLEAN_TIMEOUT"); }
-                        child.WaitForExit(); Need(child.ExitCode==0 && File.Exists(report),"E_CLEAN_PROCESS");
+                        child.WaitForExit();
+                        if(File.Exists(report)) {
+                            File.Copy(report,Path.Combine(root,"probe-"+id+"-run-"+attempt+".json"),false);
+                            var product=ObjectValue(Json.DeserializeObject(File.ReadAllText(report)));
+                            foreach(var key in new [] {"code","stage","detail"}) {
+                                object found;
+                                if(product.TryGetValue(key,out found) && found is string && System.Text.RegularExpressions.Regex.IsMatch((string)found,"^[A-Za-z0-9_-]{1,100}$")) result["productFailure"+key]=found;
+                            }
+                        }
+                        Need(child.ExitCode==0 && File.Exists(report),"E_CLEAN_PROCESS");
                     }
                     var passed=CheckReport(report,manifest.candidate.version);
                     tests.Add(new Dictionary<string,object>{{"attempt",attempt},{"passed",passed},{"reportSha256",Hash(report)},{"protectionsIntact",passed},{"frozenWorker",passed}});
@@ -106,6 +148,11 @@ public static class CompletionProbe {
         } catch(Exception error) {
             var code=error.Message; result["errorCode"]=System.Text.RegularExpressions.Regex.IsMatch(code,"^E_[A-Z_]+$")?code:"E_CLEAN_PROBE";
             result["errorClass"]=error.GetType().Name;
+        } finally {
+            if(ownedWork!=null) {
+                try { CleanupWork(ownedWork,id); result["ownedTemporaryFilesRemoved"]=true; }
+                catch(Exception cleanup) { result["ownedTemporaryFilesRemoved"]=false; result["cleanupErrorCode"]="E_CLEAN_TEMP_CLEANUP"; result["cleanupErrorClass"]=cleanup.GetType().Name; result["passed"]=false; }
+            }
         }
         var output=Path.Combine(root,"probe-"+id+".json");
         try { using(var file=new FileStream(output,FileMode.CreateNew,FileAccess.Write)) using(var writer=new StreamWriter(file,new System.Text.UTF8Encoding(false))) writer.WriteLine(Json.Serialize(result)); }

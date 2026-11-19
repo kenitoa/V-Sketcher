@@ -1,0 +1,12 @@
+{
+  "group": "intermediate-packages",
+  "removedFiles": 3,
+  "removedLogicalBytes": 926633012,
+  "retainedChangedOrProtectedFiles": 0,
+  "remainingSelectedFiles": 0,
+  "losslessArchiveRetained": true,
+  "wholeArchiveReconstructedBeforeFirstRemoval": true,
+  "sourceHashRecheckedBeforeEachRemoval": true,
+  "recursiveDeletionUsed": false,
+  "historicalEvidenceModified": false
+}

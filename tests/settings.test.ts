@@ -1,22 +1,247 @@
+import { scratchPath } from './temp';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtemp,mkdir,readFile,writeFile,readdir,symlink,rename} from 'node:fs/promises';
-import {resolve,join} from 'node:path';
-import {defaults,assertSettings,RenderMetrics,diagnosticData} from '../packages/settings';
-import {SettingsStore} from '../packages/settings/store';
-import {DiagnosticLog} from '../packages/diagnostics';
-import {ProjectSession} from '../packages/project-session';
-import {readProject} from '../packages/project-model';
-async function folder(){const p=resolve('.local/settings-tests');await mkdir(p,{recursive:true});return mkdtemp(join(p,'run-'));}
-test('T251: machine settings reject unknown fields, unsupported enums and injected consent',()=>{assertSettings(defaults());for(const data of [{...defaults(),training:true},{...defaults(),previewScale:.1},{...defaults(),previewFps:120},{...defaults(),cameraId:'bad\npath'},{...defaults(),recovery:'never'}])assert.throws(()=>assertSettings(data));});
-test('T251: defaults are detached and private default folder never enters public settings view',async()=>{const dir=await folder(),store=new SettingsStore(dir);await store.init();const destination=join(dir,'private saves');await mkdir(destination);await store.setFolder(destination);const view=store.view();assert.equal(view.defaultFolderSet,true);assert.ok(!JSON.stringify(view).includes(destination));view.value.previewFps=15;assert.equal(store.view().value.previewFps,30);});
-test('T251: settings and chosen folder survive serialized concurrent updates and reopen',async()=>{const dir=await folder(),s=new SettingsStore(dir);await s.init();const destination=join(dir,'한글 저장');await mkdir(destination);await Promise.all([s.save({...defaults(),previewFps:15}),s.setFolder(destination),s.save({...defaults(),previewScale:.5})]);const reopen=new SettingsStore(dir);await reopen.init();assert.equal(reopen.folder,destination);assert.equal(reopen.view().value.previewScale,.5);assert.equal(reopen.view().loadError,false);assert.equal((await readdir(dir)).filter(p=>p.endsWith('.tmp')).length,0);});
-test('T251: malformed or unreplaceable settings preserve existing data and clean only their temporary file',async()=>{const dir=await folder(),file=join(dir,'environment.json');await writeFile(file,'invalid sensitive path');const s=new SettingsStore(dir);await s.init();assert.equal(s.view().loadError,true);assert.equal(await readFile(file,'utf8'),'invalid sensitive path');await s.save(defaults());assert.equal(s.view().loadError,false);await rename(file,file+'.backup');await mkdir(file);await writeFile(join(file,'unrelated.txt'),'keep');await assert.rejects(s.save({...defaults(),previewFps:15}));assert.equal(s.view().value.previewFps,30);assert.equal(await readFile(join(file,'unrelated.txt'),'utf8'),'keep');assert.equal((await readdir(dir)).filter(n=>n.endsWith('.tmp')).length,0);});
-test('T251: nonlocal, missing and linked folders fail preserving previous setting',async()=>{const dir=await folder(),s=new SettingsStore(dir);await s.init();await assert.rejects(s.setFolder('relative'));await assert.rejects(s.setFolder('\\\\server\\share'));await assert.rejects(s.setFolder(join(dir,'missing')));const target=join(dir,'folder'),link=join(dir,'linked');await mkdir(target);await symlink(target,link,'junction');await assert.rejects(s.setFolder(link));assert.equal(s.folder,null);});
-test('T254: stored policy cannot enable diagnostic transmission or asset training',async()=>{const s=new SettingsStore(await folder());await s.init();await s.save({...defaults(),cameraRequests:false,microphoneRequests:false,localDiagnostics:false});assert.equal(s.view().diagnosticTransmission,false);assert.equal(s.view().assetTraining,false);assert.equal(s.view().automaticQuality,false);});
-test('T255: submission FPS/p95 carry window and samples; stale input is unmeasured',()=>{const m=new RenderMetrics();assert.equal(m.summary(100).fps.kind,'UNMEASURED');for(let i=0;i<31;i++)m.record(1000+i*1000/30,i===30?20:2);const s=m.summary(2000);assert.ok(Math.abs(s.fps.value!-30)<.01);assert.equal(s.submissionP95.value,2);assert.equal(s.fps.samples,31);assert.equal(s.fps.windowMs,1000);assert.equal(s.endToEnd.kind,'UNMEASURED');assert.equal(m.summary(8000).fps.kind,'UNMEASURED');});
-test('T255: bounded metrics reject invalid samples and reset on clock regression',()=>{const m=new RenderMetrics();m.record(NaN,1);m.record(1000,-1);for(let n=0;n<1000;n++)m.record(1000+n,1);assert.equal(m.summary(1999).fps.samples,600);m.record(1,2);assert.equal(m.summary(1).fps.samples,1);m.reset();assert.equal(m.summary(100).fps.samples,0);});
-test('T258: diagnostic whitelist drops arbitrary nested identifiers, paths, tokens and raw media/errors',()=>{const secret='C:\\Users\\person\\secret.png',v=diagnosticData({run:'normal',camera:'open',microphone:'idle',fps:29,submissionP95:2,textureMiB:12,project:{name:secret},password:secret,error:secret,cameraFrame:secret,pcm:[1,2],url:secret},{app:'0.21.0'});assert.ok(!JSON.stringify(v).includes(secret));assert.equal((v.states as {run:string}).run,'normal');assert.equal((v.measurements as {submittedFps:number}).submittedFps,29);assert.equal(v.networkTransmission,false);});
-test('T258: diagnostic states and numbers cannot smuggle string payloads',()=>{const d=diagnosticData({run:'C:/person',camera:{path:'secret'},fps:'secret',submissionP95:Infinity,textureMiB:-1},{});assert.deepEqual(d.states,{run:'unknown',camera:'unknown',microphone:'unknown'});assert.equal((d.measurements as {submittedFps:null}).submittedFps,null);});
-test('T254: disabling local diagnostic records stops append; enabling resumes safe-only fields',async()=>{const dir=await folder(),log=new DiagnosticLog(dir);log.write('app-start',{version:'0.21.0',path:'secret'});const before=await readFile(join(dir,'events.jsonl'),'utf8');log.configure(false);log.write('worker-error',{code:'E_FAILURE'});assert.equal(await readFile(join(dir,'events.jsonl'),'utf8'),before);log.configure(true);log.write('worker-error',{code:'E_FAILURE',raw:'secret'});const after=await readFile(join(dir,'events.jsonl'),'utf8');assert.ok(after.includes('E_FAILURE'));assert.ok(!after.includes('secret'));});
-test('T251/T256: recovery off preserves manual checkpoints; frequent timing and settings do not mutate project originals',async()=>{const raw=readProject(await readFile('assets/product/preview-project.json','utf8'));assert.equal(raw.mode,'read-write');if(raw.mode!=='read-write')throw new Error();const bytes=new Map<string,Buffer>();for(const a of raw.project.assets)bytes.set(a.id,await readFile(join('assets/product/preview',a.fingerprint.sha256+'.png')));let now=100000;const s=new ProjectSession({dataDir:await folder(),bundled:raw.project,bundledBytes:bytes,autoTimers:false,now:()=>now,dialogs:{saveProject:async()=>null,openProject:async()=>null,relinkImage:async()=>null,unsaved:async()=>'discard'}});await s.init();await s.newProject('recovery','parts');const p=s.view().project!,before=JSON.stringify(p);await s.configureRecovery('off');now+=70000;await s.autosaveDue();assert.equal(s.view().lastRecoveryAt,null);assert.equal(JSON.stringify(s.view().project),before);await s.configureRecovery('frequent');await s.autosaveDue();assert.ok(s.view().lastRecoveryAt);assert.equal(s.view().dirty,true);const p2=s.view().project!;await s.dispatch({type:'edit',target:'project-name',id:null,parameterId:null,value:'changed',expectedRevision:p2.revision,groupId:null});let release!:()=>void;const gate=new Promise<void>(r=>{release=r;}),record=s.catalog.record.bind(s.catalog);s.catalog.record=async()=>{await gate;throw new Error('E_RECOVERY_SPACE');};const pending=s.autosaveDue(true).catch(()=>undefined);let policyApplied=false;const policy=s.configureRecovery('off').then(()=>{policyApplied=true;});await new Promise(r=>setTimeout(r,10));assert.equal(policyApplied,false);release();await Promise.all([pending,policy]);assert.equal(policyApplied,true);s.catalog.record=record;const last=s.view().lastRecoveryAt;now+=70000;await s.autosaveDue();assert.equal(s.view().lastRecoveryAt,last);await s.shutdown();});
+import { mkdtemp, mkdir, readFile, writeFile, readdir, symlink, rename } from 'node:fs/promises';
+import { join } from 'node:path';
+import { defaults, assertSettings, RenderMetrics, diagnosticData } from '../packages/settings';
+import { SettingsStore } from '../packages/settings/store';
+import { DiagnosticLog } from '../packages/diagnostics';
+import { ProjectSession } from '../packages/project-session';
+import { readProject } from '../packages/project-model';
+async function folder() {
+  const p = scratchPath('settings-tests');
+  await mkdir(p, { recursive: true });
+  return mkdtemp(join(p, 'run-'));
+}
+test('T251: machine settings reject unknown fields, unsupported enums and injected consent', () => {
+  assertSettings(defaults());
+  for (const data of [
+    { ...defaults(), training: true },
+    { ...defaults(), previewScale: 0.1 },
+    { ...defaults(), previewFps: 120 },
+    { ...defaults(), cameraId: 'bad\npath' },
+    { ...defaults(), recovery: 'never' },
+  ])
+    assert.throws(() => assertSettings(data));
+});
+test('T251: defaults are detached and private default folder never enters public settings view', async () => {
+  const dir = await folder(),
+    store = new SettingsStore(dir);
+  await store.init();
+  const destination = join(dir, 'private saves');
+  await mkdir(destination);
+  await store.setFolder(destination);
+  const view = store.view();
+  assert.equal(view.defaultFolderSet, true);
+  assert.ok(!JSON.stringify(view).includes(destination));
+  view.value.previewFps = 15;
+  assert.equal(store.view().value.previewFps, 30);
+});
+test('T251: settings and chosen folder survive serialized concurrent updates and reopen', async () => {
+  const dir = await folder(),
+    s = new SettingsStore(dir);
+  await s.init();
+  const destination = join(dir, '한글 저장');
+  await mkdir(destination);
+  await Promise.all([
+    s.save({ ...defaults(), previewFps: 15 }),
+    s.setFolder(destination),
+    s.save({ ...defaults(), previewScale: 0.5 }),
+  ]);
+  const reopen = new SettingsStore(dir);
+  await reopen.init();
+  assert.equal(reopen.folder, destination);
+  assert.equal(reopen.view().value.previewScale, 0.5);
+  assert.equal(reopen.view().loadError, false);
+  assert.equal((await readdir(dir)).filter((p) => p.endsWith('.tmp')).length, 0);
+});
+test('T251: malformed or unreplaceable settings preserve existing data and clean only their temporary file', async () => {
+  const dir = await folder(),
+    file = join(dir, 'environment.json');
+  await writeFile(file, 'invalid sensitive path');
+  const s = new SettingsStore(dir);
+  await s.init();
+  assert.equal(s.view().loadError, true);
+  assert.equal(await readFile(file, 'utf8'), 'invalid sensitive path');
+  await s.save(defaults());
+  assert.equal(s.view().loadError, false);
+  await rename(file, file + '.backup');
+  await mkdir(file);
+  await writeFile(join(file, 'unrelated.txt'), 'keep');
+  await assert.rejects(s.save({ ...defaults(), previewFps: 15 }));
+  assert.equal(s.view().value.previewFps, 30);
+  assert.equal(await readFile(join(file, 'unrelated.txt'), 'utf8'), 'keep');
+  assert.equal((await readdir(dir)).filter((n) => n.endsWith('.tmp')).length, 0);
+});
+test('T251: nonlocal, missing and linked folders fail preserving previous setting', async () => {
+  const dir = await folder(),
+    s = new SettingsStore(dir);
+  await s.init();
+  await assert.rejects(s.setFolder('relative'));
+  await assert.rejects(s.setFolder('\\\\server\\share'));
+  await assert.rejects(s.setFolder(join(dir, 'missing')));
+  const target = join(dir, 'folder'),
+    link = join(dir, 'linked');
+  await mkdir(target);
+  await symlink(target, link, 'junction');
+  await assert.rejects(s.setFolder(link));
+  assert.equal(s.folder, null);
+});
+test('T254: stored policy cannot enable diagnostic transmission or asset training', async () => {
+  const s = new SettingsStore(await folder());
+  await s.init();
+  await s.save({
+    ...defaults(),
+    cameraRequests: false,
+    microphoneRequests: false,
+    localDiagnostics: false,
+  });
+  assert.equal(s.view().diagnosticTransmission, false);
+  assert.equal(s.view().assetTraining, false);
+  assert.equal(s.view().automaticQuality, false);
+});
+test('T255: submission FPS/p95 carry window and samples; stale input is unmeasured', () => {
+  const m = new RenderMetrics();
+  assert.equal(m.summary(100).fps.kind, 'UNMEASURED');
+  for (let i = 0; i < 31; i++) m.record(1000 + (i * 1000) / 30, i === 30 ? 20 : 2);
+  const s = m.summary(2000);
+  assert.ok(Math.abs(s.fps.value! - 30) < 0.01);
+  assert.equal(s.submissionP95.value, 2);
+  assert.equal(s.fps.samples, 31);
+  assert.equal(s.fps.windowMs, 1000);
+  assert.equal(s.endToEnd.kind, 'UNMEASURED');
+  assert.equal(m.summary(8000).fps.kind, 'UNMEASURED');
+});
+test('T255: bounded metrics reject invalid samples and reset on clock regression', () => {
+  const m = new RenderMetrics();
+  m.record(NaN, 1);
+  m.record(1000, -1);
+  for (let n = 0; n < 1000; n++) m.record(1000 + n, 1);
+  assert.equal(m.summary(1999).fps.samples, 600);
+  m.record(1, 2);
+  assert.equal(m.summary(1).fps.samples, 1);
+  m.reset();
+  assert.equal(m.summary(100).fps.samples, 0);
+});
+test('T258: diagnostic whitelist drops arbitrary nested identifiers, paths, tokens and raw media/errors', () => {
+  const secret = 'C:\\Users\\person\\secret.png',
+    v = diagnosticData(
+      {
+        run: 'normal',
+        camera: 'open',
+        microphone: 'idle',
+        fps: 29,
+        submissionP95: 2,
+        textureMiB: 12,
+        project: { name: secret },
+        password: secret,
+        error: secret,
+        cameraFrame: secret,
+        pcm: [1, 2],
+        url: secret,
+      },
+      { app: '0.21.0' },
+    );
+  assert.ok(!JSON.stringify(v).includes(secret));
+  assert.equal((v.states as { run: string }).run, 'normal');
+  assert.equal((v.measurements as { submittedFps: number }).submittedFps, 29);
+  assert.equal(v.networkTransmission, false);
+});
+test('T258: diagnostic states and numbers cannot smuggle string payloads', () => {
+  const d = diagnosticData(
+    {
+      run: 'C:/person',
+      camera: { path: 'secret' },
+      fps: 'secret',
+      submissionP95: Infinity,
+      textureMiB: -1,
+    },
+    {},
+  );
+  assert.deepEqual(d.states, { run: 'unknown', camera: 'unknown', microphone: 'unknown' });
+  assert.equal((d.measurements as { submittedFps: null }).submittedFps, null);
+});
+test('T254: disabling local diagnostic records stops append; enabling resumes safe-only fields', async () => {
+  const dir = await folder(),
+    log = new DiagnosticLog(dir);
+  log.write('app-start', { version: '0.21.0', path: 'secret' });
+  const before = await readFile(join(dir, 'events.jsonl'), 'utf8');
+  log.configure(false);
+  log.write('worker-error', { code: 'E_FAILURE' });
+  assert.equal(await readFile(join(dir, 'events.jsonl'), 'utf8'), before);
+  log.configure(true);
+  log.write('worker-error', { code: 'E_FAILURE', raw: 'secret' });
+  const after = await readFile(join(dir, 'events.jsonl'), 'utf8');
+  assert.ok(after.includes('E_FAILURE'));
+  assert.ok(!after.includes('secret'));
+});
+test('T251/T256: recovery off preserves manual checkpoints; frequent timing and settings do not mutate project originals', async () => {
+  const raw = readProject(await readFile('assets/product/preview-project.json', 'utf8'));
+  assert.equal(raw.mode, 'read-write');
+  if (raw.mode !== 'read-write') throw new Error();
+  const bytes = new Map<string, Buffer>();
+  for (const a of raw.project.assets)
+    bytes.set(a.id, await readFile(join('assets/product/preview', a.fingerprint.sha256 + '.png')));
+  let now = 100000;
+  const s = new ProjectSession({
+    dataDir: await folder(),
+    bundled: raw.project,
+    bundledBytes: bytes,
+    autoTimers: false,
+    now: () => now,
+    dialogs: {
+      saveProject: async () => null,
+      openProject: async () => null,
+      relinkImage: async () => null,
+      unsaved: async () => 'discard',
+    },
+  });
+  await s.init();
+  await s.newProject('recovery', 'parts');
+  const p = s.view().project!,
+    before = JSON.stringify(p);
+  await s.configureRecovery('off');
+  now += 70000;
+  await s.autosaveDue();
+  assert.equal(s.view().lastRecoveryAt, null);
+  assert.equal(JSON.stringify(s.view().project), before);
+  await s.configureRecovery('frequent');
+  await s.autosaveDue();
+  assert.ok(s.view().lastRecoveryAt);
+  assert.equal(s.view().dirty, true);
+  const p2 = s.view().project!;
+  await s.dispatch({
+    type: 'edit',
+    target: 'project-name',
+    id: null,
+    parameterId: null,
+    value: 'changed',
+    expectedRevision: p2.revision,
+    groupId: null,
+  });
+  let release!: () => void;
+  const gate = new Promise<void>((r) => {
+      release = r;
+    }),
+    record = s.catalog.record.bind(s.catalog);
+  s.catalog.record = async () => {
+    await gate;
+    throw new Error('E_RECOVERY_SPACE');
+  };
+  const pending = s.autosaveDue(true).catch(() => undefined);
+  let policyApplied = false;
+  const policy = s.configureRecovery('off').then(() => {
+    policyApplied = true;
+  });
+  await new Promise((r) => setTimeout(r, 10));
+  assert.equal(policyApplied, false);
+  release();
+  await Promise.all([pending, policy]);
+  assert.equal(policyApplied, true);
+  s.catalog.record = record;
+  const last = s.view().lastRecoveryAt;
+  now += 70000;
+  await s.autosaveDue();
+  assert.equal(s.view().lastRecoveryAt, last);
+  await s.shutdown();
+});

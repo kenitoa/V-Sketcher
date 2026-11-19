@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "verifiedAgainstPreexistingDigests": true,
+  "results": [
+    {
+      "group": "intermediate-packages",
+      "file": "2DSketcher-win32-x64-0.22.3.zip",
+      "bytes": 308882122,
+      "sha256": "5787316bf57ef755eebffb9be4ab68ebc32ceba0060c8b79f247221b3ece1a18",
+      "zipEntriesChecked": 1109
+    },
+    {
+      "group": "research-weights",
+      "file": "model.ckpt",
+      "bytes": 1677246742,
+      "sha256": "429e2c6b22a0923967459de24d67f05962b235f79cde6b032aa7ed2ffcd970ee"
+    }
+  ]
+}

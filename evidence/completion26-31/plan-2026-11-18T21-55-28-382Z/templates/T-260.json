@@ -1,0 +1,35 @@
+{
+  "format": "2dsketcher-completion/1",
+  "candidate": {
+    "version": "0.22.1",
+    "sha256": "e5e4f3a5820d4a3563dfcce9b8cba3eccc1ce50d8673db0cb45a0c4030590ad3"
+  },
+  "taskId": "T-260",
+  "kind": "physical2d",
+  "origin": null,
+  "collectedAt": null,
+  "review": {
+    "verdict": null,
+    "role": null
+  },
+  "artifacts": [],
+  "measurements": {
+    "cameraModels": null,
+    "microphoneModels": null,
+    "frames": null,
+    "validFaceRatio": null,
+    "cameraUnplugTrials": null,
+    "microphoneUnplugTrials": null,
+    "lossMaxMs": null,
+    "neutralMaxMs": null,
+    "recoveryMaxMs": null,
+    "actualHuman": false,
+    "permissionDenied": false,
+    "deviceBusy": false,
+    "noDevice": false,
+    "multipleFaces": false,
+    "noiseAndSpeechSeparated": false,
+    "unrelatedSaveAndOutputRemainUsable": false,
+    "rawMediaStored": null
+  }
+}

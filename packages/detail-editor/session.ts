@@ -1,31 +1,267 @@
-import {randomUUID} from 'node:crypto';
-import type {Project,Asset} from '../project-model';
-import type {Workflow} from '../workflow';
-import type {ResourceCache} from '../project-storage/cache';
-import {readSnapshot,hash} from '../split-image/archive';
-import type {SplitProcessor} from '../split-image/types';
-import {propose,protectedIds,resolveLocation} from './model';
-import type {DetailOperation,DetailImpact,DetailLocation} from './types';
-interface Host {flow:Workflow;cache:ResourceCache;current():boolean;checkpoint():Promise<void>;commit(p:Project):Promise<void>;emit():void;}
-interface Candidate {id:string;revision:number;operation:DetailOperation;project:Project;impact:DetailImpact;extraAssetIds:string[];}
+import { randomUUID } from 'node:crypto';
+import type { Project, Asset } from '../project-model';
+import type { Workflow } from '../workflow';
+import type { ResourceCache } from '../project-storage/cache';
+import { readSnapshot, hash } from '../split-image/archive';
+import type { SplitProcessor } from '../split-image/types';
+import { propose, protectedIds, resolveLocation } from './model';
+import type { DetailOperation, DetailImpact, DetailLocation } from './types';
+interface Host {
+  flow: Workflow;
+  cache: ResourceCache;
+  current(): boolean;
+  checkpoint(): Promise<void>;
+  commit(p: Project): Promise<void>;
+  emit(): void;
+}
+interface Candidate {
+  id: string;
+  revision: number;
+  operation: DetailOperation;
+  project: Project;
+  impact: DetailImpact;
+  extraAssetIds: string[];
+}
 export class DetailSession {
- private candidate:Candidate|null=null;private generation=0;private busy=false;private jobId:string|null=null;private errorCode:string|null=null;private location:DetailLocation|null=null;private serial=0;private selection:{partId:string|null;parameterId:string|null}={partId:null,parameterId:null};
- constructor(private host:Host,private processor?:SplitProcessor){}
- view(){const fresh=this.candidate?.revision===this.host.flow.project().revision?this.candidate:null;return {busy:this.busy,errorCode:this.errorCode,jobId:this.jobId,location:this.location,openSerial:this.serial,...this.selection,draftId:fresh?.id??null,operation:fresh?.operation??null,impact:fresh?.impact??null,canApply:!this.busy&&!!fresh,protectedPartIds:protectedIds(this.host.flow.project()),protectedGroupIds:this.host.flow.project().detail?.groups.map(g=>g.id)??[],extraAssetIds:fresh?.extraAssetIds??[]};}
- preview():Project|null{return this.candidate?.revision===this.host.flow.project().revision?this.candidate.project:null;}
- open(location:DetailLocation){try{this.selection=resolveLocation(this.host.flow.project(),location);this.location=structuredClone(location);this.serial++;this.errorCode=null;this.host.emit();}catch{this.errorCode='E_DETAIL_LOCATION';this.serial++;this.host.emit();throw new Error('E_DETAIL_LOCATION');}}
- private available(revision:number){if(this.busy||this.host.flow.view().jobs.some(j=>['QUEUED','RUNNING','CANCEL_REQUESTED'].includes(j.state)))throw new Error('E_DETAIL_BUSY');if(!this.host.current()||revision!==this.host.flow.project().revision)throw new Error('E_DETAIL_STALE');}
- prepare(operation:DetailOperation,revision:number){this.available(revision);this.candidate=null;this.errorCode=null;try{const r=propose(this.host.flow.project(),operation);this.candidate={id:randomUUID(),revision,operation:structuredClone(operation),...r,extraAssetIds:[]};this.host.emit();}catch(e){this.errorCode=e instanceof Error&&/^E_[A-Z_]+$/.test(e.message)?e.message:'E_DETAIL_PREPARE';this.host.emit();throw new Error(this.errorCode);}}
- importTexture(path:string,partId:string,state:string,revision:number){
-  this.available(revision);if(!this.processor)throw new Error('E_DETAIL_IMPORT_UNAVAILABLE');const input=this.host.flow.project(),part=input.parts.find(v=>v.id===partId);if(!part?.textures.some(t=>t.state===state))throw new Error('E_DETAIL_TEXTURE');const gen=++this.generation;this.busy=true;this.candidate=null;this.errorCode=null;
-  const job=this.host.flow.start({key:'detail-texture-'+randomUUID(),label:'부위 PNG 교체 후보 준비',kind:'preview',processingVersion:'1.0.0',settings:{scope:'one-authored-png-state'},steps:[{id:'snapshot-and-decode',version:'1.0.0',cache:'none',cancellable:true,run:async ctx=>{
-   const raw=await readSnapshot(path,64*1024*1024),key=hash(raw),result=await this.processor!.probe(new Map([[key,raw]]),ctx.signal),image=result.images[0]!,normal=result.files.get(key);if(!normal)throw new Error('E_DETAIL_TEXTURE');ctx.checkpoint();
-   const base:Asset={id:randomUUID(),kind:'original-image',origin:'imported',parentAssetIds:[],storage:{path:'resources/'+key+'.png'},fingerprint:{sha256:key,bytes:raw.length},version:1,mediaType:'image/png',dimensions:{width:image.width,height:image.height},sourceRegion:{x:0,y:0,width:image.width,height:image.height},sourceToEdited:[1,0,0,1,0,0],colorSpace:image.iccConverted?'unknown':'srgb',alphaMode:image.opaque?'opaque':'straight',producer:{name:'detail-png-input',version:'1.0.0'},attribution:{creator:'User supplied',source:'Local PNG texture',usage:'User responsibility',status:'unverified'}};
-   const normalized:Asset={...structuredClone(base),id:randomUUID(),kind:'part-texture',origin:'manual-edit',parentAssetIds:[base.id],storage:{path:'resources/'+hash(normal)+'.png'},fingerprint:{sha256:hash(normal),bytes:normal.length},colorSpace:'srgb'};const project=structuredClone(input);project.assets.push(base,normalized);project.inputAssetIds.push(base.id);const operation:DetailOperation={kind:'texture',partId,state,assetId:normalized.id},r=propose(project,operation);
-   for(const [a,bytes] of [[base,raw],[normalized,normal]] as const){ctx.checkpoint();await this.host.cache.put(a,bytes);}if(gen!==this.generation||!this.host.current()||revision!==this.host.flow.project().revision)throw new Error('E_DETAIL_STALE');this.candidate={id:randomUUID(),revision,operation,...r,extraAssetIds:[base.id,normalized.id]};return {prepared:true};
-  }}],collect:(_p,identity)=>({identity,outcome:{kind:'checked',reportId:'detail-texture',dependencies:['references:*']}})});this.jobId=job.jobId;this.host.emit();void this.host.flow.wait(job.jobId).then(result=>{if(gen!==this.generation||!this.host.current())return;this.busy=false;if(result.state!=='SUCCEEDED'||revision!==this.host.flow.project().revision){this.candidate=null;this.errorCode=revision!==this.host.flow.project().revision?'E_DETAIL_STALE':result.errorCode??'E_DETAIL_IMPORT';}this.host.emit();});
- }
- async apply(id:string,revision:number){this.available(revision);const c=this.candidate;if(!c||c.id!==id||c.revision!==revision)throw new Error('E_DETAIL_STALE');const gen=this.generation;this.busy=true;this.host.emit();try{await this.host.checkpoint();if(gen!==this.generation||!this.host.current()||this.host.flow.project().revision!==revision)throw new Error('E_DETAIL_STALE');await this.host.commit(c.project);this.candidate=null;this.errorCode=null;}catch(e){this.errorCode=e instanceof Error&&/^E_[A-Z_]+$/.test(e.message)?e.message:'E_DETAIL_APPLY';throw new Error(this.errorCode);}finally{if(gen===this.generation){this.busy=false;this.host.emit();}}}
- cancel(){++this.generation;if(this.busy&&this.jobId)this.host.flow.cancel(this.jobId);this.candidate=null;this.busy=false;this.errorCode=null;this.host.emit();}
- dispose(){this.cancel();}
+  private candidate: Candidate | null = null;
+  private generation = 0;
+  private busy = false;
+  private jobId: string | null = null;
+  private errorCode: string | null = null;
+  private location: DetailLocation | null = null;
+  private serial = 0;
+  private selection: { partId: string | null; parameterId: string | null } = {
+    partId: null,
+    parameterId: null,
+  };
+  constructor(
+    private host: Host,
+    private processor?: SplitProcessor,
+  ) {}
+  view() {
+    const fresh =
+      this.candidate?.revision === this.host.flow.project().revision ? this.candidate : null;
+    return {
+      busy: this.busy,
+      errorCode: this.errorCode,
+      jobId: this.jobId,
+      location: this.location,
+      openSerial: this.serial,
+      ...this.selection,
+      draftId: fresh?.id ?? null,
+      operation: fresh?.operation ?? null,
+      impact: fresh?.impact ?? null,
+      canApply: !this.busy && !!fresh,
+      protectedPartIds: protectedIds(this.host.flow.project()),
+      protectedGroupIds: this.host.flow.project().detail?.groups.map((g) => g.id) ?? [],
+      extraAssetIds: fresh?.extraAssetIds ?? [],
+    };
+  }
+  preview(): Project | null {
+    return this.candidate?.revision === this.host.flow.project().revision
+      ? this.candidate.project
+      : null;
+  }
+  open(location: DetailLocation) {
+    try {
+      this.selection = resolveLocation(this.host.flow.project(), location);
+      this.location = structuredClone(location);
+      this.serial++;
+      this.errorCode = null;
+      this.host.emit();
+    } catch {
+      this.errorCode = 'E_DETAIL_LOCATION';
+      this.serial++;
+      this.host.emit();
+      throw new Error('E_DETAIL_LOCATION');
+    }
+  }
+  private available(revision: number) {
+    if (
+      this.busy ||
+      this.host.flow
+        .view()
+        .jobs.some((j) => ['QUEUED', 'RUNNING', 'CANCEL_REQUESTED'].includes(j.state))
+    )
+      throw new Error('E_DETAIL_BUSY');
+    if (!this.host.current() || revision !== this.host.flow.project().revision)
+      throw new Error('E_DETAIL_STALE');
+  }
+  prepare(operation: DetailOperation, revision: number) {
+    this.available(revision);
+    this.candidate = null;
+    this.errorCode = null;
+    try {
+      const r = propose(this.host.flow.project(), operation);
+      this.candidate = {
+        id: randomUUID(),
+        revision,
+        operation: structuredClone(operation),
+        ...r,
+        extraAssetIds: [],
+      };
+      this.host.emit();
+    } catch (e) {
+      this.errorCode =
+        e instanceof Error && /^E_[A-Z_]+$/.test(e.message) ? e.message : 'E_DETAIL_PREPARE';
+      this.host.emit();
+      throw new Error(this.errorCode);
+    }
+  }
+  importTexture(path: string, partId: string, state: string, revision: number) {
+    this.available(revision);
+    if (!this.processor) throw new Error('E_DETAIL_IMPORT_UNAVAILABLE');
+    const input = this.host.flow.project(),
+      part = input.parts.find((v) => v.id === partId);
+    if (!part?.textures.some((t) => t.state === state)) throw new Error('E_DETAIL_TEXTURE');
+    const gen = ++this.generation;
+    this.busy = true;
+    this.candidate = null;
+    this.errorCode = null;
+    const job = this.host.flow.start({
+      key: 'detail-texture-' + randomUUID(),
+      label: '부위 PNG 교체 후보 준비',
+      kind: 'preview',
+      processingVersion: '1.0.0',
+      settings: { scope: 'one-authored-png-state' },
+      steps: [
+        {
+          id: 'snapshot-and-decode',
+          version: '1.0.0',
+          cache: 'none',
+          cancellable: true,
+          run: async (ctx) => {
+            const raw = await readSnapshot(path, 64 * 1024 * 1024),
+              key = hash(raw),
+              result = await this.processor!.probe(new Map([[key, raw]]), ctx.signal),
+              image = result.images[0]!,
+              normal = result.files.get(key);
+            if (!normal) throw new Error('E_DETAIL_TEXTURE');
+            ctx.checkpoint();
+            const base: Asset = {
+              id: randomUUID(),
+              kind: 'original-image',
+              origin: 'imported',
+              parentAssetIds: [],
+              storage: { path: 'resources/' + key + '.png' },
+              fingerprint: { sha256: key, bytes: raw.length },
+              version: 1,
+              mediaType: 'image/png',
+              dimensions: { width: image.width, height: image.height },
+              sourceRegion: { x: 0, y: 0, width: image.width, height: image.height },
+              sourceToEdited: [1, 0, 0, 1, 0, 0],
+              colorSpace: image.iccConverted ? 'unknown' : 'srgb',
+              alphaMode: image.opaque ? 'opaque' : 'straight',
+              producer: { name: 'detail-png-input', version: '1.0.0' },
+              attribution: {
+                creator: 'User supplied',
+                source: 'Local PNG texture',
+                usage: 'User responsibility',
+                status: 'unverified',
+              },
+            };
+            const normalized: Asset = {
+              ...structuredClone(base),
+              id: randomUUID(),
+              kind: 'part-texture',
+              origin: 'manual-edit',
+              parentAssetIds: [base.id],
+              storage: { path: 'resources/' + hash(normal) + '.png' },
+              fingerprint: { sha256: hash(normal), bytes: normal.length },
+              colorSpace: 'srgb',
+            };
+            const project = structuredClone(input);
+            project.assets.push(base, normalized);
+            project.inputAssetIds.push(base.id);
+            const operation: DetailOperation = {
+                kind: 'texture',
+                partId,
+                state,
+                assetId: normalized.id,
+              },
+              r = propose(project, operation);
+            for (const [a, bytes] of [
+              [base, raw],
+              [normalized, normal],
+            ] as const) {
+              ctx.checkpoint();
+              await this.host.cache.put(a, bytes);
+            }
+            if (
+              gen !== this.generation ||
+              !this.host.current() ||
+              revision !== this.host.flow.project().revision
+            )
+              throw new Error('E_DETAIL_STALE');
+            this.candidate = {
+              id: randomUUID(),
+              revision,
+              operation,
+              ...r,
+              extraAssetIds: [base.id, normalized.id],
+            };
+            return { prepared: true };
+          },
+        },
+      ],
+      collect: (_p, identity) => ({
+        identity,
+        outcome: { kind: 'checked', reportId: 'detail-texture', dependencies: ['references:*'] },
+      }),
+    });
+    this.jobId = job.jobId;
+    this.host.emit();
+    void this.host.flow.wait(job.jobId).then((result) => {
+      if (gen !== this.generation || !this.host.current()) return;
+      this.busy = false;
+      if (result.state !== 'SUCCEEDED' || revision !== this.host.flow.project().revision) {
+        this.candidate = null;
+        this.errorCode =
+          revision !== this.host.flow.project().revision
+            ? 'E_DETAIL_STALE'
+            : (result.errorCode ?? 'E_DETAIL_IMPORT');
+      }
+      this.host.emit();
+    });
+  }
+  async apply(id: string, revision: number) {
+    this.available(revision);
+    const c = this.candidate;
+    if (!c || c.id !== id || c.revision !== revision) throw new Error('E_DETAIL_STALE');
+    const gen = this.generation;
+    this.busy = true;
+    this.host.emit();
+    try {
+      await this.host.checkpoint();
+      if (
+        gen !== this.generation ||
+        !this.host.current() ||
+        this.host.flow.project().revision !== revision
+      )
+        throw new Error('E_DETAIL_STALE');
+      await this.host.commit(c.project);
+      this.candidate = null;
+      this.errorCode = null;
+    } catch (e) {
+      this.errorCode =
+        e instanceof Error && /^E_[A-Z_]+$/.test(e.message) ? e.message : 'E_DETAIL_APPLY';
+      throw new Error(this.errorCode);
+    } finally {
+      if (gen === this.generation) {
+        this.busy = false;
+        this.host.emit();
+      }
+    }
+  }
+  cancel() {
+    ++this.generation;
+    if (this.busy && this.jobId) this.host.flow.cancel(this.jobId);
+    this.candidate = null;
+    this.busy = false;
+    this.errorCode = null;
+    this.host.emit();
+  }
+  dispose() {
+    this.cancel();
+  }
 }

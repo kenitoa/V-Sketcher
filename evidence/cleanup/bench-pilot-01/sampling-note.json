@@ -1,0 +1,7 @@
+{
+  "performanceScope": "pilot only",
+  "memorySamplePhase": "after renderer disposal",
+  "activeMemoryReductionValidated": false,
+  "durationIncludedDiagnosticReadback": true,
+  "supersededBy": "bench-final-02 for final active-memory and timing assessment"
+}

@@ -1,4 +1,5 @@
 """Inventory all features/AC/FT without promoting automated checks to acceptance."""
+
 import argparse
 import json
 import re
@@ -41,30 +42,48 @@ def main():
     for feature in features:
         family = feature.split('-')[1]
         if family in ('3D', 'GEN'):
-            rows.append({'feature': feature, 'scope': 'MANDATORY_LONG_TERM',
-                         'scenario': 'FT-22' if family == '3D' else 'FT-23'})
+            rows.append(
+                {
+                    'feature': feature,
+                    'scope': 'MANDATORY_LONG_TERM',
+                    'scenario': 'FT-22' if family == '3D' else 'FT-23',
+                }
+            )
         else:
             ac, ft, evidence = groups[family]
-            rows.append({'feature': feature, 'scope': 'INITIAL',
-                         'acceptance': [f'AC-{n:02}' for n in ac],
-                         'scenarios': [f'FT-{n:02}' for n in ft],
-                         'automatedEvidenceSection': evidence,
-                         'acceptanceStatus': 'REVIEW_REQUIRED'})
+            rows.append(
+                {
+                    'feature': feature,
+                    'scope': 'INITIAL',
+                    'acceptance': [f'AC-{n:02}' for n in ac],
+                    'scenarios': [f'FT-{n:02}' for n in ft],
+                    'automatedEvidenceSection': evidence,
+                    'acceptanceStatus': 'REVIEW_REQUIRED',
+                }
+            )
     initial = [r for r in rows if r['scope'] == 'INITIAL']
     assert len(initial) == 46
     assert set(acceptance) == {a for r in initial for a in r['acceptance']}
     assert set(scenarios[:21]) == {f for r in initial for f in r['scenarios']}
-    result = {'inventoryPassed': True, 'initialFeatures': 46, 'longTermFeatures': 6,
-              'features': rows, 'acceptance': acceptance, 'scenarios': scenarios,
-              'unresolvedAcceptance': {
-                  'AC-06': 'T-190 real human camera tracking/calibration not passed',
-                  'AC-07': 'Physical unplug and human/noise environments not fully observed',
-                  'AC-09': 'Fresh actual OBS receipt required for all three routes',
-                  'AC-10': 'T-274/276 duration and end-to-end performance not measured',
-                  'AC-11': 'Fresh official independent runtime receipt required',
-                  'AC-14': 'T-271/272 physical storage and abnormal termination pending',
-                  'AC-15': 'T-281/282 novice observation not performed'},
-              'm0': 'HOLD', 'releasePassed': False}
+    result = {
+        'inventoryPassed': True,
+        'initialFeatures': 46,
+        'longTermFeatures': 6,
+        'features': rows,
+        'acceptance': acceptance,
+        'scenarios': scenarios,
+        'unresolvedAcceptance': {
+            'AC-06': 'T-190 real human camera tracking/calibration not passed',
+            'AC-07': 'Physical unplug and human/noise environments not fully observed',
+            'AC-09': 'Fresh actual OBS receipt required for all three routes',
+            'AC-10': 'T-274/276 duration and end-to-end performance not measured',
+            'AC-11': 'Fresh official independent runtime receipt required',
+            'AC-14': 'T-271/272 physical storage and abnormal termination pending',
+            'AC-15': 'T-281/282 novice observation not performed',
+        },
+        'm0': 'HOLD',
+        'releasePassed': False,
+    }
     (out / 'coverage.json').write_text(json.dumps(result, indent=2) + '\n', encoding='utf8')
     print('Coverage: 52 features, 46 initial, 15 AC, 21 initial FT; acceptance remains separate.')
 

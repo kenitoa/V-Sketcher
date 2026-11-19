@@ -1,10 +1,158 @@
 import assert from 'node:assert/strict';
-import {createRequire} from 'node:module';
-import {readFile,writeFile,mkdir,readdir,stat} from 'node:fs/promises';
-import {join,resolve} from 'node:path';
-import {randomUUID} from 'node:crypto';
-const require=createRequire(import.meta.url),{readBundle,encodeBundle,decodeBundle,sha256}=require('../.local/test-js/packages/project-storage/archive'),{propose}=require('../.local/test-js/packages/detail-editor/model'),{assertProject}=require('../.local/test-js/packages/project-model');
-const base=resolve('.local/smoke/development');const folders=await Promise.all((await readdir(base,{withFileTypes:true})).filter(v=>v.isDirectory()&&v.name.startsWith('profile-')).map(async v=>({path:join(base,v.name),time:(await stat(join(base,v.name))).mtimeMs})));folders.sort((a,b)=>b.time-a.time);let profile=process.argv.find(v=>v.startsWith('--profile-dir='))?.slice(14);if(!profile)for(const folder of folders){try{await stat(join(folder.path,'detail-split.2dsketch'));profile=folder.path;break;}catch{/* Only a completed actual three-route UI run is accepted. */}}if(!profile)throw new Error('E_DETAIL_UI_FIXTURE');
-const results=[];for(const [route,name] of [['parts','detail-parts'],['single-image','detail-single'],['split-image','detail-split']]){const file=join(profile,name+'.2dsketch'),original=sha256(await readFile(file)),bundle=await readBundle(file,false);assert.ok(bundle.project);const p=structuredClone(bundle.project),left=p.parameters.find(p=>p.previewKey==='eye_left'),right=p.parameters.find(p=>p.previewKey==='eye_right'),head=p.parameters.find(p=>p.previewKey==='head_yaw');p.expressions.push({id:randomUUID(),displayName:'Manual asymmetric locked expression',values:[{parameterId:left.id,value:.35,locked:true},{parameterId:right.id,value:.8,locked:false}],transitionMs:150,release:'live-input'});p.inputBindings.push({id:randomUUID(),source:'manual',channel:'preservation-check',parameterId:left.id,inputRange:[0,1],invert:true,gain:.8,offset:.05,smoothingMs:75,fallback:{mode:'hold',value:.4,returnMs:250}});p.exportProfiles.push({id:randomUUID(),revision:0,displayName:'Unvalidated future conversion profile',target:'inochi2d',targetVersion:'0.8.7',format:'inp',converterVersion:'0.0.0',parameterMap:[{parameterId:head.id,targetName:'HeadX'}]});p.motion.settings={strength:.65,smoothingMs:230,pose:[{parameterId:left.id,value:.6}]};assertProject(p);const m=p.motion.meshes.find(m=>m.partId===p.parts.find(v=>v.role==='head'||v.role==='base').id),next=propose(p,{kind:'mesh',partId:m.partId,pivot:[m.pivot[0]+1,m.pivot[1]+1],curve:m.curve,yawParameterId:m.yawParameterId,rollParameterId:m.rollParameterId}).project;
- for(const field of ['projectId','parameters','expressions','inputBindings','exportProfiles','parts','assets'])assert.deepEqual(next[field],p[field]);assert.deepEqual(next.motion.settings,p.motion.settings);assert.deepEqual(next.motion.meshes.filter(v=>v.partId!==m.partId),p.motion.meshes.filter(v=>v.partId!==m.partId));const restored=propose(next,{kind:'restore',partId:m.partId,scope:'mesh'}).project;assert.deepEqual(restored.motion.settings,p.motion.settings);assert.deepEqual(restored.expressions,p.expressions);assert.deepEqual(restored.inputBindings,p.inputBindings);const roundtrip=await decodeBundle(await encodeBundle(next,bundle.resources,'manual'),false);for(const field of ['detail','parameters','expressions','inputBindings','exportProfiles','motion'])assert.deepEqual(roundtrip.project[field],next[field]);assert.equal(sha256(await readFile(file)),original);results.push({route,passed:true,sourceBundleUnchanged:true,nonemptyAsymmetricLockedExpression:true,inputAndFallback:true,exportMapRetainedUnvalidated:true,nondefaultSettingsAndPose:true,otherMeshesAndAssets:true,selectedRestoreKeepsSettings:true,bundleRoundtrip:true});}
-await mkdir('evidence/phase17',{recursive:true});await writeFile('evidence/phase17/preservation.json',JSON.stringify({passed:true,routes:results,devicesOpened:false,scope:'Supplemental configured expression/input/export/settings preservation using actual three-route UI bundles and public detail model; no expression UI, device, broadcast or export compatibility approval'},null,2)+'\n');console.log('Nonempty configured data preserved across all three actual route bundles.');
+import { createRequire } from 'node:module';
+import { readFile, writeFile, mkdir, readdir, stat } from 'node:fs/promises';
+import { join, resolve } from 'node:path';
+import { randomUUID } from 'node:crypto';
+const require = createRequire(import.meta.url),
+  {
+    readBundle,
+    encodeBundle,
+    decodeBundle,
+    sha256,
+  } = require('../.local/test-js/packages/project-storage/archive'),
+  { propose } = require('../.local/test-js/packages/detail-editor/model'),
+  { assertProject } = require('../.local/test-js/packages/project-model');
+const base = resolve('.local/smoke/development');
+const folders = await Promise.all(
+  (await readdir(base, { withFileTypes: true }))
+    .filter((v) => v.isDirectory() && v.name.startsWith('profile-'))
+    .map(async (v) => ({
+      path: join(base, v.name),
+      time: (await stat(join(base, v.name))).mtimeMs,
+    })),
+);
+folders.sort((a, b) => b.time - a.time);
+let profile = process.argv.find((v) => v.startsWith('--profile-dir='))?.slice(14);
+if (!profile)
+  for (const folder of folders) {
+    try {
+      await stat(join(folder.path, 'detail-split.2dsketch'));
+      profile = folder.path;
+      break;
+    } catch {
+      /* Only a completed actual three-route UI run is accepted. */
+    }
+  }
+if (!profile) throw new Error('E_DETAIL_UI_FIXTURE');
+const results = [];
+for (const [route, name] of [
+  ['parts', 'detail-parts'],
+  ['single-image', 'detail-single'],
+  ['split-image', 'detail-split'],
+]) {
+  const file = join(profile, name + '.2dsketch'),
+    original = sha256(await readFile(file)),
+    bundle = await readBundle(file, false);
+  assert.ok(bundle.project);
+  const p = structuredClone(bundle.project),
+    left = p.parameters.find((p) => p.previewKey === 'eye_left'),
+    right = p.parameters.find((p) => p.previewKey === 'eye_right'),
+    head = p.parameters.find((p) => p.previewKey === 'head_yaw');
+  p.expressions.push({
+    id: randomUUID(),
+    displayName: 'Manual asymmetric locked expression',
+    values: [
+      { parameterId: left.id, value: 0.35, locked: true },
+      { parameterId: right.id, value: 0.8, locked: false },
+    ],
+    transitionMs: 150,
+    release: 'live-input',
+  });
+  p.inputBindings.push({
+    id: randomUUID(),
+    source: 'manual',
+    channel: 'preservation-check',
+    parameterId: left.id,
+    inputRange: [0, 1],
+    invert: true,
+    gain: 0.8,
+    offset: 0.05,
+    smoothingMs: 75,
+    fallback: { mode: 'hold', value: 0.4, returnMs: 250 },
+  });
+  p.exportProfiles.push({
+    id: randomUUID(),
+    revision: 0,
+    displayName: 'Unvalidated future conversion profile',
+    target: 'inochi2d',
+    targetVersion: '0.8.7',
+    format: 'inp',
+    converterVersion: '0.0.0',
+    parameterMap: [{ parameterId: head.id, targetName: 'HeadX' }],
+  });
+  p.motion.settings = {
+    strength: 0.65,
+    smoothingMs: 230,
+    pose: [{ parameterId: left.id, value: 0.6 }],
+  };
+  assertProject(p);
+  const m = p.motion.meshes.find(
+      (m) => m.partId === p.parts.find((v) => v.role === 'head' || v.role === 'base').id,
+    ),
+    next = propose(p, {
+      kind: 'mesh',
+      partId: m.partId,
+      pivot: [m.pivot[0] + 1, m.pivot[1] + 1],
+      curve: m.curve,
+      yawParameterId: m.yawParameterId,
+      rollParameterId: m.rollParameterId,
+    }).project;
+  for (const field of [
+    'projectId',
+    'parameters',
+    'expressions',
+    'inputBindings',
+    'exportProfiles',
+    'parts',
+    'assets',
+  ])
+    assert.deepEqual(next[field], p[field]);
+  assert.deepEqual(next.motion.settings, p.motion.settings);
+  assert.deepEqual(
+    next.motion.meshes.filter((v) => v.partId !== m.partId),
+    p.motion.meshes.filter((v) => v.partId !== m.partId),
+  );
+  const restored = propose(next, { kind: 'restore', partId: m.partId, scope: 'mesh' }).project;
+  assert.deepEqual(restored.motion.settings, p.motion.settings);
+  assert.deepEqual(restored.expressions, p.expressions);
+  assert.deepEqual(restored.inputBindings, p.inputBindings);
+  const roundtrip = await decodeBundle(await encodeBundle(next, bundle.resources, 'manual'), false);
+  for (const field of [
+    'detail',
+    'parameters',
+    'expressions',
+    'inputBindings',
+    'exportProfiles',
+    'motion',
+  ])
+    assert.deepEqual(roundtrip.project[field], next[field]);
+  assert.equal(sha256(await readFile(file)), original);
+  results.push({
+    route,
+    passed: true,
+    sourceBundleUnchanged: true,
+    nonemptyAsymmetricLockedExpression: true,
+    inputAndFallback: true,
+    exportMapRetainedUnvalidated: true,
+    nondefaultSettingsAndPose: true,
+    otherMeshesAndAssets: true,
+    selectedRestoreKeepsSettings: true,
+    bundleRoundtrip: true,
+  });
+}
+await mkdir('evidence/phase17', { recursive: true });
+await writeFile(
+  'evidence/phase17/preservation.json',
+  JSON.stringify(
+    {
+      passed: true,
+      routes: results,
+      devicesOpened: false,
+      scope:
+        'Supplemental configured expression/input/export/settings preservation using actual three-route UI bundles and public detail model; no expression UI, device, broadcast or export compatibility approval',
+    },
+    null,
+    2,
+  ) + '\n',
+);
+console.log('Nonempty configured data preserved across all three actual route bundles.');

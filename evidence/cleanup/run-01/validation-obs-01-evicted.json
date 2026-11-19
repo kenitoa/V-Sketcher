@@ -1,0 +1,12 @@
+{
+  "group": "validation-obs-01",
+  "removedFiles": 2668,
+  "removedLogicalBytes": 725988468,
+  "retainedChangedOrProtectedFiles": 0,
+  "remainingSelectedFiles": 0,
+  "losslessArchiveRetained": true,
+  "wholeArchiveReconstructedBeforeFirstRemoval": true,
+  "sourceHashRecheckedBeforeEachRemoval": true,
+  "recursiveDeletionUsed": false,
+  "historicalEvidenceModified": false
+}

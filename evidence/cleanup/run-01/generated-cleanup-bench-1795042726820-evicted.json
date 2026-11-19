@@ -1,0 +1,12 @@
+{
+  "group": "generated-cleanup-bench-1795042726820",
+  "removedFiles": 426,
+  "removedLogicalBytes": 223802315,
+  "retainedChangedOrProtectedFiles": 0,
+  "remainingSelectedFiles": 0,
+  "losslessArchiveRetained": true,
+  "wholeArchiveReconstructedBeforeFirstRemoval": true,
+  "sourceHashRecheckedBeforeEachRemoval": true,
+  "recursiveDeletionUsed": false,
+  "historicalEvidenceModified": false
+}

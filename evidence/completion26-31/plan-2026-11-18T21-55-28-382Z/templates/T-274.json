@@ -1,0 +1,62 @@
+{
+  "format": "2dsketcher-completion/1",
+  "candidate": {
+    "version": "0.22.1",
+    "sha256": "e5e4f3a5820d4a3563dfcce9b8cba3eccc1ce50d8673db0cb45a0c4030590ad3"
+  },
+  "taskId": "T-274",
+  "kind": "endurance",
+  "origin": null,
+  "collectedAt": null,
+  "review": {
+    "verdict": null,
+    "role": null
+  },
+  "artifacts": [],
+  "measurements": {
+    "runs": [
+      {
+        "route": "parts",
+        "durationMs": null,
+        "samples": null,
+        "actualCamera": false,
+        "actualMicrophone": false,
+        "obsX264Recording": false,
+        "frameMetricsRecorded": false,
+        "cpuMemoryGpuTemperatureRecorded": false,
+        "abnormalStops": null,
+        "recoveryFailures": null,
+        "rssGrowthMiB": null,
+        "baselineRssMiB": null
+      },
+      {
+        "route": "single-image",
+        "durationMs": null,
+        "samples": null,
+        "actualCamera": false,
+        "actualMicrophone": false,
+        "obsX264Recording": false,
+        "frameMetricsRecorded": false,
+        "cpuMemoryGpuTemperatureRecorded": false,
+        "abnormalStops": null,
+        "recoveryFailures": null,
+        "rssGrowthMiB": null,
+        "baselineRssMiB": null
+      },
+      {
+        "route": "split-image",
+        "durationMs": null,
+        "samples": null,
+        "actualCamera": false,
+        "actualMicrophone": false,
+        "obsX264Recording": false,
+        "frameMetricsRecorded": false,
+        "cpuMemoryGpuTemperatureRecorded": false,
+        "abnormalStops": null,
+        "recoveryFailures": null,
+        "rssGrowthMiB": null,
+        "baselineRssMiB": null
+      }
+    ]
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "format": "2dsketcher-cache-archive/1",
+  "group": "completion-old",
+  "verified": true,
+  "files": 115,
+  "logicalBytes": 1853563785,
+  "everyArchiveFileReconstructedAndHashMatched": true,
+  "originalSourceHashesRecordedAtPack": true,
+  "sourceHashRecheckedDuringVerify": false,
+  "sourceHashRequiredAgainBeforeEviction": true,
+  "indexSha256": "1d5b2a99b566568228356da4433401892d333205a06233feb74c0b7ad93d9982",
+  "sourceRemoved": false,
+  "historicalEvidenceModified": false
+}

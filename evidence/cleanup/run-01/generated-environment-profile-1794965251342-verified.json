@@ -1,0 +1,14 @@
+{
+  "format": "2dsketcher-cache-archive/1",
+  "group": "generated-environment-profile-1794965251342",
+  "verified": true,
+  "files": 110,
+  "logicalBytes": 57728698,
+  "everyArchiveFileReconstructedAndHashMatched": true,
+  "originalSourceHashesRecordedAtPack": true,
+  "sourceHashRecheckedDuringVerify": false,
+  "sourceHashRequiredAgainBeforeEviction": true,
+  "indexSha256": "12e9342f36591b9d89939bed888e6490d27ae0b86e96a350efb2a66a539e281c",
+  "sourceRemoved": false,
+  "historicalEvidenceModified": false
+}

@@ -1,4 +1,5 @@
 """Review fresh integration receipts; never infer human acceptance from automation."""
+
 import argparse
 import datetime
 import hashlib
@@ -33,10 +34,19 @@ def main():
     assert load(run / 'avatar-pixel-quality.json')['passed']
     assert load(run / 'image-pixel-quality.json')['passed']
     obs = load(run / args.obs) if (run / args.obs).exists() else None
-    external = load(run / 'external-03/external-run.json') if (run / 'external-03/external-run.json').exists() else None
+    external = (
+        load(run / 'external-03/external-run.json')
+        if (run / 'external-03/external-run.json').exists()
+        else None
+    )
     obs_pixels = (run / args.obs).parent / 'pixel-quality.json'
-    actual_obs = bool(obs and obs['passed'] and len(obs['routes']) == 3
-                      and obs_pixels.exists() and load(obs_pixels)['passed'])
+    actual_obs = bool(
+        obs
+        and obs['passed']
+        and len(obs['routes']) == 3
+        and obs_pixels.exists()
+        and load(obs_pixels)['passed']
+    )
     actual_external = bool(external and external['passed'] and len(external['runs']) == 6)
     completed = [261, 266, 268]
     if actual_obs and actual_external:
@@ -44,11 +54,14 @@ def main():
     result = {
         'created': datetime.datetime.now(datetime.timezone.utc).isoformat(),
         'automatedIntegrationPassed': True,
-        'nodeTestGroups': gate['nodeTestGroups'], 'pythonTestGroups': gate['pythonTestGroups'],
+        'nodeTestGroups': gate['nodeTestGroups'],
+        'pythonTestGroups': gate['pythonTestGroups'],
         'completedTasks': completed,
         'pendingTasks': [n for n in range(261, 271) if n not in completed],
-        'actualOBSAllRoutes': actual_obs, 'officialIndependentTargetSixRuns': actual_external,
-        'phase27Complete': False, 'm0': 'HOLD',
+        'actualOBSAllRoutes': actual_obs,
+        'officialIndependentTargetSixRuns': actual_external,
+        'phase27Complete': False,
+        'm0': 'HOLD',
         'blockers': [
             'T-260 predecessor review remains incomplete',
             'One project identity through preparation, reopen, live run, OBS, PNG and external export needs a linear scenario',
@@ -58,12 +71,21 @@ def main():
         ],
         'evidenceSha256': {},
     }
-    for path in [run / 'verification.json', run / 'coverage.json', run / 'development-run.json',
-                 run / 'image-pixel-quality.json', run / 'avatar-pixel-quality.json',
-                 run / args.obs, obs_pixels, run / 'external-03/external-run.json',
-                 run / 'camera-path-comparison.json']:
+    for path in [
+        run / 'verification.json',
+        run / 'coverage.json',
+        run / 'development-run.json',
+        run / 'image-pixel-quality.json',
+        run / 'avatar-pixel-quality.json',
+        run / args.obs,
+        obs_pixels,
+        run / 'external-03/external-run.json',
+        run / 'camera-path-comparison.json',
+    ]:
         if path.is_file():
-            result['evidenceSha256'][path.relative_to(run).as_posix()] = hashlib.sha256(path.read_bytes()).hexdigest()
+            result['evidenceSha256'][path.relative_to(run).as_posix()] = hashlib.sha256(
+                path.read_bytes()
+            ).hexdigest()
     (run / 'review.json').write_text(json.dumps(result, indent=2) + '\n', encoding='utf8')
     print('Integration review recorded; phase27 completion and M0 remain HOLD.')
 

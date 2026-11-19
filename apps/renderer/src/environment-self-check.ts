@@ -1,27 +1,291 @@
-import type {SessionView,SessionCommand,SessionReply} from '../../../packages/project-session/contracts';
-import type {RunRuntime} from './run-runtime';
-import type {CameraRuntime} from './camera-runtime';
-import type {MicrophoneRuntime} from './microphone-runtime';
-import {clickCommittedControl} from './ui-check-control';
-import {defaults} from '../../../packages/settings';
-export async function checkEnvironmentUI(host:{current:()=>SessionView|null;command:(c:SessionCommand)=>Promise<SessionReply>;settled:()=>Promise<unknown>;run:RunRuntime;camera:CameraRuntime;microphone:MicrophoneRuntime}){
- const {run,camera,microphone}=host,media=navigator.mediaDevices,originalGet=media.getUserMedia,originalEnum=media.enumerateDevices;let stage='prepare',gum=0;const streams:MediaStream[]=[];let audio:AudioContext|null=null;let oscillator:OscillatorNode|null=null;let timer:ReturnType<typeof setInterval>|null=null;
- const pause=(ms=60)=>new Promise(r=>setTimeout(r,ms)),verify=(v:unknown,code:string)=>{if(!v)throw new Error(code);},until=async(fn:()=>unknown)=>{const end=performance.now()+45000;while(!fn()){window.editorFailureState={settingsStage:stage,camera:camera.state,microphone:microphone.state,run:run.state};if(performance.now()>end)throw new Error('E_SETTINGS_UI_TIMEOUT');await pause();}};
- const click=async(selector:string)=>{stage=selector;await clickCommittedControl(selector,host.current);await host.settled();await pause();};
- const set=async(selector:string,value:string)=>{const e=document.querySelector<HTMLSelectElement>(selector)!;verify(e,'E_SETTINGS_CONTROL');e.value=value;e.dispatchEvent(new Event('change',{bubbles:true}));await new Promise<void>(r=>requestAnimationFrame(()=>requestAnimationFrame(()=>r())));};
- try{
- await window.studio.settings.save(defaults());await host.command({type:'new',name:'환경 연결 검증',sourceType:'parts'});await host.command({type:'sample'});const baseline=JSON.stringify(host.current()!.project);
- window.dispatchEvent(new Event('studio:settings'));await until(()=>!!document.querySelector('[data-environment-panel]'));await until(()=>!document.querySelector<HTMLButtonElement>('[data-settings-apply]')?.disabled);verify(run.settingsEditing,'E_SETTINGS_GLOBAL_CONTEXT');verify(document.querySelector('[data-environment-panel]')!.getBoundingClientRect().width>=Math.min(900,innerWidth-64),'E_SETTINGS_LAYOUT_WIDTH');verify(document.querySelector<HTMLElement>('.settings-content')!.scrollWidth<=document.querySelector<HTMLElement>('.settings-content')!.clientWidth+1,'E_SETTINGS_LAYOUT_OVERFLOW');
- await click('[data-settings-folder-select]');verify((await window.studio.settings.view()).defaultFolderSet,'E_SETTINGS_FOLDER');await click('[data-settings-close]');await host.command({type:'save'});verify(!host.current()!.dirty,'E_SETTINGS_DEFAULT_SAVE');
- const originalProject=JSON.stringify(host.current()!.project),assetFingerprints=host.current()!.project!.assets.map(a=>a.fingerprint.sha256);
- audio=new AudioContext();oscillator=audio.createOscillator();const gain=audio.createGain();gain.gain.value=.01;oscillator.connect(gain);oscillator.start();await audio.resume();const canvas=document.createElement('canvas');canvas.width=320;canvas.height=240;let tick=0;timer=setInterval(()=>{const c=canvas.getContext('2d')!;c.fillStyle=++tick%2?'#888':'#777';c.fillRect(0,0,320,240);},40);
- Object.defineProperty(media,'enumerateDevices',{configurable:true,value:async()=>[{kind:'videoinput',deviceId:'settings-video',label:'Synthetic camera',groupId:''},{kind:'audioinput',deviceId:'settings-audio',label:'Synthetic microphone',groupId:''}]});
- Object.defineProperty(media,'getUserMedia',{configurable:true,value:async(request:MediaStreamConstraints)=>{gum++;let stream:MediaStream;if(request.audio){const out=audio!.createMediaStreamDestination();gain.connect(out);stream=out.stream;}else stream=canvas.captureStream(20);streams.push(stream);return stream;}});
- await camera.start('settings-video');await microphone.start('settings-audio');await until(()=>camera.state==='open'&&microphone.state==='open'&&microphone.blocks>0);
- window.dispatchEvent(new Event('studio:settings'));await until(()=>!!document.querySelector('[data-environment-panel]'));await click('[data-settings-tab=privacy]');verify(document.querySelector('[data-settings-device-state]')!.textContent!.includes('사용 중'),'E_SETTINGS_DEVICE_STATE');await click('[data-settings-release]');await until(()=>camera.resources().liveTracks===0&&!microphone.resources().audioContext&&microphone.resources().liveTracks===0);verify(streams.every(s=>s.getTracks().every(t=>t.readyState==='ended')),'E_SETTINGS_TRACK_RELEASE');
- await click('[data-settings-camera-permission]');await click('[data-settings-mic-permission]');await click('[data-settings-local-log]');await click('[data-settings-apply]');await until(()=>document.querySelector('[data-settings-message]')?.textContent?.includes('적용'));const deniedAt=gum;await camera.start('settings-video');await microphone.start('settings-audio');verify(gum===deniedAt,'E_SETTINGS_REVOKE_GATE');verify(camera.state!=='open'&&microphone.state!=='open','E_SETTINGS_REVOKE');await click('[data-settings-clear-logs]');await click('[data-settings-camera-permission]');await click('[data-settings-mic-permission]');await click('[data-settings-local-log]');await click('[data-settings-apply]');await click('[data-settings-close]');
- await run.start(host.current()!,'camera-microphone',{camera:'settings-video',microphone:'settings-audio',cameraAvailable:true,microphoneAvailable:true},true);await until(()=>run.active&&run.camera.state==='open'&&run.microphone.state==='open');await pause(1300);window.dispatchEvent(new Event('studio:settings'));await until(()=>!!document.querySelector('[data-environment-panel]'));const oldKeys=structuredClone(run.preferences);const testKeys=structuredClone(oldKeys);testKeys.allowGlobal=true;testKeys.bindings=testKeys.bindings.map(k=>k.action==='neutral'?{...k,enabled:true,scope:'global' as const}:k);await run.configure(testKeys);verify(run.settingsEditing&&run.statuses.find(k=>k.action==='neutral')?.state==='suspended','E_SETTINGS_GLOBAL_SUSPENDED');await run.configure(oldKeys);await click('[data-settings-tab=privacy]');await click('[data-settings-release]');await until(()=>run.camera.resources().liveTracks===0&&run.microphone.resources().liveTracks===0&&!run.microphone.resources().audioContext);verify(run.active,'E_SETTINGS_RUN_CONTINUITY');await click('[data-settings-tab=performance]');verify(document.querySelector('[data-settings-performance]')!.textContent!.includes('구간'),'E_SETTINGS_MEASURE_WINDOW');const measured=run.surface.metrics.summary(performance.now());verify(measured.fps.kind==='MEASURED'&&measured.endToEnd.kind==='UNMEASURED','E_SETTINGS_METRIC_KIND');await set('[data-settings-fps]','15');await set('[data-settings-scale]','0.5');await click('[data-settings-apply]');await until(()=>document.querySelector<HTMLCanvasElement>('[data-run-canvas]')?.width===320||run.surface.element.querySelector('canvas')?.width===320);const low=run.surface.element.querySelector('canvas')!;verify(low.height===400,'E_SETTINGS_SCALE');verify(JSON.stringify(host.current()!.project)===originalProject,'E_SETTINGS_ORIGINAL_CHANGED');await click('[data-settings-quality-reset]');await click('[data-settings-apply]');await until(()=>run.surface.element.querySelector('canvas')?.width===640);verify(run.surface.element.querySelector('canvas')!.height===800,'E_SETTINGS_RESTORE');
- await click('[data-settings-tab=support]');verify(document.querySelector<HTMLButtonElement>('[data-settings-diagnostic]')!.disabled,'E_SETTINGS_DIAGNOSTIC_REVIEW');await click('[data-settings-diagnostic-review]');await click('[data-settings-diagnostic]');await until(()=>document.querySelector('[data-settings-message]')?.textContent?.includes('저장했어요'));verify((await window.studio.settings.support()).versions.app===(await window.studio.info()).version,'E_SETTINGS_VERSION');verify(JSON.stringify(host.current()!.project!.assets.map(a=>a.fingerprint.sha256))===JSON.stringify(assetFingerprints),'E_SETTINGS_ASSETS');
- await run.stop();await window.studio.settings.save(defaults());await window.studio.settings.folder(true);await pause();return {passed:true,deviceRequests:gum,syntheticMediaOnly:true,physicalDevicesOpened:false,editorTracksReleased:true,executionTracksReleased:true,requestsRevokedBeforeMedia:true,runContinuedLimited:true,defaultFolderSaved:true,projectMetadataSaveOnly:baseline!==originalProject,originalAssetsPreserved:true,qualityAppliedAndRestored:true,measuredSubmissionOnly:true,endToEndMeasured:false,automaticQuality:false,diagnosticReviewed:true,settingsSeparateFromProject:true,globalKeysSuspendedInSettings:true,sourceHashUnchanged:JSON.stringify(host.current()!.project)===originalProject,m0:'HOLD'};
- }finally{if(timer)clearInterval(timer);camera.stop();await Promise.all([camera.stopped(),microphone.stop(),run.stop()]);streams.forEach(s=>s.getTracks().forEach(t=>t.stop()));oscillator?.stop();await audio?.close();Object.defineProperty(media,'getUserMedia',{configurable:true,value:originalGet});Object.defineProperty(media,'enumerateDevices',{configurable:true,value:originalEnum});}
+import type {
+  SessionView,
+  SessionCommand,
+  SessionReply,
+} from '../../../packages/project-session/contracts';
+import type { RunRuntime } from './run-runtime';
+import type { CameraRuntime } from './camera-runtime';
+import type { MicrophoneRuntime } from './microphone-runtime';
+import { clickCommittedControl } from './ui-check-control';
+import { defaults } from '../../../packages/settings';
+export async function checkEnvironmentUI(host: {
+  current: () => SessionView | null;
+  command: (c: SessionCommand) => Promise<SessionReply>;
+  settled: () => Promise<unknown>;
+  run: RunRuntime;
+  camera: CameraRuntime;
+  microphone: MicrophoneRuntime;
+}) {
+  const { run, camera, microphone } = host,
+    media = navigator.mediaDevices,
+    originalGet = media.getUserMedia,
+    originalEnum = media.enumerateDevices;
+  let stage = 'prepare',
+    gum = 0;
+  const streams: MediaStream[] = [];
+  let audio: AudioContext | null = null;
+  let oscillator: OscillatorNode | null = null;
+  let timer: ReturnType<typeof setInterval> | null = null;
+  const pause = (ms = 60) => new Promise((r) => setTimeout(r, ms)),
+    verify = (v: unknown, code: string) => {
+      if (!v) throw new Error(code);
+    },
+    until = async (fn: () => unknown) => {
+      const end = performance.now() + 45000;
+      while (!fn()) {
+        window.editorFailureState = {
+          settingsStage: stage,
+          camera: camera.state,
+          microphone: microphone.state,
+          run: run.state,
+        };
+        if (performance.now() > end) throw new Error('E_SETTINGS_UI_TIMEOUT');
+        await pause();
+      }
+    };
+  const click = async (selector: string) => {
+    stage = selector;
+    await clickCommittedControl(selector, host.current);
+    await host.settled();
+    await pause();
+  };
+  const set = async (selector: string, value: string) => {
+    const e = document.querySelector<HTMLSelectElement>(selector)!;
+    verify(e, 'E_SETTINGS_CONTROL');
+    e.value = value;
+    e.dispatchEvent(new Event('change', { bubbles: true }));
+    await new Promise<void>((r) => requestAnimationFrame(() => requestAnimationFrame(() => r())));
+  };
+  try {
+    await window.studio.settings.save(defaults());
+    await host.command({ type: 'new', name: '환경 연결 검증', sourceType: 'parts' });
+    await host.command({ type: 'sample' });
+    const baseline = JSON.stringify(host.current()!.project);
+    window.dispatchEvent(new Event('studio:settings'));
+    await until(() => !!document.querySelector('[data-environment-panel]'));
+    await until(
+      () => !document.querySelector<HTMLButtonElement>('[data-settings-apply]')?.disabled,
+    );
+    verify(run.settingsEditing, 'E_SETTINGS_GLOBAL_CONTEXT');
+    verify(
+      document.querySelector('[data-environment-panel]')!.getBoundingClientRect().width >=
+        Math.min(900, innerWidth - 64),
+      'E_SETTINGS_LAYOUT_WIDTH',
+    );
+    verify(
+      document.querySelector<HTMLElement>('.settings-content')!.scrollWidth <=
+        document.querySelector<HTMLElement>('.settings-content')!.clientWidth + 1,
+      'E_SETTINGS_LAYOUT_OVERFLOW',
+    );
+    await click('[data-settings-folder-select]');
+    verify((await window.studio.settings.view()).defaultFolderSet, 'E_SETTINGS_FOLDER');
+    await click('[data-settings-close]');
+    await host.command({ type: 'save' });
+    verify(!host.current()!.dirty, 'E_SETTINGS_DEFAULT_SAVE');
+    const originalProject = JSON.stringify(host.current()!.project),
+      assetFingerprints = host.current()!.project!.assets.map((a) => a.fingerprint.sha256);
+    audio = new AudioContext();
+    oscillator = audio.createOscillator();
+    const gain = audio.createGain();
+    gain.gain.value = 0.01;
+    oscillator.connect(gain);
+    oscillator.start();
+    await audio.resume();
+    const canvas = document.createElement('canvas');
+    canvas.width = 320;
+    canvas.height = 240;
+    let tick = 0;
+    timer = setInterval(() => {
+      const c = canvas.getContext('2d')!;
+      c.fillStyle = ++tick % 2 ? '#888' : '#777';
+      c.fillRect(0, 0, 320, 240);
+    }, 40);
+    Object.defineProperty(media, 'enumerateDevices', {
+      configurable: true,
+      value: async () => [
+        { kind: 'videoinput', deviceId: 'settings-video', label: 'Synthetic camera', groupId: '' },
+        {
+          kind: 'audioinput',
+          deviceId: 'settings-audio',
+          label: 'Synthetic microphone',
+          groupId: '',
+        },
+      ],
+    });
+    Object.defineProperty(media, 'getUserMedia', {
+      configurable: true,
+      value: async (request: MediaStreamConstraints) => {
+        gum++;
+        let stream: MediaStream;
+        if (request.audio) {
+          const out = audio!.createMediaStreamDestination();
+          gain.connect(out);
+          stream = out.stream;
+        } else stream = canvas.captureStream(20);
+        streams.push(stream);
+        return stream;
+      },
+    });
+    await camera.start('settings-video');
+    await microphone.start('settings-audio');
+    await until(
+      () => camera.state === 'open' && microphone.state === 'open' && microphone.blocks > 0,
+    );
+    window.dispatchEvent(new Event('studio:settings'));
+    await until(() => !!document.querySelector('[data-environment-panel]'));
+    await click('[data-settings-tab=privacy]');
+    verify(
+      document.querySelector('[data-settings-device-state]')!.textContent!.includes('사용 중'),
+      'E_SETTINGS_DEVICE_STATE',
+    );
+    await click('[data-settings-release]');
+    await until(
+      () =>
+        camera.resources().liveTracks === 0 &&
+        !microphone.resources().audioContext &&
+        microphone.resources().liveTracks === 0,
+    );
+    verify(
+      streams.every((s) => s.getTracks().every((t) => t.readyState === 'ended')),
+      'E_SETTINGS_TRACK_RELEASE',
+    );
+    await click('[data-settings-camera-permission]');
+    await click('[data-settings-mic-permission]');
+    await click('[data-settings-local-log]');
+    await click('[data-settings-apply]');
+    await until(() =>
+      document.querySelector('[data-settings-message]')?.textContent?.includes('적용'),
+    );
+    const deniedAt = gum;
+    await camera.start('settings-video');
+    await microphone.start('settings-audio');
+    verify(gum === deniedAt, 'E_SETTINGS_REVOKE_GATE');
+    verify(camera.state !== 'open' && microphone.state !== 'open', 'E_SETTINGS_REVOKE');
+    await click('[data-settings-clear-logs]');
+    await click('[data-settings-camera-permission]');
+    await click('[data-settings-mic-permission]');
+    await click('[data-settings-local-log]');
+    await click('[data-settings-apply]');
+    await click('[data-settings-close]');
+    await run.start(
+      host.current()!,
+      'camera-microphone',
+      {
+        camera: 'settings-video',
+        microphone: 'settings-audio',
+        cameraAvailable: true,
+        microphoneAvailable: true,
+      },
+      true,
+    );
+    await until(() => run.active && run.camera.state === 'open' && run.microphone.state === 'open');
+    await pause(1300);
+    window.dispatchEvent(new Event('studio:settings'));
+    await until(() => !!document.querySelector('[data-environment-panel]'));
+    const oldKeys = structuredClone(run.preferences);
+    const testKeys = structuredClone(oldKeys);
+    testKeys.allowGlobal = true;
+    testKeys.bindings = testKeys.bindings.map((k) =>
+      k.action === 'neutral' ? { ...k, enabled: true, scope: 'global' as const } : k,
+    );
+    await run.configure(testKeys);
+    verify(
+      run.settingsEditing &&
+        run.statuses.find((k) => k.action === 'neutral')?.state === 'suspended',
+      'E_SETTINGS_GLOBAL_SUSPENDED',
+    );
+    await run.configure(oldKeys);
+    await click('[data-settings-tab=privacy]');
+    await click('[data-settings-release]');
+    await until(
+      () =>
+        run.camera.resources().liveTracks === 0 &&
+        run.microphone.resources().liveTracks === 0 &&
+        !run.microphone.resources().audioContext,
+    );
+    verify(run.active, 'E_SETTINGS_RUN_CONTINUITY');
+    await click('[data-settings-tab=performance]');
+    verify(
+      document.querySelector('[data-settings-performance]')!.textContent!.includes('구간'),
+      'E_SETTINGS_MEASURE_WINDOW',
+    );
+    const measured = run.surface.metrics.summary(performance.now());
+    verify(
+      measured.fps.kind === 'MEASURED' && measured.endToEnd.kind === 'UNMEASURED',
+      'E_SETTINGS_METRIC_KIND',
+    );
+    await set('[data-settings-fps]', '15');
+    await set('[data-settings-scale]', '0.5');
+    await click('[data-settings-apply]');
+    await until(
+      () =>
+        document.querySelector<HTMLCanvasElement>('[data-run-canvas]')?.width === 320 ||
+        run.surface.element.querySelector('canvas')?.width === 320,
+    );
+    const low = run.surface.element.querySelector('canvas')!;
+    verify(low.height === 400, 'E_SETTINGS_SCALE');
+    verify(
+      JSON.stringify(host.current()!.project) === originalProject,
+      'E_SETTINGS_ORIGINAL_CHANGED',
+    );
+    await click('[data-settings-quality-reset]');
+    await click('[data-settings-apply]');
+    await until(() => run.surface.element.querySelector('canvas')?.width === 640);
+    verify(run.surface.element.querySelector('canvas')!.height === 800, 'E_SETTINGS_RESTORE');
+    await click('[data-settings-tab=support]');
+    verify(
+      document.querySelector<HTMLButtonElement>('[data-settings-diagnostic]')!.disabled,
+      'E_SETTINGS_DIAGNOSTIC_REVIEW',
+    );
+    await click('[data-settings-diagnostic-review]');
+    await click('[data-settings-diagnostic]');
+    await until(() =>
+      document.querySelector('[data-settings-message]')?.textContent?.includes('저장했어요'),
+    );
+    verify(
+      (await window.studio.settings.support()).versions.app ===
+        (await window.studio.info()).version,
+      'E_SETTINGS_VERSION',
+    );
+    verify(
+      JSON.stringify(host.current()!.project!.assets.map((a) => a.fingerprint.sha256)) ===
+        JSON.stringify(assetFingerprints),
+      'E_SETTINGS_ASSETS',
+    );
+    await run.stop();
+    await window.studio.settings.save(defaults());
+    await window.studio.settings.folder(true);
+    await pause();
+    return {
+      passed: true,
+      deviceRequests: gum,
+      syntheticMediaOnly: true,
+      physicalDevicesOpened: false,
+      editorTracksReleased: true,
+      executionTracksReleased: true,
+      requestsRevokedBeforeMedia: true,
+      runContinuedLimited: true,
+      defaultFolderSaved: true,
+      projectMetadataSaveOnly: baseline !== originalProject,
+      originalAssetsPreserved: true,
+      qualityAppliedAndRestored: true,
+      measuredSubmissionOnly: true,
+      endToEndMeasured: false,
+      automaticQuality: false,
+      diagnosticReviewed: true,
+      settingsSeparateFromProject: true,
+      globalKeysSuspendedInSettings: true,
+      sourceHashUnchanged: JSON.stringify(host.current()!.project) === originalProject,
+      m0: 'HOLD',
+    };
+  } finally {
+    if (timer) clearInterval(timer);
+    camera.stop();
+    await Promise.all([camera.stopped(), microphone.stop(), run.stop()]);
+    streams.forEach((s) => s.getTracks().forEach((t) => t.stop()));
+    oscillator?.stop();
+    await audio?.close();
+    Object.defineProperty(media, 'getUserMedia', { configurable: true, value: originalGet });
+    Object.defineProperty(media, 'enumerateDevices', { configurable: true, value: originalEnum });
+  }
 }

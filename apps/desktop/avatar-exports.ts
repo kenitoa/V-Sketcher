@@ -1,18 +1,167 @@
-import {app,dialog,ipcMain,nativeImage,shell,type BrowserWindow} from 'electron';
-import {mkdir,readFile,open,rename,unlink} from 'node:fs/promises';
-import {join} from 'node:path';
-import {randomUUID} from 'node:crypto';
-import {AvatarExportService,type PrivateExportRecord} from '../../packages/avatar-export/service';
-import type {CompatibilityService} from '../../packages/export-check/service';
-import {assertTargetOptions} from '../../packages/export-check/types';
-import type {TargetOptions} from '../../packages/export-check/types';
-import type {Parameters} from '../../packages/scene-core';
-import type {InputBasis} from '../../packages/execution/changes';
-export function installAvatarExports(window:BrowserWindow,compatibility:CompatibilityService,validate:(b:InputBasis)=>boolean,trusted:(e:Electron.IpcMainInvokeEvent)=>void,modal:(v:boolean)=>void,test?:{choose:(name:string)=>Promise<string|null>;locate:()=>Promise<string|null>},running:()=>boolean=()=>false,validateReceipt:(b:InputBasis,content:string)=>boolean=b=>validate(b),saveDirectory:()=>string=()=>app.getPath('documents')){
- const file=join(app.getPath('userData'),'avatar-exports.json');let queue=Promise.resolve();
- const records=async():Promise<PrivateExportRecord[]>=>{try{const raw=JSON.parse(await readFile(file,'utf8')) as {version:number;records:PrivateExportRecord[]};if(raw.version!==1||!Array.isArray(raw.records)||raw.records.length>50||raw.records.some(r=>typeof r.path!=='string'||typeof r.receipt?.id!=='string'||!/^[a-f0-9]{64}$/.test(r.receipt.sha256)))throw new Error('E_AVATAR_HISTORY');return raw.records;}catch(e){if((e as NodeJS.ErrnoException).code==='ENOENT')return [];throw new Error('E_AVATAR_HISTORY');}};
- const persist=(rows:PrivateExportRecord[])=>{const save=queue.then(async()=>{await mkdir(app.getPath('userData'),{recursive:true});const temp=file+'.'+randomUUID()+'.tmp';try{const f=await open(temp,'wx');try{await f.writeFile(JSON.stringify({version:1,records:rows})+'\n');await f.sync();}finally{await f.close();}await rename(temp,file);}finally{try{await unlink(temp);}catch{/* own temp only */}}});queue=save.catch(()=>{});return save;};
- const service=new AvatarExportService({compatibility,validate,validateReceipt,records,persist,running,canonicalize:bytes=>nativeImage.createFromBuffer(bytes).toPNG(),choose:async name=>{modal(true);try{if(test)return await test.choose(name);const r=await dialog.showSaveDialog(window,{title:'외부 아바타 INP 저장',defaultPath:join(saveDirectory(),name),filters:[{name:'Inochi Session 0.8.7',extensions:['inp']}]});return r.canceled?null:r.filePath??null;}finally{modal(false);}},locate:async()=>{modal(true);try{if(test)return await test.locate();const r=await dialog.showOpenDialog(window,{title:'이동한 동일 INP 다시 연결',properties:['openFile'],filters:[{name:'Inochi INP',extensions:['inp']}]});return r.canceled?null:r.filePaths[0]??null;}finally{modal(false);}},reveal:path=>shell.showItemInFolder(path)});
- ipcMain.handle('avatar-export:command',async(event,action:unknown,value:unknown)=>{trusted(event);try{const v=value as {id:string;checkId:string;options:TargetOptions;demo:boolean;values:Parameters;expressionId:string|null;sha:string;version:string};if(typeof action!=='string'||!value||JSON.stringify(value).length>16384)throw new Error('E_AVATAR_REQUEST');if(action==='prepare'){assertTargetOptions(v.options);return {ok:true,ticket:await service.prepare(v.id,v.checkId,v.options,v.demo)};}if(action==='preview')return {ok:true,scene:service.preview(v.id,v.values,v.expressionId)};if(action==='save'){const receipt=await service.save(v.id,v.sha);return receipt?{ok:true,receipt}:{ok:true,cancelled:true};}if(action==='cancel'){return {ok:true,...await service.cancel(v.id)};}if(action==='list')return {ok:true,receipts:await service.list()};if(action==='confirm')return {ok:true,receipt:await service.confirm(v.id,v.version)};if(action==='relocate'){const receipt=await service.relocate(v.id);return receipt?{ok:true,receipt}:{ok:true,cancelled:true};}if(action==='reveal'){await service.reveal(v.id);return {ok:true};}throw new Error('E_AVATAR_REQUEST');}catch(e){const code=(e as NodeJS.ErrnoException).code,error=e instanceof Error&&/^E_[A-Z_]{1,48}$/.test(e.message)?e.message:code==='ENOSPC'?'E_AVATAR_SPACE':code==='EACCES'||code==='EPERM'?'E_AVATAR_PERMISSION':'E_AVATAR_FAILED';return {ok:false,errorCode:error};}});
- return service;
+import { app, dialog, ipcMain, nativeImage, shell, type BrowserWindow } from 'electron';
+import { mkdir, readFile, open, rename, unlink } from 'node:fs/promises';
+import { join } from 'node:path';
+import { randomUUID } from 'node:crypto';
+import {
+  AvatarExportService,
+  type PrivateExportRecord,
+} from '../../packages/avatar-export/service';
+import type { CompatibilityService } from '../../packages/export-check/service';
+import { assertTargetOptions } from '../../packages/export-check/types';
+import type { TargetOptions } from '../../packages/export-check/types';
+import type { Parameters } from '../../packages/scene-core';
+import type { InputBasis } from '../../packages/execution/changes';
+export function installAvatarExports(
+  window: BrowserWindow,
+  compatibility: CompatibilityService,
+  validate: (b: InputBasis) => boolean,
+  trusted: (e: Electron.IpcMainInvokeEvent) => void,
+  modal: (v: boolean) => void,
+  test?: { choose: (name: string) => Promise<string | null>; locate: () => Promise<string | null> },
+  running: () => boolean = () => false,
+  validateReceipt: (b: InputBasis, content: string) => boolean = (b) => validate(b),
+  saveDirectory: () => string = () => app.getPath('documents'),
+) {
+  const file = join(app.getPath('userData'), 'avatar-exports.json');
+  let queue = Promise.resolve();
+  const records = async (): Promise<PrivateExportRecord[]> => {
+    try {
+      const raw = JSON.parse(await readFile(file, 'utf8')) as {
+        version: number;
+        records: PrivateExportRecord[];
+      };
+      if (
+        raw.version !== 1 ||
+        !Array.isArray(raw.records) ||
+        raw.records.length > 50 ||
+        raw.records.some(
+          (r) =>
+            typeof r.path !== 'string' ||
+            typeof r.receipt?.id !== 'string' ||
+            !/^[a-f0-9]{64}$/.test(r.receipt.sha256),
+        )
+      )
+        throw new Error('E_AVATAR_HISTORY');
+      return raw.records;
+    } catch (e) {
+      if ((e as NodeJS.ErrnoException).code === 'ENOENT') return [];
+      throw new Error('E_AVATAR_HISTORY');
+    }
+  };
+  const persist = (rows: PrivateExportRecord[]) => {
+    const save = queue.then(async () => {
+      await mkdir(app.getPath('userData'), { recursive: true });
+      const temp = file + '.' + randomUUID() + '.tmp';
+      try {
+        const f = await open(temp, 'wx');
+        try {
+          await f.writeFile(JSON.stringify({ version: 1, records: rows }) + '\n');
+          await f.sync();
+        } finally {
+          await f.close();
+        }
+        await rename(temp, file);
+      } finally {
+        try {
+          await unlink(temp);
+        } catch {
+          /* own temp only */
+        }
+      }
+    });
+    queue = save.catch(() => {});
+    return save;
+  };
+  const service = new AvatarExportService({
+    compatibility,
+    validate,
+    validateReceipt,
+    records,
+    persist,
+    running,
+    canonicalize: (bytes) => nativeImage.createFromBuffer(bytes).toPNG(),
+    choose: async (name) => {
+      modal(true);
+      try {
+        if (test) return await test.choose(name);
+        const r = await dialog.showSaveDialog(window, {
+          title: '외부 아바타 INP 저장',
+          defaultPath: join(saveDirectory(), name),
+          filters: [{ name: 'Inochi Session 0.8.7', extensions: ['inp'] }],
+        });
+        return r.canceled ? null : (r.filePath ?? null);
+      } finally {
+        modal(false);
+      }
+    },
+    locate: async () => {
+      modal(true);
+      try {
+        if (test) return await test.locate();
+        const r = await dialog.showOpenDialog(window, {
+          title: '이동한 동일 INP 다시 연결',
+          properties: ['openFile'],
+          filters: [{ name: 'Inochi INP', extensions: ['inp'] }],
+        });
+        return r.canceled ? null : (r.filePaths[0] ?? null);
+      } finally {
+        modal(false);
+      }
+    },
+    reveal: (path) => shell.showItemInFolder(path),
+  });
+  ipcMain.handle('avatar-export:command', async (event, action: unknown, value: unknown) => {
+    trusted(event);
+    try {
+      const v = value as {
+        id: string;
+        checkId: string;
+        options: TargetOptions;
+        demo: boolean;
+        values: Parameters;
+        expressionId: string | null;
+        sha: string;
+        version: string;
+      };
+      if (typeof action !== 'string' || !value || JSON.stringify(value).length > 16384)
+        throw new Error('E_AVATAR_REQUEST');
+      if (action === 'prepare') {
+        assertTargetOptions(v.options);
+        return { ok: true, ticket: await service.prepare(v.id, v.checkId, v.options, v.demo) };
+      }
+      if (action === 'preview')
+        return { ok: true, scene: service.preview(v.id, v.values, v.expressionId) };
+      if (action === 'save') {
+        const receipt = await service.save(v.id, v.sha);
+        return receipt ? { ok: true, receipt } : { ok: true, cancelled: true };
+      }
+      if (action === 'cancel') {
+        return { ok: true, ...(await service.cancel(v.id)) };
+      }
+      if (action === 'list') return { ok: true, receipts: await service.list() };
+      if (action === 'confirm')
+        return { ok: true, receipt: await service.confirm(v.id, v.version) };
+      if (action === 'relocate') {
+        const receipt = await service.relocate(v.id);
+        return receipt ? { ok: true, receipt } : { ok: true, cancelled: true };
+      }
+      if (action === 'reveal') {
+        await service.reveal(v.id);
+        return { ok: true };
+      }
+      throw new Error('E_AVATAR_REQUEST');
+    } catch (e) {
+      const code = (e as NodeJS.ErrnoException).code,
+        error =
+          e instanceof Error && /^E_[A-Z_]{1,48}$/.test(e.message)
+            ? e.message
+            : code === 'ENOSPC'
+              ? 'E_AVATAR_SPACE'
+              : code === 'EACCES' || code === 'EPERM'
+                ? 'E_AVATAR_PERMISSION'
+                : 'E_AVATAR_FAILED';
+      return { ok: false, errorCode: error };
+    }
+  });
+  return service;
 }

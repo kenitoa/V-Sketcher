@@ -1,232 +1,2107 @@
-import {HelpPanel} from './help-panel';
-import {routeHints} from '../../../packages/user-guide';
-import {checkGuideUI} from './guide-self-check';
-import {checkEnvironmentLive} from './environment-live-check';
-import {checkEnvironmentUI} from './environment-self-check';
-import {EnvironmentPanel} from './environment-panel';
-import {applyEnvironment} from './environment-state';
-import {checkAvatarExportUI} from './avatar-export-self-check';
-import {checkFileOutputUI} from './file-output-self-check';
-import {FileOutputPanel} from './file-output-panel';
-import {broadcastCheck} from './broadcast-self-check';
-import {checkRuntimeChangesUI} from './runtime-changes-self-check';
-import {RunDock} from './run-dock';
-import {concurrentCommand} from '../../../packages/execution/changes';
-import {defaultTracking} from '../../../packages/tracking';
-import {checkExecutionUI,prepareExecutionKeys} from './execution-self-check';
-import {RunRuntime} from './run-runtime';
-import {RunPanel} from './run-panel';
-import type {FixTarget} from '../../../packages/execution';
-import {checkMicrophoneLive} from './microphone-live-check';
-import {checkInputRecoveryUI} from './input-recovery-self-check';
-import {MicrophoneRuntime} from './microphone-runtime';
-import {InputPanel} from './input-panel';
-import {checkCameraLive} from './camera-live-check';
-import {checkTrackingUI} from './tracking-self-check';
-import {CameraRuntime} from './camera-runtime';
-import {CameraPanel} from './camera-panel';
-import {checkExpressionUI} from './expression-self-check';
-import {ExpressionPanel} from './expression-panel';
-import {shortcutSlot} from '../../../packages/expression-control';
-import {SplitPanel,SplitGuide} from './split-panel';
-import {DetailPanel} from './detail-panel';
-import {checkDetailUI} from './detail-self-check';
-import {checkSplitUI} from './split-self-check';
-import {checkCorrectionUI} from './correction-self-check';
-import {CorrectionPanel} from './correction-panel';
-import {checkStructureUI} from './structure-self-check';
-import {StructurePanel} from './structure-panel';
-import {checkPartsUI,checkPartsPixels} from './parts-self-check';
-import {PartsPanel} from './parts-panel';
+import { HelpPanel } from './help-panel';
+import { routeHints } from '../../../packages/user-guide';
+import { checkGuideUI } from './guide-self-check';
+import { checkEnvironmentLive } from './environment-live-check';
+import { checkEnvironmentUI } from './environment-self-check';
+import { EnvironmentPanel } from './environment-panel';
+import { applyEnvironment } from './environment-state';
+import { checkAvatarExportUI } from './avatar-export-self-check';
+import { checkFileOutputUI } from './file-output-self-check';
+import { FileOutputPanel } from './file-output-panel';
+import { broadcastCheck } from './broadcast-self-check';
+import { checkRuntimeChangesUI } from './runtime-changes-self-check';
+import { RunDock } from './run-dock';
+import { concurrentCommand } from '../../../packages/execution/changes';
+import { defaultTracking } from '../../../packages/tracking';
+import { checkExecutionUI, prepareExecutionKeys } from './execution-self-check';
+import { RunRuntime } from './run-runtime';
+import { RunPanel } from './run-panel';
+import type { FixTarget } from '../../../packages/execution';
+import { checkMicrophoneLive } from './microphone-live-check';
+import { checkInputRecoveryUI } from './input-recovery-self-check';
+import { MicrophoneRuntime } from './microphone-runtime';
+import { InputPanel } from './input-panel';
+import { checkCameraLive } from './camera-live-check';
+import { checkTrackingUI } from './tracking-self-check';
+import { CameraRuntime } from './camera-runtime';
+import { CameraPanel } from './camera-panel';
+import { checkExpressionUI } from './expression-self-check';
+import { ExpressionPanel } from './expression-panel';
+import { shortcutSlot } from '../../../packages/expression-control';
+import { SplitPanel, SplitGuide } from './split-panel';
+import { DetailPanel } from './detail-panel';
+import { checkDetailUI } from './detail-self-check';
+import { checkSplitUI } from './split-self-check';
+import { checkCorrectionUI } from './correction-self-check';
+import { CorrectionPanel } from './correction-panel';
+import { checkStructureUI } from './structure-self-check';
+import { StructurePanel } from './structure-panel';
+import { checkPartsUI, checkPartsPixels } from './parts-self-check';
+import { PartsPanel } from './parts-panel';
 import { checkInputUI } from './input-self-check';
-import { InputEditor,InputStatus,inputWarnings } from './input-editor';
-import React,{ useEffect,useRef,useState } from 'react';
+import { InputEditor, InputStatus, inputWarnings } from './input-editor';
+import { useEffect, useRef, useState } from 'react';
 import type { SourceType } from '../../../packages/project-model';
-import type { SessionView,SessionCommand,SessionReply,RecoveryComparison,EditTarget } from '../../../packages/project-session/contracts';
+import type {
+  SessionView,
+  SessionCommand,
+  SessionReply,
+  RecoveryComparison,
+  EditTarget,
+} from '../../../packages/project-session/contracts';
 import type { PreviewScene } from '../../../packages/scene-core';
 import { AvatarRenderer } from '../../../packages/avatar-renderer';
 import { EditorPreview } from './editor-preview';
-import { Modal,TaskCard,Notice } from './ui-foundations';
-import { roleNames,routeNames } from '../../../packages/editor-view/guidance';
+import { Modal, TaskCard, Notice } from './ui-foundations';
+import { roleNames, routeNames } from '../../../packages/editor-view/guidance';
 import { checkEditorUI } from './editor-self-check';
 import { MotionPlayer } from '../../../packages/motion';
 import { MotionPanel } from './motion-panel';
 import { checkMotionUI } from './motion-self-check';
 import { newestState } from '../../../packages/editor-view';
 
-export function ProjectPreview({ scene,label }:{ scene:PreviewScene | null; label:string }) {
-  const canvas = useRef<HTMLCanvasElement>(null); const [failed,setFailed] = useState(false);
-  useEffect(() => { let disposed = false; let frame = 0; setFailed(false); if (!scene || !canvas.current) return;
-    let render:AvatarRenderer; try { render = new AvatarRenderer(canvas.current,scene); } catch { setFailed(true); return; } void render.load(document.baseURI).then(() => { if (disposed) return; const draw = ():void => { render.draw(); frame = requestAnimationFrame(draw); }; draw(); }).catch(() => setFailed(true));
-    return () => { disposed = true; cancelAnimationFrame(frame); render.dispose(); };
-  },[scene]);
-  return <div className="project-preview">{scene ? <canvas ref={canvas} width="800" height="1000" aria-label={label}/> : <p>미리보기 없음</p>}{failed && <p role="alert">이미지를 표시하지 못했어요.</p>}</div>;
+export function ProjectPreview({ scene, label }: { scene: PreviewScene | null; label: string }) {
+  const canvas = useRef<HTMLCanvasElement>(null);
+  const [failed, setFailed] = useState(false);
+  useEffect(() => {
+    let disposed = false;
+    let frame = 0;
+    setFailed(false);
+    if (!scene || !canvas.current) return;
+    let render: AvatarRenderer;
+    try {
+      render = new AvatarRenderer(canvas.current, scene);
+    } catch {
+      setFailed(true);
+      return;
+    }
+    void render
+      .load(document.baseURI)
+      .then(() => {
+        if (disposed) return;
+        const draw = (): void => {
+          render.draw();
+          frame = requestAnimationFrame(draw);
+        };
+        draw();
+      })
+      .catch(() => setFailed(true));
+    return () => {
+      disposed = true;
+      cancelAnimationFrame(frame);
+      render.dispose();
+    };
+  }, [scene]);
+  return (
+    <div className="project-preview">
+      {scene ? (
+        <canvas ref={canvas} width="800" height="1000" aria-label={label} />
+      ) : (
+        <p>미리보기 없음</p>
+      )}
+      {failed && <p role="alert">이미지를 표시하지 못했어요.</p>}
+    </div>
+  );
 }
-const routes:{ type:SourceType; title:string }[] = [{ type:'parts',title:'파츠로 시작' },{ type:'single-image',title:'그림 한 장' },{ type:'split-image',title:'분리된 그림' }];
-const pause = (ms = 25):Promise<void> => new Promise(resolve => setTimeout(resolve,ms));
-export function ProjectDesk({ onView }:{ onView:(view:SessionView)=>void }) {
-  const [environmentOpen,setEnvironmentOpen]=useState(false);
-  useEffect(()=>{const open=()=>setEnvironmentOpen(true);window.addEventListener('studio:settings',open);return()=>window.removeEventListener('studio:settings',open);},[]);
-  const [inputOpen,setInputOpen]=useState(false);
-  const [cameraOpen,setCameraOpen]=useState(false);
-  const [fileOpen,setFileOpen]=useState(false);
-  const [runOpen,setRunOpen]=useState(false),[quickRun,setQuickRun]=useState(false);
-  const [transitionBusy,setTransitionBusy]=useState(false);
-  const [transition,setTransition]=useState<{command:SessionCommand;resolve:(reply:SessionReply)=>void}|null>(null);
-  const [expressing,setExpressing]=useState(false);
-  const [detailing,setDetailing]=useState(false);
-  const [correcting,setCorrecting]=useState(false);
-  const [splitting,setSplitting]=useState(false);
-  useEffect(()=>{const open=()=>setSplitting(true);window.addEventListener('studio:split',open);return()=>window.removeEventListener('studio:split',open);},[]);
-  useEffect(()=>{const open=()=>setCorrecting(true);window.addEventListener('studio:correction',open);return()=>window.removeEventListener('studio:correction',open);},[]);
-  const [dropError,setDropError]=useState('');
-  const [view,setView] = useState<SessionView | null>(null); const latest = useRef<SessionView | null>(null);
-  useEffect(()=>{if(view?.split?.draft)setSplitting(true);},[view?.split?.draft?.id]);
-  const [route,setRoute] = useState<SourceType | null>(null); const [partId,setPartId] = useState<string | null | undefined>(undefined); const [name,setName] = useState('새 캐릭터');
-  const [recoveries,setRecoveries] = useState(false); const [comparison,setComparison] = useState<RecoveryComparison | null>(null); const [selected,setSelected] = useState<string | null>(null);
-  const [step,setStep] = useState<'prepare' | 'appearance' | 'motion' | 'review'>('prepare'); const [reviewed,setReviewed] = useState<number | null>(null); const [help,setHelp] = useState(false); const [recentOpen,setRecentOpen] = useState(false);
-  const [player] = useState(() => new MotionPlayer()); player.setProject(view?.project ?? null,new Set(view?.scene?.layers.map(l => l.id) ?? []),view?.sessionId ?? undefined);
-  const exampleNavigation=useRef<string|null>(null);
-  useEffect(()=>{let frame=0;const tick=(now:number)=>{if(latest.current?.project)player.frame(now);frame=requestAnimationFrame(tick);};frame=requestAnimationFrame(tick);return()=>cancelAnimationFrame(frame);},[player]);
-  const [camera]=useState(()=>new CameraRuntime(player));camera.setProject(view?.project??null,view?.sessionId??'');
-  const [microphone]=useState(()=>new MicrophoneRuntime(player));microphone.setProject(view?.project??null,view?.sessionId??'');
-  const [run]=useState(()=>new RunRuntime(async()=>{camera.stop();await microphone.stop();await camera.stopped();player.stop();}));
-  useEffect(()=>{void run.init();const keys=run.connectKeyboard();return()=>{keys();void run.dispose();};},[run]);
-  useEffect(()=>{const apply=(data:import('../../../packages/settings').SettingsView)=>{applyEnvironment(data.value);if(!data.value.cameraRequests){camera.stop();run.camera.stop();}if(!data.value.microphoneRequests){void microphone.stop();void run.microphone.stop();}};void window.studio.settings.view().then(apply);return window.studio.settings.subscribe(apply);},[]);
-  const [,refreshRun]=useState(0);useEffect(()=>run.subscribe(()=>refreshRun(n=>n+1)),[run]);
-  const [,refreshMicrophone]=useState(0);useEffect(()=>microphone.subscribe(()=>refreshMicrophone(v=>v+1)),[microphone]);useEffect(()=>()=>{void microphone.stop();},[microphone]);
-  useEffect(()=>{const open=()=>{if(run.active){setRunOpen(true);return;}setInputOpen(false);setCameraOpen(true);};window.addEventListener('studio:camera',open);return()=>window.removeEventListener('studio:camera',open);},[]);
-  const [,refreshCamera]=useState(0);useEffect(()=>camera.subscribe(()=>refreshCamera(v=>v+1)),[camera]);
-  useEffect(()=>()=>camera.stop(),[camera]);
-  useEffect(()=>{if(view?.detail?.openSerial){setCorrecting(false);setSplitting(false);setDetailing(true);player.stop();}},[view?.detail?.openSerial]);
-  useEffect(()=>{if(view?.errorCode==='E_DETAIL_PROTECTED'){setCorrecting(false);setSplitting(false);setDetailing(true);const id=view.detail?.protectedPartIds.find(id=>view.project?.parts.some(p=>p.id===id));if(id)setPartId(id);player.stop();}},[view?.errorCode]);
-  const queue = useRef<Promise<unknown>>(Promise.resolve()); const group = useRef<string | null>(null);
-  const receive = (v:SessionView):void => { if (newestState(latest.current,v) !== v) return; latest.current = v; setView(v); onView(v);run.observe(v); };
-  useEffect(()=>{const over=(e:DragEvent):void=>{if(latest.current?.project && e.dataTransfer?.types.includes('Files'))e.preventDefault();};const drop=(e:DragEvent):void=>{if(!latest.current?.project)return;e.preventDefault();setDropError('');if(run.active){setDropError('새 그림 가져오기는 실행을 중지한 뒤 진행해 주세요.');return;}if(e.dataTransfer?.files.length!==1){setDropError('PNG/JPEG 파일 한 장을 놓아 주세요.');return;}if(e.dataTransfer?.files.length===1){setStep('prepare');queue.current=queue.current.then(()=>window.studio.projects.dropImage(e.dataTransfer!.files[0]!)).then(r=>receive(r.view)).catch(()=>{setDropError('그림 파일 선택 버튼으로 다시 열어 주세요.');});}};window.addEventListener('dragover',over);window.addEventListener('drop',drop);return()=>{window.removeEventListener('dragover',over);window.removeEventListener('drop',drop);};},[]);
-  useEffect(()=>{window.structureSelfCheck=()=>checkStructureUI({current:()=>latest.current,command,settled:()=>queue.current});return()=>{delete window.structureSelfCheck;};},[]);
-  useEffect(()=>{window.correctionSelfCheck=()=>checkCorrectionUI({current:()=>latest.current,command,settled:()=>queue.current});return()=>{delete window.correctionSelfCheck;};},[]);
-  useEffect(()=>{window.splitSelfCheck=rows=>checkSplitUI({current:()=>latest.current,command,settled:()=>queue.current},rows);return()=>{delete window.splitSelfCheck;};},[]);
-  useEffect(()=>{window.microphoneLiveCheck=scripted=>checkMicrophoneLive({current:()=>latest.current,command,settled:()=>queue.current,mic:microphone},scripted??false);return()=>{delete window.microphoneLiveCheck;};},[]);
-  useEffect(()=>{window.environmentLiveCheck=()=>checkEnvironmentLive({current:()=>latest.current,command,run});return()=>{delete window.environmentLiveCheck;};},[]);
-  useEffect(()=>{window.guideSelfCheck=openExisting=>checkGuideUI({current:()=>latest.current,command,settled:()=>queue.current},openExisting);return()=>{delete window.guideSelfCheck;};},[]);
-  useEffect(()=>{window.environmentSelfCheck=()=>checkEnvironmentUI({current:()=>latest.current,command,settled:()=>queue.current,run,camera,microphone});return()=>{delete window.environmentSelfCheck;};},[]);
-  useEffect(()=>{window.avatarExportSelfCheck=()=>checkAvatarExportUI({current:()=>latest.current,command,settled:()=>queue.current});return()=>{delete window.avatarExportSelfCheck;};},[]);
-  useEffect(()=>{window.fileOutputSelfCheck=()=>checkFileOutputUI({current:()=>latest.current,command,settled:()=>queue.current,runtime:run});return()=>{delete window.fileOutputSelfCheck;};},[]);
-  useEffect(()=>{window.broadcastCheckStep=broadcastCheck({current:()=>latest.current,command,settled:()=>queue.current,runtime:run});return()=>{delete window.broadcastCheckStep;};},[]);
-  useEffect(()=>{window.runtimeChangesSelfCheck=()=>checkRuntimeChangesUI({current:()=>latest.current,command,settled:()=>queue.current,runtime:run,camera,microphone});window.runtimeChangesStop=()=>run.stop();return()=>{delete window.runtimeChangesSelfCheck;delete window.runtimeChangesStop;};},[]);
-  useEffect(()=>{window.prepareExecutionKeys=()=>prepareExecutionKeys({current:()=>latest.current,command,settled:()=>queue.current,runtime:run});window.executionKeyState=()=>({hidden:run.hidden,neutral:run.player.neutralHold,active:run.active,lastAction:run.lastAction});window.executionSelfCheck=()=>checkExecutionUI({current:()=>latest.current,command,settled:()=>queue.current,runtime:run});return()=>{delete window.executionSelfCheck;delete window.prepareExecutionKeys;delete window.executionKeyState;};},[]);
-  useEffect(()=>{window.inputRecoverySelfCheck=()=>checkInputRecoveryUI({current:()=>latest.current,command,settled:()=>queue.current,camera,mic:microphone});return()=>{delete window.inputRecoverySelfCheck;};},[]);
-  useEffect(()=>{window.cameraLiveCheck=hint=>checkCameraLive({current:()=>latest.current,command,settled:()=>queue.current,runtime:camera},hint??null);return()=>{delete window.cameraLiveCheck;};},[]);
-  useEffect(()=>{window.trackingSelfCheck=()=>checkTrackingUI({current:()=>latest.current,command,settled:()=>queue.current,runtime:camera});return()=>{delete window.trackingSelfCheck;};},[]);
-  useEffect(()=>{window.expressionSelfCheck=()=>checkExpressionUI({current:()=>latest.current,command,settled:()=>queue.current,player});return()=>{delete window.expressionSelfCheck;};},[]);
-  useEffect(()=>{window.detailSelfCheck=()=>checkDetailUI({current:()=>latest.current,command,settled:()=>queue.current});return()=>{delete window.detailSelfCheck;};},[]);
-  const commandDirect = async (c:SessionCommand):Promise<void> => { receive((await window.studio.projects.command(c)).view); };
-  const command = (c:SessionCommand):Promise<SessionReply> => {if(run.active&&concurrentCommand(c.type)==='transition')return new Promise(resolve=>setTransition({command:c,resolve}));const result = queue.current.then(() => window.studio.projects.command(c)); queue.current = result.then(r => { receive(r.view); return r; }); return result; };
-  const finishTransition=async(intent:'keep'|'switch'|'cancel'):Promise<void>=>{const pending=transition;if(!pending||transitionBusy)return;if(intent==='cancel'){setTransition(null);pending.resolve({view:latest.current!});return;}setTransitionBusy(true);try{await run.cancelChange();const before=latest.current?.sessionId,base=run.lease?.requestId;const result=queue.current.then(()=>base?window.studio.run.transition(pending.command,base):window.studio.projects.command(pending.command));queue.current=result.then(reply=>{receive(reply.view);return reply;});const reply=await result;if(intent==='switch'&&reply.view.sessionId!==before&&reply.view.project&&run.active)await run.applyChanges(reply.view,true);pending.resolve(reply);}catch{run.changeError='E_RUN_TRANSITION';pending.resolve({view:latest.current!});}finally{setTransitionBusy(false);setTransition(null);requestAnimationFrame(()=>document.querySelector<HTMLElement>('[data-step-heading]')?.focus());}};
-  const partsCommand=(c:SessionCommand):void=>{queue.current=queue.current.then(()=>commandDirect({...c,expectedRevision:latest.current!.project!.revision} as SessionCommand));};
-  const edit = (target:EditTarget,id:string | null,value:string | number,parameterId:string | null = null):void => { queue.current = queue.current.then(async () => { const v = latest.current; if (!v?.project) return; if (target === 'part-name' && v.project.parts.find(p => p.id === id)?.displayName === value || target === 'project-name' && v.project.displayName === value) return; const r = await window.studio.projects.command({ type:'edit',target,id,parameterId,value,expectedRevision:v.project.revision,groupId:group.current }); receive(r.view); }); };
-  const begin = ():void => { queue.current = queue.current.then(async () => { if (group.current) return; const r = await window.studio.projects.command({ type:'begin-group',label:'연속 외형 조정' }); group.current = r.value ?? null; receive(r.view); }); };
-  const end = (commit = true):void => { queue.current = queue.current.then(async () => { const id = group.current; if (!id) return; group.current = null; const r = await window.studio.projects.command({ type:'end-group',id,commit }); receive(r.view); }); };
-  useEffect(() => { setInputOpen(false);setCameraOpen(false); setExpressing(false); setStep(latest.current?.project?.parts.length ? 'appearance' : 'prepare'); setPartId(undefined); setReviewed(null);setCorrecting(false);setSplitting(false);setDetailing(false); requestAnimationFrame(() => (document.querySelector<HTMLElement>(latest.current?.project ? '[data-step-heading]' : '[data-create]') ?? document.querySelector<HTMLElement>('[data-project="open"]'))?.focus()); },[view?.project?.projectId]);
-  useEffect(()=>{const open=():void=>{if(latest.current?.project?.sourceType==='parts'||latest.current?.project?.assembly)setStep('prepare');else setRoute('parts');};window.addEventListener('studio:parts',open);return()=>window.removeEventListener('studio:parts',open);},[]);
-  useEffect(() => { const home = ():void => { void command({ type:'close' }); }; const recent = ():void => setRecentOpen(true); window.addEventListener('studio:home',home); window.addEventListener('studio:recent',recent); return () => { window.removeEventListener('studio:home',home); window.removeEventListener('studio:recent',recent); }; },[]);
-  useEffect(()=>{window.partsSelfCheck=()=>checkPartsUI({current:()=>latest.current,command,settled:()=>queue.current});window.partsPixels=checkPartsPixels;window.partsCapture=async()=>{const recent=latest.current?.recent.find(v=>v.displayName.includes('\uC544\uD2C0\uB9AC\uC5D0 \uD30C\uCE20'));if(!recent)throw new Error('E_PARTS_CAPTURE');await command({type:'recent',id:recent.id});setStep('prepare');const start=Date.now();while(!window.previewProbe?.().ready){if(Date.now()-start>15000)throw new Error('E_PARTS_CAPTURE');await pause();}await pause(500);};return()=>{delete window.partsSelfCheck;delete window.partsPixels;delete window.partsCapture;};},[]);
-  useEffect(() => { window.inputSelfCheck=()=>checkInputUI({ current:()=>latest.current,command,settled:()=>queue.current });window.inputCapture=async()=>{await window.projectSelfCheckCapture!();setStep('prepare');await command({type:'import-image'});const start=Date.now();while(latest.current?.input?.busy){if(Date.now()-start>65000)throw new Error('E_INPUT_CAPTURE');await pause();}await pause(400);};return()=>{delete window.inputSelfCheck;delete window.inputCapture;}; },[]);
-  useEffect(() => { window.motionSelfCheck = () => checkMotionUI({ current:() => latest.current,command,settled:() => queue.current,player }); window.motionCapture = async () => { await window.editorCapture!(); setStep('motion'); await pause(500); player.set('eye_left',0); player.set('head_roll',.4); await pause(500); }; return () => { delete window.motionSelfCheck; delete window.motionCapture; }; },[]);
-  useEffect(() => { window.editorSelfCheck = async () => { try { return await checkEditorUI({ current:() => latest.current,command,settled:() => queue.current }); } catch (error) { window.editorFailureState = { ...window.editorFailureState,inert:document.getElementById('root')!.inert,selected:document.querySelector('[data-viewport]')?.getAttribute('data-selected'),field:document.querySelector<HTMLInputElement>('[data-part-name]')?.value,saving:latest.current?.saving,sequence:latest.current?.sequence,parts:latest.current?.project?.parts.map(p => ({ id:p.id,name:p.displayName })) }; throw error; } }; window.editorCapture = async () => { await window.projectSelfCheckCapture!(); setPartId(latest.current?.project?.parts[1]?.id); setStep('appearance'); await pause(400); const bg = document.querySelector<HTMLSelectElement>('[data-background]'); if (bg) { bg.value = 'dark'; bg.dispatchEvent(new Event('change',{ bubbles:true })); } }; return () => { delete window.editorSelfCheck; delete window.editorCapture; }; },[]);
-  useEffect(() => { const unsubscribe = window.studio.projects.subscribe(receive); void window.studio.projects.view().then(v => { receive(v); if (v.recoveries.some(r => r.pending)) setRecoveries(true); }); return unsubscribe; },[]);
-  useEffect(() => { const key = (event:KeyboardEvent):void => {
-    if (document.querySelector('[role="dialog"][aria-modal="true"]')) return;if(run.active&&event.ctrlKey&&event.altKey&&event.shiftKey)return;
-    const target=event.target as HTMLElement;const slot=shortcutSlot(event,!!document.getElementById('root')?.inert||['INPUT','SELECT','TEXTAREA'].includes(target?.tagName)||!!target?.isContentEditable);
-    if(slot!==null){const p=latest.current?.project;if(!p)return;const id=p.expressionSettings?.shortcuts[slot-1];if(slot===0||id){event.preventDefault();try{if(slot===0)player.controls.release(performance.now());else player.controls.activate(id!,performance.now());}catch{ /* unavailable references remain visible in expression editor */ }}return;}
-    if (event.key === 'Escape') { if (group.current) end(false); else { setRoute(null); setRecoveries(false); } }
-    if ((event.ctrlKey || event.metaKey) && ['s','z','y','o'].includes(event.key.toLowerCase())) { if (['INPUT','SELECT','TEXTAREA'].includes((event.target as HTMLElement)?.tagName) && event.key !== 's') return; event.preventDefault(); void command({ type:event.key === 's' ? event.shiftKey ? 'save-as' : 'save' : event.key === 'o' ? 'open' : event.key === 'y' || event.shiftKey ? 'redo' : 'undo' }); }
-  }; window.addEventListener('keydown',key); return () => window.removeEventListener('keydown',key); },[]);
+const routes: { type: SourceType; title: string }[] = [
+  { type: 'parts', title: '파츠로 시작' },
+  { type: 'single-image', title: '그림 한 장' },
+  { type: 'split-image', title: '분리된 그림' },
+];
+const pause = (ms = 25): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
+export function ProjectDesk({ onView }: { onView: (view: SessionView) => void }) {
+  const [environmentOpen, setEnvironmentOpen] = useState(false);
+  useEffect(() => {
+    const open = () => setEnvironmentOpen(true);
+    window.addEventListener('studio:settings', open);
+    return () => window.removeEventListener('studio:settings', open);
+  }, []);
+  const [inputOpen, setInputOpen] = useState(false);
+  const [cameraOpen, setCameraOpen] = useState(false);
+  const [fileOpen, setFileOpen] = useState(false);
+  const [runOpen, setRunOpen] = useState(false),
+    [quickRun, setQuickRun] = useState(false);
+  const [transitionBusy, setTransitionBusy] = useState(false);
+  const [transition, setTransition] = useState<{
+    command: SessionCommand;
+    resolve: (reply: SessionReply) => void;
+  } | null>(null);
+  const [expressing, setExpressing] = useState(false);
+  const [detailing, setDetailing] = useState(false);
+  const [correcting, setCorrecting] = useState(false);
+  const [splitting, setSplitting] = useState(false);
+  useEffect(() => {
+    const open = () => setSplitting(true);
+    window.addEventListener('studio:split', open);
+    return () => window.removeEventListener('studio:split', open);
+  }, []);
+  useEffect(() => {
+    const open = () => setCorrecting(true);
+    window.addEventListener('studio:correction', open);
+    return () => window.removeEventListener('studio:correction', open);
+  }, []);
+  const [dropError, setDropError] = useState('');
+  const [view, setView] = useState<SessionView | null>(null);
+  const latest = useRef<SessionView | null>(null);
+  useEffect(() => {
+    if (view?.split?.draft) setSplitting(true);
+  }, [view?.split?.draft?.id]);
+  const [route, setRoute] = useState<SourceType | null>(null);
+  const [partId, setPartId] = useState<string | null | undefined>(undefined);
+  const [name, setName] = useState('새 캐릭터');
+  const [recoveries, setRecoveries] = useState(false);
+  const [comparison, setComparison] = useState<RecoveryComparison | null>(null);
+  const [selected, setSelected] = useState<string | null>(null);
+  const [step, setStep] = useState<'prepare' | 'appearance' | 'motion' | 'review'>('prepare');
+  const [reviewed, setReviewed] = useState<number | null>(null);
+  const [help, setHelp] = useState(false);
+  const [recentOpen, setRecentOpen] = useState(false);
+  const [player] = useState(() => new MotionPlayer());
+  player.setProject(
+    view?.project ?? null,
+    new Set(view?.scene?.layers.map((l) => l.id) ?? []),
+    view?.sessionId ?? undefined,
+  );
+  const exampleNavigation = useRef<string | null>(null);
+  useEffect(() => {
+    let frame = 0;
+    const tick = () => {
+      // Audio/video callbacks may arrive after the browser's paint timestamp.
+      if (latest.current?.project) player.frame(performance.now());
+      frame = requestAnimationFrame(tick);
+    };
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [player]);
+  const [camera] = useState(() => new CameraRuntime(player));
+  camera.setProject(view?.project ?? null, view?.sessionId ?? '');
+  const [microphone] = useState(() => new MicrophoneRuntime(player));
+  microphone.setProject(view?.project ?? null, view?.sessionId ?? '');
+  const [run] = useState(
+    () =>
+      new RunRuntime(async () => {
+        camera.stop();
+        await microphone.stop();
+        await camera.stopped();
+        player.stop();
+      }),
+  );
+  useEffect(() => {
+    void run.init();
+    const keys = run.connectKeyboard();
+    return () => {
+      keys();
+      void run.dispose();
+    };
+  }, [run]);
+  useEffect(() => {
+    const apply = (data: import('../../../packages/settings').SettingsView) => {
+      applyEnvironment(data.value);
+      if (!data.value.cameraRequests) {
+        camera.stop();
+        run.camera.stop();
+      }
+      if (!data.value.microphoneRequests) {
+        void microphone.stop();
+        void run.microphone.stop();
+      }
+    };
+    void window.studio.settings.view().then(apply);
+    return window.studio.settings.subscribe(apply);
+  }, []);
+  const [, refreshRun] = useState(0);
+  useEffect(() => run.subscribe(() => refreshRun((n) => n + 1)), [run]);
+  const [, refreshMicrophone] = useState(0);
+  useEffect(() => microphone.subscribe(() => refreshMicrophone((v) => v + 1)), [microphone]);
+  useEffect(
+    () => () => {
+      void microphone.stop();
+    },
+    [microphone],
+  );
+  useEffect(() => {
+    const open = () => {
+      if (run.active) {
+        setRunOpen(true);
+        return;
+      }
+      setInputOpen(false);
+      setCameraOpen(true);
+    };
+    window.addEventListener('studio:camera', open);
+    return () => window.removeEventListener('studio:camera', open);
+  }, []);
+  const [, refreshCamera] = useState(0);
+  useEffect(() => camera.subscribe(() => refreshCamera((v) => v + 1)), [camera]);
+  useEffect(() => () => camera.stop(), [camera]);
+  useEffect(() => {
+    if (view?.detail?.openSerial) {
+      setCorrecting(false);
+      setSplitting(false);
+      setDetailing(true);
+      player.stop();
+    }
+  }, [view?.detail?.openSerial]);
+  useEffect(() => {
+    if (view?.errorCode === 'E_DETAIL_PROTECTED') {
+      setCorrecting(false);
+      setSplitting(false);
+      setDetailing(true);
+      const id = view.detail?.protectedPartIds.find((id) =>
+        view.project?.parts.some((p) => p.id === id),
+      );
+      if (id) setPartId(id);
+      player.stop();
+    }
+  }, [view?.errorCode]);
+  const queue = useRef<Promise<unknown>>(Promise.resolve());
+  const group = useRef<string | null>(null);
+  const receive = (v: SessionView): void => {
+    if (newestState(latest.current, v) !== v) return;
+    latest.current = v;
+    setView(v);
+    onView(v);
+    run.observe(v);
+  };
+  useEffect(() => {
+    const over = (e: DragEvent): void => {
+      if (latest.current?.project && e.dataTransfer?.types.includes('Files')) e.preventDefault();
+    };
+    const drop = (e: DragEvent): void => {
+      if (!latest.current?.project) return;
+      e.preventDefault();
+      setDropError('');
+      if (run.active) {
+        setDropError('새 그림 가져오기는 실행을 중지한 뒤 진행해 주세요.');
+        return;
+      }
+      if (e.dataTransfer?.files.length !== 1) {
+        setDropError('PNG/JPEG 파일 한 장을 놓아 주세요.');
+        return;
+      }
+      if (e.dataTransfer?.files.length === 1) {
+        setStep('prepare');
+        queue.current = queue.current
+          .then(() => window.studio.projects.dropImage(e.dataTransfer!.files[0]!))
+          .then((r) => receive(r.view))
+          .catch(() => {
+            setDropError('그림 파일 선택 버튼으로 다시 열어 주세요.');
+          });
+      }
+    };
+    window.addEventListener('dragover', over);
+    window.addEventListener('drop', drop);
+    return () => {
+      window.removeEventListener('dragover', over);
+      window.removeEventListener('drop', drop);
+    };
+  }, []);
+  useEffect(() => {
+    window.structureSelfCheck = () =>
+      checkStructureUI({ current: () => latest.current, command, settled: () => queue.current });
+    return () => {
+      delete window.structureSelfCheck;
+    };
+  }, []);
+  useEffect(() => {
+    window.correctionSelfCheck = () =>
+      checkCorrectionUI({ current: () => latest.current, command, settled: () => queue.current });
+    return () => {
+      delete window.correctionSelfCheck;
+    };
+  }, []);
+  useEffect(() => {
+    window.splitSelfCheck = (rows) =>
+      checkSplitUI({ current: () => latest.current, command, settled: () => queue.current }, rows);
+    return () => {
+      delete window.splitSelfCheck;
+    };
+  }, []);
+  useEffect(() => {
+    window.microphoneLiveCheck = (scripted) =>
+      checkMicrophoneLive(
+        { current: () => latest.current, command, settled: () => queue.current, mic: microphone },
+        scripted ?? false,
+      );
+    return () => {
+      delete window.microphoneLiveCheck;
+    };
+  }, []);
+  useEffect(() => {
+    window.environmentLiveCheck = () =>
+      checkEnvironmentLive({ current: () => latest.current, command, run });
+    return () => {
+      delete window.environmentLiveCheck;
+    };
+  }, []);
+  useEffect(() => {
+    window.guideSelfCheck = (openExisting) =>
+      checkGuideUI(
+        { current: () => latest.current, command, settled: () => queue.current },
+        openExisting,
+      );
+    return () => {
+      delete window.guideSelfCheck;
+    };
+  }, []);
+  useEffect(() => {
+    window.environmentSelfCheck = () =>
+      checkEnvironmentUI({
+        current: () => latest.current,
+        command,
+        settled: () => queue.current,
+        run,
+        camera,
+        microphone,
+      });
+    return () => {
+      delete window.environmentSelfCheck;
+    };
+  }, []);
+  useEffect(() => {
+    window.avatarExportSelfCheck = () =>
+      checkAvatarExportUI({ current: () => latest.current, command, settled: () => queue.current });
+    return () => {
+      delete window.avatarExportSelfCheck;
+    };
+  }, []);
+  useEffect(() => {
+    window.fileOutputSelfCheck = () =>
+      checkFileOutputUI({
+        current: () => latest.current,
+        command,
+        settled: () => queue.current,
+        runtime: run,
+      });
+    return () => {
+      delete window.fileOutputSelfCheck;
+    };
+  }, []);
+  useEffect(() => {
+    window.broadcastCheckStep = broadcastCheck({
+      current: () => latest.current,
+      command,
+      settled: () => queue.current,
+      runtime: run,
+    });
+    return () => {
+      delete window.broadcastCheckStep;
+    };
+  }, []);
+  useEffect(() => {
+    window.runtimeChangesSelfCheck = () =>
+      checkRuntimeChangesUI({
+        current: () => latest.current,
+        command,
+        settled: () => queue.current,
+        runtime: run,
+        camera,
+        microphone,
+      });
+    window.runtimeChangesStop = () => run.stop();
+    return () => {
+      delete window.runtimeChangesSelfCheck;
+      delete window.runtimeChangesStop;
+    };
+  }, []);
+  useEffect(() => {
+    window.prepareExecutionKeys = () =>
+      prepareExecutionKeys({
+        current: () => latest.current,
+        command,
+        settled: () => queue.current,
+        runtime: run,
+      });
+    window.executionKeyState = () => ({
+      hidden: run.hidden,
+      neutral: run.player.neutralHold,
+      active: run.active,
+      lastAction: run.lastAction,
+    });
+    window.executionSelfCheck = () =>
+      checkExecutionUI({
+        current: () => latest.current,
+        command,
+        settled: () => queue.current,
+        runtime: run,
+      });
+    return () => {
+      delete window.executionSelfCheck;
+      delete window.prepareExecutionKeys;
+      delete window.executionKeyState;
+    };
+  }, []);
+  useEffect(() => {
+    window.inputRecoverySelfCheck = () =>
+      checkInputRecoveryUI({
+        current: () => latest.current,
+        command,
+        settled: () => queue.current,
+        camera,
+        mic: microphone,
+      });
+    return () => {
+      delete window.inputRecoverySelfCheck;
+    };
+  }, []);
+  useEffect(() => {
+    window.cameraLiveCheck = (hint) =>
+      checkCameraLive(
+        { current: () => latest.current, command, settled: () => queue.current, runtime: camera },
+        hint ?? null,
+      );
+    return () => {
+      delete window.cameraLiveCheck;
+    };
+  }, []);
+  useEffect(() => {
+    window.trackingSelfCheck = () =>
+      checkTrackingUI({
+        current: () => latest.current,
+        command,
+        settled: () => queue.current,
+        runtime: camera,
+      });
+    return () => {
+      delete window.trackingSelfCheck;
+    };
+  }, []);
+  useEffect(() => {
+    window.expressionSelfCheck = () =>
+      checkExpressionUI({
+        current: () => latest.current,
+        command,
+        settled: () => queue.current,
+        player,
+      });
+    return () => {
+      delete window.expressionSelfCheck;
+    };
+  }, []);
+  useEffect(() => {
+    window.detailSelfCheck = () =>
+      checkDetailUI({ current: () => latest.current, command, settled: () => queue.current });
+    return () => {
+      delete window.detailSelfCheck;
+    };
+  }, []);
+  const commandDirect = async (c: SessionCommand): Promise<void> => {
+    receive((await window.studio.projects.command(c)).view);
+  };
+  const command = (c: SessionCommand): Promise<SessionReply> => {
+    if (run.active && concurrentCommand(c.type) === 'transition')
+      return new Promise((resolve) => setTransition({ command: c, resolve }));
+    const result = queue.current.then(() => window.studio.projects.command(c));
+    queue.current = result.then((r) => {
+      receive(r.view);
+      return r;
+    });
+    return result;
+  };
+  const finishTransition = async (intent: 'keep' | 'switch' | 'cancel'): Promise<void> => {
+    const pending = transition;
+    if (!pending || transitionBusy) return;
+    if (intent === 'cancel') {
+      setTransition(null);
+      pending.resolve({ view: latest.current! });
+      return;
+    }
+    setTransitionBusy(true);
+    try {
+      await run.cancelChange();
+      const before = latest.current?.sessionId,
+        base = run.lease?.requestId;
+      const result = queue.current.then(() =>
+        base
+          ? window.studio.run.transition(pending.command, base)
+          : window.studio.projects.command(pending.command),
+      );
+      queue.current = result.then((reply) => {
+        receive(reply.view);
+        return reply;
+      });
+      const reply = await result;
+      if (
+        intent === 'switch' &&
+        reply.view.sessionId !== before &&
+        reply.view.project &&
+        run.active
+      )
+        await run.applyChanges(reply.view, true);
+      pending.resolve(reply);
+    } catch {
+      run.changeError = 'E_RUN_TRANSITION';
+      pending.resolve({ view: latest.current! });
+    } finally {
+      setTransitionBusy(false);
+      setTransition(null);
+      requestAnimationFrame(() =>
+        document.querySelector<HTMLElement>('[data-step-heading]')?.focus(),
+      );
+    }
+  };
+  const partsCommand = (c: SessionCommand): void => {
+    queue.current = queue.current.then(() =>
+      commandDirect({
+        ...c,
+        expectedRevision: latest.current!.project!.revision,
+      } as SessionCommand),
+    );
+  };
+  const edit = (
+    target: EditTarget,
+    id: string | null,
+    value: string | number,
+    parameterId: string | null = null,
+  ): void => {
+    queue.current = queue.current.then(async () => {
+      const v = latest.current;
+      if (!v?.project) return;
+      if (
+        (target === 'part-name' &&
+          v.project.parts.find((p) => p.id === id)?.displayName === value) ||
+        (target === 'project-name' && v.project.displayName === value)
+      )
+        return;
+      const r = await window.studio.projects.command({
+        type: 'edit',
+        target,
+        id,
+        parameterId,
+        value,
+        expectedRevision: v.project.revision,
+        groupId: group.current,
+      });
+      receive(r.view);
+    });
+  };
+  const begin = (): void => {
+    queue.current = queue.current.then(async () => {
+      if (group.current) return;
+      const r = await window.studio.projects.command({
+        type: 'begin-group',
+        label: '연속 외형 조정',
+      });
+      group.current = r.value ?? null;
+      receive(r.view);
+    });
+  };
+  const end = (commit = true): void => {
+    queue.current = queue.current.then(async () => {
+      const id = group.current;
+      if (!id) return;
+      group.current = null;
+      const r = await window.studio.projects.command({ type: 'end-group', id, commit });
+      receive(r.view);
+    });
+  };
+  useEffect(() => {
+    setInputOpen(false);
+    setCameraOpen(false);
+    setExpressing(false);
+    setStep(latest.current?.project?.parts.length ? 'appearance' : 'prepare');
+    setPartId(undefined);
+    setReviewed(null);
+    setCorrecting(false);
+    setSplitting(false);
+    setDetailing(false);
+    requestAnimationFrame(() =>
+      (
+        document.querySelector<HTMLElement>(
+          latest.current?.project ? '[data-step-heading]' : '[data-create]',
+        ) ?? document.querySelector<HTMLElement>('[data-project="open"]')
+      )?.focus(),
+    );
+  }, [view?.project?.projectId]);
+  useEffect(() => {
+    const open = (): void => {
+      if (latest.current?.project?.sourceType === 'parts' || latest.current?.project?.assembly)
+        setStep('prepare');
+      else setRoute('parts');
+    };
+    window.addEventListener('studio:parts', open);
+    return () => window.removeEventListener('studio:parts', open);
+  }, []);
+  useEffect(() => {
+    const home = (): void => {
+      void command({ type: 'close' });
+    };
+    const recent = (): void => setRecentOpen(true);
+    window.addEventListener('studio:home', home);
+    window.addEventListener('studio:recent', recent);
+    return () => {
+      window.removeEventListener('studio:home', home);
+      window.removeEventListener('studio:recent', recent);
+    };
+  }, []);
+  useEffect(() => {
+    window.partsSelfCheck = () =>
+      checkPartsUI({ current: () => latest.current, command, settled: () => queue.current });
+    window.partsPixels = checkPartsPixels;
+    window.partsCapture = async () => {
+      const recent = latest.current?.recent.find((v) =>
+        v.displayName.includes('\uC544\uD2C0\uB9AC\uC5D0 \uD30C\uCE20'),
+      );
+      if (!recent) throw new Error('E_PARTS_CAPTURE');
+      await command({ type: 'recent', id: recent.id });
+      setStep('prepare');
+      const start = Date.now();
+      while (!window.previewProbe?.().ready) {
+        if (Date.now() - start > 15000) throw new Error('E_PARTS_CAPTURE');
+        await pause();
+      }
+      await pause(500);
+    };
+    return () => {
+      delete window.partsSelfCheck;
+      delete window.partsPixels;
+      delete window.partsCapture;
+    };
+  }, []);
+  useEffect(() => {
+    window.inputSelfCheck = () =>
+      checkInputUI({ current: () => latest.current, command, settled: () => queue.current });
+    window.inputCapture = async () => {
+      await window.projectSelfCheckCapture!();
+      setStep('prepare');
+      await command({ type: 'import-image' });
+      const start = Date.now();
+      while (latest.current?.input?.busy) {
+        if (Date.now() - start > 65000) throw new Error('E_INPUT_CAPTURE');
+        await pause();
+      }
+      await pause(400);
+    };
+    return () => {
+      delete window.inputSelfCheck;
+      delete window.inputCapture;
+    };
+  }, []);
+  useEffect(() => {
+    window.motionSelfCheck = () =>
+      checkMotionUI({
+        current: () => latest.current,
+        command,
+        settled: () => queue.current,
+        player,
+      });
+    window.motionCapture = async () => {
+      await window.editorCapture!();
+      setStep('motion');
+      await pause(500);
+      player.set('eye_left', 0);
+      player.set('head_roll', 0.4);
+      await pause(500);
+    };
+    return () => {
+      delete window.motionSelfCheck;
+      delete window.motionCapture;
+    };
+  }, []);
+  useEffect(() => {
+    window.editorSelfCheck = async () => {
+      try {
+        return await checkEditorUI({
+          current: () => latest.current,
+          command,
+          settled: () => queue.current,
+        });
+      } catch (error) {
+        window.editorFailureState = {
+          ...window.editorFailureState,
+          inert: document.getElementById('root')!.inert,
+          selected: document.querySelector('[data-viewport]')?.getAttribute('data-selected'),
+          field: document.querySelector<HTMLInputElement>('[data-part-name]')?.value,
+          saving: latest.current?.saving,
+          sequence: latest.current?.sequence,
+          parts: latest.current?.project?.parts.map((p) => ({ id: p.id, name: p.displayName })),
+        };
+        throw error;
+      }
+    };
+    window.editorCapture = async () => {
+      await window.projectSelfCheckCapture!();
+      setPartId(latest.current?.project?.parts[1]?.id);
+      setStep('appearance');
+      await pause(400);
+      const bg = document.querySelector<HTMLSelectElement>('[data-background]');
+      if (bg) {
+        bg.value = 'dark';
+        bg.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+    };
+    return () => {
+      delete window.editorSelfCheck;
+      delete window.editorCapture;
+    };
+  }, []);
+  useEffect(() => {
+    const unsubscribe = window.studio.projects.subscribe(receive);
+    void window.studio.projects.view().then((v) => {
+      receive(v);
+      if (v.recoveries.some((r) => r.pending)) setRecoveries(true);
+    });
+    return unsubscribe;
+  }, []);
+  useEffect(() => {
+    const key = (event: KeyboardEvent): void => {
+      if (document.querySelector('[role="dialog"][aria-modal="true"]')) return;
+      if (run.active && event.ctrlKey && event.altKey && event.shiftKey) return;
+      const target = event.target as HTMLElement;
+      const slot = shortcutSlot(
+        event,
+        !!document.getElementById('root')?.inert ||
+          ['INPUT', 'SELECT', 'TEXTAREA'].includes(target?.tagName) ||
+          !!target?.isContentEditable,
+      );
+      if (slot !== null) {
+        const p = latest.current?.project;
+        if (!p) return;
+        const id = p.expressionSettings?.shortcuts[slot - 1];
+        if (slot === 0 || id) {
+          event.preventDefault();
+          try {
+            if (slot === 0) player.controls.release(performance.now());
+            else player.controls.activate(id!, performance.now());
+          } catch {
+            /* unavailable references remain visible in expression editor */
+          }
+        }
+        return;
+      }
+      if (event.key === 'Escape') {
+        if (group.current) end(false);
+        else {
+          setRoute(null);
+          setRecoveries(false);
+        }
+      }
+      if (
+        (event.ctrlKey || event.metaKey) &&
+        ['s', 'z', 'y', 'o'].includes(event.key.toLowerCase())
+      ) {
+        if (
+          ['INPUT', 'SELECT', 'TEXTAREA'].includes((event.target as HTMLElement)?.tagName) &&
+          event.key !== 's'
+        )
+          return;
+        event.preventDefault();
+        void command({
+          type:
+            event.key === 's'
+              ? event.shiftKey
+                ? 'save-as'
+                : 'save'
+              : event.key === 'o'
+                ? 'open'
+                : event.key === 'y' || event.shiftKey
+                  ? 'redo'
+                  : 'undo',
+        });
+      }
+    };
+    window.addEventListener('keydown', key);
+    return () => window.removeEventListener('keydown', key);
+  }, []);
   useEffect(() => {
     window.projectSelfCheck = async () => {
-      const click = async (selector:string):Promise<void> => { const el = document.querySelector<HTMLButtonElement>(selector); if (!el || el.disabled) throw new Error('E_PROJECT_UI_CONTROL'); el.click(); await pause(); await queue.current; await pause(); };
-      const verify = (ok:unknown):void => { if (!ok) throw new Error('E_PROJECT_UI_RESULT'); };
-      const ids:string[] = [];
-      for (const r of routes) { await click(`[data-route="${r.type}"]`); await click('[data-new-confirm]'); const v = latest.current!; verify(v.project?.sourceType === r.type); ids.push(v.project!.projectId);
-        if (r.type !== 'split-image') { /* New drafts are dirty; exercise cancel without replacing them. */ await click('[data-project="close"]'); verify(latest.current?.project?.projectId === v.project?.projectId); await window.studio.projects.command({ type:'save' }).then(r => receive(r.view)); await click('[data-project="close"]'); }
+      const click = async (selector: string): Promise<void> => {
+        const el = document.querySelector<HTMLButtonElement>(selector);
+        if (!el || el.disabled) throw new Error('E_PROJECT_UI_CONTROL');
+        el.click();
+        await pause();
+        await queue.current;
+        await pause();
+      };
+      const verify = (ok: unknown): void => {
+        if (!ok) throw new Error('E_PROJECT_UI_RESULT');
+      };
+      const ids: string[] = [];
+      for (const r of routes) {
+        await click(`[data-route="${r.type}"]`);
+        await click('[data-new-confirm]');
+        const v = latest.current!;
+        verify(v.project?.sourceType === r.type);
+        ids.push(v.project!.projectId);
+        if (r.type !== 'split-image') {
+          /* New drafts are dirty; exercise cancel without replacing them. */ await click(
+            '[data-project="close"]',
+          );
+          verify(latest.current?.project?.projectId === v.project?.projectId);
+          await window.studio.projects.command({ type: 'save' }).then((r) => receive(r.view));
+          await click('[data-project="close"]');
+        }
       }
-      verify(new Set(ids).size === 3); await click('[data-project="sample"]'); verify(latest.current!.project!.parts.length === 4);
-      const part = latest.current!.project!.parts[0]!; const oldOpacity = part.opacity;
-      begin(); edit('part-opacity',part.id,.7); edit('part-opacity',part.id,.5); end(); await queue.current; verify(latest.current!.project!.parts[0]!.opacity === .5);
-      await click('[data-project="undo"]'); verify(latest.current!.project!.parts[0]!.opacity === oldOpacity); await click('[data-project="redo"]');
-      await click('[data-project="save"]'); verify(!latest.current!.dirty); const savedId = latest.current!.project!.projectId;
-      await click('[data-project="save-as"]'); verify(!latest.current!.dirty); await click('[data-project="duplicate"]'); verify(latest.current!.project!.projectId !== savedId && !latest.current!.dirty);
-      const cloneName = latest.current!.project!.displayName; edit('project-name',null,'Recovery candidate'); await queue.current; await click('[data-project="checkpoint"]');
-      const recovery = latest.current!.recoveries.find(r => r.pending)!; verify(recovery);
-      await click('[data-recovery]'); await click(`[data-recovery-id="${recovery.id}"]`); verify(document.querySelectorAll('.recovery-compare canvas').length === 2);
-      await click('[data-recovery-defer]'); verify(latest.current!.project!.displayName === 'Recovery candidate'); await click('[data-project="undo"]'); verify(!latest.current!.dirty);
-      await click('[data-recovery]'); await click(`[data-recovery-id="${recovery.id}"]`); await click('[data-recovery-original]'); verify(latest.current!.project!.displayName === cloneName && !latest.current!.dirty);
-      await click('[data-recovery]'); await click(`[data-recovery-id="${recovery.id}"]`); await click('[data-recovery-restore]'); verify(latest.current!.project!.displayName === 'Recovery candidate' && latest.current!.dirty);
-      await click('[data-project="close"]'); verify(latest.current!.project!.displayName === 'Recovery candidate'); await click('[data-project="save"]'); verify(!latest.current!.dirty);
-      await click('[data-project="open"]'); verify(latest.current!.project?.projectId === ids[0]);
-      await click('[data-project="close"]'); verify(latest.current!.mode === 'empty');
-      return { passed:true,threeRoutes:true,uniqueProjectIds:true,premiumInsertion:true,gestureUndoRedo:true,save:true,saveAs:true,duplicate:true,open:true,recoveryComparison:true,recoveryDefer:true,originalChoice:true,recoveryToNewFile:true,unsavedCancel:true,dialogs:'scripted native-dialog adapter in self-check only',rawPathsExposed:false };
+      verify(new Set(ids).size === 3);
+      await click('[data-project="sample"]');
+      verify(latest.current!.project!.parts.length === 4);
+      const part = latest.current!.project!.parts[0]!;
+      const oldOpacity = part.opacity;
+      begin();
+      edit('part-opacity', part.id, 0.7);
+      edit('part-opacity', part.id, 0.5);
+      end();
+      await queue.current;
+      verify(latest.current!.project!.parts[0]!.opacity === 0.5);
+      await click('[data-project="undo"]');
+      verify(latest.current!.project!.parts[0]!.opacity === oldOpacity);
+      await click('[data-project="redo"]');
+      await click('[data-project="save"]');
+      verify(!latest.current!.dirty);
+      const savedId = latest.current!.project!.projectId;
+      await click('[data-project="save-as"]');
+      verify(!latest.current!.dirty);
+      await click('[data-project="duplicate"]');
+      verify(latest.current!.project!.projectId !== savedId && !latest.current!.dirty);
+      const cloneName = latest.current!.project!.displayName;
+      edit('project-name', null, 'Recovery candidate');
+      await queue.current;
+      await click('[data-project="checkpoint"]');
+      const recovery = latest.current!.recoveries.find((r) => r.pending)!;
+      verify(recovery);
+      await click('[data-recovery]');
+      await click(`[data-recovery-id="${recovery.id}"]`);
+      verify(document.querySelectorAll('.recovery-compare canvas').length === 2);
+      await click('[data-recovery-defer]');
+      verify(latest.current!.project!.displayName === 'Recovery candidate');
+      await click('[data-project="undo"]');
+      verify(!latest.current!.dirty);
+      await click('[data-recovery]');
+      await click(`[data-recovery-id="${recovery.id}"]`);
+      await click('[data-recovery-original]');
+      verify(latest.current!.project!.displayName === cloneName && !latest.current!.dirty);
+      await click('[data-recovery]');
+      await click(`[data-recovery-id="${recovery.id}"]`);
+      await click('[data-recovery-restore]');
+      verify(
+        latest.current!.project!.displayName === 'Recovery candidate' && latest.current!.dirty,
+      );
+      await click('[data-project="close"]');
+      verify(latest.current!.project!.displayName === 'Recovery candidate');
+      await click('[data-project="save"]');
+      verify(!latest.current!.dirty);
+      await click('[data-project="open"]');
+      verify(latest.current!.project?.projectId === ids[0]);
+      await click('[data-project="close"]');
+      verify(latest.current!.mode === 'empty');
+      return {
+        passed: true,
+        threeRoutes: true,
+        uniqueProjectIds: true,
+        premiumInsertion: true,
+        gestureUndoRedo: true,
+        save: true,
+        saveAs: true,
+        duplicate: true,
+        open: true,
+        recoveryComparison: true,
+        recoveryDefer: true,
+        originalChoice: true,
+        recoveryToNewFile: true,
+        unsavedCancel: true,
+        dialogs: 'scripted native-dialog adapter in self-check only',
+        rawPathsExposed: false,
+      };
     };
-    window.projectSelfCheckCapture = async () => { const recent = latest.current?.recent.find(r => r.displayName.includes('복사본')); if (recent) await command({ type:'recent',id:recent.id }); else { const r = latest.current?.recent[0]; if (r) await command({ type:'recent',id:r.id }); } if (latest.current?.project?.parts.length) { edit('part-opacity',latest.current.project.parts[0]!.id,1); await queue.current; await command({ type:'save' }); } await pause(300); };
-    return () => { delete window.projectSelfCheck; delete window.projectSelfCheckCapture; };
-  },[]);
-  const p = view?.project; const part = partId === undefined ? p?.parts[0] : p?.parts.find(part => part.id === partId);
-  const partLabel = (v:NonNullable<typeof part>):string => (v.displayName.startsWith('premium-') || ['eye_right','eye_left','mouth'].includes(v.displayName)) ? `${v.side === 'character-left' ? '왼쪽 ' : v.side === 'character-right' ? '오른쪽 ' : ''}${roleNames[v.role] ?? '부위'}` : v.displayName;
-  const action = (type:'open' | 'save' | 'save-as' | 'duplicate' | 'close' | 'undo' | 'redo' | 'sample' | 'checkpoint' | 'check-resources',label:string,disabled = false) => <button data-project={type} disabled={disabled} onClick={() => void command({ type })}>{label}</button>;
-  const preview = async (id:string):Promise<void> => { setSelected(id); const r = await command({ type:'preview-recovery',id }); setComparison(r.preview ?? null); };
-  const task = view?.jobs.at(-1); const checked = task?.state === 'SUCCEEDED' && task.inputRevision === p?.revision;
-  useEffect(()=>{if(view?.project?.assembly&&view.project.projectId===exampleNavigation.current){exampleNavigation.current=null;setStep('motion');requestAnimationFrame(()=>document.querySelector<HTMLElement>('[data-step-heading]')?.focus());}},[view?.project?.projectId,view?.project?.assembly]);
-  const startExample = async ():Promise<void> => {
-    setHelp(false);
-    if(run.active)return;
-    const previous=latest.current?.project?.projectId;
-    const created=await command({type:'new',name:'처음 만나는 캐릭터',sourceType:'parts'});
-    const next=created.view.project;
-    if(!next || next.projectId===previous || created.view.errorCode)return;
-    exampleNavigation.current=next.projectId;
-    const prepared=await command({type:'parts-start',expectedRevision:next.revision});
-    if(!prepared.view.project?.assembly)exampleNavigation.current=null;
+    window.projectSelfCheckCapture = async () => {
+      const recent = latest.current?.recent.find((r) => r.displayName.includes('복사본'));
+      if (recent) await command({ type: 'recent', id: recent.id });
+      else {
+        const r = latest.current?.recent[0];
+        if (r) await command({ type: 'recent', id: r.id });
+      }
+      if (latest.current?.project?.parts.length) {
+        edit('part-opacity', latest.current.project.parts[0]!.id, 1);
+        await queue.current;
+        await command({ type: 'save' });
+      }
+      await pause(300);
+    };
+    return () => {
+      delete window.projectSelfCheck;
+      delete window.projectSelfCheckCapture;
+    };
+  }, []);
+  const p = view?.project;
+  const part = partId === undefined ? p?.parts[0] : p?.parts.find((part) => part.id === partId);
+  const partLabel = (v: NonNullable<typeof part>): string =>
+    v.displayName.startsWith('premium-') ||
+    ['eye_right', 'eye_left', 'mouth'].includes(v.displayName)
+      ? `${v.side === 'character-left' ? '왼쪽 ' : v.side === 'character-right' ? '오른쪽 ' : ''}${roleNames[v.role] ?? '부위'}`
+      : v.displayName;
+  const action = (
+    type:
+      | 'open'
+      | 'save'
+      | 'save-as'
+      | 'duplicate'
+      | 'close'
+      | 'undo'
+      | 'redo'
+      | 'sample'
+      | 'checkpoint'
+      | 'check-resources',
+    label: string,
+    disabled = false,
+  ) => (
+    <button data-project={type} disabled={disabled} onClick={() => void command({ type })}>
+      {label}
+    </button>
+  );
+  const preview = async (id: string): Promise<void> => {
+    setSelected(id);
+    const r = await command({ type: 'preview-recovery', id });
+    setComparison(r.preview ?? null);
   };
-  const navigate = (target:typeof step):void => { end(); setStep(target); requestAnimationFrame(() => document.querySelector<HTMLElement>('[data-step-heading]')?.focus()); };
-  const focusFix = (target:string):void => { setStep('appearance'); requestAnimationFrame(() => document.querySelector<HTMLElement>(target)?.focus()); };
-  const openRun=async(quick=false,id?:string):Promise<void>=>{end();await queue.current;if(id){const priorSession=latest.current?.sessionId;const reply=await command({type:'recent',id});if(reply.view.errorCode||!reply.view.project||reply.view.sessionId===priorSession)return;await pause(100);}setQuickRun(quick&&!run.active);setRunOpen(true);};
-  const runFix=(target:FixTarget,id:string|null):void=>{void run.stop().then(()=>{setRunOpen(false);if(target==='camera')setCameraOpen(true);else if(target==='microphone')setInputOpen(true);else if(target==='expressions'){setExpressing(true);if(id)requestAnimationFrame(()=>requestAnimationFrame(()=>document.querySelector<HTMLButtonElement>('[data-expression-select="'+CSS.escape(id)+'"]')?.click()));}else if(target==='motion')setStep('motion');else if(target==='parts'){setStep('appearance');if(id&&latest.current?.project?.parts.some(p=>p.id===id))setPartId(id);}else if(target==='resources')focusFix(id?'[data-resource-fix="'+CSS.escape(id)+'"]':'[data-resource-fix]');else setStep('review');});};
-  const recentList = <div className="recent-list">{view?.recent.length ? view.recent.map(r => <div key={r.id}><button data-recent-id={r.id} onClick={() => { void command({ type:'recent',id:r.id }); setRecentOpen(false); }}><strong>{r.displayName}</strong><small>{routeNames[r.sourceType] ?? '프로젝트'} · 마지막으로 연 날 {new Date(r.openedAt).toLocaleDateString()}</small></button><button data-recent-run={r.id} onClick={()=>{setRecentOpen(false);void openRun(true,r.id);}}>바로 실행</button><button aria-label={`${r.displayName} 최근 목록에서 제거`} onClick={() => void command({ type:'remove-recent',id:r.id })}>×</button></div>) : <div className="empty-project"><div><strong>아직 저장한 프로젝트가 없어요</strong></div></div>}</div>;
-  return <div className={`project-desk ${p ? 'editing' : ''}`} data-session-sequence={view?.sequence}>{dropError&&<p role="alert">{dropError}</p>}
-    <div className="project-toolbar"><div className="project-context">{p ? <><strong>{p.displayName}</strong><span role="status">{view?.saving ? '저장 중' : view?.dirty ? '● 저장 안 됨' : '✓ 저장됨'}</span><small>{view?.label}</small></> : <span>나의 작업실</span>}</div><button data-new-project onClick={() => { setName('새 캐릭터'); setRoute('parts'); }}>새 프로젝트</button>{action('open','프로젝트 열기')}<button data-recovery onClick={() => { setRecoveries(true); setComparison(null); }}>복구본 {view?.recoveries.filter(r => r.pending).length || ''}</button><button data-help onClick={() => setHelp(true)}>도움말</button></div>
-    {view&&<RunDock runtime={run} view={view} showPreview={!runOpen} open={()=>{setQuickRun(false);setRunOpen(true);}} save={()=>void command({type:'save'})} tracking={gain=>{queue.current=queue.current.then(()=>{const v=latest.current!;const value=structuredClone(v.project!.tracking??defaultTracking());value.channels.find(c=>c.key==='head_yaw')!.gain=gain;return commandDirect({type:'tracking-settings',expectedRevision:v.project!.revision,value});});}}/>}
-    {view&&(view.project||run.active)&&<button data-file-output-open onClick={()=>{end();setFileOpen(true);}}>이미지 저장·외부 대상</button>}
-    {view?.errorCode && <Notice code={view.errorCode} onAction={a => {if(view.errorCode==='E_RUN_HEAVY'&&run.active){setRunOpen(true);return;} if (a === 'save-as' || a === 'open') void command({ type:a }); else if (a === 'resources') focusFix('[data-resource-fix]'); else if (a === 'parts') focusFix('[data-part-name]'); else setHelp(true); }}/ >}
-    {view?.mode === 'read-only' && <section className="project-editor"><h2>{view.readOnlyName}</h2><p>이 앱보다 새로운 저장 형식입니다. 읽기 전용으로 열었으며 원본 파일은 그대로 유지합니다.</p>{action('close','프로젝트 닫기')}</section>}
-    {p ? <>
-      <nav className="editor-steps" aria-label="제작 단계">{([{ id:'prepare',title:'자료 준비',done:p.parts.length > 0 && !view?.issues.length },{ id:'appearance',title:'외형 편집',done:reviewed === p.revision },{ id:'motion',title:'움직임 시험',done:false },{ id:'review',title:'저장 전 확인',done:checked && !view?.dirty }] as const).map((s,i) => <button key={s.id} data-step={s.id} aria-current={step === s.id ? 'step' : undefined} onClick={() => navigate(s.id)}><span>{s.done ? '✓' : `0${i+1}`}</span><strong>{s.title}</strong><small>{s.done ? '완료' : step === s.id ? '현재 단계' : '확인 전'}</small></button>)}</nav>
-      <div className="editor-actions"><button className="primary" data-run-open onClick={()=>void openRun()}>실행 준비</button>{action('save','저장',!!view?.saving)}{action('save-as','다른 이름으로',!!view?.saving)}{action('duplicate','복제',!!view?.saving)}{action('undo','되돌리기',!view?.canUndo)}{action('redo','다시 실행',!view?.canRedo)}{action('close','프로젝트 닫기')}<button data-input-open disabled={run.active} onClick={()=>{end();setInputOpen(true);}}>마이크·입력 복구</button><span data-mic-main-state>{microphone.state==='open'?'마이크 입력 사용 중':microphone.state==='failed'?'마이크 입력 중단':'마이크 중지'}</span><button data-mic-main-stop disabled={!player.microphoneLive} onClick={()=>void microphone.stop()}>마이크 중지</button><button data-camera-open disabled={run.active} onClick={()=>{end();setCameraOpen(true);}}>카메라·추적 보정</button><span data-camera-main-state>{camera.state==='open'?'카메라 입력 사용 중':camera.state==='connecting'?'카메라 연결 중':camera.state==='failed'?'카메라 입력 중단 · 상태 확인 필요':'카메라 중지'}</span><button data-camera-main-stop disabled={!player.cameraLive} onClick={()=>camera.stop()}>카메라 중지</button><button data-expression-open onClick={()=>{end();setExpressing(true);}}>표정·입력 제어</button><button data-detail-open disabled={(!part&&!p.detail?.baselines.length)||view?.detail?.busy} onClick={()=>{end();if(part)void command({type:'detail-open',location:{kind:'part',id:part.id}});else setDetailing(true);}}>세부 부위·연결·변형</button><span>{routeNames[p.sourceType]} · 장치 없이 편집 가능</span></div>
-      {step==='prepare' && view?.input?.draft ? <InputEditor key={view.input.draft.id} input={view.input} command={c=>void command(c)} result={p.inputPreparation ? <><StructurePanel view={view!} command={c=>void command(c)} onNext={()=>navigate('motion')}/><ProjectPreview scene={view.scene} label="선택한 그림"/>{p.inputPreparation.analysis.warnings.map(code=><p role="note" key={code}>{inputWarnings[code]}</p>)}</> : null} onNext={()=>navigate('appearance')}/> : <div className="editor-layout"><aside className="parts-panel" aria-labelledby="parts-title"><h2 id="parts-title">캐릭터 부위 <small>{p.parts.length}</small></h2><p>목록이나 그림에서 부위를 선택하세요.</p><div className="part-list" aria-label="부위 목록">{p.parts.length ? p.parts.map(v => <button key={v.id} data-part-id={v.id} aria-pressed={part?.id === v.id} onClick={() => { setPartId(v.id); setStep('appearance'); }}><span>{part?.id === v.id ? '✓ ' : '◇ '}{partLabel(v)}</span><small>{roleNames[v.role]}{!v.visible ? ' · 숨김' : v.opacity === 0 ? ' · 투명' : ''}</small></button>) : <p className="empty-hint">아직 부위가 없어요.<br/>준비 단계에서 예제를 넣어 주세요.</p>}</div></aside>
-        <EditorPreview key={p.projectId} motion={player} scene={view!.scene} original={view!.originalScene} selected={part?.id ?? null} onSelect={id => { setPartId(id); if (id) setStep('appearance'); }}/>
-        <section className="inspector" aria-label="현재 단계 설정"><span className="eyebrow">{routeNames[p.sourceType]}</span><h2 tabIndex={-1} data-step-heading>{step === 'prepare' ? '캐릭터 자료 준비' : step === 'appearance' ? '외형을 확인해 주세요' : step === 'motion' ? '움직임을 확인해 주세요' : '저장 전 확인'}</h2>
-          {task && step === 'review' && <TaskCard job={task} onCancel={() => void command({ type:'cancel-task',id:task.jobId })} onRetry={() => void command({ type:'retry-task',id:task.jobId })}/>}
-          {step === 'prepare' && <>{(p.sourceType==='parts'||p.assembly)&&<PartsPanel project={p} catalog={view?.partsCatalog??null} partKey={part?.library?.key??null} onCommand={partsCommand} onNext={()=>navigate('motion')}/>}<StructurePanel view={view!} command={c=>void command(c)} onNext={()=>navigate('motion')}/>{p.sourceType==='split-image'?<SplitPanel view={view!} command={c=>void command(c)}/>:<InputStatus input={view?.input ?? null} command={c=>void command(c)}/>}<label>프로젝트 이름<input data-project-name key={p.projectId+'-name-'+p.displayName} defaultValue={p.displayName} maxLength={120} onBlur={e => { if (e.currentTarget.value !== p.displayName) edit('project-name',null,e.currentTarget.value); }}/></label><div className="sample-action">{action('sample',p.parts.length ? '고급 예제 다시 넣기' : '고급 예제 넣기')}<small>자동 분리나 자동 리깅 결과가 아닌, 준비된 예제입니다.</small></div><button data-next onClick={() => navigate('appearance')}>외형 편집으로 →</button></>}
-          {step === 'appearance' && <>{p.assembly&&<PartsPanel project={p} catalog={view?.partsCatalog??null} partKey={part?.library?.key??null} onCommand={partsCommand} onNext={()=>navigate('motion')}/>} {part ? <><p data-selected-label role="status">선택한 부위: <strong>{partLabel(part)}</strong></p><label>부위 선택<select data-part-select value={part.id} onChange={e => setPartId(e.target.value)}>{p.parts.map(v => <option key={v.id} value={v.id}>{partLabel(v)}</option>)}</select></label><label>부위 이름<input data-part-name onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); edit('part-name',part.id,e.currentTarget.value); e.currentTarget.blur(); } }} key={part.id+part.displayName} defaultValue={part.displayName} maxLength={120} onBlur={e => { if (e.currentTarget.value !== part.displayName) edit('part-name',part.id,e.currentTarget.value); }}/></label><label>부위 역할<select value={part.role} onChange={e => edit('part-role',part.id,e.target.value)}>{Object.entries(roleNames).map(([role,label]) => <option key={role} value={role}>{label}</option>)}</select></label><label>불투명도 <output>{Math.round(part.opacity*100)}%</output><input data-opacity type="range" min="0" max="1" step=".01" value={part.opacity} onPointerDown={begin} onKeyDown={e => { if (e.key === 'Escape') end(false); else if (['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home','End','PageUp','PageDown'].includes(e.key)) begin(); }} onChange={e => edit('part-opacity',part.id,Number(e.target.value))} onPointerUp={() => end()} onPointerCancel={() => end(false)} onKeyUp={e => { if (e.key !== 'Escape') end(); }} onBlur={() => end()}/></label><label>가로 위치<input type="number" disabled={!!part.library} title={part.library?'\ud30c\uce20 \uc870\uc808\uc5d0\uc11c \uac00\ub85c \uc774\ub3d9\uc744 \ubc14\uafd4 \uc8fc\uc138\uc694.':undefined} value={part.localTransform[4]} onChange={e => edit('part-translate-x',part.id,Number(e.target.value))}/></label>{p.expressions[0]?.values[0] && <label>저장된 표정 값<input aria-label="표정 값" type="number" step=".1" value={p.expressions[0].values[0].value} onChange={e => edit('expression-value',p.expressions[0]!.id,Number(e.target.value),p.expressions[0]!.values[0]!.parameterId)}/><small>표정 값의 저장·편집입니다. 움직임 시험 단계에서 장치 없이 확인할 수 있어요.</small></label>}<button data-appearance-done onClick={() => { setReviewed(p.revision); navigate('motion'); }}>이 외형 확인 완료 →</button></> : <p>선택할 부위가 없어요. 자료 준비에서 예제를 넣어 주세요.</p>}<button onClick={() => navigate('prepare')}>← 자료 준비로</button></>}
-          {step === 'motion' && <><MotionPanel project={p} player={player} onPrepare={() => { queue.current = queue.current.then(() => commandDirect({ type:'prepare-motion',expectedRevision:latest.current!.project!.revision })); }} onSettings={(strength,smoothingMs,pose) => { queue.current = queue.current.then(() => commandDirect({ type:'motion-settings',expectedRevision:latest.current!.project!.revision,strength,smoothingMs,pose })); }} onParameter={(id,min,neutral,max) => { queue.current = queue.current.then(() => commandDirect({ type:'motion-parameter',expectedRevision:latest.current!.project!.revision,id,min,neutral,max })); }}/><button onClick={() => navigate('review')}>저장 전 확인으로 →</button></>}
-          {step === 'review' && <><p>그림 파일을 읽을 수 있는지 확인하고 프로젝트를 저장하세요. 이 검사는 리깅·추적·방송 호환성 검사를 포함하지 않아요.</p><ul className="review-summary"><li>{p.parts.length ? '✓' : '○'} 부위 {p.parts.length}개</li><li>{reviewed === p.revision ? '✓ 외형 확인 완료' : '○ 현재 외형 확인 필요'}</li><li>{checked ? '✓ 이 편집 내용의 그림 파일 확인 완료' : '○ 현재 그림 파일 확인 필요'}</li><li>{view?.dirty ? '○ 저장하지 않은 변경 있음' : '✓ 저장 완료'}</li></ul>{action('check-resources','그림 파일 확인',!!task && ['QUEUED','RUNNING','CANCEL_REQUESTED','RESULT_READY'].includes(task.state))}{action('save','프로젝트 저장',!!view?.saving)}<button onClick={() => navigate('appearance')}>← 외형 편집으로</button></>}
-          {!!view?.issues.length && <section className="resource-warning" aria-label="그림 연결 문제"><strong>경고 · 그림 {view.issues.length}개를 찾지 못했어요</strong><p>표시 가능한 부위는 유지됩니다. 같은 원본을 다시 지정하면 내용을 확인해 연결합니다.</p>{view.issues.map(issue => <button data-resource-fix={issue.assetId} key={issue.assetId} onClick={() => void command({ type:'relink',assetId:issue.assetId })}>{p.parts.filter(v => v.textures.some(t => t.assetId === issue.assetId)).map(partLabel).join(', ') || '원본 그림'} 다시 연결</button>)}</section>}
-          {p.inputPreparation && <div className="input-warnings">{p.inputPreparation.analysis.warnings.map(code=><p role="note" key={code}>{inputWarnings[code]}</p>)}</div>}<div className="recovery-status">{action('checkpoint','복구 지점 만들기')}<span>{view?.lastRecoveryAt ? `복구본 보관 ${new Date(view.lastRecoveryAt).toLocaleTimeString()}` : '자동 복구는 명시적인 저장과 구분해 보관합니다.'}</span></div>
-        </section></div>}
-      {task && step !== 'review' && <TaskCard job={task} onCancel={() => void command({ type:'cancel-task',id:task.jobId })} onRetry={() => void command({ type:'retry-task',id:task.jobId })}/>}
-    </> : view?.mode !== 'read-only' && <><section className="start-section"><div className="section-heading"><h2>어디에서 시작할까요?</h2></div><div className="routes">{routes.map((r,index) => <button data-create data-route={r.type} className="route" key={r.type} onClick={() => { setName('새 캐릭터'); setRoute(r.type); }}><span className="route-top"><span>✧</span><span>0{index+1}</span></span><strong>{r.title}</strong><small className="route-description">{routeHints[r.type]}</small><span className="route-arrow">↗</span></button>)}</div></section><section className="first-use-card" aria-label="첫 사용 안내"><div><h3>움직이는 캐릭터가 처음인가요?</h3><p>예제로 눈·입·고개 움직임을 익히고, 내 그림으로 시작해 보세요.</p></div><div className="guide-actions"><button data-first-guide onClick={()=>setHelp(true)}>차근차근 안내</button><button data-first-example className="primary" disabled={run.active} onClick={()=>void startExample()}>예제로 시작</button></div></section><section className="recent"><h2>이어서 작업하기</h2>{recentList}</section></>}
-    {fileOpen&&view&&<FileOutputPanel view={view} runtime={run} command={command} close={()=>setFileOpen(false)} fix={issue=>{if(issue.category==='expression'){setExpressing(true);}else if(issue.fix){void command({type:'detail-open',location:issue.fix});}else setStep(issue.category==='resource'?'prepare':'motion');}}/>}
-    {runOpen&&view&&(view.project||run.active)&&<RunPanel runtime={run} view={view} quick={quickRun} close={()=>setRunOpen(false)} fix={runFix}/>}
-    {inputOpen&&view?.project&&<Modal titleId="input-title" className="camera-dialog" onClose={()=>setInputOpen(false)}><h2 id="input-title">마이크·입력 복구</h2><InputPanel mic={microphone} camera={camera} project={view.project} scene={view.scene} command={operation=>{queue.current=queue.current.then(()=>commandDirect({type:'expression-edit',expectedRevision:latest.current!.project!.revision,operation}));}}/><button data-input-close onClick={()=>setInputOpen(false)}>닫기 · 연결된 입력 유지</button></Modal>}
-    {cameraOpen&&view?.project&&<Modal titleId="camera-title" className="camera-dialog" onClose={()=>setCameraOpen(false)}><h2 id="camera-title">카메라·추적 보정</h2><CameraPanel runtime={camera} project={view.project} scene={view.scene} save={value=>{queue.current=queue.current.then(()=>commandDirect({type:'tracking-settings',expectedRevision:latest.current!.project!.revision,value}));}}/><button data-camera-close onClick={()=>setCameraOpen(false)}>닫기 · 연결된 추적 유지</button></Modal>}
-    {expressing&&view?.project&&<Modal titleId="expression-title" className="expression-dialog" onClose={()=>setExpressing(false)}><h2 id="expression-title">표정·입력 제어</h2><ExpressionPanel onCameraStop={()=>camera.stop()} scene={view.scene} errorCode={view.errorCode} project={view.project} player={player} command={operation=>{queue.current=queue.current.then(()=>commandDirect({type:'expression-edit',expectedRevision:latest.current!.project!.revision,operation}));}}/><button data-expression-close onClick={()=>setExpressing(false)}>편집으로 돌아가기</button></Modal>}
-    {detailing&&view?.project&&view.detail&&<Modal titleId="detail-title" className="detail-dialog" onClose={()=>{void command({type:'detail-cancel'});setDetailing(false);}}><h2 id="detail-title">세부 편집 · 부위·연결·변형</h2><DetailPanel view={view} partId={part?.id??null} onSelect={setPartId} command={c=>void command(c)}/><button data-detail-close onClick={()=>{void command({type:'detail-cancel'});setDetailing(false);}}>간단 편집으로 돌아가기</button></Modal>}
-    {splitting&&view?.split?.draft&&<Modal titleId="split-title" className="split-dialog" onClose={()=>setSplitting(false)}><h2 id="split-title">분리 그림 · 배치와 연결</h2><SplitGuide key={view.split.draft.id} view={view} command={c=>void command(c)}/><button data-split-close onClick={()=>setSplitting(false)}>작업실로 돌아가기</button></Modal>}
-    {correcting&&view?.project?.structure&&<Modal titleId="correction-title" className="correction-dialog" onClose={()=>setCorrecting(false)}><h2 id="correction-title">모양 고치기 · 보정과 재분석</h2><CorrectionPanel key={view.project.projectId} view={view} command={c=>void command(c)}/><button data-correction-close onClick={()=>setCorrecting(false)}>작업실로 돌아가기</button></Modal>}
-    {transition&&<Modal titleId="run-transition-title" onClose={()=>void finishTransition('cancel')}><h2 id="run-transition-title" aria-busy={transitionBusy}>실행 중 프로젝트 전환</h2><p>현재 캐릭터를 계속 표시하며 파일과 미저장 변경을 확인합니다. 새 실행본은 구조·그림 검사 통과 후 교체하며 표정·추적 대상을 새로 시작합니다. 준비가 안 되면 기존 실행을 유지합니다.</p><button data-run-transition-keep disabled={transitionBusy} onClick={()=>void finishTransition('keep')}>실행 유지·편집만 전환</button><button data-run-transition-switch disabled={transitionBusy||transition.command.type==='close'} onClick={()=>void finishTransition('switch')}>검사 후 실행도 전환</button><button data-run-transition-cancel disabled={transitionBusy} onClick={()=>void finishTransition('cancel')}>취소</button></Modal>}
-    {environmentOpen&&<EnvironmentPanel view={view} run={run} camera={camera} microphone={microphone} close={()=>setEnvironmentOpen(false)} navigate={to=>{setEnvironmentOpen(false);if(to==='camera')setCameraOpen(true);else if(to==='microphone')setInputOpen(true);else void openRun();}}/>}
-    {route && <Modal titleId="new-title" onClose={() => setRoute(null)}><h2 id="new-title">새 캐릭터 프로젝트</h2><div className="route-choice" role="group" aria-label="제작 경로 선택">{routes.map(r => <button data-new-route={r.type} key={r.type} aria-pressed={route === r.type} onClick={() => setRoute(r.type)}>{r.title}</button>)}</div><label>프로젝트 이름<input data-initial-focus value={name} maxLength={120} onChange={e => setName(e.target.value)}/></label><button className="primary" data-new-confirm onClick={() => { void command({ type:'new',name,sourceType:route }); setRoute(null); }}>초안 만들기</button><button data-new-cancel onClick={() => setRoute(null)}>취소</button></Modal>}
-    {recentOpen && <Modal titleId="recent-title" onClose={() => setRecentOpen(false)} className="recent-dialog"><h2 id="recent-title">최근 프로젝트</h2><p>프로젝트를 선택하면 저장하지 않은 변경을 먼저 확인합니다.</p>{recentList}</Modal>}
-    {help && <HelpPanel exampleDisabled={run.active} initialTopic={step==='motion'?'devices':view?.project?.sourceType??'start'} onClose={()=>setHelp(false)} onRoute={type=>{setHelp(false);setName('새 캐릭터');setRoute(type);}} onExample={()=>void startExample()}/>}
-    {recoveries && <Modal titleId="recovery-title" onClose={() => setRecoveries(false)} className="recovery-dialog"><h2 id="recovery-title">작업 복구</h2><p>복구본과 기존 저장본을 비교하세요. 복구하면 새 파일로 저장할 초안이 열립니다.</p><div className="recovery-layout"><div className="recovery-list">{view?.recoveries.length ? view.recoveries.map(r => <button data-recovery-id={r.id} className={selected === r.id ? 'selected' : ''} key={r.id} onClick={() => void preview(r.id)}><strong>{r.displayName} · 변경 {r.revision}</strong><small>{({ autosave:'자동 복구',checkpoint:'중요 변경 전 보관',backup:'이전 정상 저장본' } as Record<string,string>)[r.kind] ?? '복구본'} · {new Date(r.createdAt).toLocaleString()}<br/>{r.reason}{r.pending ? ' · 확인 필요' : ''}</small></button>) : <p>보관된 복구본이 없습니다.</p>}</div>{comparison && <div className="recovery-compare">{[comparison.saved,comparison.recovered].map((item,i) => <div key={i}><h3>{i === 0 ? '기존 저장본' : '복구본'}</h3>{item ? <><p>{item.label} · 변경 {item.revision}</p><ProjectPreview scene={item.scene} label={i === 0 ? '기존 저장본' : '복구본'}/></> : <p>기존 파일을 찾을 수 없습니다.</p>}</div>)}</div>}</div><div className="edit-actions"><button data-recovery-restore disabled={!selected} onClick={() => { if (selected) void command({ type:'recover',id:selected }).then(r => { if (!r.view.errorCode) setRecoveries(false); }); }}>복구본으로 계속</button><button data-recovery-original disabled={!selected || !comparison?.saved} onClick={() => { if (selected) void command({ type:'original',id:selected }).then(r => { if (!r.view.errorCode) setRecoveries(false); }); }}>기존 저장본 열기</button><button data-recovery-defer onClick={() => setRecoveries(false)}>나중에 결정</button></div></Modal>}
-  </div>;
+  const task = view?.jobs.at(-1);
+  const checked = task?.state === 'SUCCEEDED' && task.inputRevision === p?.revision;
+  useEffect(() => {
+    if (view?.project?.assembly && view.project.projectId === exampleNavigation.current) {
+      exampleNavigation.current = null;
+      setStep('motion');
+      requestAnimationFrame(() =>
+        document.querySelector<HTMLElement>('[data-step-heading]')?.focus(),
+      );
+    }
+  }, [view?.project?.projectId, view?.project?.assembly]);
+  const startExample = async (): Promise<void> => {
+    setHelp(false);
+    if (run.active) return;
+    const previous = latest.current?.project?.projectId;
+    const created = await command({ type: 'new', name: '처음 만나는 캐릭터', sourceType: 'parts' });
+    const next = created.view.project;
+    if (!next || next.projectId === previous || created.view.errorCode) return;
+    exampleNavigation.current = next.projectId;
+    const prepared = await command({ type: 'parts-start', expectedRevision: next.revision });
+    if (!prepared.view.project?.assembly) exampleNavigation.current = null;
+  };
+  const navigate = (target: typeof step): void => {
+    end();
+    setStep(target);
+    requestAnimationFrame(() =>
+      document.querySelector<HTMLElement>('[data-step-heading]')?.focus(),
+    );
+  };
+  const focusFix = (target: string): void => {
+    setStep('appearance');
+    requestAnimationFrame(() => document.querySelector<HTMLElement>(target)?.focus());
+  };
+  const openRun = async (quick = false, id?: string): Promise<void> => {
+    end();
+    await queue.current;
+    if (id) {
+      const priorSession = latest.current?.sessionId;
+      const reply = await command({ type: 'recent', id });
+      if (reply.view.errorCode || !reply.view.project || reply.view.sessionId === priorSession)
+        return;
+      await pause(100);
+    }
+    setQuickRun(quick && !run.active);
+    setRunOpen(true);
+  };
+  const runFix = (target: FixTarget, id: string | null): void => {
+    void run.stop().then(() => {
+      setRunOpen(false);
+      if (target === 'camera') setCameraOpen(true);
+      else if (target === 'microphone') setInputOpen(true);
+      else if (target === 'expressions') {
+        setExpressing(true);
+        if (id)
+          requestAnimationFrame(() =>
+            requestAnimationFrame(() =>
+              document
+                .querySelector<HTMLButtonElement>(
+                  '[data-expression-select="' + CSS.escape(id) + '"]',
+                )
+                ?.click(),
+            ),
+          );
+      } else if (target === 'motion') setStep('motion');
+      else if (target === 'parts') {
+        setStep('appearance');
+        if (id && latest.current?.project?.parts.some((p) => p.id === id)) setPartId(id);
+      } else if (target === 'resources')
+        focusFix(id ? '[data-resource-fix="' + CSS.escape(id) + '"]' : '[data-resource-fix]');
+      else setStep('review');
+    });
+  };
+  const recentList = (
+    <div className="recent-list">
+      {view?.recent.length ? (
+        view.recent.map((r) => (
+          <div key={r.id}>
+            <button
+              data-recent-id={r.id}
+              onClick={() => {
+                void command({ type: 'recent', id: r.id });
+                setRecentOpen(false);
+              }}
+            >
+              <strong>{r.displayName}</strong>
+              <small>
+                {routeNames[r.sourceType] ?? '프로젝트'} · 마지막으로 연 날{' '}
+                {new Date(r.openedAt).toLocaleDateString()}
+              </small>
+            </button>
+            <button
+              data-recent-run={r.id}
+              onClick={() => {
+                setRecentOpen(false);
+                void openRun(true, r.id);
+              }}
+            >
+              바로 실행
+            </button>
+            <button
+              aria-label={`${r.displayName} 최근 목록에서 제거`}
+              onClick={() => void command({ type: 'remove-recent', id: r.id })}
+            >
+              ×
+            </button>
+          </div>
+        ))
+      ) : (
+        <div className="empty-project">
+          <div>
+            <strong>아직 저장한 프로젝트가 없어요</strong>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+  return (
+    <div className={`project-desk ${p ? 'editing' : ''}`} data-session-sequence={view?.sequence}>
+      {dropError && <p role="alert">{dropError}</p>}
+      <div className="project-toolbar">
+        <div className="project-context">
+          {p ? (
+            <>
+              <strong>{p.displayName}</strong>
+              <span role="status">
+                {view?.saving ? '저장 중' : view?.dirty ? '● 저장 안 됨' : '✓ 저장됨'}
+              </span>
+              <small>{view?.label}</small>
+            </>
+          ) : (
+            <span>나의 작업실</span>
+          )}
+        </div>
+        <button
+          data-new-project
+          onClick={() => {
+            setName('새 캐릭터');
+            setRoute('parts');
+          }}
+        >
+          새 프로젝트
+        </button>
+        {action('open', '프로젝트 열기')}
+        <button
+          data-recovery
+          onClick={() => {
+            setRecoveries(true);
+            setComparison(null);
+          }}
+        >
+          복구본 {view?.recoveries.filter((r) => r.pending).length || ''}
+        </button>
+        <button data-help onClick={() => setHelp(true)}>
+          도움말
+        </button>
+      </div>
+      {view && (
+        <RunDock
+          runtime={run}
+          view={view}
+          showPreview={!runOpen}
+          open={() => {
+            setQuickRun(false);
+            setRunOpen(true);
+          }}
+          save={() => void command({ type: 'save' })}
+          tracking={(gain) => {
+            queue.current = queue.current.then(() => {
+              const v = latest.current!;
+              const value = structuredClone(v.project!.tracking ?? defaultTracking());
+              value.channels.find((c) => c.key === 'head_yaw')!.gain = gain;
+              return commandDirect({
+                type: 'tracking-settings',
+                expectedRevision: v.project!.revision,
+                value,
+              });
+            });
+          }}
+        />
+      )}
+      {view && (view.project || run.active) && (
+        <button
+          data-file-output-open
+          onClick={() => {
+            end();
+            setFileOpen(true);
+          }}
+        >
+          이미지 저장·외부 대상
+        </button>
+      )}
+      {view?.errorCode && (
+        <Notice
+          code={view.errorCode}
+          onAction={(a) => {
+            if (view.errorCode === 'E_RUN_HEAVY' && run.active) {
+              setRunOpen(true);
+              return;
+            }
+            if (a === 'save-as' || a === 'open') void command({ type: a });
+            else if (a === 'resources') focusFix('[data-resource-fix]');
+            else if (a === 'parts') focusFix('[data-part-name]');
+            else setHelp(true);
+          }}
+        />
+      )}
+      {view?.mode === 'read-only' && (
+        <section className="project-editor">
+          <h2>{view.readOnlyName}</h2>
+          <p>
+            이 앱보다 새로운 저장 형식입니다. 읽기 전용으로 열었으며 원본 파일은 그대로 유지합니다.
+          </p>
+          {action('close', '프로젝트 닫기')}
+        </section>
+      )}
+      {p ? (
+        <>
+          <nav className="editor-steps" aria-label="제작 단계">
+            {(
+              [
+                {
+                  id: 'prepare',
+                  title: '자료 준비',
+                  done: p.parts.length > 0 && !view?.issues.length,
+                },
+                { id: 'appearance', title: '외형 편집', done: reviewed === p.revision },
+                { id: 'motion', title: '움직임 시험', done: false },
+                { id: 'review', title: '저장 전 확인', done: checked && !view?.dirty },
+              ] as const
+            ).map((s, i) => (
+              <button
+                key={s.id}
+                data-step={s.id}
+                aria-current={step === s.id ? 'step' : undefined}
+                onClick={() => navigate(s.id)}
+              >
+                <span>{s.done ? '✓' : `0${i + 1}`}</span>
+                <strong>{s.title}</strong>
+                <small>{s.done ? '완료' : step === s.id ? '현재 단계' : '확인 전'}</small>
+              </button>
+            ))}
+          </nav>
+          <div className="editor-actions">
+            <button className="primary" data-run-open onClick={() => void openRun()}>
+              실행 준비
+            </button>
+            {action('save', '저장', !!view?.saving)}
+            {action('save-as', '다른 이름으로', !!view?.saving)}
+            {action('duplicate', '복제', !!view?.saving)}
+            {action('undo', '되돌리기', !view?.canUndo)}
+            {action('redo', '다시 실행', !view?.canRedo)}
+            {action('close', '프로젝트 닫기')}
+            <button
+              data-input-open
+              disabled={run.active}
+              onClick={() => {
+                end();
+                setInputOpen(true);
+              }}
+            >
+              마이크·입력 복구
+            </button>
+            <span data-mic-main-state>
+              {microphone.state === 'open'
+                ? '마이크 입력 사용 중'
+                : microphone.state === 'failed'
+                  ? '마이크 입력 중단'
+                  : '마이크 중지'}
+            </span>
+            <button
+              data-mic-main-stop
+              disabled={!player.microphoneLive}
+              onClick={() => void microphone.stop()}
+            >
+              마이크 중지
+            </button>
+            <button
+              data-camera-open
+              disabled={run.active}
+              onClick={() => {
+                end();
+                setCameraOpen(true);
+              }}
+            >
+              카메라·추적 보정
+            </button>
+            <span data-camera-main-state>
+              {camera.state === 'open'
+                ? '카메라 입력 사용 중'
+                : camera.state === 'connecting'
+                  ? '카메라 연결 중'
+                  : camera.state === 'failed'
+                    ? '카메라 입력 중단 · 상태 확인 필요'
+                    : '카메라 중지'}
+            </span>
+            <button
+              data-camera-main-stop
+              disabled={!player.cameraLive}
+              onClick={() => camera.stop()}
+            >
+              카메라 중지
+            </button>
+            <button
+              data-expression-open
+              onClick={() => {
+                end();
+                setExpressing(true);
+              }}
+            >
+              표정·입력 제어
+            </button>
+            <button
+              data-detail-open
+              disabled={(!part && !p.detail?.baselines.length) || view?.detail?.busy}
+              onClick={() => {
+                end();
+                if (part)
+                  void command({ type: 'detail-open', location: { kind: 'part', id: part.id } });
+                else setDetailing(true);
+              }}
+            >
+              세부 부위·연결·변형
+            </button>
+            <span>{routeNames[p.sourceType]} · 장치 없이 편집 가능</span>
+          </div>
+          {step === 'prepare' && view?.input?.draft ? (
+            <InputEditor
+              key={view.input.draft.id}
+              input={view.input}
+              command={(c) => void command(c)}
+              result={
+                p.inputPreparation ? (
+                  <>
+                    <StructurePanel
+                      view={view!}
+                      command={(c) => void command(c)}
+                      onNext={() => navigate('motion')}
+                    />
+                    <ProjectPreview scene={view.scene} label="선택한 그림" />
+                    {p.inputPreparation.analysis.warnings.map((code) => (
+                      <p role="note" key={code}>
+                        {inputWarnings[code]}
+                      </p>
+                    ))}
+                  </>
+                ) : null
+              }
+              onNext={() => navigate('appearance')}
+            />
+          ) : (
+            <div className="editor-layout">
+              <aside className="parts-panel" aria-labelledby="parts-title">
+                <h2 id="parts-title">
+                  캐릭터 부위 <small>{p.parts.length}</small>
+                </h2>
+                <p>목록이나 그림에서 부위를 선택하세요.</p>
+                <div className="part-list" aria-label="부위 목록">
+                  {p.parts.length ? (
+                    p.parts.map((v) => (
+                      <button
+                        key={v.id}
+                        data-part-id={v.id}
+                        aria-pressed={part?.id === v.id}
+                        onClick={() => {
+                          setPartId(v.id);
+                          setStep('appearance');
+                        }}
+                      >
+                        <span>
+                          {part?.id === v.id ? '✓ ' : '◇ '}
+                          {partLabel(v)}
+                        </span>
+                        <small>
+                          {roleNames[v.role]}
+                          {!v.visible ? ' · 숨김' : v.opacity === 0 ? ' · 투명' : ''}
+                        </small>
+                      </button>
+                    ))
+                  ) : (
+                    <p className="empty-hint">
+                      아직 부위가 없어요.
+                      <br />
+                      준비 단계에서 예제를 넣어 주세요.
+                    </p>
+                  )}
+                </div>
+              </aside>
+              <EditorPreview
+                key={p.projectId}
+                motion={player}
+                scene={view!.scene}
+                original={view!.originalScene}
+                selected={part?.id ?? null}
+                onSelect={(id) => {
+                  setPartId(id);
+                  if (id) setStep('appearance');
+                }}
+              />
+              <section className="inspector" aria-label="현재 단계 설정">
+                <span className="eyebrow">{routeNames[p.sourceType]}</span>
+                <h2 tabIndex={-1} data-step-heading>
+                  {step === 'prepare'
+                    ? '캐릭터 자료 준비'
+                    : step === 'appearance'
+                      ? '외형을 확인해 주세요'
+                      : step === 'motion'
+                        ? '움직임을 확인해 주세요'
+                        : '저장 전 확인'}
+                </h2>
+                {task && step === 'review' && (
+                  <TaskCard
+                    job={task}
+                    onCancel={() => void command({ type: 'cancel-task', id: task.jobId })}
+                    onRetry={() => void command({ type: 'retry-task', id: task.jobId })}
+                  />
+                )}
+                {step === 'prepare' && (
+                  <>
+                    {(p.sourceType === 'parts' || p.assembly) && (
+                      <PartsPanel
+                        project={p}
+                        catalog={view?.partsCatalog ?? null}
+                        partKey={part?.library?.key ?? null}
+                        onCommand={partsCommand}
+                        onNext={() => navigate('motion')}
+                      />
+                    )}
+                    <StructurePanel
+                      view={view!}
+                      command={(c) => void command(c)}
+                      onNext={() => navigate('motion')}
+                    />
+                    {p.sourceType === 'split-image' ? (
+                      <SplitPanel view={view!} command={(c) => void command(c)} />
+                    ) : (
+                      <InputStatus input={view?.input ?? null} command={(c) => void command(c)} />
+                    )}
+                    <label>
+                      프로젝트 이름
+                      <input
+                        data-project-name
+                        key={p.projectId + '-name-' + p.displayName}
+                        defaultValue={p.displayName}
+                        maxLength={120}
+                        onBlur={(e) => {
+                          if (e.currentTarget.value !== p.displayName)
+                            edit('project-name', null, e.currentTarget.value);
+                        }}
+                      />
+                    </label>
+                    <div className="sample-action">
+                      {action('sample', p.parts.length ? '고급 예제 다시 넣기' : '고급 예제 넣기')}
+                      <small>자동 분리나 자동 리깅 결과가 아닌, 준비된 예제입니다.</small>
+                    </div>
+                    <button data-next onClick={() => navigate('appearance')}>
+                      외형 편집으로 →
+                    </button>
+                  </>
+                )}
+                {step === 'appearance' && (
+                  <>
+                    {p.assembly && (
+                      <PartsPanel
+                        project={p}
+                        catalog={view?.partsCatalog ?? null}
+                        partKey={part?.library?.key ?? null}
+                        onCommand={partsCommand}
+                        onNext={() => navigate('motion')}
+                      />
+                    )}{' '}
+                    {part ? (
+                      <>
+                        <p data-selected-label role="status">
+                          선택한 부위: <strong>{partLabel(part)}</strong>
+                        </p>
+                        <label>
+                          부위 선택
+                          <select
+                            data-part-select
+                            value={part.id}
+                            onChange={(e) => setPartId(e.target.value)}
+                          >
+                            {p.parts.map((v) => (
+                              <option key={v.id} value={v.id}>
+                                {partLabel(v)}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                        <label>
+                          부위 이름
+                          <input
+                            data-part-name
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') {
+                                e.preventDefault();
+                                edit('part-name', part.id, e.currentTarget.value);
+                                e.currentTarget.blur();
+                              }
+                            }}
+                            key={part.id + part.displayName}
+                            defaultValue={part.displayName}
+                            maxLength={120}
+                            onBlur={(e) => {
+                              if (e.currentTarget.value !== part.displayName)
+                                edit('part-name', part.id, e.currentTarget.value);
+                            }}
+                          />
+                        </label>
+                        <label>
+                          부위 역할
+                          <select
+                            value={part.role}
+                            onChange={(e) => edit('part-role', part.id, e.target.value)}
+                          >
+                            {Object.entries(roleNames).map(([role, label]) => (
+                              <option key={role} value={role}>
+                                {label}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                        <label>
+                          불투명도 <output>{Math.round(part.opacity * 100)}%</output>
+                          <input
+                            data-opacity
+                            type="range"
+                            min="0"
+                            max="1"
+                            step=".01"
+                            value={part.opacity}
+                            onPointerDown={begin}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Escape') end(false);
+                              else if (
+                                [
+                                  'ArrowLeft',
+                                  'ArrowRight',
+                                  'ArrowUp',
+                                  'ArrowDown',
+                                  'Home',
+                                  'End',
+                                  'PageUp',
+                                  'PageDown',
+                                ].includes(e.key)
+                              )
+                                begin();
+                            }}
+                            onChange={(e) => edit('part-opacity', part.id, Number(e.target.value))}
+                            onPointerUp={() => end()}
+                            onPointerCancel={() => end(false)}
+                            onKeyUp={(e) => {
+                              if (e.key !== 'Escape') end();
+                            }}
+                            onBlur={() => end()}
+                          />
+                        </label>
+                        <label>
+                          가로 위치
+                          <input
+                            type="number"
+                            disabled={!!part.library}
+                            title={
+                              part.library
+                                ? '\ud30c\uce20 \uc870\uc808\uc5d0\uc11c \uac00\ub85c \uc774\ub3d9\uc744 \ubc14\uafd4 \uc8fc\uc138\uc694.'
+                                : undefined
+                            }
+                            value={part.localTransform[4]}
+                            onChange={(e) =>
+                              edit('part-translate-x', part.id, Number(e.target.value))
+                            }
+                          />
+                        </label>
+                        {p.expressions[0]?.values[0] && (
+                          <label>
+                            저장된 표정 값
+                            <input
+                              aria-label="표정 값"
+                              type="number"
+                              step=".1"
+                              value={p.expressions[0].values[0].value}
+                              onChange={(e) =>
+                                edit(
+                                  'expression-value',
+                                  p.expressions[0]!.id,
+                                  Number(e.target.value),
+                                  p.expressions[0]!.values[0]!.parameterId,
+                                )
+                              }
+                            />
+                            <small>
+                              표정 값의 저장·편집입니다. 움직임 시험 단계에서 장치 없이 확인할 수
+                              있어요.
+                            </small>
+                          </label>
+                        )}
+                        <button
+                          data-appearance-done
+                          onClick={() => {
+                            setReviewed(p.revision);
+                            navigate('motion');
+                          }}
+                        >
+                          이 외형 확인 완료 →
+                        </button>
+                      </>
+                    ) : (
+                      <p>선택할 부위가 없어요. 자료 준비에서 예제를 넣어 주세요.</p>
+                    )}
+                    <button onClick={() => navigate('prepare')}>← 자료 준비로</button>
+                  </>
+                )}
+                {step === 'motion' && (
+                  <>
+                    <MotionPanel
+                      project={p}
+                      player={player}
+                      onPrepare={() => {
+                        queue.current = queue.current.then(() =>
+                          commandDirect({
+                            type: 'prepare-motion',
+                            expectedRevision: latest.current!.project!.revision,
+                          }),
+                        );
+                      }}
+                      onSettings={(strength, smoothingMs, pose) => {
+                        queue.current = queue.current.then(() =>
+                          commandDirect({
+                            type: 'motion-settings',
+                            expectedRevision: latest.current!.project!.revision,
+                            strength,
+                            smoothingMs,
+                            pose,
+                          }),
+                        );
+                      }}
+                      onParameter={(id, min, neutral, max) => {
+                        queue.current = queue.current.then(() =>
+                          commandDirect({
+                            type: 'motion-parameter',
+                            expectedRevision: latest.current!.project!.revision,
+                            id,
+                            min,
+                            neutral,
+                            max,
+                          }),
+                        );
+                      }}
+                    />
+                    <button onClick={() => navigate('review')}>저장 전 확인으로 →</button>
+                  </>
+                )}
+                {step === 'review' && (
+                  <>
+                    <p>
+                      그림 파일을 읽을 수 있는지 확인하고 프로젝트를 저장하세요. 이 검사는
+                      리깅·추적·방송 호환성 검사를 포함하지 않아요.
+                    </p>
+                    <ul className="review-summary">
+                      <li>
+                        {p.parts.length ? '✓' : '○'} 부위 {p.parts.length}개
+                      </li>
+                      <li>
+                        {reviewed === p.revision ? '✓ 외형 확인 완료' : '○ 현재 외형 확인 필요'}
+                      </li>
+                      <li>
+                        {checked
+                          ? '✓ 이 편집 내용의 그림 파일 확인 완료'
+                          : '○ 현재 그림 파일 확인 필요'}
+                      </li>
+                      <li>{view?.dirty ? '○ 저장하지 않은 변경 있음' : '✓ 저장 완료'}</li>
+                    </ul>
+                    {action(
+                      'check-resources',
+                      '그림 파일 확인',
+                      !!task &&
+                        ['QUEUED', 'RUNNING', 'CANCEL_REQUESTED', 'RESULT_READY'].includes(
+                          task.state,
+                        ),
+                    )}
+                    {action('save', '프로젝트 저장', !!view?.saving)}
+                    <button onClick={() => navigate('appearance')}>← 외형 편집으로</button>
+                  </>
+                )}
+                {!!view?.issues.length && (
+                  <section className="resource-warning" aria-label="그림 연결 문제">
+                    <strong>경고 · 그림 {view.issues.length}개를 찾지 못했어요</strong>
+                    <p>
+                      표시 가능한 부위는 유지됩니다. 같은 원본을 다시 지정하면 내용을 확인해
+                      연결합니다.
+                    </p>
+                    {view.issues.map((issue) => (
+                      <button
+                        data-resource-fix={issue.assetId}
+                        key={issue.assetId}
+                        onClick={() => void command({ type: 'relink', assetId: issue.assetId })}
+                      >
+                        {p.parts
+                          .filter((v) => v.textures.some((t) => t.assetId === issue.assetId))
+                          .map(partLabel)
+                          .join(', ') || '원본 그림'}{' '}
+                        다시 연결
+                      </button>
+                    ))}
+                  </section>
+                )}
+                {p.inputPreparation && (
+                  <div className="input-warnings">
+                    {p.inputPreparation.analysis.warnings.map((code) => (
+                      <p role="note" key={code}>
+                        {inputWarnings[code]}
+                      </p>
+                    ))}
+                  </div>
+                )}
+                <div className="recovery-status">
+                  {action('checkpoint', '복구 지점 만들기')}
+                  <span>
+                    {view?.lastRecoveryAt
+                      ? `복구본 보관 ${new Date(view.lastRecoveryAt).toLocaleTimeString()}`
+                      : '자동 복구는 명시적인 저장과 구분해 보관합니다.'}
+                  </span>
+                </div>
+              </section>
+            </div>
+          )}
+          {task && step !== 'review' && (
+            <TaskCard
+              job={task}
+              onCancel={() => void command({ type: 'cancel-task', id: task.jobId })}
+              onRetry={() => void command({ type: 'retry-task', id: task.jobId })}
+            />
+          )}
+        </>
+      ) : (
+        view?.mode !== 'read-only' && (
+          <>
+            <section className="start-section">
+              <div className="section-heading">
+                <h2>어디에서 시작할까요?</h2>
+              </div>
+              <div className="routes">
+                {routes.map((r, index) => (
+                  <button
+                    data-create
+                    data-route={r.type}
+                    className="route"
+                    key={r.type}
+                    onClick={() => {
+                      setName('새 캐릭터');
+                      setRoute(r.type);
+                    }}
+                  >
+                    <span className="route-top">
+                      <span>✧</span>
+                      <span>0{index + 1}</span>
+                    </span>
+                    <strong>{r.title}</strong>
+                    <small className="route-description">{routeHints[r.type]}</small>
+                    <span className="route-arrow">↗</span>
+                  </button>
+                ))}
+              </div>
+            </section>
+            <section className="first-use-card" aria-label="첫 사용 안내">
+              <div>
+                <h3>움직이는 캐릭터가 처음인가요?</h3>
+                <p>예제로 눈·입·고개 움직임을 익히고, 내 그림으로 시작해 보세요.</p>
+              </div>
+              <div className="guide-actions">
+                <button data-first-guide onClick={() => setHelp(true)}>
+                  차근차근 안내
+                </button>
+                <button
+                  data-first-example
+                  className="primary"
+                  disabled={run.active}
+                  onClick={() => void startExample()}
+                >
+                  예제로 시작
+                </button>
+              </div>
+            </section>
+            <section className="recent">
+              <h2>이어서 작업하기</h2>
+              {recentList}
+            </section>
+          </>
+        )
+      )}
+      {fileOpen && view && (
+        <FileOutputPanel
+          view={view}
+          runtime={run}
+          command={command}
+          close={() => setFileOpen(false)}
+          fix={(issue) => {
+            if (issue.category === 'expression') {
+              setExpressing(true);
+            } else if (issue.fix) {
+              void command({ type: 'detail-open', location: issue.fix });
+            } else setStep(issue.category === 'resource' ? 'prepare' : 'motion');
+          }}
+        />
+      )}
+      {runOpen && view && (view.project || run.active) && (
+        <RunPanel
+          runtime={run}
+          view={view}
+          quick={quickRun}
+          close={() => setRunOpen(false)}
+          fix={runFix}
+        />
+      )}
+      {inputOpen && view?.project && (
+        <Modal titleId="input-title" className="camera-dialog" onClose={() => setInputOpen(false)}>
+          <h2 id="input-title">마이크·입력 복구</h2>
+          <InputPanel
+            mic={microphone}
+            camera={camera}
+            project={view.project}
+            scene={view.scene}
+            command={(operation) => {
+              queue.current = queue.current.then(() =>
+                commandDirect({
+                  type: 'expression-edit',
+                  expectedRevision: latest.current!.project!.revision,
+                  operation,
+                }),
+              );
+            }}
+          />
+          <button data-input-close onClick={() => setInputOpen(false)}>
+            닫기 · 연결된 입력 유지
+          </button>
+        </Modal>
+      )}
+      {cameraOpen && view?.project && (
+        <Modal
+          titleId="camera-title"
+          className="camera-dialog"
+          onClose={() => setCameraOpen(false)}
+        >
+          <h2 id="camera-title">카메라·추적 보정</h2>
+          <CameraPanel
+            runtime={camera}
+            project={view.project}
+            scene={view.scene}
+            save={(value) => {
+              queue.current = queue.current.then(() =>
+                commandDirect({
+                  type: 'tracking-settings',
+                  expectedRevision: latest.current!.project!.revision,
+                  value,
+                }),
+              );
+            }}
+          />
+          <button data-camera-close onClick={() => setCameraOpen(false)}>
+            닫기 · 연결된 추적 유지
+          </button>
+        </Modal>
+      )}
+      {expressing && view?.project && (
+        <Modal
+          titleId="expression-title"
+          className="expression-dialog"
+          onClose={() => setExpressing(false)}
+        >
+          <h2 id="expression-title">표정·입력 제어</h2>
+          <ExpressionPanel
+            onCameraStop={() => camera.stop()}
+            scene={view.scene}
+            errorCode={view.errorCode}
+            project={view.project}
+            player={player}
+            command={(operation) => {
+              queue.current = queue.current.then(() =>
+                commandDirect({
+                  type: 'expression-edit',
+                  expectedRevision: latest.current!.project!.revision,
+                  operation,
+                }),
+              );
+            }}
+          />
+          <button data-expression-close onClick={() => setExpressing(false)}>
+            편집으로 돌아가기
+          </button>
+        </Modal>
+      )}
+      {detailing && view?.project && view.detail && (
+        <Modal
+          titleId="detail-title"
+          className="detail-dialog"
+          onClose={() => {
+            void command({ type: 'detail-cancel' });
+            setDetailing(false);
+          }}
+        >
+          <h2 id="detail-title">세부 편집 · 부위·연결·변형</h2>
+          <DetailPanel
+            view={view}
+            partId={part?.id ?? null}
+            onSelect={setPartId}
+            command={(c) => void command(c)}
+          />
+          <button
+            data-detail-close
+            onClick={() => {
+              void command({ type: 'detail-cancel' });
+              setDetailing(false);
+            }}
+          >
+            간단 편집으로 돌아가기
+          </button>
+        </Modal>
+      )}
+      {splitting && view?.split?.draft && (
+        <Modal titleId="split-title" className="split-dialog" onClose={() => setSplitting(false)}>
+          <h2 id="split-title">분리 그림 · 배치와 연결</h2>
+          <SplitGuide key={view.split.draft.id} view={view} command={(c) => void command(c)} />
+          <button data-split-close onClick={() => setSplitting(false)}>
+            작업실로 돌아가기
+          </button>
+        </Modal>
+      )}
+      {correcting && view?.project?.structure && (
+        <Modal
+          titleId="correction-title"
+          className="correction-dialog"
+          onClose={() => setCorrecting(false)}
+        >
+          <h2 id="correction-title">모양 고치기 · 보정과 재분석</h2>
+          <CorrectionPanel
+            key={view.project.projectId}
+            view={view}
+            command={(c) => void command(c)}
+          />
+          <button data-correction-close onClick={() => setCorrecting(false)}>
+            작업실로 돌아가기
+          </button>
+        </Modal>
+      )}
+      {transition && (
+        <Modal titleId="run-transition-title" onClose={() => void finishTransition('cancel')}>
+          <h2 id="run-transition-title" aria-busy={transitionBusy}>
+            실행 중 프로젝트 전환
+          </h2>
+          <p>
+            현재 캐릭터를 계속 표시하며 파일과 미저장 변경을 확인합니다. 새 실행본은 구조·그림 검사
+            통과 후 교체하며 표정·추적 대상을 새로 시작합니다. 준비가 안 되면 기존 실행을
+            유지합니다.
+          </p>
+          <button
+            data-run-transition-keep
+            disabled={transitionBusy}
+            onClick={() => void finishTransition('keep')}
+          >
+            실행 유지·편집만 전환
+          </button>
+          <button
+            data-run-transition-switch
+            disabled={transitionBusy || transition.command.type === 'close'}
+            onClick={() => void finishTransition('switch')}
+          >
+            검사 후 실행도 전환
+          </button>
+          <button
+            data-run-transition-cancel
+            disabled={transitionBusy}
+            onClick={() => void finishTransition('cancel')}
+          >
+            취소
+          </button>
+        </Modal>
+      )}
+      {environmentOpen && (
+        <EnvironmentPanel
+          view={view}
+          run={run}
+          camera={camera}
+          microphone={microphone}
+          close={() => setEnvironmentOpen(false)}
+          navigate={(to) => {
+            setEnvironmentOpen(false);
+            if (to === 'camera') setCameraOpen(true);
+            else if (to === 'microphone') setInputOpen(true);
+            else void openRun();
+          }}
+        />
+      )}
+      {route && (
+        <Modal titleId="new-title" onClose={() => setRoute(null)}>
+          <h2 id="new-title">새 캐릭터 프로젝트</h2>
+          <div className="route-choice" role="group" aria-label="제작 경로 선택">
+            {routes.map((r) => (
+              <button
+                data-new-route={r.type}
+                key={r.type}
+                aria-pressed={route === r.type}
+                onClick={() => setRoute(r.type)}
+              >
+                {r.title}
+              </button>
+            ))}
+          </div>
+          <label>
+            프로젝트 이름
+            <input
+              data-initial-focus
+              value={name}
+              maxLength={120}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </label>
+          <button
+            className="primary"
+            data-new-confirm
+            onClick={() => {
+              void command({ type: 'new', name, sourceType: route });
+              setRoute(null);
+            }}
+          >
+            초안 만들기
+          </button>
+          <button data-new-cancel onClick={() => setRoute(null)}>
+            취소
+          </button>
+        </Modal>
+      )}
+      {recentOpen && (
+        <Modal
+          titleId="recent-title"
+          onClose={() => setRecentOpen(false)}
+          className="recent-dialog"
+        >
+          <h2 id="recent-title">최근 프로젝트</h2>
+          <p>프로젝트를 선택하면 저장하지 않은 변경을 먼저 확인합니다.</p>
+          {recentList}
+        </Modal>
+      )}
+      {help && (
+        <HelpPanel
+          exampleDisabled={run.active}
+          initialTopic={step === 'motion' ? 'devices' : (view?.project?.sourceType ?? 'start')}
+          onClose={() => setHelp(false)}
+          onRoute={(type) => {
+            setHelp(false);
+            setName('새 캐릭터');
+            setRoute(type);
+          }}
+          onExample={() => void startExample()}
+        />
+      )}
+      {recoveries && (
+        <Modal
+          titleId="recovery-title"
+          onClose={() => setRecoveries(false)}
+          className="recovery-dialog"
+        >
+          <h2 id="recovery-title">작업 복구</h2>
+          <p>복구본과 기존 저장본을 비교하세요. 복구하면 새 파일로 저장할 초안이 열립니다.</p>
+          <div className="recovery-layout">
+            <div className="recovery-list">
+              {view?.recoveries.length ? (
+                view.recoveries.map((r) => (
+                  <button
+                    data-recovery-id={r.id}
+                    className={selected === r.id ? 'selected' : ''}
+                    key={r.id}
+                    onClick={() => void preview(r.id)}
+                  >
+                    <strong>
+                      {r.displayName} · 변경 {r.revision}
+                    </strong>
+                    <small>
+                      {(
+                        {
+                          autosave: '자동 복구',
+                          checkpoint: '중요 변경 전 보관',
+                          backup: '이전 정상 저장본',
+                        } as Record<string, string>
+                      )[r.kind] ?? '복구본'}{' '}
+                      · {new Date(r.createdAt).toLocaleString()}
+                      <br />
+                      {r.reason}
+                      {r.pending ? ' · 확인 필요' : ''}
+                    </small>
+                  </button>
+                ))
+              ) : (
+                <p>보관된 복구본이 없습니다.</p>
+              )}
+            </div>
+            {comparison && (
+              <div className="recovery-compare">
+                {[comparison.saved, comparison.recovered].map((item, i) => (
+                  <div key={i}>
+                    <h3>{i === 0 ? '기존 저장본' : '복구본'}</h3>
+                    {item ? (
+                      <>
+                        <p>
+                          {item.label} · 변경 {item.revision}
+                        </p>
+                        <ProjectPreview
+                          scene={item.scene}
+                          label={i === 0 ? '기존 저장본' : '복구본'}
+                        />
+                      </>
+                    ) : (
+                      <p>기존 파일을 찾을 수 없습니다.</p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+          <div className="edit-actions">
+            <button
+              data-recovery-restore
+              disabled={!selected}
+              onClick={() => {
+                if (selected)
+                  void command({ type: 'recover', id: selected }).then((r) => {
+                    if (!r.view.errorCode) setRecoveries(false);
+                  });
+              }}
+            >
+              복구본으로 계속
+            </button>
+            <button
+              data-recovery-original
+              disabled={!selected || !comparison?.saved}
+              onClick={() => {
+                if (selected)
+                  void command({ type: 'original', id: selected }).then((r) => {
+                    if (!r.view.errorCode) setRecoveries(false);
+                  });
+              }}
+            >
+              기존 저장본 열기
+            </button>
+            <button data-recovery-defer onClick={() => setRecoveries(false)}>
+              나중에 결정
+            </button>
+          </div>
+        </Modal>
+      )}
+    </div>
+  );
 }

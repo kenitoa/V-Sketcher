@@ -1,0 +1,14 @@
+{
+  "format": "2dsketcher-cache-archive/1",
+  "group": "generated-camera-live-1794923183524",
+  "verified": true,
+  "files": 114,
+  "logicalBytes": 78832781,
+  "everyArchiveFileReconstructedAndHashMatched": true,
+  "originalSourceHashesRecordedAtPack": true,
+  "sourceHashRecheckedDuringVerify": false,
+  "sourceHashRequiredAgainBeforeEviction": true,
+  "indexSha256": "e70eb41bad37c02e8d976c4a4207b1f34919d4e93fecb32746eb039b5f6c86ad",
+  "sourceRemoved": false,
+  "historicalEvidenceModified": false
+}

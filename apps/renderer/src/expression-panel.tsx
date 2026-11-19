@@ -1,39 +1,517 @@
-import {ExpressionPreview} from './expression-preview';
-import type {PreviewScene} from '../../../packages/scene-core';
-import React,{useEffect,useRef,useState} from 'react';
-import type {Project,ExpressionSettings} from '../../../packages/project-model';
-import type {MotionPlayer} from '../../../packages/motion';
-import {motionNames} from '../../../packages/motion';
-import {referenceIssue,targets,settings,type ExpressionOperation,type Owner} from '../../../packages/expression-control';
-const ownerNames:Record<Owner,string>={'test':'편집 시험','expression-locked':'표정 고정','camera':'카메라 입력','microphone':'마이크 입력','automatic':'자동 깜빡임','expression-default':'표정 기본값','neutral':'기본 자세','neutral-hold':'중립 유지'};
-export function ExpressionPanel({project:p,player,command,errorCode,scene,onCameraStop}:{onCameraStop:()=>void;scene:PreviewScene|null;project:Project;player:MotionPlayer;errorCode:string|null;command:(operation:ExpressionOperation)=>void}){
- const [draftSerial,setDraftSerial]=useState(0);
- const [selected,setSelected]=useState<string|null>(null),[tick,refresh]=useState(0),[error,setError]=useState('');
- const knownIds=useRef(new Set(p.expressions.map(e=>e.id)));
- useEffect(()=>{const added=p.expressions.filter(e=>!knownIds.current.has(e.id));knownIds.current=new Set(p.expressions.map(e=>e.id));if(added.length)setSelected(added.at(-1)!.id);},[p.expressions]);
- useEffect(()=>{const timer=setInterval(()=>refresh(v=>v+1),100);return()=>clearInterval(timer);},[]);
- useEffect(()=>{if(selected&&!p.expressions.some(e=>e.id===selected))setSelected(null);},[p.revision,selected]);
- const e=p.expressions.find(e=>e.id===selected),frame=player.controls.snapshot(),s=settings(p);const act=(fn:()=>void)=>{try{fn();setError('');refresh(v=>v+1);}catch{setError('연결할 수 있는 표정 값이 없어요. 손상된 항목을 수선해 주세요.');}};
- const update=(patch:Partial<ExpressionSettings>)=>command({kind:'settings',value:{...structuredClone(s),...patch}});
- return <div className="expression-layout"><ExpressionPreview scene={scene} player={player}/><div className="expression-panel" data-expression-panel data-tick={tick}>
-  {errorCode&&<p role="alert">표정을 저장하지 못했어요. 값의 범위와 부위 연결을 확인해 주세요. 현재 편집 내용은 유지됩니다.</p>}
-  {player.cameraLive&&<div role="status">실제 카메라 입력 사용 중 <button onClick={onCameraStop}>카메라 중지</button></div>}<div className="expression-list" aria-label="저장된 표정">{p.expressions.map(v=><div className="expression-item" key={v.id}><button data-expression-select={v.id} aria-pressed={selected===v.id} onClick={()=>setSelected(v.id)}>{v.displayName}</button><button data-expression-play={v.id} disabled={!v.values.some(x=>!referenceIssue(p,x))} onClick={()=>act(()=>player.controls.activate(v.id,performance.now()))}>적용</button><span>{frame.activeId===v.id?'적용 중':''}{v.values.some(x=>referenceIssue(p,x))?' · 연결 확인 필요':''}</span></div>)}</div>
-  <div className="expression-actions"><button data-expression-new onClick={()=>{setSelected(null);setDraftSerial(v=>v+1);}}>새 표정</button><button data-expression-release onClick={()=>act(()=>player.controls.release(performance.now()))}>표정 해제</button><button data-expression-resume onClick={()=>act(()=>player.controls.resume(performance.now()))}>입력 다시 받기</button><button data-expression-test-stop onClick={()=>player.stop()}>편집 시험 해제</button></div>
-  <ExpressionDraft key={`${selected??'new'}-${JSON.stringify(e)}-${JSON.stringify(p.parameters)}-${draftSerial}`} project={p} player={player} expressionId={selected} command={command}/>
-  {e&&<><div className="expression-actions"><button data-expression-duplicate onClick={()=>command({kind:'duplicate',id:e.id})}>표정 복제</button><button data-expression-delete onClick={()=>command({kind:'delete',id:e.id})}>표정 삭제</button></div>{e.values.filter(v=>referenceIssue(p,v)).map(v=><div className="resource-warning" key={v.parameterId} role="alert"><strong>{p.parameters.find(x=>x.id===v.parameterId)?.displayName??v.parameterId} · {referenceIssue(p,v)==='unbound'?'연결된 부위 없음':'대상 부위 변경됨'}</strong><p>이 값은 미리보기에서 제외됩니다. 정상 항목은 계속 사용할 수 있어요.</p><button data-expression-repair={v.parameterId} disabled={!targets(p,v.parameterId).length} onClick={()=>command({kind:'repair',id:e.id,parameterId:v.parameterId,action:'reconnect'})}>현재 부위에 다시 연결</button><button data-expression-remove={v.parameterId} onClick={()=>command({kind:'repair',id:e.id,parameterId:v.parameterId,action:'remove'})}>이 값 제거</button></div>)}</>}
-  <details data-expression-policy><summary>입력 정책·앱 안 단축키</summary><label>입 입력 우선<select data-expression-mouth value={s.mouth} onChange={e=>update({mouth:e.target.value as ExpressionSettings['mouth']})}><option value="camera">카메라</option><option value="microphone">마이크</option></select></label><label><input data-expression-alternate type="checkbox" checked={s.alternate} onChange={e=>update({alternate:e.target.checked})}/>우선 입력이 유효 시간을 넘기면 다른 입 입력 사용</label><label><input data-expression-auto type="checkbox" checked={s.autoBlink} onChange={e=>update({autoBlink:e.target.checked})}/>입력 없는 눈에 자동 깜빡임</label>{s.shortcuts.map((id,i)=><label key={i}>Ctrl+Alt+Shift+{i+1}<select data-expression-slot={i+1} value={id??''} onChange={e=>{const slots=[...s.shortcuts];slots[i]=e.target.value||null;update({shortcuts:slots});}}><option value="">미지정</option>{p.expressions.map(e=><option key={e.id} value={e.id}>{e.displayName}</option>)}</select></label>)}<small>앱 편집 화면에서만 동작합니다. 0은 표정 해제입니다. 글 입력·한글 조합·대화상자에서는 실행하지 않습니다.</small></details>
-  <details open data-expression-synthetic><summary>{player.cameraLive||player.microphoneLive?'합성 입력 · 실제 장치 연결 중':'합성 입력 · 실제 장치 사용 안 함'}</summary>{(['camera','microphone','paused'] as const).map(key=><label key={key}><input data-expression-feed={key} disabled={key==='camera'&&player.cameraLive||key==='microphone'&&player.microphoneLive} type="checkbox" checked={player.synthetic[key]} onChange={e=>{player.synthetic[key]=e.target.checked;if(!e.target.checked&&key!=='paused')player.controls.clearInput(key);refresh(v=>v+1);}}/>{key==='camera'?'카메라 값':key==='microphone'?'마이크 값':'입력 중단 · 유효 시간 시험'}</label>)}<table><thead><tr><th>제어</th><th>현재 값</th><th>소유자</th></tr></thead><tbody>{p.parameters.filter(v=>v.previewKey).map(v=><tr key={v.id}><td>{motionNames[v.previewKey!]}</td><td data-expression-current={v.previewKey}>{(frame.values.get(v.id)??v.neutral).toFixed(2)}</td><td data-expression-owner={v.previewKey}>{ownerNames[frame.owners.get(v.id)??'neutral']}</td></tr>)}</tbody></table><p data-expression-state role="status">{frame.activeId?'표정 적용 중':'표정 해제 상태'}{frame.transitioning?' · 전환 중':''}</p></details>{error&&<p role="alert">{error}</p>}
- </div></div>;
+import { ExpressionPreview } from './expression-preview';
+import type { PreviewScene } from '../../../packages/scene-core';
+import { useEffect, useRef, useState } from 'react';
+import type { Project, ExpressionSettings } from '../../../packages/project-model';
+import type { MotionPlayer } from '../../../packages/motion';
+import { motionNames } from '../../../packages/motion';
+import {
+  referenceIssue,
+  targets,
+  settings,
+  type ExpressionOperation,
+  type Owner,
+} from '../../../packages/expression-control';
+const ownerNames: Record<Owner, string> = {
+  test: '편집 시험',
+  'expression-locked': '표정 고정',
+  camera: '카메라 입력',
+  microphone: '마이크 입력',
+  automatic: '자동 깜빡임',
+  'expression-default': '표정 기본값',
+  neutral: '기본 자세',
+  'neutral-hold': '중립 유지',
+};
+export function ExpressionPanel({
+  project: p,
+  player,
+  command,
+  errorCode,
+  scene,
+  onCameraStop,
+}: {
+  onCameraStop: () => void;
+  scene: PreviewScene | null;
+  project: Project;
+  player: MotionPlayer;
+  errorCode: string | null;
+  command: (operation: ExpressionOperation) => void;
+}) {
+  const [draftSerial, setDraftSerial] = useState(0);
+  const [selected, setSelected] = useState<string | null>(null),
+    [tick, refresh] = useState(0),
+    [error, setError] = useState('');
+  const knownIds = useRef(new Set(p.expressions.map((e) => e.id)));
+  useEffect(() => {
+    const added = p.expressions.filter((e) => !knownIds.current.has(e.id));
+    knownIds.current = new Set(p.expressions.map((e) => e.id));
+    if (added.length) setSelected(added.at(-1)!.id);
+  }, [p.expressions]);
+  useEffect(() => {
+    const timer = setInterval(() => refresh((v) => v + 1), 100);
+    return () => clearInterval(timer);
+  }, []);
+  useEffect(() => {
+    if (selected && !p.expressions.some((e) => e.id === selected)) setSelected(null);
+  }, [p.revision, selected]);
+  const e = p.expressions.find((e) => e.id === selected),
+    frame = player.controls.snapshot(),
+    s = settings(p);
+  const act = (fn: () => void) => {
+    try {
+      fn();
+      setError('');
+      refresh((v) => v + 1);
+    } catch {
+      setError('연결할 수 있는 표정 값이 없어요. 손상된 항목을 수선해 주세요.');
+    }
+  };
+  const update = (patch: Partial<ExpressionSettings>) =>
+    command({ kind: 'settings', value: { ...structuredClone(s), ...patch } });
+  return (
+    <div className="expression-layout">
+      <ExpressionPreview scene={scene} player={player} />
+      <div className="expression-panel" data-expression-panel data-tick={tick}>
+        {errorCode && (
+          <p role="alert">
+            표정을 저장하지 못했어요. 값의 범위와 부위 연결을 확인해 주세요. 현재 편집 내용은
+            유지됩니다.
+          </p>
+        )}
+        {player.cameraLive && (
+          <div role="status">
+            실제 카메라 입력 사용 중 <button onClick={onCameraStop}>카메라 중지</button>
+          </div>
+        )}
+        <div className="expression-list" aria-label="저장된 표정">
+          {p.expressions.map((v) => (
+            <div className="expression-item" key={v.id}>
+              <button
+                data-expression-select={v.id}
+                aria-pressed={selected === v.id}
+                onClick={() => setSelected(v.id)}
+              >
+                {v.displayName}
+              </button>
+              <button
+                data-expression-play={v.id}
+                disabled={!v.values.some((x) => !referenceIssue(p, x))}
+                onClick={() => act(() => player.controls.activate(v.id, performance.now()))}
+              >
+                적용
+              </button>
+              <span>
+                {frame.activeId === v.id ? '적용 중' : ''}
+                {v.values.some((x) => referenceIssue(p, x)) ? ' · 연결 확인 필요' : ''}
+              </span>
+            </div>
+          ))}
+        </div>
+        <div className="expression-actions">
+          <button
+            data-expression-new
+            onClick={() => {
+              setSelected(null);
+              setDraftSerial((v) => v + 1);
+            }}
+          >
+            새 표정
+          </button>
+          <button
+            data-expression-release
+            onClick={() => act(() => player.controls.release(performance.now()))}
+          >
+            표정 해제
+          </button>
+          <button
+            data-expression-resume
+            onClick={() => act(() => player.controls.resume(performance.now()))}
+          >
+            입력 다시 받기
+          </button>
+          <button data-expression-test-stop onClick={() => player.stop()}>
+            편집 시험 해제
+          </button>
+        </div>
+        <ExpressionDraft
+          key={`${selected ?? 'new'}-${JSON.stringify(e)}-${JSON.stringify(p.parameters)}-${draftSerial}`}
+          project={p}
+          player={player}
+          expressionId={selected}
+          command={command}
+        />
+        {e && (
+          <>
+            <div className="expression-actions">
+              <button
+                data-expression-duplicate
+                onClick={() => command({ kind: 'duplicate', id: e.id })}
+              >
+                표정 복제
+              </button>
+              <button data-expression-delete onClick={() => command({ kind: 'delete', id: e.id })}>
+                표정 삭제
+              </button>
+            </div>
+            {e.values
+              .filter((v) => referenceIssue(p, v))
+              .map((v) => (
+                <div className="resource-warning" key={v.parameterId} role="alert">
+                  <strong>
+                    {p.parameters.find((x) => x.id === v.parameterId)?.displayName ?? v.parameterId}{' '}
+                    · {referenceIssue(p, v) === 'unbound' ? '연결된 부위 없음' : '대상 부위 변경됨'}
+                  </strong>
+                  <p>이 값은 미리보기에서 제외됩니다. 정상 항목은 계속 사용할 수 있어요.</p>
+                  <button
+                    data-expression-repair={v.parameterId}
+                    disabled={!targets(p, v.parameterId).length}
+                    onClick={() =>
+                      command({
+                        kind: 'repair',
+                        id: e.id,
+                        parameterId: v.parameterId,
+                        action: 'reconnect',
+                      })
+                    }
+                  >
+                    현재 부위에 다시 연결
+                  </button>
+                  <button
+                    data-expression-remove={v.parameterId}
+                    onClick={() =>
+                      command({
+                        kind: 'repair',
+                        id: e.id,
+                        parameterId: v.parameterId,
+                        action: 'remove',
+                      })
+                    }
+                  >
+                    이 값 제거
+                  </button>
+                </div>
+              ))}
+          </>
+        )}
+        <details data-expression-policy>
+          <summary>입력 정책·앱 안 단축키</summary>
+          <label>
+            입 입력 우선
+            <select
+              data-expression-mouth
+              value={s.mouth}
+              onChange={(e) => update({ mouth: e.target.value as ExpressionSettings['mouth'] })}
+            >
+              <option value="camera">카메라</option>
+              <option value="microphone">마이크</option>
+            </select>
+          </label>
+          <label>
+            <input
+              data-expression-alternate
+              type="checkbox"
+              checked={s.alternate}
+              onChange={(e) => update({ alternate: e.target.checked })}
+            />
+            우선 입력이 유효 시간을 넘기면 다른 입 입력 사용
+          </label>
+          <label>
+            <input
+              data-expression-auto
+              type="checkbox"
+              checked={s.autoBlink}
+              onChange={(e) => update({ autoBlink: e.target.checked })}
+            />
+            입력 없는 눈에 자동 깜빡임
+          </label>
+          {s.shortcuts.map((id, i) => (
+            <label key={i}>
+              Ctrl+Alt+Shift+{i + 1}
+              <select
+                data-expression-slot={i + 1}
+                value={id ?? ''}
+                onChange={(e) => {
+                  const slots = [...s.shortcuts];
+                  slots[i] = e.target.value || null;
+                  update({ shortcuts: slots });
+                }}
+              >
+                <option value="">미지정</option>
+                {p.expressions.map((e) => (
+                  <option key={e.id} value={e.id}>
+                    {e.displayName}
+                  </option>
+                ))}
+              </select>
+            </label>
+          ))}
+          <small>
+            앱 편집 화면에서만 동작합니다. 0은 표정 해제입니다. 글 입력·한글 조합·대화상자에서는
+            실행하지 않습니다.
+          </small>
+        </details>
+        <details open data-expression-synthetic>
+          <summary>
+            {player.cameraLive || player.microphoneLive
+              ? '합성 입력 · 실제 장치 연결 중'
+              : '합성 입력 · 실제 장치 사용 안 함'}
+          </summary>
+          {(['camera', 'microphone', 'paused'] as const).map((key) => (
+            <label key={key}>
+              <input
+                data-expression-feed={key}
+                disabled={
+                  (key === 'camera' && player.cameraLive) ||
+                  (key === 'microphone' && player.microphoneLive)
+                }
+                type="checkbox"
+                checked={player.synthetic[key]}
+                onChange={(e) => {
+                  player.synthetic[key] = e.target.checked;
+                  if (!e.target.checked && key !== 'paused') player.controls.clearInput(key);
+                  refresh((v) => v + 1);
+                }}
+              />
+              {key === 'camera'
+                ? '카메라 값'
+                : key === 'microphone'
+                  ? '마이크 값'
+                  : '입력 중단 · 유효 시간 시험'}
+            </label>
+          ))}
+          <table>
+            <thead>
+              <tr>
+                <th>제어</th>
+                <th>현재 값</th>
+                <th>소유자</th>
+              </tr>
+            </thead>
+            <tbody>
+              {p.parameters
+                .filter((v) => v.previewKey)
+                .map((v) => (
+                  <tr key={v.id}>
+                    <td>{motionNames[v.previewKey!]}</td>
+                    <td data-expression-current={v.previewKey}>
+                      {(frame.values.get(v.id) ?? v.neutral).toFixed(2)}
+                    </td>
+                    <td data-expression-owner={v.previewKey}>
+                      {ownerNames[frame.owners.get(v.id) ?? 'neutral']}
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+          <p data-expression-state role="status">
+            {frame.activeId ? '표정 적용 중' : '표정 해제 상태'}
+            {frame.transitioning ? ' · 전환 중' : ''}
+          </p>
+        </details>
+        {error && <p role="alert">{error}</p>}
+      </div>
+    </div>
+  );
 }
-function ExpressionDraft({project:p,player,expressionId,command}:{project:Project;player:MotionPlayer;expressionId:string|null;command:(op:ExpressionOperation)=>void}){
- const e=p.expressions.find(v=>v.id===expressionId),[name,setName]=useState(e?.displayName??'새 표정'),[transition,setTransition]=useState(Math.min(3000,e?.transitionMs??200)),[releaseMs,setReleaseMs]=useState(e?.releaseMs??250),[release,setRelease]=useState<'live-input'|'neutral'>(e?.release??'live-input');
- const [rows,setRows]=useState(()=>p.parameters.map(v=>{const old=e?.values.find(x=>x.parameterId===v.id);return {parameterId:v.id,value:old?.value??v.neutral,locked:old?.locked??true,chosen:!!old};}));
- const patch=(id:string,next:Partial<typeof rows[number]>)=>setRows(rows=>rows.map(v=>v.parameterId===id?{...v,...next}:v));
- const preset=(kind:'neutral'|'closed'|'smile')=>setRows(rows.map(v=>{const param=p.parameters.find(p=>p.id===v.parameterId)!;const eye=param.previewKey?.startsWith('eye'),mouth=param.previewKey==='mouth';return {...v,chosen:targets(p,v.parameterId).length>0&&(kind==='neutral'||!!eye||mouth&&kind==='smile'),value:kind==='neutral'?param.neutral:eye?param.min:mouth?param.min+(param.max-param.min)*.3:param.neutral,locked:true};}));
- return <form className="expression-draft" data-expression-form onSubmit={event=>{event.preventDefault();command({kind:'save',id:expressionId,name,values:rows.filter(v=>v.chosen).map(({parameterId,value,locked})=>({parameterId,value,locked})),transitionMs:transition,releaseMs,release});}}>
-  <label>표정 이름<input data-expression-name required maxLength={120} value={name} onChange={e=>setName(e.target.value)}/></label><div className="expression-actions"><button type="button" data-expression-preset="neutral" onClick={()=>preset('neutral')}>기본 자세</button><button type="button" data-expression-preset="closed" onClick={()=>preset('closed')}>눈 감기</button><button type="button" data-expression-preset="smile" onClick={()=>preset('smile')}>미소용 눈·입</button></div>
-  <fieldset><legend>저장할 값 · 체크한 항목만 저장</legend>{rows.map(v=>{const param=p.parameters.find(p=>p.id===v.parameterId)!,available=targets(p,v.parameterId).length>0;return <div className="expression-row" key={v.parameterId}><label><input data-expression-include={param.previewKey??param.id} type="checkbox" checked={v.chosen} disabled={!available&&!v.chosen} onChange={e=>patch(v.parameterId,{chosen:e.target.checked})}/>{param.previewKey?motionNames[param.previewKey]:param.displayName}</label><input aria-label={`${param.displayName} 저장 값`} data-expression-value={param.previewKey??param.id} type="number" step="any" min={param.min} max={param.max} value={v.value} disabled={!v.chosen} onChange={e=>patch(v.parameterId,{value:Number(e.target.value)})}/><label><input data-expression-lock={param.previewKey??param.id} type="checkbox" checked={v.locked} disabled={!v.chosen} onChange={e=>patch(v.parameterId,{locked:e.target.checked})}/>고정</label><small>{available?v.locked?'다른 입력보다 우선':'입력 없을 때 기본값':'연결 확인 필요'}</small></div>;})}</fieldset>
-  <button type="button" data-expression-capture disabled={!rows.some(v=>v.chosen)} onClick={()=>setRows(rows.map(v=>({...v,value:v.chosen?player.snapshot().values.get(v.parameterId)??v.value:v.value})))}>선택한 항목의 현재 값 가져오기</button><small>위 값을 확인한 뒤 저장하세요. 실시간 입력은 자동 저장되지 않습니다.</small>
-  <div className="expression-row"><label>전환 시간 (ms)<input data-expression-transition type="number" required min="0" max="3000" step="1" value={transition} onChange={e=>setTransition(Number(e.target.value))}/></label><label>해제 시간 (ms)<input data-expression-release-ms type="number" required min="0" max="3000" step="1" value={releaseMs} onChange={e=>setReleaseMs(Number(e.target.value))}/></label></div><small>0은 즉시, 1~3000은 부드러운 전환입니다.</small><label>해제 동작<select data-expression-release-mode value={release} onChange={e=>setRelease(e.target.value as typeof release)}><option value="live-input">최신 입력으로 복귀</option><option value="neutral">대상 항목 중립 유지 · 입력 다시 받기 전까지</option></select></label><button data-expression-save disabled={!rows.some(v=>v.chosen)} type="submit">{e?'표정 변경 저장':'표정 만들기'}</button>
- </form>;
+function ExpressionDraft({
+  project: p,
+  player,
+  expressionId,
+  command,
+}: {
+  project: Project;
+  player: MotionPlayer;
+  expressionId: string | null;
+  command: (op: ExpressionOperation) => void;
+}) {
+  const e = p.expressions.find((v) => v.id === expressionId),
+    [name, setName] = useState(e?.displayName ?? '새 표정'),
+    [transition, setTransition] = useState(Math.min(3000, e?.transitionMs ?? 200)),
+    [releaseMs, setReleaseMs] = useState(e?.releaseMs ?? 250),
+    [release, setRelease] = useState<'live-input' | 'neutral'>(e?.release ?? 'live-input');
+  const [rows, setRows] = useState(() =>
+    p.parameters.map((v) => {
+      const old = e?.values.find((x) => x.parameterId === v.id);
+      return {
+        parameterId: v.id,
+        value: old?.value ?? v.neutral,
+        locked: old?.locked ?? true,
+        chosen: !!old,
+      };
+    }),
+  );
+  const patch = (id: string, next: Partial<(typeof rows)[number]>) =>
+    setRows((rows) => rows.map((v) => (v.parameterId === id ? { ...v, ...next } : v)));
+  const preset = (kind: 'neutral' | 'closed' | 'smile') =>
+    setRows(
+      rows.map((v) => {
+        const param = p.parameters.find((p) => p.id === v.parameterId)!;
+        const eye = param.previewKey?.startsWith('eye'),
+          mouth = param.previewKey === 'mouth';
+        return {
+          ...v,
+          chosen:
+            targets(p, v.parameterId).length > 0 &&
+            (kind === 'neutral' || !!eye || (mouth && kind === 'smile')),
+          value:
+            kind === 'neutral'
+              ? param.neutral
+              : eye
+                ? param.min
+                : mouth
+                  ? param.min + (param.max - param.min) * 0.3
+                  : param.neutral,
+          locked: true,
+        };
+      }),
+    );
+  return (
+    <form
+      className="expression-draft"
+      data-expression-form
+      onSubmit={(event) => {
+        event.preventDefault();
+        command({
+          kind: 'save',
+          id: expressionId,
+          name,
+          values: rows
+            .filter((v) => v.chosen)
+            .map(({ parameterId, value, locked }) => ({ parameterId, value, locked })),
+          transitionMs: transition,
+          releaseMs,
+          release,
+        });
+      }}
+    >
+      <label>
+        표정 이름
+        <input
+          data-expression-name
+          required
+          maxLength={120}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+      </label>
+      <div className="expression-actions">
+        <button type="button" data-expression-preset="neutral" onClick={() => preset('neutral')}>
+          기본 자세
+        </button>
+        <button type="button" data-expression-preset="closed" onClick={() => preset('closed')}>
+          눈 감기
+        </button>
+        <button type="button" data-expression-preset="smile" onClick={() => preset('smile')}>
+          미소용 눈·입
+        </button>
+      </div>
+      <fieldset>
+        <legend>저장할 값 · 체크한 항목만 저장</legend>
+        {rows.map((v) => {
+          const param = p.parameters.find((p) => p.id === v.parameterId)!,
+            available = targets(p, v.parameterId).length > 0;
+          return (
+            <div className="expression-row" key={v.parameterId}>
+              <label>
+                <input
+                  data-expression-include={param.previewKey ?? param.id}
+                  type="checkbox"
+                  checked={v.chosen}
+                  disabled={!available && !v.chosen}
+                  onChange={(e) => patch(v.parameterId, { chosen: e.target.checked })}
+                />
+                {param.previewKey ? motionNames[param.previewKey] : param.displayName}
+              </label>
+              <input
+                aria-label={`${param.displayName} 저장 값`}
+                data-expression-value={param.previewKey ?? param.id}
+                type="number"
+                step="any"
+                min={param.min}
+                max={param.max}
+                value={v.value}
+                disabled={!v.chosen}
+                onChange={(e) => patch(v.parameterId, { value: Number(e.target.value) })}
+              />
+              <label>
+                <input
+                  data-expression-lock={param.previewKey ?? param.id}
+                  type="checkbox"
+                  checked={v.locked}
+                  disabled={!v.chosen}
+                  onChange={(e) => patch(v.parameterId, { locked: e.target.checked })}
+                />
+                고정
+              </label>
+              <small>
+                {available
+                  ? v.locked
+                    ? '다른 입력보다 우선'
+                    : '입력 없을 때 기본값'
+                  : '연결 확인 필요'}
+              </small>
+            </div>
+          );
+        })}
+      </fieldset>
+      <button
+        type="button"
+        data-expression-capture
+        disabled={!rows.some((v) => v.chosen)}
+        onClick={() =>
+          setRows(
+            rows.map((v) => ({
+              ...v,
+              value: v.chosen ? (player.snapshot().values.get(v.parameterId) ?? v.value) : v.value,
+            })),
+          )
+        }
+      >
+        선택한 항목의 현재 값 가져오기
+      </button>
+      <small>위 값을 확인한 뒤 저장하세요. 실시간 입력은 자동 저장되지 않습니다.</small>
+      <div className="expression-row">
+        <label>
+          전환 시간 (ms)
+          <input
+            data-expression-transition
+            type="number"
+            required
+            min="0"
+            max="3000"
+            step="1"
+            value={transition}
+            onChange={(e) => setTransition(Number(e.target.value))}
+          />
+        </label>
+        <label>
+          해제 시간 (ms)
+          <input
+            data-expression-release-ms
+            type="number"
+            required
+            min="0"
+            max="3000"
+            step="1"
+            value={releaseMs}
+            onChange={(e) => setReleaseMs(Number(e.target.value))}
+          />
+        </label>
+      </div>
+      <small>0은 즉시, 1~3000은 부드러운 전환입니다.</small>
+      <label>
+        해제 동작
+        <select
+          data-expression-release-mode
+          value={release}
+          onChange={(e) => setRelease(e.target.value as typeof release)}
+        >
+          <option value="live-input">최신 입력으로 복귀</option>
+          <option value="neutral">대상 항목 중립 유지 · 입력 다시 받기 전까지</option>
+        </select>
+      </label>
+      <button data-expression-save disabled={!rows.some((v) => v.chosen)} type="submit">
+        {e ? '표정 변경 저장' : '표정 만들기'}
+      </button>
+    </form>
+  );
 }

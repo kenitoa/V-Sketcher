@@ -1,0 +1,12 @@
+{
+  "group": "old-lab-environment",
+  "removedFiles": 1117,
+  "removedLogicalBytes": 28872518,
+  "retainedChangedOrProtectedFiles": 0,
+  "remainingSelectedFiles": 0,
+  "losslessArchiveRetained": true,
+  "wholeArchiveReconstructedBeforeFirstRemoval": true,
+  "sourceHashRecheckedBeforeEachRemoval": true,
+  "recursiveDeletionUsed": false,
+  "historicalEvidenceModified": false
+}

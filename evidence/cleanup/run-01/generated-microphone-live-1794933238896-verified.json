@@ -1,0 +1,14 @@
+{
+  "format": "2dsketcher-cache-archive/1",
+  "group": "generated-microphone-live-1794933238896",
+  "verified": true,
+  "files": 113,
+  "logicalBytes": 62551257,
+  "everyArchiveFileReconstructedAndHashMatched": true,
+  "originalSourceHashesRecordedAtPack": true,
+  "sourceHashRecheckedDuringVerify": false,
+  "sourceHashRequiredAgainBeforeEviction": true,
+  "indexSha256": "f74ca7676901496b6722d446236c855887fe696a9cfc66e94830c44c8d64cfc2",
+  "sourceRemoved": false,
+  "historicalEvidenceModified": false
+}

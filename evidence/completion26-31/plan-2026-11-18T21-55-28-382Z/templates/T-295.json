@@ -1,0 +1,331 @@
+{
+  "format": "2dsketcher-completion/1",
+  "candidate": {
+    "version": "0.22.1",
+    "sha256": "e5e4f3a5820d4a3563dfcce9b8cba3eccc1ce50d8673db0cb45a0c4030590ad3"
+  },
+  "taskId": "T-295",
+  "kind": "release",
+  "origin": null,
+  "collectedAt": null,
+  "review": {
+    "verdict": null,
+    "role": null
+  },
+  "artifacts": [],
+  "measurements": {
+    "releaseChecks": [
+      {
+        "id": "AC-01",
+        "status": "NOT_RUN",
+        "candidateSha256": null,
+        "evidence": []
+      },
+      {
+        "id": "AC-02",
+        "status": "NOT_RUN",
+        "candidateSha256": null,
+        "evidence": []
+      },
+      {
+        "id": "AC-03",
+        "status": "NOT_RUN",
+        "candidateSha256": null,
+        "evidence": []
+      },
+      {
+        "id": "AC-04",
+        "status": "NOT_RUN",
+        "candidateSha256": null,
+        "evidence": []
+      },
+      {
+        "id": "AC-05",
+        "status": "NOT_RUN",
+        "candidateSha256": null,
+        "evidence": []
+      },
+      {
+        "id": "AC-06",
+        "status": "NOT_RUN",
+        "candidateSha256": null,
+        "evidence": []
+      },
+      {
+        "id": "AC-07",
+        "status": "NOT_RUN",
+        "candidateSha256": null,
+        "evidence": []
+      },
+      {
+        "id": "AC-08",
+        "status": "NOT_RUN",
+        "candidateSha256": null,
+        "evidence": []
+      },
+      {
+        "id": "AC-09",
+        "status": "NOT_RUN",
+        "candidateSha256": null,
+        "evidence": []
+      },
+      {
+        "id": "AC-10",
+        "status": "NOT_RUN",
+        "candidateSha256": null,
+        "evidence": []
+      },
+      {
+        "id": "AC-11",
+        "status": "NOT_RUN",
+        "candidateSha256": null,
+        "evidence": []
+      },
+      {
+        "id": "AC-12",
+        "status": "NOT_RUN",
+        "candidateSha256": null,
+        "evidence": []
+      },
+      {
+        "id": "AC-13",
+        "status": "NOT_RUN",
+        "candidateSha256": null,
+        "evidence": []
+      },
+      {
+        "id": "AC-14",
+        "status": "NOT_RUN",
+        "candidateSha256": null,
+        "evidence": []
+      },
+      {
+        "id": "AC-15",
+        "status": "NOT_RUN",
+        "candidateSha256": null,
+        "evidence": []
+      },
+      {
+        "id": "M0-R01",
+        "status": "NOT_RUN",
+        "candidateSha256": null,
+        "evidence": []
+      },
+      {
+        "id": "M0-R02",
+        "status": "NOT_RUN",
+        "candidateSha256": null,
+        "evidence": []
+      },
+      {
+        "id": "M0-R03",
+        "status": "NOT_RUN",
+        "candidateSha256": null,
+        "evidence": []
+      },
+      {
+        "id": "M0-R04",
+        "status": "NOT_RUN",
+        "candidateSha256": null,
+        "evidence": []
+      },
+      {
+        "id": "M0-R05",
+        "status": "NOT_RUN",
+        "candidateSha256": null,
+        "evidence": []
+      },
+      {
+        "id": "PERF-01",
+        "status": "NOT_RUN",
+        "candidateSha256": null,
+        "evidence": []
+      },
+      {
+        "id": "PERF-02",
+        "status": "NOT_RUN",
+        "candidateSha256": null,
+        "evidence": []
+      },
+      {
+        "id": "PERF-03",
+        "status": "NOT_RUN",
+        "candidateSha256": null,
+        "evidence": []
+      },
+      {
+        "id": "PERF-04",
+        "status": "NOT_RUN",
+        "candidateSha256": null,
+        "evidence": []
+      },
+      {
+        "id": "PERF-05",
+        "status": "NOT_RUN",
+        "candidateSha256": null,
+        "evidence": []
+      },
+      {
+        "id": "PERF-06",
+        "status": "NOT_RUN",
+        "candidateSha256": null,
+        "evidence": []
+      },
+      {
+        "id": "PERF-07",
+        "status": "NOT_RUN",
+        "candidateSha256": null,
+        "evidence": []
+      },
+      {
+        "id": "RUN-01",
+        "status": "NOT_RUN",
+        "candidateSha256": null,
+        "evidence": []
+      },
+      {
+        "id": "RUN-02",
+        "status": "NOT_RUN",
+        "candidateSha256": null,
+        "evidence": []
+      },
+      {
+        "id": "RUN-03",
+        "status": "NOT_RUN",
+        "candidateSha256": null,
+        "evidence": []
+      },
+      {
+        "id": "RUN-04",
+        "status": "NOT_RUN",
+        "candidateSha256": null,
+        "evidence": []
+      },
+      {
+        "id": "RUN-05",
+        "status": "NOT_RUN",
+        "candidateSha256": null,
+        "evidence": []
+      },
+      {
+        "id": "DATA-01",
+        "status": "NOT_RUN",
+        "candidateSha256": null,
+        "evidence": []
+      },
+      {
+        "id": "ART-01",
+        "status": "NOT_RUN",
+        "candidateSha256": null,
+        "evidence": []
+      },
+      {
+        "id": "ART-02",
+        "status": "NOT_RUN",
+        "candidateSha256": null,
+        "evidence": []
+      },
+      {
+        "id": "ART-03",
+        "status": "NOT_RUN",
+        "candidateSha256": null,
+        "evidence": []
+      },
+      {
+        "id": "OUT-01",
+        "status": "NOT_RUN",
+        "candidateSha256": null,
+        "evidence": []
+      },
+      {
+        "id": "OUT-02",
+        "status": "NOT_RUN",
+        "candidateSha256": null,
+        "evidence": []
+      },
+      {
+        "id": "OUT-03",
+        "status": "NOT_RUN",
+        "candidateSha256": null,
+        "evidence": []
+      },
+      {
+        "id": "UX-M0",
+        "status": "NOT_RUN",
+        "candidateSha256": null,
+        "evidence": []
+      },
+      {
+        "id": "UX-01",
+        "status": "NOT_RUN",
+        "candidateSha256": null,
+        "evidence": []
+      },
+      {
+        "id": "UX-02",
+        "status": "NOT_RUN",
+        "candidateSha256": null,
+        "evidence": []
+      },
+      {
+        "id": "UX-03",
+        "status": "NOT_RUN",
+        "candidateSha256": null,
+        "evidence": []
+      },
+      {
+        "id": "UX-04",
+        "status": "NOT_RUN",
+        "candidateSha256": null,
+        "evidence": []
+      },
+      {
+        "id": "UX-05",
+        "status": "NOT_RUN",
+        "candidateSha256": null,
+        "evidence": []
+      },
+      {
+        "id": "UX-06",
+        "status": "NOT_RUN",
+        "candidateSha256": null,
+        "evidence": []
+      },
+      {
+        "id": "CLEAN-WINDOWS",
+        "status": "NOT_RUN",
+        "candidateSha256": null,
+        "evidence": []
+      },
+      {
+        "id": "SIGNATURE",
+        "status": "NOT_RUN",
+        "candidateSha256": null,
+        "evidence": []
+      },
+      {
+        "id": "DISTRIBUTION-RIGHTS",
+        "status": "NOT_RUN",
+        "candidateSha256": null,
+        "evidence": []
+      },
+      {
+        "id": "CONTROLLED-TRIAL",
+        "status": "NOT_RUN",
+        "candidateSha256": null,
+        "evidence": []
+      },
+      {
+        "id": "PREDECESSOR-29",
+        "status": "NOT_RUN",
+        "candidateSha256": null,
+        "evidence": []
+      }
+    ],
+    "openM0Revalidations": null,
+    "allACFTPassed": false,
+    "allArtworkGatesPassed": false,
+    "signedCandidate": false,
+    "rightsReviewed": false
+  }
+}

@@ -1,4 +1,5 @@
 """Verify local notice/provenance bytes; does not grant publication or legal approval."""
+
 import argparse
 import hashlib
 import importlib.metadata
@@ -23,12 +24,14 @@ def main():
     assert output.is_relative_to(ROOT / 'evidence/phase28') and not output.exists()
     notices = ROOT / 'dist/notices'
     records = []
-    for source, copy in [('NOTICE.md', 'NOTICE.md'),
-                         ('worker/resources/model-source.json', 'model-source.json'),
-                         ('assets/product/parts/catalog.json', 'parts-catalog.json'),
-                         ('assets/product/parts/generation-record.json', 'parts-generation-record.json'),
-                         ('assets/product/parts/USAGE.md', 'parts-USAGE.md'),
-                         ('assets/product/split/manifest.json', 'split-provenance.json')]:
+    for source, copy in [
+        ('NOTICE.md', 'NOTICE.md'),
+        ('worker/resources/model-source.json', 'model-source.json'),
+        ('assets/product/parts/catalog.json', 'parts-catalog.json'),
+        ('assets/product/parts/generation-record.json', 'parts-generation-record.json'),
+        ('assets/product/parts/USAGE.md', 'parts-USAGE.md'),
+        ('assets/product/split/manifest.json', 'split-provenance.json'),
+    ]:
         assert sha(ROOT / source) == sha(notices / copy), source
         records.append({'source': source, 'notice': copy, 'sha256': sha(ROOT / source)})
     manifest = read(ROOT / 'assets/product/manifest.json')
@@ -58,20 +61,37 @@ def main():
     lock = read(ROOT / 'package-lock.json')['packages']
     license_rows = []
     for package in runtime:
-        candidates = [ROOT / key for key, value in lock.items()
-                      if key.endswith('node_modules/' + package['name'])
-                      and value.get('version') == package['version'] and not value.get('dev')]
+        candidates = [
+            ROOT / key
+            for key, value in lock.items()
+            if key.endswith('node_modules/' + package['name'])
+            and value.get('version') == package['version']
+            and not value.get('dev')
+        ]
         assert candidates, package['name']
         directory = candidates[0]
         installed = read(directory / 'package.json')
         assert installed['version'] == package['version'] and package['license']
-        files = [p for p in (notices / 'npm' / package['name'].replace('/', '_')).glob('*') if p.is_file()]
+        files = [
+            p
+            for p in (notices / 'npm' / package['name'].replace('/', '_')).glob('*')
+            if p.is_file()
+        ]
         assert files, package['name']
-        originals = [p for p in directory.iterdir() if p.is_file()
-                     and p.name.lower().startswith(('license', 'notice', 'copying'))]
+        originals = [
+            p
+            for p in directory.iterdir()
+            if p.is_file() and p.name.lower().startswith(('license', 'notice', 'copying'))
+        ]
         assert all(any(sha(p) == sha(q) for q in files) for p in originals)
-        license_rows.append({'name': package['name'], 'version': package['version'],
-                             'license': package['license'], 'copiedTexts': len(files)})
+        license_rows.append(
+            {
+                'name': package['name'],
+                'version': package['version'],
+                'license': package['license'],
+                'copiedTexts': len(files),
+            }
+        )
     python_missing_text = []
     for package in inventory['python']:
         assert importlib.metadata.version(package['name']) == package['version']
@@ -80,21 +100,28 @@ def main():
     electron = ROOT / 'node_modules/electron/dist'
     assert (electron / 'LICENSE').is_file() and (electron / 'LICENSES.chromium.html').is_file()
     assert not python_missing_text, python_missing_text
-    result = {'localInventoryPassed': True, 'sourceNoticeCopies': records,
-              'premiumPreviewAssets': len(manifest['assets']), 'partsStateAssets': len(catalog['assets']),
-              'modelPinnedHashVerified': True, 'nodeRuntime': license_rows,
-              'installedPythonPackages': len(inventory['python']),
-              'pythonPackagesWithoutCopiedLicenseText': python_missing_text,
-              'pythonBundledSubsetAndTransitiveNoticesApproved': False,
-              'electronLicenseAndChromiumNoticesPresent': True,
-              'thirdPartyExecutableBundlingApproved': False,
-              'publicDistributionApproved': False,
-              'licenseTextOverrides': overrides,
-              'scope': 'Current private build local attribution/inventory consistency; no new legal interpretation or publication approval',
-              'm0': 'HOLD'}
+    result = {
+        'localInventoryPassed': True,
+        'sourceNoticeCopies': records,
+        'premiumPreviewAssets': len(manifest['assets']),
+        'partsStateAssets': len(catalog['assets']),
+        'modelPinnedHashVerified': True,
+        'nodeRuntime': license_rows,
+        'installedPythonPackages': len(inventory['python']),
+        'pythonPackagesWithoutCopiedLicenseText': python_missing_text,
+        'pythonBundledSubsetAndTransitiveNoticesApproved': False,
+        'electronLicenseAndChromiumNoticesPresent': True,
+        'thirdPartyExecutableBundlingApproved': False,
+        'publicDistributionApproved': False,
+        'licenseTextOverrides': overrides,
+        'scope': 'Current private build local attribution/inventory consistency; no new legal interpretation or publication approval',
+        'm0': 'HOLD',
+    }
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(result, indent=2) + '\n', encoding='utf8')
-    print(f'Local notices: {len(runtime)} Node runtime, {len(inventory["python"])} Python inventory; publication stays HOLD.')
+    print(
+        f'Local notices: {len(runtime)} Node runtime, {len(inventory["python"])} Python inventory; publication stays HOLD.'
+    )
 
 
 if __name__ == '__main__':

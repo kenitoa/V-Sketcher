@@ -1,43 +1,361 @@
 import { open } from 'node:fs/promises';
 import { extname } from 'node:path';
 import { randomUUID } from 'node:crypto';
-import type { Project,Asset } from '../project-model';
+import type { Project, Asset } from '../project-model';
 import { assertProject } from '../project-model';
 import { sha256 } from '../project-storage/archive';
 import type { ResourceCache } from '../project-storage/cache';
 import type { Workflow } from '../workflow';
 import { multiply } from '../coordinates';
-import type { InputProcessor,InputView,Probe,Analysis,Selection } from './types';
+import type { InputProcessor, InputView, Probe, Analysis, Selection } from './types';
 import { assertSelection } from './types';
-interface Host { flow:Workflow;cache:ResourceCache;current():boolean;checkpoint():Promise<void>;commit(change:(p:Project)=>void):Promise<void>;emit():void; }
-interface Draft { id:string;bytes:Buffer;normalized:Buffer;probe:Probe; }
-const MAX=64*1024*1024;
-export async function readInput(path:string):Promise<Buffer> {
-  const file=await open(path,'r');try { const stat=await file.stat();if (!stat.isFile()) throw new Error('E_INPUT_READ');if (!stat.size) throw new Error('E_INPUT_EMPTY');if (stat.size>MAX) throw new Error('E_INPUT_BYTES');const bytes=Buffer.alloc(stat.size);let offset=0;while(offset<bytes.length) { const { bytesRead }=await file.read(bytes,offset,bytes.length-offset,offset);if(!bytesRead)throw new Error('E_INPUT_READ');offset+=bytesRead; }const after=await file.stat();if(after.size!==stat.size || after.mtimeMs!==stat.mtimeMs) throw new Error('E_INPUT_CHANGED');return bytes; } finally { await file.close(); }
+interface Host {
+  flow: Workflow;
+  cache: ResourceCache;
+  current(): boolean;
+  checkpoint(): Promise<void>;
+  commit(change: (p: Project) => void): Promise<void>;
+  emit(): void;
+}
+interface Draft {
+  id: string;
+  bytes: Buffer;
+  normalized: Buffer;
+  probe: Probe;
+}
+const MAX = 64 * 1024 * 1024;
+export async function readInput(path: string): Promise<Buffer> {
+  const file = await open(path, 'r');
+  try {
+    const stat = await file.stat();
+    if (!stat.isFile()) throw new Error('E_INPUT_READ');
+    if (!stat.size) throw new Error('E_INPUT_EMPTY');
+    if (stat.size > MAX) throw new Error('E_INPUT_BYTES');
+    const bytes = Buffer.alloc(stat.size);
+    let offset = 0;
+    while (offset < bytes.length) {
+      const { bytesRead } = await file.read(bytes, offset, bytes.length - offset, offset);
+      if (!bytesRead) throw new Error('E_INPUT_READ');
+      offset += bytesRead;
+    }
+    const after = await file.stat();
+    if (after.size !== stat.size || after.mtimeMs !== stat.mtimeMs)
+      throw new Error('E_INPUT_CHANGED');
+    return bytes;
+  } finally {
+    await file.close();
+  }
 }
 export class InputSession {
-  private draft:Draft | null=null;private jobId:string | null=null;private busy=false;private errorCode:string | null=null;private retryAction:(()=>void) | null=null;private generation=0;private urls=new Map<string,Buffer>();
-  constructor(private host:Host,private processor:InputProcessor,private chooseFile:()=>Promise<string | null>) {}
-  view():InputView { const d=this.draft;return { draft:d ? { id:d.id,probe:d.probe,preview:`assets/session/${d.id}/${sha256(d.normalized)}.png` } : null,jobId:this.jobId,busy:this.busy,errorCode:this.errorCode,canRetry:!!this.retryAction && !this.busy }; }
-  resource(token:string,name:string):Buffer | null { return this.draft?.id===token ? this.urls.get(name) ?? null : null; }
-  async choose():Promise<void> { if(this.busy)return;const gen=++this.generation;this.busy=true;this.host.emit();try { const file=await this.chooseFile();if(!this.host.current() || gen!==this.generation)return;if(file) this.probe(file);else { this.busy=false;this.host.emit(); } } catch { this.busy=false;this.errorCode='E_INPUT_READ';this.host.emit(); } }
-  private start(label:string,run:(signal:AbortSignal)=>Promise<()=>Promise<void>>,retry:()=>void):void {
-    const gen=++this.generation;const revision=this.host.flow.project().revision;this.busy=true;this.errorCode=null;this.retryAction=null;let apply:(()=>Promise<void>) | undefined;
-    const job=this.host.flow.start({ key:'input-'+randomUUID(),kind:'check',label,processingVersion:'1.0.0',settings:{ scope:'local-still-input' },steps:[{ id:label.includes('영역') ? 'selected-region-analysis' : 'decode-normalize-detect',version:'1.0.0',cache:'none',cancellable:true,run:async ctx => { apply=await run(ctx.signal);ctx.checkpoint();return { prepared:true }; } }],collect:(_p,identity) => ({ identity,outcome:{ kind:'checked',reportId:'input-preparation',dependencies:['input:*'] } }) });this.jobId=job.jobId;this.host.emit();
-    void this.host.flow.wait(job.jobId).then(async result => { if(gen!==this.generation || !this.host.current())return;try { if(result.state==='SUCCEEDED') { if(this.host.flow.project().revision!==revision)throw new Error('E_INPUT_STALE');await apply!(); } else if(result.state==='FAILED')throw new Error(result.errorCode ?? 'E_INPUT_PROCESSING'); } catch(e) { this.errorCode=e instanceof Error && /^E_[A-Z_]+$/.test(e.message) ? e.message : 'E_INPUT_PROCESSING';this.retryAction=retry; } finally { this.busy=false;this.host.emit(); } });
+  private draft: Draft | null = null;
+  private jobId: string | null = null;
+  private busy = false;
+  private errorCode: string | null = null;
+  private retryAction: (() => void) | null = null;
+  private generation = 0;
+  private urls = new Map<string, Buffer>();
+  constructor(
+    private host: Host,
+    private processor: InputProcessor,
+    private chooseFile: () => Promise<string | null>,
+  ) {}
+  view(): InputView {
+    const d = this.draft;
+    return {
+      draft: d
+        ? {
+            id: d.id,
+            probe: d.probe,
+            preview: `assets/session/${d.id}/${sha256(d.normalized)}.png`,
+          }
+        : null,
+      jobId: this.jobId,
+      busy: this.busy,
+      errorCode: this.errorCode,
+      canRetry: !!this.retryAction && !this.busy,
+    };
   }
-  private probe(file:string):void { this.start('그림 읽기 · 방향/색상 정리 · 대상 찾기',async signal => { const suffix=extname(file).toLowerCase();if(!['.png','.jpg','.jpeg'].includes(suffix))throw new Error('E_INPUT_EXTENSION');const bytes=await readInput(file);if(signal.aborted)throw new Error('E_JOB_CANCELLED');const result=await this.processor.run('probe',bytes,suffix,null,signal);const normalized=result.files.get('normalized.png');if(!normalized)throw new Error('E_INPUT_PROCESSING');return async () => { this.draft={ id:randomUUID(),bytes,normalized,probe:result.report as Probe };this.urls.clear();this.urls.set(sha256(normalized)+'.png',normalized); }; },() => this.probe(file)); }
-  async apply(id:string,selection:Selection):Promise<void> { assertSelection(selection);if(this.busy)return;const d=this.draft;if(!d || d.id!==id)throw new Error('E_INPUT_STALE');const revision=this.host.flow.project().revision;await this.host.checkpoint();if(!this.host.current() || this.host.flow.project().revision!==revision || this.draft!==d)throw new Error('E_INPUT_STALE');const frozen=structuredClone(selection);
-    const again=():void => this.start('선택 영역 · 마스크 적용 · 얼굴/제한 분석',async signal => { const activeGeneration=this.generation;const result=await this.processor.run('select',d.normalized,'.png',frozen,signal);const analysis=result.report as Analysis;const selected=result.files.get('selected.png');const small=result.files.get('analysis.png');if(!selected || !small)throw new Error('E_INPUT_PROCESSING');return async () => { if(this.draft!==d)throw new Error('E_INPUT_STALE');
-      const crop=analysis.crop;const shift:[number,number,number,number,number,number]=[1,0,0,1,-crop.x,-crop.y];const sourceSize=d.probe.originalSize;const size=d.probe.size;const outputSize={ width:crop.width,height:crop.height };
-      const make=(bytes:Buffer,kind:Asset['kind'],parentAssetIds:string[],dimensions:Asset['dimensions'],matrix:Asset['sourceToEdited'],jpeg=false):Asset => { const hash=sha256(bytes);return { id:randomUUID(),kind,origin:kind==='original-image' ? 'imported' : 'manual-edit',parentAssetIds,storage:{ path:`resources/${hash}.${jpeg ? 'jpg' : 'png'}` },fingerprint:{ sha256:hash,bytes:bytes.length },version:1,mediaType:jpeg ? 'image/jpeg' : 'image/png',dimensions,sourceRegion:{ x:0,y:0,...dimensions },sourceToEdited:matrix,colorSpace:kind==='original-image' ? 'unknown' : 'srgb',alphaMode:jpeg ? 'opaque' : 'straight',producer:{ name:'image-input',version:'1.0.0' },attribution:{ creator:'User supplied',source:'Local user-selected file',usage:'User responsibility',status:'unverified' } }; };
-      const original=make(d.bytes,'original-image',[],sourceSize,multiply(shift,d.probe.sourceToNormalized),d.probe.format==='jpeg');const normalized=make(d.normalized,'edited-image',[original.id],size,shift);const target=make(selected,'edited-image',[normalized.id],outputSize,[1,0,0,1,0,0]);const reduced=make(small,'edited-image',[target.id],analysis.analysisSize,[crop.width/analysis.analysisSize.width,0,0,crop.height/analysis.analysisSize.height,0,0]);
-      for(const [asset,bytes] of [[original,d.bytes],[normalized,d.normalized],[target,selected],[reduced,small]] as const)await this.host.cache.put(asset,bytes);
-      if(this.generation!==activeGeneration || !this.host.current() || this.host.flow.project().revision!==revision)throw new Error('E_INPUT_STALE');await this.host.commit(p => { p.schemaVersion.minor=Math.max(2,p.schemaVersion.minor);delete p.assembly;delete p.structure;delete p.split;p.assets.push(original,normalized,target,reduced);p.inputAssetIds=[original.id];p.canvas=outputSize;p.parts=[{ id:randomUUID(),displayName:'선택한 캐릭터 원화',role:'base',side:'center',parentId:null,groupId:null,textures:[{ state:'default',assetId:target.id,assetVersion:1,assetToLocal:[1,0,0,1,0,0] }],localTransform:[1,0,0,1,0,0],drawOrder:0,visible:true,opacity:1,correctionOrigin:'user-confirmed',limitations:analysis.warnings }];p.groups=[];p.partBindings=[];delete p.motion;p.runtimeProfile={ ...p.runtimeProfile,mode:'idle',fallbackExpressionId:null,revision:p.runtimeProfile.revision+1 };for(const e of p.exportProfiles)e.parameterMap=[];p.inputPreparation={ version:1,originalAssetId:original.id,normalizedAssetId:normalized.id,selectedAssetId:target.id,analysisAssetId:reduced.id,probe:d.probe,selection:frozen,analysis };p.provenance={ preparation:'Validated selected input; automatic parts/rigging not performed',limitations:analysis.warnings };assertProject(p); });
-    }; },again);again();
+  resource(token: string, name: string): Buffer | null {
+    return this.draft?.id === token ? (this.urls.get(name) ?? null) : null;
   }
-  retry():void { if(!this.busy)this.retryAction?.(); }
-  drop(file:string):void { if(!this.busy)this.probe(file); }
-  cancel():void { ++this.generation;if(this.jobId && this.busy)this.host.flow.cancel(this.jobId);this.busy=false;this.retryAction=null;this.errorCode=null;this.host.emit(); }
-  dispose():void { this.cancel();this.draft=null;this.urls.clear(); }
+  async choose(): Promise<void> {
+    if (this.busy) return;
+    const gen = ++this.generation;
+    this.busy = true;
+    this.host.emit();
+    try {
+      const file = await this.chooseFile();
+      if (!this.host.current() || gen !== this.generation) return;
+      if (file) this.probe(file);
+      else {
+        this.busy = false;
+        this.host.emit();
+      }
+    } catch {
+      this.busy = false;
+      this.errorCode = 'E_INPUT_READ';
+      this.host.emit();
+    }
+  }
+  private start(
+    label: string,
+    run: (signal: AbortSignal) => Promise<() => Promise<void>>,
+    retry: () => void,
+  ): void {
+    const gen = ++this.generation;
+    const revision = this.host.flow.project().revision;
+    this.busy = true;
+    this.errorCode = null;
+    this.retryAction = null;
+    let apply: (() => Promise<void>) | undefined;
+    const job = this.host.flow.start({
+      key: 'input-' + randomUUID(),
+      kind: 'check',
+      label,
+      processingVersion: '1.0.0',
+      settings: { scope: 'local-still-input' },
+      steps: [
+        {
+          id: label.includes('영역') ? 'selected-region-analysis' : 'decode-normalize-detect',
+          version: '1.0.0',
+          cache: 'none',
+          cancellable: true,
+          run: async (ctx) => {
+            apply = await run(ctx.signal);
+            ctx.checkpoint();
+            return { prepared: true };
+          },
+        },
+      ],
+      collect: (_p, identity) => ({
+        identity,
+        outcome: { kind: 'checked', reportId: 'input-preparation', dependencies: ['input:*'] },
+      }),
+    });
+    this.jobId = job.jobId;
+    this.host.emit();
+    void this.host.flow.wait(job.jobId).then(async (result) => {
+      if (gen !== this.generation || !this.host.current()) return;
+      try {
+        if (result.state === 'SUCCEEDED') {
+          if (this.host.flow.project().revision !== revision) throw new Error('E_INPUT_STALE');
+          await apply!();
+        } else if (result.state === 'FAILED')
+          throw new Error(result.errorCode ?? 'E_INPUT_PROCESSING');
+      } catch (e) {
+        this.errorCode =
+          e instanceof Error && /^E_[A-Z_]+$/.test(e.message) ? e.message : 'E_INPUT_PROCESSING';
+        this.retryAction = retry;
+      } finally {
+        this.busy = false;
+        this.host.emit();
+      }
+    });
+  }
+  private probe(file: string): void {
+    this.start(
+      '그림 읽기 · 방향/색상 정리 · 대상 찾기',
+      async (signal) => {
+        const suffix = extname(file).toLowerCase();
+        if (!['.png', '.jpg', '.jpeg'].includes(suffix)) throw new Error('E_INPUT_EXTENSION');
+        const bytes = await readInput(file);
+        if (signal.aborted) throw new Error('E_JOB_CANCELLED');
+        const result = await this.processor.run('probe', bytes, suffix, null, signal);
+        const normalized = result.files.get('normalized.png');
+        if (!normalized) throw new Error('E_INPUT_PROCESSING');
+        return async () => {
+          this.draft = { id: randomUUID(), bytes, normalized, probe: result.report as Probe };
+          this.urls.clear();
+          this.urls.set(sha256(normalized) + '.png', normalized);
+        };
+      },
+      () => this.probe(file),
+    );
+  }
+  async apply(id: string, selection: Selection): Promise<void> {
+    assertSelection(selection);
+    if (this.busy) return;
+    const d = this.draft;
+    if (!d || d.id !== id) throw new Error('E_INPUT_STALE');
+    const revision = this.host.flow.project().revision;
+    await this.host.checkpoint();
+    if (!this.host.current() || this.host.flow.project().revision !== revision || this.draft !== d)
+      throw new Error('E_INPUT_STALE');
+    const frozen = structuredClone(selection);
+    const again = (): void =>
+      this.start(
+        '선택 영역 · 마스크 적용 · 얼굴/제한 분석',
+        async (signal) => {
+          const activeGeneration = this.generation;
+          const result = await this.processor.run('select', d.normalized, '.png', frozen, signal);
+          const analysis = result.report as Analysis;
+          const selected = result.files.get('selected.png');
+          const small = result.files.get('analysis.png');
+          if (!selected || !small) throw new Error('E_INPUT_PROCESSING');
+          return async () => {
+            if (this.draft !== d) throw new Error('E_INPUT_STALE');
+            const crop = analysis.crop;
+            const shift: [number, number, number, number, number, number] = [
+              1,
+              0,
+              0,
+              1,
+              -crop.x,
+              -crop.y,
+            ];
+            const sourceSize = d.probe.originalSize;
+            const size = d.probe.size;
+            const outputSize = { width: crop.width, height: crop.height };
+            const make = (
+              bytes: Buffer,
+              kind: Asset['kind'],
+              parentAssetIds: string[],
+              dimensions: Asset['dimensions'],
+              matrix: Asset['sourceToEdited'],
+              jpeg = false,
+            ): Asset => {
+              const hash = sha256(bytes);
+              return {
+                id: randomUUID(),
+                kind,
+                origin: kind === 'original-image' ? 'imported' : 'manual-edit',
+                parentAssetIds,
+                storage: { path: `resources/${hash}.${jpeg ? 'jpg' : 'png'}` },
+                fingerprint: { sha256: hash, bytes: bytes.length },
+                version: 1,
+                mediaType: jpeg ? 'image/jpeg' : 'image/png',
+                dimensions,
+                sourceRegion: { x: 0, y: 0, ...dimensions },
+                sourceToEdited: matrix,
+                colorSpace: kind === 'original-image' ? 'unknown' : 'srgb',
+                alphaMode: jpeg ? 'opaque' : 'straight',
+                producer: { name: 'image-input', version: '1.0.0' },
+                attribution: {
+                  creator: 'User supplied',
+                  source: 'Local user-selected file',
+                  usage: 'User responsibility',
+                  status: 'unverified',
+                },
+              };
+            };
+            const original = make(
+              d.bytes,
+              'original-image',
+              [],
+              sourceSize,
+              multiply(shift, d.probe.sourceToNormalized),
+              d.probe.format === 'jpeg',
+            );
+            const normalized = make(d.normalized, 'edited-image', [original.id], size, shift);
+            const target = make(
+              selected,
+              'edited-image',
+              [normalized.id],
+              outputSize,
+              [1, 0, 0, 1, 0, 0],
+            );
+            const reduced = make(small, 'edited-image', [target.id], analysis.analysisSize, [
+              crop.width / analysis.analysisSize.width,
+              0,
+              0,
+              crop.height / analysis.analysisSize.height,
+              0,
+              0,
+            ]);
+            for (const [asset, bytes] of [
+              [original, d.bytes],
+              [normalized, d.normalized],
+              [target, selected],
+              [reduced, small],
+            ] as const)
+              await this.host.cache.put(asset, bytes);
+            if (
+              this.generation !== activeGeneration ||
+              !this.host.current() ||
+              this.host.flow.project().revision !== revision
+            )
+              throw new Error('E_INPUT_STALE');
+            await this.host.commit((p) => {
+              p.schemaVersion.minor = Math.max(2, p.schemaVersion.minor);
+              delete p.assembly;
+              delete p.structure;
+              delete p.split;
+              p.assets.push(original, normalized, target, reduced);
+              p.inputAssetIds = [original.id];
+              p.canvas = outputSize;
+              p.parts = [
+                {
+                  id: randomUUID(),
+                  displayName: '선택한 캐릭터 원화',
+                  role: 'base',
+                  side: 'center',
+                  parentId: null,
+                  groupId: null,
+                  textures: [
+                    {
+                      state: 'default',
+                      assetId: target.id,
+                      assetVersion: 1,
+                      assetToLocal: [1, 0, 0, 1, 0, 0],
+                    },
+                  ],
+                  localTransform: [1, 0, 0, 1, 0, 0],
+                  drawOrder: 0,
+                  visible: true,
+                  opacity: 1,
+                  correctionOrigin: 'user-confirmed',
+                  limitations: analysis.warnings,
+                },
+              ];
+              p.groups = [];
+              p.partBindings = [];
+              delete p.motion;
+              p.runtimeProfile = {
+                ...p.runtimeProfile,
+                mode: 'idle',
+                fallbackExpressionId: null,
+                revision: p.runtimeProfile.revision + 1,
+              };
+              for (const e of p.exportProfiles) e.parameterMap = [];
+              p.inputPreparation = {
+                version: 1,
+                originalAssetId: original.id,
+                normalizedAssetId: normalized.id,
+                selectedAssetId: target.id,
+                analysisAssetId: reduced.id,
+                probe: d.probe,
+                selection: frozen,
+                analysis,
+              };
+              p.provenance = {
+                preparation: 'Validated selected input; automatic parts/rigging not performed',
+                limitations: analysis.warnings,
+              };
+              assertProject(p);
+            });
+          };
+        },
+        again,
+      );
+    again();
+  }
+  retry(): void {
+    if (!this.busy) this.retryAction?.();
+  }
+  drop(file: string): void {
+    if (!this.busy) this.probe(file);
+  }
+  cancel(): void {
+    ++this.generation;
+    if (this.jobId && this.busy) this.host.flow.cancel(this.jobId);
+    this.busy = false;
+    this.retryAction = null;
+    this.errorCode = null;
+    this.host.emit();
+  }
+  dispose(): void {
+    this.cancel();
+    this.draft = null;
+    this.urls.clear();
+  }
 }

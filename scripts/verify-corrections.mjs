@@ -1,26 +1,203 @@
 import { spawnSync } from 'node:child_process';
-import { mkdirSync,writeFileSync,appendFileSync,readFileSync,readdirSync,copyFileSync } from 'node:fs';
-import { resolve,join,relative,dirname } from 'node:path';
+import {
+  mkdirSync,
+  writeFileSync,
+  appendFileSync,
+  readFileSync,
+  readdirSync,
+  copyFileSync,
+} from 'node:fs';
+import { resolve, join, relative, dirname } from 'node:path';
 import { createHash } from 'node:crypto';
 import { root } from './common.mjs';
-const output = resolve(root,'evidence/phase15'); const log = resolve(root,'.local/phase15-check.log');
-mkdirSync(output,{ recursive:true }); writeFileSync(log,'');
-const env = { ...process.env,PATH:dirname(process.execPath)+';'+process.env.PATH }; delete env.ELECTRON_RUN_AS_NODE;
+const output = resolve(root, 'evidence/phase15');
+const log = resolve(root, '.local/phase15-check.log');
+mkdirSync(output, { recursive: true });
+writeFileSync(log, '');
+const env = { ...process.env, PATH: dirname(process.execPath) + ';' + process.env.PATH };
+delete env.ELECTRON_RUN_AS_NODE;
 const sources = {};
-function inventory(folder) { for (const item of readdirSync(folder,{ withFileTypes:true })) { const path = join(folder,item.name); if(item.name==='__pycache__' || item.name.endsWith('.pyc'))continue; if (item.isDirectory()) inventory(path); else sources[relative(root,path).replaceAll('\\','/')] = createHash('sha256').update(readFileSync(path)).digest('hex'); } }
-for (const folder of ['packages/single-image','assets/product/parts','packages/parts-library','packages/image-input','worker','packages/motion','packages/scene-core','packages/project-model','packages/editor-view','packages/project-storage','packages/project-session','packages/workflow','packages/avatar-renderer','apps/renderer/src','apps/desktop']) inventory(resolve(root,folder));
-for (const file of ['scripts/correction-quality.py','tests/corrections.test.ts','tests/worker/test_corrections.py','scripts/generate-project-validators.mjs','scripts/build.mjs','tests/single-image.test.ts','tests/worker/test_structure.py','scripts/structure-quality.py','tests/storage.test.ts','tests/editor.test.ts','tests/motion.test.ts','tests/image-input.test.ts','tests/parts-library.test.ts','tests/worker/test_parts_assets.py','scripts/prepare-parts-catalog.py','scripts/provision.py','scripts/notices.py','tests/worker/test_image_input.py','scripts/prepare-motion-example.mjs','assets/product/preview-project.json','scripts/check.mjs','scripts/test.mjs','scripts/smoke.mjs','scripts/package-check.mjs','package.json','package-lock.json']) sources[file] = createHash('sha256').update(readFileSync(resolve(root,file))).digest('hex');
-sources['scripts/verify-corrections.mjs']=createHash('sha256').update(readFileSync(resolve(root,'scripts/verify-corrections.mjs'))).digest('hex');
-let combined = '';
-for (const script of ['scripts/check.mjs','scripts/smoke.mjs']) {
-  const required=script==='scripts/check.mjs';const result = spawnSync(required?(process.env.ComSpec??'cmd.exe'):process.execPath,required?['/d','/c','tools\\dev.cmd','run','check']:[script],{ cwd:root,env,windowsHide:true,encoding:'utf8',timeout:1860000 });
-  const chunk = (result.stdout ?? '')+(result.stderr ?? ''); appendFileSync(log,chunk); combined += chunk;
-  if (result.error || result.status !== 0) throw new Error('E_PROJECT_GATE: inspect .local/phase15-check.log');
+function inventory(folder) {
+  for (const item of readdirSync(folder, { withFileTypes: true })) {
+    const path = join(folder, item.name);
+    if (item.name === '__pycache__' || item.name.endsWith('.pyc')) continue;
+    if (item.isDirectory()) inventory(path);
+    else
+      sources[relative(root, path).replaceAll('\\', '/')] = createHash('sha256')
+        .update(readFileSync(path))
+        .digest('hex');
+  }
 }
-const node = Number(combined.match(/\btests (\d+)/)?.[1]); const python = Number(combined.match(/Ran (\d+) tests/)?.[1]);
-const browser = JSON.parse(readFileSync(resolve(root,'.local/smoke/development/report.json'),'utf8'));
-if (!(node > 0 && python > 0 && browser.passed && browser.corrections.passed && browser.corrections.pixels.passed && browser.structure.passed && browser.structure.pixels.passed && browser.parts.passed && browser.renderer.partsPixels.passed && browser.input.passed && browser.projects.passed && browser.editor.passed && browser.motion.passed && browser.renderer.motionPixels.passed)) throw new Error('E_PROJECT_EVIDENCE');
-for (const [source,target] of [['correction.png','correction-ui.png'],['correction-extremes.png','correction-extremes.png'],['structure.png','structure-ui.png'],['structure-extremes.png','structure-extremes.png'],['report.json','development-run.json'],['input.png','input-ui.png'],['parts.png','parts-ui.png'],['parts-contact.png','parts-contact.png'],['parts-extremes.png','parts-extremes.png'],['workflow.png','review-ui.png'],['editor.png','editor-ui.png'],['motion.png','motion-ui.png'],['project.png','project-ui.png'],['studio.png','studio-ui.png']]) copyFileSync(resolve(root,'.local/smoke/development',source),join(output,target));
-for(const [file,digest] of Object.entries(sources))if(createHash('sha256').update(readFileSync(resolve(root,file))).digest('hex')!==digest)throw new Error('E_SOURCE_CHANGED_DURING_VERIFICATION');
-writeFileSync(join(output,'verification.json'),JSON.stringify({ passed:true,created:new Date().toISOString(),appVersion:'0.10.0',node:process.versions.node,nodeTestGroups:node,pythonTestGroups:python,totalTestGroups:node+python,newCorrectionNodeGroups:12,newCorrectionPythonGroups:5,correctionUI:browser.corrections,newStructureNodeGroups:8,newStructurePythonGroups:7,structureUI:browser.structure,newStorageSessionGroups:19,typecheck:true,ruff:true,generatedValidatorMatches:true,testBuild:true,newMotionNodeGroups:16,newEditorNodeGroups:12,partsUI:browser.parts,partsPixels:browser.renderer.partsPixels,newPartsNodeGroups:12,newPartsPythonGroups:3,inputUI:browser.input,newInputNodeGroups:8,newInputPythonGroups:8,motionUI:browser.motion,motionPixels:browser.renderer.motionPixels,browserUI:browser.editor,projectLifecycle:browser.projects,actualWindowsFiles:true,actualProcessTerminationBeforeReplace:true,actualRecoveryAfterKilledProcess:true,faultInjection:['ENOSPC','EACCES','before-write','after-sync','after-verify','before-backup','after-backup','before-replace','after-replace'],scope:'Local per-feature correction, masks/order/occlusion/limits, protected full/partial reanalysis, selected review/apply and all previous regressions; no universal segmentation, unseen restoration, live tracking, broadcast, FPS or M0 approval.',followup:['T-268','T-271'],sourceSha256:sources },null,2)+'\n');
-console.log(`Selected corrections passed: ${node}+${python} groups and actual Electron editor/save/recovery UI.`);
+for (const folder of [
+  'packages/single-image',
+  'assets/product/parts',
+  'packages/parts-library',
+  'packages/image-input',
+  'worker',
+  'packages/motion',
+  'packages/scene-core',
+  'packages/project-model',
+  'packages/editor-view',
+  'packages/project-storage',
+  'packages/project-session',
+  'packages/workflow',
+  'packages/avatar-renderer',
+  'apps/renderer/src',
+  'apps/desktop',
+])
+  inventory(resolve(root, folder));
+for (const file of [
+  'scripts/correction-quality.py',
+  'tests/corrections.test.ts',
+  'tests/worker/test_corrections.py',
+  'scripts/generate-project-validators.mjs',
+  'scripts/build.mjs',
+  'tests/single-image.test.ts',
+  'tests/worker/test_structure.py',
+  'scripts/structure-quality.py',
+  'tests/storage.test.ts',
+  'tests/editor.test.ts',
+  'tests/motion.test.ts',
+  'tests/image-input.test.ts',
+  'tests/parts-library.test.ts',
+  'tests/worker/test_parts_assets.py',
+  'scripts/prepare-parts-catalog.py',
+  'scripts/provision.py',
+  'scripts/notices.py',
+  'tests/worker/test_image_input.py',
+  'scripts/prepare-motion-example.mjs',
+  'assets/product/preview-project.json',
+  'scripts/check.mjs',
+  'scripts/test.mjs',
+  'scripts/smoke.mjs',
+  'scripts/package-check.mjs',
+  'package.json',
+  'package-lock.json',
+])
+  sources[file] = createHash('sha256')
+    .update(readFileSync(resolve(root, file)))
+    .digest('hex');
+sources['scripts/verify-corrections.mjs'] = createHash('sha256')
+  .update(readFileSync(resolve(root, 'scripts/verify-corrections.mjs')))
+  .digest('hex');
+let combined = '';
+for (const script of ['scripts/check.mjs', 'scripts/smoke.mjs']) {
+  const required = script === 'scripts/check.mjs';
+  const result = spawnSync(
+    required ? (process.env.ComSpec ?? 'cmd.exe') : process.execPath,
+    required ? ['/d', '/c', 'tools\\dev.cmd', 'run', 'check'] : [script],
+    { cwd: root, env, windowsHide: true, encoding: 'utf8', timeout: 1860000 },
+  );
+  const chunk = (result.stdout ?? '') + (result.stderr ?? '');
+  appendFileSync(log, chunk);
+  combined += chunk;
+  if (result.error || result.status !== 0)
+    throw new Error('E_PROJECT_GATE: inspect .local/phase15-check.log');
+}
+const node = Number(combined.match(/\btests (\d+)/)?.[1]);
+const python = Number(combined.match(/Ran (\d+) tests/)?.[1]);
+const browser = JSON.parse(
+  readFileSync(resolve(root, '.local/smoke/development/report.json'), 'utf8'),
+);
+if (!(
+  node > 0 &&
+  python > 0 &&
+  browser.passed &&
+  browser.corrections.passed &&
+  browser.corrections.pixels.passed &&
+  browser.structure.passed &&
+  browser.structure.pixels.passed &&
+  browser.parts.passed &&
+  browser.renderer.partsPixels.passed &&
+  browser.input.passed &&
+  browser.projects.passed &&
+  browser.editor.passed &&
+  browser.motion.passed &&
+  browser.renderer.motionPixels.passed
+))
+  throw new Error('E_PROJECT_EVIDENCE');
+for (const [source, target] of [
+  ['correction.png', 'correction-ui.png'],
+  ['correction-extremes.png', 'correction-extremes.png'],
+  ['structure.png', 'structure-ui.png'],
+  ['structure-extremes.png', 'structure-extremes.png'],
+  ['report.json', 'development-run.json'],
+  ['input.png', 'input-ui.png'],
+  ['parts.png', 'parts-ui.png'],
+  ['parts-contact.png', 'parts-contact.png'],
+  ['parts-extremes.png', 'parts-extremes.png'],
+  ['workflow.png', 'review-ui.png'],
+  ['editor.png', 'editor-ui.png'],
+  ['motion.png', 'motion-ui.png'],
+  ['project.png', 'project-ui.png'],
+  ['studio.png', 'studio-ui.png'],
+])
+  copyFileSync(resolve(root, '.local/smoke/development', source), join(output, target));
+for (const [file, digest] of Object.entries(sources))
+  if (
+    createHash('sha256')
+      .update(readFileSync(resolve(root, file)))
+      .digest('hex') !== digest
+  )
+    throw new Error('E_SOURCE_CHANGED_DURING_VERIFICATION');
+writeFileSync(
+  join(output, 'verification.json'),
+  JSON.stringify(
+    {
+      passed: true,
+      created: new Date().toISOString(),
+      appVersion: '0.10.0',
+      node: process.versions.node,
+      nodeTestGroups: node,
+      pythonTestGroups: python,
+      totalTestGroups: node + python,
+      newCorrectionNodeGroups: 12,
+      newCorrectionPythonGroups: 5,
+      correctionUI: browser.corrections,
+      newStructureNodeGroups: 8,
+      newStructurePythonGroups: 7,
+      structureUI: browser.structure,
+      newStorageSessionGroups: 19,
+      typecheck: true,
+      ruff: true,
+      generatedValidatorMatches: true,
+      testBuild: true,
+      newMotionNodeGroups: 16,
+      newEditorNodeGroups: 12,
+      partsUI: browser.parts,
+      partsPixels: browser.renderer.partsPixels,
+      newPartsNodeGroups: 12,
+      newPartsPythonGroups: 3,
+      inputUI: browser.input,
+      newInputNodeGroups: 8,
+      newInputPythonGroups: 8,
+      motionUI: browser.motion,
+      motionPixels: browser.renderer.motionPixels,
+      browserUI: browser.editor,
+      projectLifecycle: browser.projects,
+      actualWindowsFiles: true,
+      actualProcessTerminationBeforeReplace: true,
+      actualRecoveryAfterKilledProcess: true,
+      faultInjection: [
+        'ENOSPC',
+        'EACCES',
+        'before-write',
+        'after-sync',
+        'after-verify',
+        'before-backup',
+        'after-backup',
+        'before-replace',
+        'after-replace',
+      ],
+      scope:
+        'Local per-feature correction, masks/order/occlusion/limits, protected full/partial reanalysis, selected review/apply and all previous regressions; no universal segmentation, unseen restoration, live tracking, broadcast, FPS or M0 approval.',
+      followup: ['T-268', 'T-271'],
+      sourceSha256: sources,
+    },
+    null,
+    2,
+  ) + '\n',
+);
+console.log(
+  `Selected corrections passed: ${node}+${python} groups and actual Electron editor/save/recovery UI.`,
+);

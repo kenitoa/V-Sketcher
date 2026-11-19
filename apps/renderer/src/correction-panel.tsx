@@ -1,28 +1,675 @@
-import React,{useEffect,useRef,useState} from 'react';
-import type {Project} from '../../../packages/project-model';
-import type {PreviewScene} from '../../../packages/scene-core';
-import type {SessionView,SessionCommand} from '../../../packages/project-session/contracts';
-import {FEATURE_KEYS,fromRegion,assertCorrection,type FeatureKey,type FeatureCorrection} from '../../../packages/single-image/correction-types';
-import {originalRegion} from '../../../packages/single-image/correction-geometry';
-import {AvatarRenderer} from '../../../packages/avatar-renderer';
-import {MotionPlayer} from '../../../packages/motion';
-const names:Record<FeatureKey,string>={eye_left:'왼쪽 눈',eye_right:'오른쪽 눈',mouth:'입'};
-function MotionResult({project,scene,selected}:{project:Project;scene:PreviewScene|null;selected:FeatureKey|'head_yaw'|'all'}){const canvas=useRef<HTMLCanvasElement>(null);const [play,setPlay]=useState(false);const [detail,setDetail]=useState(true);useEffect(()=>{if(!scene||!canvas.current)return;let disposed=false,frame=0;const player=new MotionPlayer();player.setProject(project);if(play){try{player.play(selected,true);}catch{player.play('head_yaw',true);}}const renderer=new AvatarRenderer(canvas.current,scene);void renderer.load(document.baseURI).then(()=>{if(disposed)return;const draw=(time:number)=>{renderer.draw(player.frame(time).parameters);frame=requestAnimationFrame(draw);};frame=requestAnimationFrame(draw);}).catch(()=>{});return()=>{disposed=true;cancelAnimationFrame(frame);renderer.dispose();};},[JSON.stringify(scene),selected,play]);return <div><div className="correction-motion-viewport"><canvas style={{transform:detail?'scale(2)':'none',transformOrigin:'50% 27%'}} width="400" height="440" ref={canvas} aria-label="보정 부위 움직임 미리보기"/></div><button onClick={()=>setDetail(v=>!v)}>{detail?'전체 모습 보기':'표정 부위 확대'}</button><button data-correction-play onClick={()=>setPlay(v=>!v)}>{play?'동작 중지 · 기본 모습':'선택 부위 움직임 시험'}</button></div>;}
-export function CorrectionPanel({view,command}:{view:SessionView;command:(c:SessionCommand)=>void}){
- const p=view.project!,record=p.structure!;const [key,setKey]=useState<FeatureKey>(()=>record.report.regions.find(v=>!v.observed)?.key??'eye_left');const region=record.report.regions.find(v=>v.key===key)!;const saved=record.corrections?.entries.find(v=>v.key===key);const [draft,setDraft]=useState<FeatureCorrection>(()=>structuredClone(saved??fromRegion(region)));const [zoom,setZoom]=useState(1);const [pan,setPan]=useState({x:0,y:0});const [tool,setTool]=useState('box');const [maskRect,setMaskRect]=useState(draft.rect);const [error,setError]=useState('');const [selected,setSelected]=useState<FeatureKey[]>([key]);const [overwrite,setOverwrite]=useState(false);const [test,setTest]=useState<FeatureKey|'head_yaw'|'all'>(key);const svg=useRef<SVGSVGElement>(null);const start=useRef<{x:number;y:number;rect:FeatureCorrection['rect']}|null>(null);const [drag,setDrag]=useState<FeatureCorrection['rect']|null>(null);
- useEffect(()=>{const r=record.report.regions.find(v=>v.key===key);if(r){setDraft(structuredClone(record.corrections?.entries.find(v=>v.key===key)??fromRegion(r)));setMaskRect({...r.rect});setSelected([key]);setError('');setPan({x:0,y:0});setTest(key);}},[key,p.projectId,p.revision]);
- const c=view.correction;const busy=!!c?.busy||!!view.structure?.busy||!!view.input?.busy;const dirty=JSON.stringify(draft)!==JSON.stringify(saved??fromRegion(region));const source=p.assets.find(a=>a.id===p.inputPreparation!.selectedAssetId)!;const href=`assets/session/${view.sessionId}/${source.fingerprint.sha256}.png`;const width=p.canvas.width,height=p.canvas.height;const vw=width/zoom,vh=height/zoom;const x=Math.max(0,Math.min(width-vw,draft.rect.x+draft.rect.width/2-vw/2+pan.x)),y=Math.max(0,Math.min(height-vh,draft.rect.y+draft.rect.height/2-vh/2+pan.y));const original=originalRegion(p,draft.rect);
- const send=(value:SessionCommand)=>{setError('');command(value);};const prepare=(value:FeatureCorrection)=>{try{assertCorrection(value,width,height);send({type:'correction-start',expectedRevision:p.revision,request:{kind:'edit',entries:[value]}});}catch{setError('영역은 그림 안에 있어야 하고 가로 8px·세로 5px 이상이어야 해요. 수치와 마스크를 확인해 주세요.');}};
- const addMask=(rect:FeatureCorrection['rect'])=>{if(draft.masks.length>=29){setError('마스크가 많아요. 불필요한 사각형을 지우고 다시 시도해 주세요.');return;}let next=structuredClone(draft);if(tool==='restore'&&(rect.x<next.rect.x||rect.y<next.rect.y||rect.x+rect.width>next.rect.x+next.rect.width||rect.y+rect.height>next.rect.y+next.rect.height)){const old={...next.rect},nx=Math.min(old.x,rect.x),ny=Math.min(old.y,rect.y);next.rect={x:nx,y:ny,width:Math.max(old.x+old.width,rect.x+rect.width)-nx,height:Math.max(old.y+old.height,rect.y+rect.height)-ny};next.masks=[{mode:'erase',rect:{...next.rect}},{mode:'restore',rect:old},...next.masks];}next.masks.push({mode:tool==='erase'?'erase':'restore',rect});setDraft(next);};
- const point=(event:React.PointerEvent<SVGSVGElement>)=>{const pt=event.currentTarget.createSVGPoint();pt.x=event.clientX;pt.y=event.clientY;const q=pt.matrixTransform(event.currentTarget.getScreenCTM()!.inverse());return {x:Math.max(0,Math.min(width,Math.round(q.x))),y:Math.max(0,Math.min(height,Math.round(q.y)))};};
- return <section className="correction-panel" data-correction-state={c?.state} aria-label="쉬운 부위 보정"><h3>모양 고치기 · 한 부위씩 확인</h3><p role="status">현재 {names[key]}: {!region.observed?'위치를 확인하지 못했어요. 보이는 부위를 직접 맞추거나 가림/건너뛰기를 선택하세요.':saved?'직접 확인한 보정이 있어요. 재분석에서 기본 보호됩니다.':'자동 후보입니다. 그림과 위치를 비교해 주세요.'}</p><div className="correction-categories">{FEATURE_KEYS.map(k=><button data-correction-feature={k} aria-pressed={key===k} key={k} disabled={busy} onClick={()=>setKey(k)}>{names[k]}{!record.report.regions.find(r=>r.key===k)?.observed?' · 확인 필요':''}</button>)}</div><p>좌우는 캐릭터 기준입니다. 캐릭터의 왼쪽 눈은 정면 그림의 오른쪽에 보여요.</p>
- <div className="correction-tools"><button data-correction-zoom-in onClick={()=>setZoom(v=>Math.min(8,v*2))}>확대 +</button><button data-correction-zoom-out onClick={()=>setZoom(v=>Math.max(1,v/2))}>축소 −</button><button data-correction-fit onClick={()=>{setZoom(1);setPan({x:0,y:0});}}>전체 원화</button><span>{zoom*100}%</span>{(['←','→','↑','↓'] as const).map((label,i)=><button key={label} aria-label={'보정 화면 '+label} onClick={()=>setPan(v=>({x:v.x+(i===0?-vw/5:i===1?vw/5:0),y:v.y+(i===2?-vh/5:i===3?vh/5:0)}))}>{label}</button>)}</div>
- <div className="correction-input-layout"><svg ref={svg} data-correction-canvas tabIndex={0} role="img" aria-label="원화의 보정 영역 · 방향키로 위치 이동" viewBox={`${x} ${y} ${vw} ${vh}`} onKeyDown={e=>{if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)&&!busy){e.preventDefault();const n=e.shiftKey?10:1;setDraft(d=>({...d,rect:{...d.rect,x:d.rect.x+(e.key==='ArrowLeft'?-n:e.key==='ArrowRight'?n:0),y:d.rect.y+(e.key==='ArrowUp'?-n:e.key==='ArrowDown'?n:0)}}));}}} onPointerDown={e=>{if(busy)return;const q=point(e);start.current={...q,rect:{...draft.rect}};try{e.currentTarget.setPointerCapture(e.pointerId);}catch{/* Synthetic checks have no active OS pointer. */}}} onPointerMove={e=>{if(!start.current)return;const q=point(e),a=start.current;setDrag(tool==='move'?{...a.rect,x:a.rect.x+q.x-a.x,y:a.rect.y+q.y-a.y}:{x:Math.min(a.x,q.x),y:Math.min(a.y,q.y),width:Math.abs(q.x-a.x),height:Math.abs(q.y-a.y)});}} onPointerCancel={()=>{start.current=null;setDrag(null);}} onPointerUp={e=>{const a=start.current;if(!a)return;const q=point(e),rect=tool==='move'?{...a.rect,x:a.rect.x+q.x-a.x,y:a.rect.y+q.y-a.y}:{x:Math.min(a.x,q.x),y:Math.min(a.y,q.y),width:Math.abs(q.x-a.x),height:Math.abs(q.y-a.y)};start.current=null;setDrag(null);if(rect.width<8||rect.height<5)return;if(tool==='box'||tool==='move')setDraft(d=>({...d,rect}));else{setMaskRect(rect);addMask(rect);}}}>
- <image href={href} width={width} height={height}/>{record.report.regions.filter(r=>r.key!==key).map(r=><rect key={r.key} {...r.rect} fill="none" stroke="#aa83bc" strokeWidth={vw/250}/>)}<rect {...draft.rect} fill="#f5cc7525" stroke="#ffcd70" strokeWidth={vw/180}/>{draft.masks.map((m,i)=><rect key={i} {...m.rect} fill={m.mode==='erase'?'#d6427260':'#329d9060'} stroke={m.mode==='erase'?'#ae254c':'#116e5a'} strokeWidth={vw/220}/>)}{drag&&<rect {...drag} fill="none" stroke="white" strokeWidth={vw/150}/>}</svg>
- <fieldset disabled={busy}><legend>{names[key]} · 원화 기준 범위</legend><label>드래그 동작<select data-correction-tool value={tool} onChange={e=>setTool(e.target.value)}><option value="box">위치·크기 다시 그리기</option><option value="move">현재 영역 이동</option><option value="erase">움직임 영역 빼기 · 가닥/가림 보호</option><option value="restore">움직임 영역 추가</option></select></label>{(['x','y','width','height'] as const).map((field,i)=><label key={field}>{['왼쪽 좌표','위쪽 좌표','가로 크기','세로 크기'][i]}<input data-correction-field={field} type="number" step="1" value={(tool==='erase'||tool==='restore'?maskRect:draft.rect)[field]} onChange={e=>{const n=Number(e.target.value);if(tool==='erase'||tool==='restore')setMaskRect(r=>({...r,[field]:n}));else setDraft(d=>({...d,rect:{...d.rect,[field]:n}}));}}/></label>)}{(tool==='erase'||tool==='restore')&&<button data-correction-add-mask onClick={()=>addMask(maskRect)}>이 사각형을 {tool==='erase'?'빼기':'추가'}</button>}<small>선택된 그림의 px 좌표입니다. 원본 파일 영역: {Object.values(original).map(v=>v.toFixed(1)).join(' / ')} (x / y / 가로 / 세로)</small>
- <p>움직임 영역 밖은 원화에 남습니다. 머리카락처럼 표정 앞에 남겨야 할 부분은 ‘빼기’로 보호하세요.</p><div>{draft.masks.map((m,i)=><div key={i}>{m.mode==='erase'?'제외':'추가'} {m.rect.x},{m.rect.y} {m.rect.width}×{m.rect.height}<button data-correction-remove-mask={i} onClick={()=>setDraft(d=>({...d,masks:d.masks.filter((_,n)=>n!==i)}))}>이 경계 수정 제거</button></div>)}</div><button onClick={()=>setDraft(d=>({...d,masks:[]}))}>경계 보정 초기화</button><label>표정 부위 앞뒤 순서<input data-correction-order type="number" min="5" max="20" value={draft.order} onChange={e=>setDraft(d=>({...d,order:Number(e.target.value)}))}/></label><small>큰 값이 앞으로 옵니다. 기본 원화 위의 눈·입 순서이며 머리카락 의미 분리 기능은 아닙니다.</small><label><input data-correction-visible type="checkbox" checked={draft.decision==='confirmed'&&!draft.occluded} onChange={e=>setDraft(d=>({...d,decision:e.target.checked?'confirmed':'blocked',occluded:!e.target.checked}))}/>이 부위가 원화에서 보여요 · 위치를 확인했어요</label><label><input data-correction-protect type="checkbox" checked={draft.protect} onChange={e=>setDraft(d=>({...d,protect:e.target.checked}))}/>이 보정을 재분석에서 보호</label><button data-correction-preview className="primary" onClick={()=>prepare(draft)}>이 부위 보정 미리보기</button><button data-correction-skip onClick={()=>{const value={...draft,decision:'skip' as const};setDraft(value);prepare(value);}}>이 부위는 건너뛰기 · 표정 정지</button><button data-correction-block onClick={()=>{const value={...draft,decision:'blocked' as const,occluded:true};setDraft(value);prepare(value);}}>가림으로 차단 · 표정 정지</button><button data-correction-revert-draft onClick={()=>{setDraft(structuredClone(saved??fromRegion(region)));setError('');}}>이번 입력 취소 · 적용된 보정으로</button><button data-correction-reset onClick={()=>send({type:'correction-start',expectedRevision:p.revision,request:{kind:'reset',keys:[key]}})}>이 부위 자동 결과로 복원 · 비교</button><button data-correction-reset-all onClick={()=>send({type:'correction-start',expectedRevision:p.revision,request:{kind:'reset',keys:[...FEATURE_KEYS]}})}>전체 보정 취소 · 자동 결과 비교</button></fieldset></div>{dirty&&<p role="status">아직 준비/적용하지 않은 입력입니다. 다른 부위를 선택하면 적용 전 입력은 버립니다.</p>}
- <fieldset disabled={busy}><legend>재분석할 부위와 적용 선택</legend>{FEATURE_KEYS.map(k=><label key={k}><input data-correction-key={k} type="checkbox" checked={selected.includes(k)} onChange={e=>setSelected(s=>e.target.checked?[...s,k]:s.filter(v=>v!==k))}/>{names[k]}</label>)}<label><input data-correction-overwrite type="checkbox" checked={overwrite} onChange={e=>setOverwrite(e.target.checked)}/>선택 부위의 보호된 보정도 덮어쓰는 후보 준비</label><button data-correction-reanalyse disabled={!selected.length} onClick={()=>send({type:'correction-start',expectedRevision:p.revision,request:{kind:'reanalyse',keys:selected,overwrite:overwrite?selected:[]}})}>선택 부위 재분석 · 비교</button><button data-correction-reanalyse-all onClick={()=>send({type:'correction-start',expectedRevision:p.revision,request:{kind:'reanalyse',keys:[...FEATURE_KEYS],overwrite:overwrite?[...FEATURE_KEYS]:[]}})}>전체 재분석 · 보정 보호</button><p>얼굴 추론은 전체 선택 그림에서 수행하고 표정 자산은 지정 부위만 다시 만듭니다. 현재 입력을 먼저 미리보기/적용하면 보정 보호에 포함됩니다.</p></fieldset>
- {busy&&<p role="status">{c?.state==='applying'?'선택 결과와 공통 바탕을 안전하게 적용 중입니다.':'선택 영역의 새 결과 준비 중 · 기존 작업은 유지합니다.'}</p>}{c?.busy&&c.state!=='applying'&&<button data-correction-cancel onClick={()=>send({type:'correction-cancel'})}>보정 준비 취소</button>}{error&&<p role="alert">{error}</p>}{c?.errorCode&&<p role="alert">{c.errorCode==='E_CORRECTION_OVERLAP'?'눈·입 영역이 겹칩니다. 위치·범위를 줄여 다시 준비해 주세요.':c.errorCode==='E_INPUT_TIMEOUT'?'준비 시간이 길어 작업을 멈췄어요. 다른 작업이 끝난 뒤 다시 준비해 주세요.':c.errorCode==='E_INPUT_STALE'?'준비 중 최신 편집이 바뀌었어요. 현재 내용에서 다시 준비하세요.':'보정 준비를 마치지 못했어요. 영역과 가림을 확인하고 다시 시도해 주세요.'} 원본과 적용된 정상 결과는 유지합니다.</p>}{c?.canRetry&&<button data-correction-retry disabled={busy} onClick={()=>send({type:'correction-retry',expectedRevision:p.revision})}>같은 요청 다시 준비</button>}
- {c?.project&&c.scene&&<><h4>현재 결과 / 새 후보 비교</h4><label>시험 동작<select data-correction-test value={test} onChange={e=>setTest(e.target.value as typeof test)}>{[...FEATURE_KEYS,'head_yaw','all'].map(v=><option value={v} key={v}>{v==='head_yaw'?'제한 고개':v==='all'?'전체 기본 동작':names[v as FeatureKey]}</option>)}</select></label><div className="correction-compare"><div><h5>현재 적용 결과</h5><MotionResult project={p} scene={view.scene} selected={test}/></div><div><h5>새 후보 · 아직 적용 전</h5><MotionResult project={c.project} scene={c.scene} selected={test}/></div></div><ul>{c.changes.map(v=><li key={v.key}>{names[v.key]}: {v.action==='keep-protected'?'수동 보정 유지 · 보호':v.action==='recheck'?'새 자동 후보로 재검사':'선택 보정/복원 후보로 교체'}</li>)}</ul><p>위 체크박스에서 적용할 부위를 선택하세요. 공통 바탕은 함께 갱신하고 선택하지 않은 새 후보는 폐기합니다. 적용 전 복구본을 남깁니다.</p><button data-correction-apply className="primary" disabled={busy||!c.canApply||!selected.some(k=>c.keys.includes(k))} onClick={()=>send({type:'correction-apply',expectedRevision:p.revision,keys:selected.filter(k=>c.keys.includes(k))})}>체크한 새 결과만 적용</button><button data-correction-discard disabled={busy} onClick={()=>send({type:'correction-cancel'})}>새 결과 폐기 · 현재 보정 유지</button></>}
- </section>;
+import React, { useEffect, useRef, useState } from 'react';
+import type { Project } from '../../../packages/project-model';
+import type { PreviewScene } from '../../../packages/scene-core';
+import type { SessionView, SessionCommand } from '../../../packages/project-session/contracts';
+import {
+  FEATURE_KEYS,
+  fromRegion,
+  assertCorrection,
+  type FeatureKey,
+  type FeatureCorrection,
+} from '../../../packages/single-image/correction-types';
+import { originalRegion } from '../../../packages/single-image/correction-geometry';
+import { AvatarRenderer } from '../../../packages/avatar-renderer';
+import { MotionPlayer } from '../../../packages/motion';
+const names: Record<FeatureKey, string> = {
+  eye_left: '왼쪽 눈',
+  eye_right: '오른쪽 눈',
+  mouth: '입',
+};
+function MotionResult({
+  project,
+  scene,
+  selected,
+}: {
+  project: Project;
+  scene: PreviewScene | null;
+  selected: FeatureKey | 'head_yaw' | 'all';
+}) {
+  const canvas = useRef<HTMLCanvasElement>(null);
+  const [play, setPlay] = useState(false);
+  const [detail, setDetail] = useState(true);
+  useEffect(() => {
+    if (!scene || !canvas.current) return;
+    let disposed = false,
+      frame = 0;
+    const player = new MotionPlayer();
+    player.setProject(project);
+    if (play) {
+      try {
+        player.play(selected, true);
+      } catch {
+        player.play('head_yaw', true);
+      }
+    }
+    const renderer = new AvatarRenderer(canvas.current, scene);
+    void renderer
+      .load(document.baseURI)
+      .then(() => {
+        if (disposed) return;
+        const draw = (time: number) => {
+          renderer.draw(player.frame(time).parameters);
+          frame = requestAnimationFrame(draw);
+        };
+        frame = requestAnimationFrame(draw);
+      })
+      .catch(() => {});
+    return () => {
+      disposed = true;
+      cancelAnimationFrame(frame);
+      renderer.dispose();
+    };
+  }, [JSON.stringify(scene), selected, play]);
+  return (
+    <div>
+      <div className="correction-motion-viewport">
+        <canvas
+          style={{ transform: detail ? 'scale(2)' : 'none', transformOrigin: '50% 27%' }}
+          width="400"
+          height="440"
+          ref={canvas}
+          aria-label="보정 부위 움직임 미리보기"
+        />
+      </div>
+      <button onClick={() => setDetail((v) => !v)}>
+        {detail ? '전체 모습 보기' : '표정 부위 확대'}
+      </button>
+      <button data-correction-play onClick={() => setPlay((v) => !v)}>
+        {play ? '동작 중지 · 기본 모습' : '선택 부위 움직임 시험'}
+      </button>
+    </div>
+  );
+}
+export function CorrectionPanel({
+  view,
+  command,
+}: {
+  view: SessionView;
+  command: (c: SessionCommand) => void;
+}) {
+  const p = view.project!,
+    record = p.structure!;
+  const [key, setKey] = useState<FeatureKey>(
+    () => record.report.regions.find((v) => !v.observed)?.key ?? 'eye_left',
+  );
+  const region = record.report.regions.find((v) => v.key === key)!;
+  const saved = record.corrections?.entries.find((v) => v.key === key);
+  const [draft, setDraft] = useState<FeatureCorrection>(() =>
+    structuredClone(saved ?? fromRegion(region)),
+  );
+  const [zoom, setZoom] = useState(1);
+  const [pan, setPan] = useState({ x: 0, y: 0 });
+  const [tool, setTool] = useState('box');
+  const [maskRect, setMaskRect] = useState(draft.rect);
+  const [error, setError] = useState('');
+  const [selected, setSelected] = useState<FeatureKey[]>([key]);
+  const [overwrite, setOverwrite] = useState(false);
+  const [test, setTest] = useState<FeatureKey | 'head_yaw' | 'all'>(key);
+  const svg = useRef<SVGSVGElement>(null);
+  const start = useRef<{ x: number; y: number; rect: FeatureCorrection['rect'] } | null>(null);
+  const [drag, setDrag] = useState<FeatureCorrection['rect'] | null>(null);
+  useEffect(() => {
+    const r = record.report.regions.find((v) => v.key === key);
+    if (r) {
+      setDraft(
+        structuredClone(record.corrections?.entries.find((v) => v.key === key) ?? fromRegion(r)),
+      );
+      setMaskRect({ ...r.rect });
+      setSelected([key]);
+      setError('');
+      setPan({ x: 0, y: 0 });
+      setTest(key);
+    }
+  }, [key, p.projectId, p.revision]);
+  const c = view.correction;
+  const busy = !!c?.busy || !!view.structure?.busy || !!view.input?.busy;
+  const dirty = JSON.stringify(draft) !== JSON.stringify(saved ?? fromRegion(region));
+  const source = p.assets.find((a) => a.id === p.inputPreparation!.selectedAssetId)!;
+  const href = `assets/session/${view.sessionId}/${source.fingerprint.sha256}.png`;
+  const width = p.canvas.width,
+    height = p.canvas.height;
+  const vw = width / zoom,
+    vh = height / zoom;
+  const x = Math.max(0, Math.min(width - vw, draft.rect.x + draft.rect.width / 2 - vw / 2 + pan.x)),
+    y = Math.max(0, Math.min(height - vh, draft.rect.y + draft.rect.height / 2 - vh / 2 + pan.y));
+  const original = originalRegion(p, draft.rect);
+  const send = (value: SessionCommand) => {
+    setError('');
+    command(value);
+  };
+  const prepare = (value: FeatureCorrection) => {
+    try {
+      assertCorrection(value, width, height);
+      send({
+        type: 'correction-start',
+        expectedRevision: p.revision,
+        request: { kind: 'edit', entries: [value] },
+      });
+    } catch {
+      setError(
+        '영역은 그림 안에 있어야 하고 가로 8px·세로 5px 이상이어야 해요. 수치와 마스크를 확인해 주세요.',
+      );
+    }
+  };
+  const addMask = (rect: FeatureCorrection['rect']) => {
+    if (draft.masks.length >= 29) {
+      setError('마스크가 많아요. 불필요한 사각형을 지우고 다시 시도해 주세요.');
+      return;
+    }
+    let next = structuredClone(draft);
+    if (
+      tool === 'restore' &&
+      (rect.x < next.rect.x ||
+        rect.y < next.rect.y ||
+        rect.x + rect.width > next.rect.x + next.rect.width ||
+        rect.y + rect.height > next.rect.y + next.rect.height)
+    ) {
+      const old = { ...next.rect },
+        nx = Math.min(old.x, rect.x),
+        ny = Math.min(old.y, rect.y);
+      next.rect = {
+        x: nx,
+        y: ny,
+        width: Math.max(old.x + old.width, rect.x + rect.width) - nx,
+        height: Math.max(old.y + old.height, rect.y + rect.height) - ny,
+      };
+      next.masks = [
+        { mode: 'erase', rect: { ...next.rect } },
+        { mode: 'restore', rect: old },
+        ...next.masks,
+      ];
+    }
+    next.masks.push({ mode: tool === 'erase' ? 'erase' : 'restore', rect });
+    setDraft(next);
+  };
+  const point = (event: React.PointerEvent<SVGSVGElement>) => {
+    const pt = event.currentTarget.createSVGPoint();
+    pt.x = event.clientX;
+    pt.y = event.clientY;
+    const q = pt.matrixTransform(event.currentTarget.getScreenCTM()!.inverse());
+    return {
+      x: Math.max(0, Math.min(width, Math.round(q.x))),
+      y: Math.max(0, Math.min(height, Math.round(q.y))),
+    };
+  };
+  return (
+    <section
+      className="correction-panel"
+      data-correction-state={c?.state}
+      aria-label="쉬운 부위 보정"
+    >
+      <h3>모양 고치기 · 한 부위씩 확인</h3>
+      <p role="status">
+        현재 {names[key]}:{' '}
+        {!region.observed
+          ? '위치를 확인하지 못했어요. 보이는 부위를 직접 맞추거나 가림/건너뛰기를 선택하세요.'
+          : saved
+            ? '직접 확인한 보정이 있어요. 재분석에서 기본 보호됩니다.'
+            : '자동 후보입니다. 그림과 위치를 비교해 주세요.'}
+      </p>
+      <div className="correction-categories">
+        {FEATURE_KEYS.map((k) => (
+          <button
+            data-correction-feature={k}
+            aria-pressed={key === k}
+            key={k}
+            disabled={busy}
+            onClick={() => setKey(k)}
+          >
+            {names[k]}
+            {!record.report.regions.find((r) => r.key === k)?.observed ? ' · 확인 필요' : ''}
+          </button>
+        ))}
+      </div>
+      <p>좌우는 캐릭터 기준입니다. 캐릭터의 왼쪽 눈은 정면 그림의 오른쪽에 보여요.</p>
+      <div className="correction-tools">
+        <button data-correction-zoom-in onClick={() => setZoom((v) => Math.min(8, v * 2))}>
+          확대 +
+        </button>
+        <button data-correction-zoom-out onClick={() => setZoom((v) => Math.max(1, v / 2))}>
+          축소 −
+        </button>
+        <button
+          data-correction-fit
+          onClick={() => {
+            setZoom(1);
+            setPan({ x: 0, y: 0 });
+          }}
+        >
+          전체 원화
+        </button>
+        <span>{zoom * 100}%</span>
+        {(['←', '→', '↑', '↓'] as const).map((label, i) => (
+          <button
+            key={label}
+            aria-label={'보정 화면 ' + label}
+            onClick={() =>
+              setPan((v) => ({
+                x: v.x + (i === 0 ? -vw / 5 : i === 1 ? vw / 5 : 0),
+                y: v.y + (i === 2 ? -vh / 5 : i === 3 ? vh / 5 : 0),
+              }))
+            }
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+      <div className="correction-input-layout">
+        <svg
+          ref={svg}
+          data-correction-canvas
+          tabIndex={0}
+          role="img"
+          aria-label="원화의 보정 영역 · 방향키로 위치 이동"
+          viewBox={`${x} ${y} ${vw} ${vh}`}
+          onKeyDown={(e) => {
+            if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key) && !busy) {
+              e.preventDefault();
+              const n = e.shiftKey ? 10 : 1;
+              setDraft((d) => ({
+                ...d,
+                rect: {
+                  ...d.rect,
+                  x: d.rect.x + (e.key === 'ArrowLeft' ? -n : e.key === 'ArrowRight' ? n : 0),
+                  y: d.rect.y + (e.key === 'ArrowUp' ? -n : e.key === 'ArrowDown' ? n : 0),
+                },
+              }));
+            }
+          }}
+          onPointerDown={(e) => {
+            if (busy) return;
+            const q = point(e);
+            start.current = { ...q, rect: { ...draft.rect } };
+            try {
+              e.currentTarget.setPointerCapture(e.pointerId);
+            } catch {
+              /* Synthetic checks have no active OS pointer. */
+            }
+          }}
+          onPointerMove={(e) => {
+            if (!start.current) return;
+            const q = point(e),
+              a = start.current;
+            setDrag(
+              tool === 'move'
+                ? { ...a.rect, x: a.rect.x + q.x - a.x, y: a.rect.y + q.y - a.y }
+                : {
+                    x: Math.min(a.x, q.x),
+                    y: Math.min(a.y, q.y),
+                    width: Math.abs(q.x - a.x),
+                    height: Math.abs(q.y - a.y),
+                  },
+            );
+          }}
+          onPointerCancel={() => {
+            start.current = null;
+            setDrag(null);
+          }}
+          onPointerUp={(e) => {
+            const a = start.current;
+            if (!a) return;
+            const q = point(e),
+              rect =
+                tool === 'move'
+                  ? { ...a.rect, x: a.rect.x + q.x - a.x, y: a.rect.y + q.y - a.y }
+                  : {
+                      x: Math.min(a.x, q.x),
+                      y: Math.min(a.y, q.y),
+                      width: Math.abs(q.x - a.x),
+                      height: Math.abs(q.y - a.y),
+                    };
+            start.current = null;
+            setDrag(null);
+            if (rect.width < 8 || rect.height < 5) return;
+            if (tool === 'box' || tool === 'move') setDraft((d) => ({ ...d, rect }));
+            else {
+              setMaskRect(rect);
+              addMask(rect);
+            }
+          }}
+        >
+          <image href={href} width={width} height={height} />
+          {record.report.regions
+            .filter((r) => r.key !== key)
+            .map((r) => (
+              <rect key={r.key} {...r.rect} fill="none" stroke="#aa83bc" strokeWidth={vw / 250} />
+            ))}
+          <rect {...draft.rect} fill="#f5cc7525" stroke="#ffcd70" strokeWidth={vw / 180} />
+          {draft.masks.map((m, i) => (
+            <rect
+              key={i}
+              {...m.rect}
+              fill={m.mode === 'erase' ? '#d6427260' : '#329d9060'}
+              stroke={m.mode === 'erase' ? '#ae254c' : '#116e5a'}
+              strokeWidth={vw / 220}
+            />
+          ))}
+          {drag && <rect {...drag} fill="none" stroke="white" strokeWidth={vw / 150} />}
+        </svg>
+        <fieldset disabled={busy}>
+          <legend>{names[key]} · 원화 기준 범위</legend>
+          <label>
+            드래그 동작
+            <select data-correction-tool value={tool} onChange={(e) => setTool(e.target.value)}>
+              <option value="box">위치·크기 다시 그리기</option>
+              <option value="move">현재 영역 이동</option>
+              <option value="erase">움직임 영역 빼기 · 가닥/가림 보호</option>
+              <option value="restore">움직임 영역 추가</option>
+            </select>
+          </label>
+          {(['x', 'y', 'width', 'height'] as const).map((field, i) => (
+            <label key={field}>
+              {['왼쪽 좌표', '위쪽 좌표', '가로 크기', '세로 크기'][i]}
+              <input
+                data-correction-field={field}
+                type="number"
+                step="1"
+                value={(tool === 'erase' || tool === 'restore' ? maskRect : draft.rect)[field]}
+                onChange={(e) => {
+                  const n = Number(e.target.value);
+                  if (tool === 'erase' || tool === 'restore')
+                    setMaskRect((r) => ({ ...r, [field]: n }));
+                  else setDraft((d) => ({ ...d, rect: { ...d.rect, [field]: n } }));
+                }}
+              />
+            </label>
+          ))}
+          {(tool === 'erase' || tool === 'restore') && (
+            <button data-correction-add-mask onClick={() => addMask(maskRect)}>
+              이 사각형을 {tool === 'erase' ? '빼기' : '추가'}
+            </button>
+          )}
+          <small>
+            선택된 그림의 px 좌표입니다. 원본 파일 영역:{' '}
+            {Object.values(original)
+              .map((v) => v.toFixed(1))
+              .join(' / ')}{' '}
+            (x / y / 가로 / 세로)
+          </small>
+          <p>
+            움직임 영역 밖은 원화에 남습니다. 머리카락처럼 표정 앞에 남겨야 할 부분은 ‘빼기’로
+            보호하세요.
+          </p>
+          <div>
+            {draft.masks.map((m, i) => (
+              <div key={i}>
+                {m.mode === 'erase' ? '제외' : '추가'} {m.rect.x},{m.rect.y} {m.rect.width}×
+                {m.rect.height}
+                <button
+                  data-correction-remove-mask={i}
+                  onClick={() =>
+                    setDraft((d) => ({ ...d, masks: d.masks.filter((_, n) => n !== i) }))
+                  }
+                >
+                  이 경계 수정 제거
+                </button>
+              </div>
+            ))}
+          </div>
+          <button onClick={() => setDraft((d) => ({ ...d, masks: [] }))}>경계 보정 초기화</button>
+          <label>
+            표정 부위 앞뒤 순서
+            <input
+              data-correction-order
+              type="number"
+              min="5"
+              max="20"
+              value={draft.order}
+              onChange={(e) => setDraft((d) => ({ ...d, order: Number(e.target.value) }))}
+            />
+          </label>
+          <small>
+            큰 값이 앞으로 옵니다. 기본 원화 위의 눈·입 순서이며 머리카락 의미 분리 기능은 아닙니다.
+          </small>
+          <label>
+            <input
+              data-correction-visible
+              type="checkbox"
+              checked={draft.decision === 'confirmed' && !draft.occluded}
+              onChange={(e) =>
+                setDraft((d) => ({
+                  ...d,
+                  decision: e.target.checked ? 'confirmed' : 'blocked',
+                  occluded: !e.target.checked,
+                }))
+              }
+            />
+            이 부위가 원화에서 보여요 · 위치를 확인했어요
+          </label>
+          <label>
+            <input
+              data-correction-protect
+              type="checkbox"
+              checked={draft.protect}
+              onChange={(e) => setDraft((d) => ({ ...d, protect: e.target.checked }))}
+            />
+            이 보정을 재분석에서 보호
+          </label>
+          <button data-correction-preview className="primary" onClick={() => prepare(draft)}>
+            이 부위 보정 미리보기
+          </button>
+          <button
+            data-correction-skip
+            onClick={() => {
+              const value = { ...draft, decision: 'skip' as const };
+              setDraft(value);
+              prepare(value);
+            }}
+          >
+            이 부위는 건너뛰기 · 표정 정지
+          </button>
+          <button
+            data-correction-block
+            onClick={() => {
+              const value = { ...draft, decision: 'blocked' as const, occluded: true };
+              setDraft(value);
+              prepare(value);
+            }}
+          >
+            가림으로 차단 · 표정 정지
+          </button>
+          <button
+            data-correction-revert-draft
+            onClick={() => {
+              setDraft(structuredClone(saved ?? fromRegion(region)));
+              setError('');
+            }}
+          >
+            이번 입력 취소 · 적용된 보정으로
+          </button>
+          <button
+            data-correction-reset
+            onClick={() =>
+              send({
+                type: 'correction-start',
+                expectedRevision: p.revision,
+                request: { kind: 'reset', keys: [key] },
+              })
+            }
+          >
+            이 부위 자동 결과로 복원 · 비교
+          </button>
+          <button
+            data-correction-reset-all
+            onClick={() =>
+              send({
+                type: 'correction-start',
+                expectedRevision: p.revision,
+                request: { kind: 'reset', keys: [...FEATURE_KEYS] },
+              })
+            }
+          >
+            전체 보정 취소 · 자동 결과 비교
+          </button>
+        </fieldset>
+      </div>
+      {dirty && (
+        <p role="status">
+          아직 준비/적용하지 않은 입력입니다. 다른 부위를 선택하면 적용 전 입력은 버립니다.
+        </p>
+      )}
+      <fieldset disabled={busy}>
+        <legend>재분석할 부위와 적용 선택</legend>
+        {FEATURE_KEYS.map((k) => (
+          <label key={k}>
+            <input
+              data-correction-key={k}
+              type="checkbox"
+              checked={selected.includes(k)}
+              onChange={(e) =>
+                setSelected((s) => (e.target.checked ? [...s, k] : s.filter((v) => v !== k)))
+              }
+            />
+            {names[k]}
+          </label>
+        ))}
+        <label>
+          <input
+            data-correction-overwrite
+            type="checkbox"
+            checked={overwrite}
+            onChange={(e) => setOverwrite(e.target.checked)}
+          />
+          선택 부위의 보호된 보정도 덮어쓰는 후보 준비
+        </label>
+        <button
+          data-correction-reanalyse
+          disabled={!selected.length}
+          onClick={() =>
+            send({
+              type: 'correction-start',
+              expectedRevision: p.revision,
+              request: { kind: 'reanalyse', keys: selected, overwrite: overwrite ? selected : [] },
+            })
+          }
+        >
+          선택 부위 재분석 · 비교
+        </button>
+        <button
+          data-correction-reanalyse-all
+          onClick={() =>
+            send({
+              type: 'correction-start',
+              expectedRevision: p.revision,
+              request: {
+                kind: 'reanalyse',
+                keys: [...FEATURE_KEYS],
+                overwrite: overwrite ? [...FEATURE_KEYS] : [],
+              },
+            })
+          }
+        >
+          전체 재분석 · 보정 보호
+        </button>
+        <p>
+          얼굴 추론은 전체 선택 그림에서 수행하고 표정 자산은 지정 부위만 다시 만듭니다. 현재 입력을
+          먼저 미리보기/적용하면 보정 보호에 포함됩니다.
+        </p>
+      </fieldset>
+      {busy && (
+        <p role="status">
+          {c?.state === 'applying'
+            ? '선택 결과와 공통 바탕을 안전하게 적용 중입니다.'
+            : '선택 영역의 새 결과 준비 중 · 기존 작업은 유지합니다.'}
+        </p>
+      )}
+      {c?.busy && c.state !== 'applying' && (
+        <button data-correction-cancel onClick={() => send({ type: 'correction-cancel' })}>
+          보정 준비 취소
+        </button>
+      )}
+      {error && <p role="alert">{error}</p>}
+      {c?.errorCode && (
+        <p role="alert">
+          {c.errorCode === 'E_CORRECTION_OVERLAP'
+            ? '눈·입 영역이 겹칩니다. 위치·범위를 줄여 다시 준비해 주세요.'
+            : c.errorCode === 'E_INPUT_TIMEOUT'
+              ? '준비 시간이 길어 작업을 멈췄어요. 다른 작업이 끝난 뒤 다시 준비해 주세요.'
+              : c.errorCode === 'E_INPUT_STALE'
+                ? '준비 중 최신 편집이 바뀌었어요. 현재 내용에서 다시 준비하세요.'
+                : '보정 준비를 마치지 못했어요. 영역과 가림을 확인하고 다시 시도해 주세요.'}{' '}
+          원본과 적용된 정상 결과는 유지합니다.
+        </p>
+      )}
+      {c?.canRetry && (
+        <button
+          data-correction-retry
+          disabled={busy}
+          onClick={() => send({ type: 'correction-retry', expectedRevision: p.revision })}
+        >
+          같은 요청 다시 준비
+        </button>
+      )}
+      {c?.project && c.scene && (
+        <>
+          <h4>현재 결과 / 새 후보 비교</h4>
+          <label>
+            시험 동작
+            <select
+              data-correction-test
+              value={test}
+              onChange={(e) => setTest(e.target.value as typeof test)}
+            >
+              {[...FEATURE_KEYS, 'head_yaw', 'all'].map((v) => (
+                <option value={v} key={v}>
+                  {v === 'head_yaw'
+                    ? '제한 고개'
+                    : v === 'all'
+                      ? '전체 기본 동작'
+                      : names[v as FeatureKey]}
+                </option>
+              ))}
+            </select>
+          </label>
+          <div className="correction-compare">
+            <div>
+              <h5>현재 적용 결과</h5>
+              <MotionResult project={p} scene={view.scene} selected={test} />
+            </div>
+            <div>
+              <h5>새 후보 · 아직 적용 전</h5>
+              <MotionResult project={c.project} scene={c.scene} selected={test} />
+            </div>
+          </div>
+          <ul>
+            {c.changes.map((v) => (
+              <li key={v.key}>
+                {names[v.key]}:{' '}
+                {v.action === 'keep-protected'
+                  ? '수동 보정 유지 · 보호'
+                  : v.action === 'recheck'
+                    ? '새 자동 후보로 재검사'
+                    : '선택 보정/복원 후보로 교체'}
+              </li>
+            ))}
+          </ul>
+          <p>
+            위 체크박스에서 적용할 부위를 선택하세요. 공통 바탕은 함께 갱신하고 선택하지 않은 새
+            후보는 폐기합니다. 적용 전 복구본을 남깁니다.
+          </p>
+          <button
+            data-correction-apply
+            className="primary"
+            disabled={busy || !c.canApply || !selected.some((k) => c.keys.includes(k))}
+            onClick={() =>
+              send({
+                type: 'correction-apply',
+                expectedRevision: p.revision,
+                keys: selected.filter((k) => c.keys.includes(k)),
+              })
+            }
+          >
+            체크한 새 결과만 적용
+          </button>
+          <button
+            data-correction-discard
+            disabled={busy}
+            onClick={() => send({ type: 'correction-cancel' })}
+          >
+            새 결과 폐기 · 현재 보정 유지
+          </button>
+        </>
+      )}
+    </section>
+  );
 }

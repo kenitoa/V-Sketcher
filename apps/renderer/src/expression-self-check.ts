@@ -1,35 +1,420 @@
-import {clickCommittedControl} from './ui-check-control';
-import type {SessionView,SessionCommand,SessionReply} from '../../../packages/project-session/contracts';
-import type {MotionPlayer} from '../../../packages/motion';
-import {ExpressionController,referenceIssue} from '../../../packages/expression-control';
-import {previewParameters} from '../../../packages/project-model/preview';
-import {AvatarRenderer} from '../../../packages/avatar-renderer';
-export async function checkExpressionUI(host:{current:()=>SessionView|null;command:(c:SessionCommand)=>Promise<SessionReply>;settled:()=>Promise<unknown>;player:MotionPlayer}){
- let stage='initial';const pause=()=>new Promise<void>(r=>requestAnimationFrame(()=>requestAnimationFrame(()=>r())));const verify=(v:unknown,code:string)=>{if(!v)throw new Error(code);};
- const until=async(fn:()=>unknown)=>{const end=Date.now()+300000;while(!fn()){if(Date.now()>end){window.editorFailureState={expressionStage:stage,errorCode:host.current()?.errorCode,active:host.player.controls.snapshot().activeId,owners:[...host.player.controls.snapshot().owners],ready:window.previewProbe?.().ready};throw new Error('E_EXPRESSION_UI_TIMEOUT');}await new Promise(r=>setTimeout(r,25));}await pause();};
- const click=async(selector:string)=>{stage=selector;await clickCommittedControl(selector,host.current);await host.settled();await pause();};
- const field=async(selector:string,value:string|number)=>{stage=selector;await pause();const el=document.querySelector<HTMLInputElement|HTMLSelectElement>(selector);verify(el,'E_EXPRESSION_UI_FIELD');Object.getOwnPropertyDescriptor(el instanceof HTMLSelectElement?HTMLSelectElement.prototype:HTMLInputElement.prototype,'value')!.set!.call(el,String(value));el!.dispatchEvent(new Event(el instanceof HTMLSelectElement?'change':'input',{bubbles:true}));await pause();};
- const current=()=>host.current()!.project!,report:Record<string,unknown>[]=[];const contact=document.createElement('canvas');contact.width=1280;contact.height=1440;const ctx=contact.getContext('2d')!;
- for(const [index,route]of (['parts','single-image','split-image']as const).entries()){
-  stage='prepare-'+route;await host.command({type:'new',name:'표정 제작 검증 · '+route,sourceType:route});await pause();await click('[data-step="prepare"]');
-  if(route==='parts')await host.command({type:'parts-start',expectedRevision:current().revision});
-  else if(route==='single-image'){await host.command({type:'import-image'});await until(()=>!host.current()!.input!.busy);const d=host.current()!.input!.draft!;await host.command({type:'input-apply',draftId:d.id,selection:{rect:{x:0,y:0,...d.probe.size},masks:[],occluded:false,backgroundTolerance:null}});await until(()=>!host.current()!.input!.busy);await host.command({type:'structure-start',expectedRevision:current().revision,completion:'estimated'});await until(()=>!host.current()!.structure!.busy);await host.command({type:'structure-apply',expectedRevision:current().revision});const region=current().structure!.report.regions.find(v=>v.key==='mouth')!;await host.command({type:'correction-start',expectedRevision:current().revision,request:{kind:'edit',entries:[{key:region.key,rect:region.rect,masks:[],order:11,decision:'confirmed',occluded:false,protect:true}]}});await until(()=>!host.current()!.correction!.busy);verify(host.current()!.correction!.canApply,'E_EXPRESSION_UI_CORRECTION');await host.command({type:'correction-apply',expectedRevision:current().revision,keys:['mouth']});verify(!host.current()!.errorCode,'E_EXPRESSION_UI_CORRECTION_APPLY');}
-  else{await click('[data-split-load="example"]');await until(()=>!host.current()!.split!.busy&&document.querySelector('[data-split-prepare]'));await click('[data-split-prepare]');await until(()=>!host.current()!.split!.busy);await click('[data-split-apply]');await click('[data-split-close]');}
-  verify(!host.current()!.errorCode&&current().parts.length,'E_EXPRESSION_UI_ROUTE');await click('[data-step="appearance"]');const id=current().parts.find(v=>v.role==='head'||v.role==='base')!.id,projectId=current().projectId,hashes=current().inputAssetIds.map(id=>current().assets.find(a=>a.id===id)!.fingerprint.sha256);await click(`[data-part-id="${id}"]`);await field('[data-part-name]','표정 검증 캐릭터 · '+route);document.querySelector<HTMLInputElement>('[data-part-name]')!.dispatchEvent(new FocusEvent('focusout',{bubbles:true}));await host.settled();await pause();
-  // Common correction/mesh path keeps the route's project/appearance in place.
-  await click('[data-detail-open]');await until(()=>document.querySelector('[data-detail-editor]'));const mesh=current().motion!.meshes.find(m=>m.partId===id)!;await field('[data-detail-field="pivot-0"]',mesh.pivot[0]+1);await click('[data-detail-mesh-preview]');verify(host.current()!.detail!.canApply,'E_EXPRESSION_UI_DETAIL');await click('[data-detail-apply]');await until(()=>!host.current()!.detail!.busy);await click('[data-detail-close]');verify(current().projectId===projectId&&current().detail,'E_EXPRESSION_UI_COMMON');
-  await click('[data-step="motion"]');await until(()=>window.previewProbe?.().ready);await click('[data-motion-point="head_yaw-2"]');await until(()=>host.player.snapshot().parameters.head_yaw>0);await click('[data-motion-stop]');
-  await click('[data-expression-open]');await until(()=>document.querySelector('[data-expression-form]'));verify(document.getElementById('root')!.inert,'E_EXPRESSION_UI_MODAL');await click('[data-expression-new]');await field('[data-expression-name]','눈 고정 · '+route);await click('[data-expression-preset="closed"]');await field('[data-expression-transition]',0);await field('[data-expression-release-ms]',200);await click('[data-expression-save]');verify(!host.current()!.errorCode,'E_EXPRESSION_UI_SAVE');const expression=current().expressions.at(-1)!,expressionId=expression.id;verify(expression.values.length===2&&expression.values.every(v=>v.locked&&v.partIds?.length),'E_EXPRESSION_UI_SCOPE');await click(`[data-expression-select="${expressionId}"]`);
-  await click('[data-expression-feed="camera"]');await click('[data-expression-feed="microphone"]');const frozen=JSON.stringify(current());await click(`[data-expression-play="${expressionId}"]`);await until(()=>host.player.controls.snapshot().activeId===expressionId&&host.player.snapshot().parameters.eye_left===0);verify(host.player.controls.snapshot().owners.get(current().parameters.find(p=>p.previewKey==='mouth')!.id)==='camera'&&host.player.snapshot().parameters.head_yaw!==0,'E_EXPRESSION_UI_OWNERSHIP');await new Promise(r=>setTimeout(r,350));verify(JSON.stringify(current())===frozen,'E_EXPRESSION_UI_NOISE_SAVED');await click('[data-expression-release]');await until(()=>!host.player.controls.snapshot().transitioning&&host.player.controls.snapshot().activeId===null);verify(Math.abs(host.player.snapshot().parameters.eye_left-.7)<.001,'E_EXPRESSION_UI_LATEST_RELEASE');
-  await click('[data-expression-policy] summary');await field('[data-expression-mouth]','microphone');await host.settled();await until(()=>host.player.controls.snapshot().owners.get(current().parameters.find(p=>p.previewKey==='mouth')!.id)==='microphone');await field('[data-expression-slot="1"]',expressionId);await host.settled();
-  // Modal and text/IME protection; real app-local event after returning to main edit.
-  const shortcut=(target:EventTarget,composing=false)=>target.dispatchEvent(new KeyboardEvent('keydown',{bubbles:true,code:'Digit1',key:'1',ctrlKey:true,altKey:true,shiftKey:true,isComposing:composing}));shortcut(document);await pause();verify(host.player.controls.snapshot().activeId===null,'E_EXPRESSION_UI_MODAL_KEYS');await click('[data-expression-close]');shortcut(document.querySelector('[data-motion-strength]')!);await pause();verify(host.player.controls.snapshot().activeId===null,'E_EXPRESSION_UI_TEXT_KEYS');shortcut(document,true);await pause();verify(host.player.controls.snapshot().activeId===null,'E_EXPRESSION_UI_IME_KEYS');shortcut(document);await until(()=>host.player.controls.snapshot().activeId===expressionId);document.dispatchEvent(new KeyboardEvent('keydown',{bubbles:true,code:'Digit0',key:'0',ctrlKey:true,altKey:true,shiftKey:true}));await until(()=>host.player.controls.snapshot().activeId===null&&!host.player.controls.snapshot().transitioning);
-  await click('[data-expression-open]');await click(`[data-expression-select="${expressionId}"]`);await click('[data-expression-duplicate]');verify(!host.current()!.errorCode&&current().expressions.at(-1)!.id!==expressionId,'E_EXPRESSION_UI_DUPLICATE');const copy=current().expressions.at(-1)!.id;await click(`[data-expression-select="${copy}"]`);await click('[data-expression-delete]');verify(!current().expressions.some(e=>e.id===copy),'E_EXPRESSION_UI_DELETE');await click('[data-expression-feed="camera"]');await click('[data-expression-feed="microphone"]');await click('[data-expression-close]');
-  // Delete a reviewed eye through the actual detail transaction, then repair only that damaged row.
-  const victim=expression.values[0]!.partIds![0]!;await click(`[data-part-id="${victim}"]`);await click('[data-detail-open]');await click('[data-detail-delete]');await click('[data-detail-apply]');await until(()=>!host.current()!.detail!.busy);await click('[data-detail-close]');await click('[data-expression-open]');await click(`[data-expression-select="${expressionId}"]`);verify(referenceIssue(current(),current().expressions.find(e=>e.id===expressionId)!.values[0]!)!==null&&document.querySelector('[data-expression-remove]'),'E_EXPRESSION_UI_DAMAGE');await click(`[data-expression-play="${expressionId}"]`);await until(()=>host.player.controls.snapshot().issues.length>0);await click(`[data-expression-remove="${expression.values[0]!.parameterId}"]`);verify(current().expressions.find(e=>e.id===expressionId)!.values.length===1,'E_EXPRESSION_UI_REPAIR');await click('[data-expression-close]');await host.command({type:'undo'});await host.command({type:'undo'});await pause();verify(current().parts.some(v=>v.id===victim)&&current().expressions.find(e=>e.id===expressionId)!.values.length===2,'E_EXPRESSION_UI_REPAIR_UNDO');
-  // Fixed-clock GPU evidence uses the same controller and actual route artwork, never a fake pose-only image.
-  const p=current(),c=new ExpressionController();c.setProject(p);const canvas=document.createElement('canvas');canvas.width=320;canvas.height=480;const render=new AvatarRenderer(canvas,host.current()!.scene!);await render.load(document.baseURI);const frames:Uint8Array[]=[];let glClean=true;for(const [col,time]of [0,1,2,3].map((i)=>[i,i*500]as const)){if(col===1)c.activate(expressionId,time);if(col===2)c.input('camera',new Map(p.parameters.map(v=>[v.id,v.previewKey==='mouth'?.4:v.previewKey?.startsWith('eye')?.7:v.neutral])),time,0);if(col===3)c.release(time);render.draw(previewParameters(p,c.frame(time+200).values));render.gl.finish();const bytes=new Uint8Array(320*480*4);render.gl.readPixels(0,0,320,480,render.gl.RGBA,render.gl.UNSIGNED_BYTE,bytes);frames.push(bytes);ctx.drawImage(canvas,col*320,index*480);ctx.fillStyle='#fff';ctx.fillText(route+' '+['neutral','expression','live+lock','release'][col],col*320+6,index*480+16);glClean&&=render.report().glError===0;}render.dispose();let changed=0;for(let i=0;i<frames[0]!.length;i++)if(Math.abs(frames[0]![i]!-frames[1]![i]!)>3)changed++;verify(changed>20&&glClean,'E_EXPRESSION_UI_GPU');
-  const saved=JSON.stringify({expressions:p.expressions,settings:p.expressionSettings,motion:p.motion,detail:p.detail}),originalId=p.projectId;await host.command({type:'save'});verify(!host.current()!.errorCode&&!host.current()!.dirty,'E_EXPRESSION_UI_FILE_SAVE');await host.command({type:'duplicate'});verify(current().projectId!==originalId,'E_EXPRESSION_UI_PROJECT_COPY');await host.command({type:'recent',id:host.current()!.recent[0]!.id});verify(JSON.stringify({expressions:current().expressions,settings:current().expressionSettings,motion:current().motion,detail:current().detail})===saved,'E_EXPRESSION_UI_REOPEN');verify(JSON.stringify(current().inputAssetIds.map(id=>current().assets.find(a=>a.id===id)!.fingerprint.sha256))===JSON.stringify(hashes),'E_EXPRESSION_UI_SOURCE');await click('[data-step="motion"]');await until(()=>window.previewProbe?.().ready);await click('[data-expression-open]');await click(`[data-expression-select="${expressionId}"]`);await click(`[data-expression-play="${expressionId}"]`);await until(()=>host.player.controls.snapshot().activeId===expressionId);report.push({route,passed:true,actualRoutePreparation:true,appearanceAndCorrection:true,commonMotion:true,createScopeLocks:true,noNoiseSaved:true,latestInputRelease:true,exclusiveMouthPolicy:true,appLocalShortcutAndGuards:true,duplicateDelete:true,damageRepairAndUndo:true,saveDuplicateReopen:true,originalHashesPreserved:true,pixels:{passed:true,frames:4,changedChannels:changed,glClean}});if(index<2)await click('[data-expression-close]');
- }
- window.expressionExtremeData=contact.toDataURL('image/png');await until(()=>document.querySelector('[data-expression-preview="ready"]'));document.querySelector('.expression-dialog')!.scrollTop=0;await pause();return {passed:true,routes:report,devicesOpened:false,m2CreationExitApproved:true,m3Ready:true,m0:'HOLD',scope:'Three actual local creation routes, appearance/correction/motion/expression/save; synthetic mapped inputs only. No live device, broadcast, global keys, independent ART/export or M0 approval.'};
+import { clickCommittedControl } from './ui-check-control';
+import type {
+  SessionView,
+  SessionCommand,
+  SessionReply,
+} from '../../../packages/project-session/contracts';
+import type { MotionPlayer } from '../../../packages/motion';
+import { ExpressionController, referenceIssue } from '../../../packages/expression-control';
+import { previewParameters } from '../../../packages/project-model/preview';
+import { AvatarRenderer } from '../../../packages/avatar-renderer';
+export async function checkExpressionUI(host: {
+  current: () => SessionView | null;
+  command: (c: SessionCommand) => Promise<SessionReply>;
+  settled: () => Promise<unknown>;
+  player: MotionPlayer;
+}) {
+  let stage = 'initial';
+  const pause = () =>
+    new Promise<void>((r) => requestAnimationFrame(() => requestAnimationFrame(() => r())));
+  const verify = (v: unknown, code: string) => {
+    if (!v) throw new Error(code);
+  };
+  const until = async (fn: () => unknown) => {
+    const end = Date.now() + 300000;
+    while (!fn()) {
+      if (Date.now() > end) {
+        window.editorFailureState = {
+          expressionStage: stage,
+          errorCode: host.current()?.errorCode,
+          active: host.player.controls.snapshot().activeId,
+          owners: [...host.player.controls.snapshot().owners],
+          ready: window.previewProbe?.().ready,
+        };
+        throw new Error('E_EXPRESSION_UI_TIMEOUT');
+      }
+      await new Promise((r) => setTimeout(r, 25));
+    }
+    await pause();
+  };
+  const click = async (selector: string) => {
+    stage = selector;
+    await clickCommittedControl(selector, host.current);
+    await host.settled();
+    await pause();
+  };
+  const field = async (selector: string, value: string | number) => {
+    stage = selector;
+    await pause();
+    const el = document.querySelector<HTMLInputElement | HTMLSelectElement>(selector);
+    verify(el, 'E_EXPRESSION_UI_FIELD');
+    Object.getOwnPropertyDescriptor(
+      el instanceof HTMLSelectElement ? HTMLSelectElement.prototype : HTMLInputElement.prototype,
+      'value',
+    )!.set!.call(el, String(value));
+    el!.dispatchEvent(
+      new Event(el instanceof HTMLSelectElement ? 'change' : 'input', { bubbles: true }),
+    );
+    await pause();
+  };
+  const current = () => host.current()!.project!,
+    report: Record<string, unknown>[] = [];
+  const contact = document.createElement('canvas');
+  contact.width = 1280;
+  contact.height = 1440;
+  const ctx = contact.getContext('2d')!;
+  for (const [index, route] of (['parts', 'single-image', 'split-image'] as const).entries()) {
+    stage = 'prepare-' + route;
+    await host.command({ type: 'new', name: '표정 제작 검증 · ' + route, sourceType: route });
+    await pause();
+    await click('[data-step="prepare"]');
+    if (route === 'parts')
+      await host.command({ type: 'parts-start', expectedRevision: current().revision });
+    else if (route === 'single-image') {
+      await host.command({ type: 'import-image' });
+      await until(() => !host.current()!.input!.busy);
+      const d = host.current()!.input!.draft!;
+      await host.command({
+        type: 'input-apply',
+        draftId: d.id,
+        selection: {
+          rect: { x: 0, y: 0, ...d.probe.size },
+          masks: [],
+          occluded: false,
+          backgroundTolerance: null,
+        },
+      });
+      await until(() => !host.current()!.input!.busy);
+      await host.command({
+        type: 'structure-start',
+        expectedRevision: current().revision,
+        completion: 'estimated',
+      });
+      await until(() => !host.current()!.structure!.busy);
+      await host.command({ type: 'structure-apply', expectedRevision: current().revision });
+      const region = current().structure!.report.regions.find((v) => v.key === 'mouth')!;
+      await host.command({
+        type: 'correction-start',
+        expectedRevision: current().revision,
+        request: {
+          kind: 'edit',
+          entries: [
+            {
+              key: region.key,
+              rect: region.rect,
+              masks: [],
+              order: 11,
+              decision: 'confirmed',
+              occluded: false,
+              protect: true,
+            },
+          ],
+        },
+      });
+      await until(() => !host.current()!.correction!.busy);
+      verify(host.current()!.correction!.canApply, 'E_EXPRESSION_UI_CORRECTION');
+      await host.command({
+        type: 'correction-apply',
+        expectedRevision: current().revision,
+        keys: ['mouth'],
+      });
+      verify(!host.current()!.errorCode, 'E_EXPRESSION_UI_CORRECTION_APPLY');
+    } else {
+      await click('[data-split-load="example"]');
+      await until(
+        () => !host.current()!.split!.busy && document.querySelector('[data-split-prepare]'),
+      );
+      await click('[data-split-prepare]');
+      await until(() => !host.current()!.split!.busy);
+      await click('[data-split-apply]');
+      await click('[data-split-close]');
+    }
+    verify(!host.current()!.errorCode && current().parts.length, 'E_EXPRESSION_UI_ROUTE');
+    await click('[data-step="appearance"]');
+    const id = current().parts.find((v) => v.role === 'head' || v.role === 'base')!.id,
+      projectId = current().projectId,
+      hashes = current().inputAssetIds.map(
+        (id) => current().assets.find((a) => a.id === id)!.fingerprint.sha256,
+      );
+    await click(`[data-part-id="${id}"]`);
+    await field('[data-part-name]', '표정 검증 캐릭터 · ' + route);
+    document
+      .querySelector<HTMLInputElement>('[data-part-name]')!
+      .dispatchEvent(new FocusEvent('focusout', { bubbles: true }));
+    await host.settled();
+    await pause();
+    // Common correction/mesh path keeps the route's project/appearance in place.
+    await click('[data-detail-open]');
+    await until(() => document.querySelector('[data-detail-editor]'));
+    const mesh = current().motion!.meshes.find((m) => m.partId === id)!;
+    await field('[data-detail-field="pivot-0"]', mesh.pivot[0] + 1);
+    await click('[data-detail-mesh-preview]');
+    verify(host.current()!.detail!.canApply, 'E_EXPRESSION_UI_DETAIL');
+    await click('[data-detail-apply]');
+    await until(() => !host.current()!.detail!.busy);
+    await click('[data-detail-close]');
+    verify(current().projectId === projectId && current().detail, 'E_EXPRESSION_UI_COMMON');
+    await click('[data-step="motion"]');
+    await until(() => window.previewProbe?.().ready);
+    await click('[data-motion-point="head_yaw-2"]');
+    await until(() => host.player.snapshot().parameters.head_yaw > 0);
+    await click('[data-motion-stop]');
+    await click('[data-expression-open]');
+    await until(() => document.querySelector('[data-expression-form]'));
+    verify(document.getElementById('root')!.inert, 'E_EXPRESSION_UI_MODAL');
+    await click('[data-expression-new]');
+    await field('[data-expression-name]', '눈 고정 · ' + route);
+    await click('[data-expression-preset="closed"]');
+    await field('[data-expression-transition]', 0);
+    await field('[data-expression-release-ms]', 200);
+    await click('[data-expression-save]');
+    verify(!host.current()!.errorCode, 'E_EXPRESSION_UI_SAVE');
+    const expression = current().expressions.at(-1)!,
+      expressionId = expression.id;
+    verify(
+      expression.values.length === 2 &&
+        expression.values.every((v) => v.locked && v.partIds?.length),
+      'E_EXPRESSION_UI_SCOPE',
+    );
+    await click(`[data-expression-select="${expressionId}"]`);
+    await click('[data-expression-feed="camera"]');
+    await click('[data-expression-feed="microphone"]');
+    const frozen = JSON.stringify(current());
+    await click(`[data-expression-play="${expressionId}"]`);
+    await until(
+      () =>
+        host.player.controls.snapshot().activeId === expressionId &&
+        host.player.snapshot().parameters.eye_left === 0,
+    );
+    verify(
+      host.player.controls
+        .snapshot()
+        .owners.get(current().parameters.find((p) => p.previewKey === 'mouth')!.id) === 'camera' &&
+        host.player.snapshot().parameters.head_yaw !== 0,
+      'E_EXPRESSION_UI_OWNERSHIP',
+    );
+    await new Promise((r) => setTimeout(r, 350));
+    verify(JSON.stringify(current()) === frozen, 'E_EXPRESSION_UI_NOISE_SAVED');
+    await click('[data-expression-release]');
+    await until(
+      () =>
+        !host.player.controls.snapshot().transitioning &&
+        host.player.controls.snapshot().activeId === null,
+    );
+    verify(
+      Math.abs(host.player.snapshot().parameters.eye_left - 0.7) < 0.001,
+      'E_EXPRESSION_UI_LATEST_RELEASE',
+    );
+    await click('[data-expression-policy] summary');
+    await field('[data-expression-mouth]', 'microphone');
+    await host.settled();
+    await until(
+      () =>
+        host.player.controls
+          .snapshot()
+          .owners.get(current().parameters.find((p) => p.previewKey === 'mouth')!.id) ===
+        'microphone',
+    );
+    await field('[data-expression-slot="1"]', expressionId);
+    await host.settled();
+    // Modal and text/IME protection; real app-local event after returning to main edit.
+    const shortcut = (target: EventTarget, composing = false) =>
+      target.dispatchEvent(
+        new KeyboardEvent('keydown', {
+          bubbles: true,
+          code: 'Digit1',
+          key: '1',
+          ctrlKey: true,
+          altKey: true,
+          shiftKey: true,
+          isComposing: composing,
+        }),
+      );
+    shortcut(document);
+    await pause();
+    verify(host.player.controls.snapshot().activeId === null, 'E_EXPRESSION_UI_MODAL_KEYS');
+    await click('[data-expression-close]');
+    shortcut(document.querySelector('[data-motion-strength]')!);
+    await pause();
+    verify(host.player.controls.snapshot().activeId === null, 'E_EXPRESSION_UI_TEXT_KEYS');
+    shortcut(document, true);
+    await pause();
+    verify(host.player.controls.snapshot().activeId === null, 'E_EXPRESSION_UI_IME_KEYS');
+    shortcut(document);
+    await until(() => host.player.controls.snapshot().activeId === expressionId);
+    document.dispatchEvent(
+      new KeyboardEvent('keydown', {
+        bubbles: true,
+        code: 'Digit0',
+        key: '0',
+        ctrlKey: true,
+        altKey: true,
+        shiftKey: true,
+      }),
+    );
+    await until(
+      () =>
+        host.player.controls.snapshot().activeId === null &&
+        !host.player.controls.snapshot().transitioning,
+    );
+    await click('[data-expression-open]');
+    await click(`[data-expression-select="${expressionId}"]`);
+    await click('[data-expression-duplicate]');
+    verify(
+      !host.current()!.errorCode && current().expressions.at(-1)!.id !== expressionId,
+      'E_EXPRESSION_UI_DUPLICATE',
+    );
+    const copy = current().expressions.at(-1)!.id;
+    await click(`[data-expression-select="${copy}"]`);
+    await click('[data-expression-delete]');
+    verify(!current().expressions.some((e) => e.id === copy), 'E_EXPRESSION_UI_DELETE');
+    await click('[data-expression-feed="camera"]');
+    await click('[data-expression-feed="microphone"]');
+    await click('[data-expression-close]');
+    // Delete a reviewed eye through the actual detail transaction, then repair only that damaged row.
+    const victim = expression.values[0]!.partIds![0]!;
+    await click(`[data-part-id="${victim}"]`);
+    await click('[data-detail-open]');
+    await click('[data-detail-delete]');
+    await click('[data-detail-apply]');
+    await until(() => !host.current()!.detail!.busy);
+    await click('[data-detail-close]');
+    await click('[data-expression-open]');
+    await click(`[data-expression-select="${expressionId}"]`);
+    verify(
+      referenceIssue(
+        current(),
+        current().expressions.find((e) => e.id === expressionId)!.values[0]!,
+      ) !== null && document.querySelector('[data-expression-remove]'),
+      'E_EXPRESSION_UI_DAMAGE',
+    );
+    await click(`[data-expression-play="${expressionId}"]`);
+    await until(() => host.player.controls.snapshot().issues.length > 0);
+    await click(`[data-expression-remove="${expression.values[0]!.parameterId}"]`);
+    verify(
+      current().expressions.find((e) => e.id === expressionId)!.values.length === 1,
+      'E_EXPRESSION_UI_REPAIR',
+    );
+    await click('[data-expression-close]');
+    await host.command({ type: 'undo' });
+    await host.command({ type: 'undo' });
+    await pause();
+    verify(
+      current().parts.some((v) => v.id === victim) &&
+        current().expressions.find((e) => e.id === expressionId)!.values.length === 2,
+      'E_EXPRESSION_UI_REPAIR_UNDO',
+    );
+    // Fixed-clock GPU evidence uses the same controller and actual route artwork, never a fake pose-only image.
+    const p = current(),
+      c = new ExpressionController();
+    c.setProject(p);
+    const canvas = document.createElement('canvas');
+    canvas.width = 320;
+    canvas.height = 480;
+    const render = new AvatarRenderer(canvas, host.current()!.scene!);
+    await render.load(document.baseURI);
+    const frames: Uint8Array[] = [];
+    let glClean = true;
+    for (const [col, time] of [0, 1, 2, 3].map((i) => [i, i * 500] as const)) {
+      if (col === 1) c.activate(expressionId, time);
+      if (col === 2)
+        c.input(
+          'camera',
+          new Map(
+            p.parameters.map((v) => [
+              v.id,
+              v.previewKey === 'mouth' ? 0.4 : v.previewKey?.startsWith('eye') ? 0.7 : v.neutral,
+            ]),
+          ),
+          time,
+          0,
+        );
+      if (col === 3) c.release(time);
+      render.draw(previewParameters(p, c.frame(time + 200).values));
+      render.gl.finish();
+      const bytes = new Uint8Array(320 * 480 * 4);
+      render.gl.readPixels(0, 0, 320, 480, render.gl.RGBA, render.gl.UNSIGNED_BYTE, bytes);
+      frames.push(bytes);
+      ctx.drawImage(canvas, col * 320, index * 480);
+      ctx.fillStyle = '#fff';
+      ctx.fillText(
+        route + ' ' + ['neutral', 'expression', 'live+lock', 'release'][col],
+        col * 320 + 6,
+        index * 480 + 16,
+      );
+      glClean &&= render.report().glError === 0;
+    }
+    render.dispose();
+    let changed = 0;
+    for (let i = 0; i < frames[0]!.length; i++)
+      if (Math.abs(frames[0]![i]! - frames[1]![i]!) > 3) changed++;
+    verify(changed > 20 && glClean, 'E_EXPRESSION_UI_GPU');
+    const saved = JSON.stringify({
+        expressions: p.expressions,
+        settings: p.expressionSettings,
+        motion: p.motion,
+        detail: p.detail,
+      }),
+      originalId = p.projectId;
+    await host.command({ type: 'save' });
+    verify(!host.current()!.errorCode && !host.current()!.dirty, 'E_EXPRESSION_UI_FILE_SAVE');
+    await host.command({ type: 'duplicate' });
+    verify(current().projectId !== originalId, 'E_EXPRESSION_UI_PROJECT_COPY');
+    await host.command({ type: 'recent', id: host.current()!.recent[0]!.id });
+    verify(
+      JSON.stringify({
+        expressions: current().expressions,
+        settings: current().expressionSettings,
+        motion: current().motion,
+        detail: current().detail,
+      }) === saved,
+      'E_EXPRESSION_UI_REOPEN',
+    );
+    verify(
+      JSON.stringify(
+        current().inputAssetIds.map(
+          (id) => current().assets.find((a) => a.id === id)!.fingerprint.sha256,
+        ),
+      ) === JSON.stringify(hashes),
+      'E_EXPRESSION_UI_SOURCE',
+    );
+    await click('[data-step="motion"]');
+    await until(() => window.previewProbe?.().ready);
+    await click('[data-expression-open]');
+    await click(`[data-expression-select="${expressionId}"]`);
+    await click(`[data-expression-play="${expressionId}"]`);
+    await until(() => host.player.controls.snapshot().activeId === expressionId);
+    report.push({
+      route,
+      passed: true,
+      actualRoutePreparation: true,
+      appearanceAndCorrection: true,
+      commonMotion: true,
+      createScopeLocks: true,
+      noNoiseSaved: true,
+      latestInputRelease: true,
+      exclusiveMouthPolicy: true,
+      appLocalShortcutAndGuards: true,
+      duplicateDelete: true,
+      damageRepairAndUndo: true,
+      saveDuplicateReopen: true,
+      originalHashesPreserved: true,
+      pixels: { passed: true, frames: 4, changedChannels: changed, glClean },
+    });
+    if (index < 2) await click('[data-expression-close]');
+  }
+  window.expressionExtremeData = contact.toDataURL('image/png');
+  await until(() => document.querySelector('[data-expression-preview="ready"]'));
+  document.querySelector('.expression-dialog')!.scrollTop = 0;
+  await pause();
+  return {
+    passed: true,
+    routes: report,
+    devicesOpened: false,
+    m2CreationExitApproved: true,
+    m3Ready: true,
+    m0: 'HOLD',
+    scope:
+      'Three actual local creation routes, appearance/correction/motion/expression/save; synthetic mapped inputs only. No live device, broadcast, global keys, independent ART/export or M0 approval.',
+  };
 }

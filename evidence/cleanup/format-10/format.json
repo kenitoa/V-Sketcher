@@ -1,0 +1,28 @@
+{
+  "files": [
+    {
+      "file": "scripts/cache-archive.py",
+      "status": "unchanged",
+      "beforeSha256": "b13d3bfbd7d5378697ef99ed1260163e1df11ebb2ac43051dbaedde9998b9da1",
+      "afterSha256": "b13d3bfbd7d5378697ef99ed1260163e1df11ebb2ac43051dbaedde9998b9da1",
+      "astBefore": "cf6025ecd88172ebfc8ddb5fcd43796f4cbd32830c2a0e7cc354c42889b4218d",
+      "astAfter": "cf6025ecd88172ebfc8ddb5fcd43796f4cbd32830c2a0e7cc354c42889b4218d"
+    },
+    {
+      "file": "tests/worker/test_cache_archive.py",
+      "status": "formatted",
+      "beforeSha256": "f4529cf2bb6c65300e4d642d58ead9773d9a87666ff4917b29a96b336c7acab4",
+      "afterSha256": "4e884957b0154453e199bbb097d10935500702c1b6b7cc789dedaea2ee75ff5d",
+      "astBefore": "82ff1d33f0f65f2c0a0aec7bc84911c1e941ba3f632d7460a03f196695f6a450",
+      "astAfter": "82ff1d33f0f65f2c0a0aec7bc84911c1e941ba3f632d7460a03f196695f6a450"
+    }
+  ],
+  "baseReport": "evidence/cleanup/format-09/format.json",
+  "unchangedSinceBase": 383,
+  "configurationMustMatchBase": true,
+  "formatted": 1,
+  "astDifferencesRetained": 0,
+  "parserLimitsRetained": 0,
+  "historicalFilesModified": false,
+  "dependenciesOrGeneratedCodeFormatted": false
+}

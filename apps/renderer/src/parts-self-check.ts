@@ -1,26 +1,352 @@
-import {clickCommittedControl} from './ui-check-control';
-import {AvatarRenderer} from '../../../packages/avatar-renderer';
-import {NEUTRAL,type PreviewScene,type Parameters} from '../../../packages/scene-core';
-import {layerCorners} from '../../../packages/editor-view';
-import type {SessionCommand,SessionReply,SessionView} from '../../../packages/project-session/contracts';
-export async function checkPartsPixels(scenes:PreviewScene[]):Promise<Record<string,unknown>>{
-  if(scenes.length!==64)throw new Error('E_PARTS_SCENES');const canvas=document.createElement('canvas');canvas.width=256;canvas.height=320;const contact=document.createElement('canvas');contact.width=2048;contact.height=2720;const ctx=contact.getContext('2d')!;ctx.fillStyle='#302737';ctx.fillRect(0,0,contact.width,contact.height);const hashes=new Set<string>();const extremes=document.createElement('canvas');extremes.width=1536;extremes.height=1360;const ex=extremes.getContext('2d')!;ex.fillStyle='#302737';ex.fillRect(0,0,1536,1360);let maximumCornerAlpha=0;let extremePreviewFrames=0;let goldPixels=0,goldChanged=0,outfitChanged=0;let frames=0;let colorChanged=0,colorOutside=0,colorAlpha=0;let middleStates=false;let buffersStable=true;let glClean=true;
-  const inputs:Parameters[]=[{...NEUTRAL}];for(const key of Object.keys(NEUTRAL) as (keyof Parameters)[])for(const value of [key.startsWith('head')?-1:0,1])inputs.push({...NEUTRAL,[key]:value});for(const head_yaw of [-1,0,1])for(const head_roll of [-1,0,1])inputs.push({...NEUTRAL,head_yaw,head_roll});inputs.push({...NEUTRAL},{...NEUTRAL,eye_left:0,eye_right:0},{...NEUTRAL,mouth:.5});
-  for(let i=0;i<64;i++){
-    const scene=scenes[i]!;const r=new AvatarRenderer(canvas,scene);try{await r.load(document.baseURI);const before=r.report();const uploads=before.staticBufferUploads;r.draw();const neutral=r.report();const corner=new Uint8Array(4);for(const [x,y] of [[0,0],[255,0],[0,319],[255,319]]){r.gl.readPixels(x!,y!,1,1,r.gl.RGBA,r.gl.UNSIGNED_BYTE,corner);maximumCornerAlpha=Math.max(maximumCornerAlpha,corner[3]!);}hashes.add(String(neutral.pixelHash));ctx.drawImage(canvas,(i%8)*256,Math.floor(i/8)*340);ctx.fillStyle='#f5e8fb';ctx.font='13px sans-serif';ctx.fillText(String(i+1).padStart(2,'0')+' · '+i.toString(2).padStart(6,'0'),(i%8)*256+10,Math.floor(i/8)*340+335);
-      for(const input of inputs){r.draw(input);r.gl.finish();if(r.gl.getError())glClean=false;frames++;}buffersStable&&=r.report().staticBufferUploads===uploads;
-      if(i===0||i===63){const tests=[{...NEUTRAL},{...NEUTRAL,eye_left:0},{...NEUTRAL,eye_right:0},{...NEUTRAL,eye_left:.5,eye_right:.5},{...NEUTRAL,mouth:.5},{...NEUTRAL,mouth:1},{...NEUTRAL,head_yaw:-1},{...NEUTRAL,head_yaw:1},{...NEUTRAL,head_roll:-1},{...NEUTRAL,head_roll:1},{...NEUTRAL,head_yaw:-1,head_roll:-1,mouth:1},{...NEUTRAL,head_yaw:1,head_roll:1,eye_left:0,eye_right:0}];for(let j=0;j<tests.length;j++){r.draw(tests[j]);r.gl.finish();const n=(i===0?0:12)+j;ex.drawImage(canvas,(n%6)*256,Math.floor(n/6)*340);ex.fillStyle='#f5e8fb';ex.font='13px sans-serif';ex.fillText((i===0?'A':'B')+' ? '+['neutral','left blink','right blink','half eyes','smile','open mouth','yaw min','yaw max','roll min','roll max','combined min','combined max'][j],(n%6)*256+8,Math.floor(n/6)*340+335);extremePreviewFrames++;}}
-      if(i===0){const hash=(input:Partial<Parameters>)=>{r.draw(input);return r.report().pixelHash;};middleStates=hash({eye_left:.5})!==hash({eye_left:0})&&hash({eye_left:.5})!==hash({eye_left:1})&&hash({mouth:.5})!==hash({mouth:0})&&hash({mouth:.5})!==hash({mouth:1});
-        const pixels=():Uint8Array=>{r.draw();r.gl.finish();const p=new Uint8Array(256*320*4);r.gl.readPixels(0,0,256,320,r.gl.RGBA,r.gl.UNSIGNED_BYTE,p);return p;};const a=pixels();const eye=scene.layers.find(v=>v.bind==='eye_left')!;eye.color!.hueDegrees=12;const b=pixels();const points=layerCorners(eye);const x0=Math.min(...points.map(p=>p.x))*256/scene.canvas[0],x1=Math.max(...points.map(p=>p.x))*256/scene.canvas[0],y0=Math.min(...points.map(p=>p.y))*320/scene.canvas[1],y1=Math.max(...points.map(p=>p.y))*320/scene.canvas[1];for(let y=0;y<320;y++)for(let x=0;x<256;x++){const at=(y*256+x)*4;if(a[at+3]!==b[at+3])colorAlpha++;if([0,1,2].some(c=>Math.abs(a[at+c]!-b[at+c]!)>3)){colorChanged++;if(x<x0-2||x>x1+2||319-y<y0-2||319-y>y1+2)colorOutside++;}}eye.color!.hueDegrees=0;const coat=scene.layers.find(v=>v.id===scene.layers.find(v=>v.z===20)!.id)!;const plain=pixels();coat.color!.hueDegrees=12;const shifted=pixels();for(let y=0;y<320;y++)for(let x=0;x<256;x++){const at=(y*256+x)*4;const changed=[0,1,2].some(c=>Math.abs(plain[at+c]!-shifted[at+c]!)>3);if(changed)outfitChanged++;const rr=plain[at]!,g=plain[at+1]!,b=plain[at+2]!;if(319-y>160&&plain[at+3]!>240&&rr>g*1.15&&g>b*1.2&&b>15){goldPixels++;if(changed)goldChanged++;}}coat.color!.hueDegrees=0;
+import { clickCommittedControl } from './ui-check-control';
+import { AvatarRenderer } from '../../../packages/avatar-renderer';
+import { NEUTRAL, type PreviewScene, type Parameters } from '../../../packages/scene-core';
+import { layerCorners } from '../../../packages/editor-view';
+import type {
+  SessionCommand,
+  SessionReply,
+  SessionView,
+} from '../../../packages/project-session/contracts';
+export async function checkPartsPixels(scenes: PreviewScene[]): Promise<Record<string, unknown>> {
+  if (scenes.length !== 64) throw new Error('E_PARTS_SCENES');
+  const canvas = document.createElement('canvas');
+  canvas.width = 256;
+  canvas.height = 320;
+  const contact = document.createElement('canvas');
+  contact.width = 2048;
+  contact.height = 2720;
+  const ctx = contact.getContext('2d')!;
+  ctx.fillStyle = '#302737';
+  ctx.fillRect(0, 0, contact.width, contact.height);
+  const hashes = new Set<string>();
+  const extremes = document.createElement('canvas');
+  extremes.width = 1536;
+  extremes.height = 1360;
+  const ex = extremes.getContext('2d')!;
+  ex.fillStyle = '#302737';
+  ex.fillRect(0, 0, 1536, 1360);
+  let maximumCornerAlpha = 0;
+  let extremePreviewFrames = 0;
+  let goldPixels = 0,
+    goldChanged = 0,
+    outfitChanged = 0;
+  let frames = 0;
+  let colorChanged = 0,
+    colorOutside = 0,
+    colorAlpha = 0;
+  let middleStates = false;
+  let buffersStable = true;
+  let glClean = true;
+  const inputs: Parameters[] = [{ ...NEUTRAL }];
+  for (const key of Object.keys(NEUTRAL) as (keyof Parameters)[])
+    for (const value of [key.startsWith('head') ? -1 : 0, 1])
+      inputs.push({ ...NEUTRAL, [key]: value });
+  for (const head_yaw of [-1, 0, 1])
+    for (const head_roll of [-1, 0, 1]) inputs.push({ ...NEUTRAL, head_yaw, head_roll });
+  inputs.push(
+    { ...NEUTRAL },
+    { ...NEUTRAL, eye_left: 0, eye_right: 0 },
+    { ...NEUTRAL, mouth: 0.5 },
+  );
+  for (let i = 0; i < 64; i++) {
+    const scene = scenes[i]!;
+    const r = new AvatarRenderer(canvas, scene);
+    try {
+      await r.load(document.baseURI);
+      const before = r.report();
+      const uploads = before.staticBufferUploads;
+      r.draw();
+      const neutral = r.report();
+      const corner = new Uint8Array(4);
+      for (const [x, y] of [
+        [0, 0],
+        [255, 0],
+        [0, 319],
+        [255, 319],
+      ]) {
+        r.gl.readPixels(x!, y!, 1, 1, r.gl.RGBA, r.gl.UNSIGNED_BYTE, corner);
+        maximumCornerAlpha = Math.max(maximumCornerAlpha, corner[3]!);
       }
-    }finally{r.dispose();}
+      hashes.add(String(neutral.pixelHash));
+      ctx.drawImage(canvas, (i % 8) * 256, Math.floor(i / 8) * 340);
+      ctx.fillStyle = '#f5e8fb';
+      ctx.font = '13px sans-serif';
+      ctx.fillText(
+        String(i + 1).padStart(2, '0') + ' · ' + i.toString(2).padStart(6, '0'),
+        (i % 8) * 256 + 10,
+        Math.floor(i / 8) * 340 + 335,
+      );
+      for (const input of inputs) {
+        r.draw(input);
+        r.gl.finish();
+        if (r.gl.getError()) glClean = false;
+        frames++;
+      }
+      buffersStable &&= r.report().staticBufferUploads === uploads;
+      if (i === 0 || i === 63) {
+        const tests = [
+          { ...NEUTRAL },
+          { ...NEUTRAL, eye_left: 0 },
+          { ...NEUTRAL, eye_right: 0 },
+          { ...NEUTRAL, eye_left: 0.5, eye_right: 0.5 },
+          { ...NEUTRAL, mouth: 0.5 },
+          { ...NEUTRAL, mouth: 1 },
+          { ...NEUTRAL, head_yaw: -1 },
+          { ...NEUTRAL, head_yaw: 1 },
+          { ...NEUTRAL, head_roll: -1 },
+          { ...NEUTRAL, head_roll: 1 },
+          { ...NEUTRAL, head_yaw: -1, head_roll: -1, mouth: 1 },
+          { ...NEUTRAL, head_yaw: 1, head_roll: 1, eye_left: 0, eye_right: 0 },
+        ];
+        for (let j = 0; j < tests.length; j++) {
+          r.draw(tests[j]);
+          r.gl.finish();
+          const n = (i === 0 ? 0 : 12) + j;
+          ex.drawImage(canvas, (n % 6) * 256, Math.floor(n / 6) * 340);
+          ex.fillStyle = '#f5e8fb';
+          ex.font = '13px sans-serif';
+          ex.fillText(
+            (i === 0 ? 'A' : 'B') +
+              ' ? ' +
+              [
+                'neutral',
+                'left blink',
+                'right blink',
+                'half eyes',
+                'smile',
+                'open mouth',
+                'yaw min',
+                'yaw max',
+                'roll min',
+                'roll max',
+                'combined min',
+                'combined max',
+              ][j],
+            (n % 6) * 256 + 8,
+            Math.floor(n / 6) * 340 + 335,
+          );
+          extremePreviewFrames++;
+        }
+      }
+      if (i === 0) {
+        const hash = (input: Partial<Parameters>) => {
+          r.draw(input);
+          return r.report().pixelHash;
+        };
+        middleStates =
+          hash({ eye_left: 0.5 }) !== hash({ eye_left: 0 }) &&
+          hash({ eye_left: 0.5 }) !== hash({ eye_left: 1 }) &&
+          hash({ mouth: 0.5 }) !== hash({ mouth: 0 }) &&
+          hash({ mouth: 0.5 }) !== hash({ mouth: 1 });
+        const pixels = (): Uint8Array => {
+          r.draw();
+          r.gl.finish();
+          const p = new Uint8Array(256 * 320 * 4);
+          r.gl.readPixels(0, 0, 256, 320, r.gl.RGBA, r.gl.UNSIGNED_BYTE, p);
+          return p;
+        };
+        const a = pixels();
+        const eye = scene.layers.find((v) => v.bind === 'eye_left')!;
+        eye.color!.hueDegrees = 12;
+        const b = pixels();
+        const points = layerCorners(eye);
+        const x0 = (Math.min(...points.map((p) => p.x)) * 256) / scene.canvas[0],
+          x1 = (Math.max(...points.map((p) => p.x)) * 256) / scene.canvas[0],
+          y0 = (Math.min(...points.map((p) => p.y)) * 320) / scene.canvas[1],
+          y1 = (Math.max(...points.map((p) => p.y)) * 320) / scene.canvas[1];
+        for (let y = 0; y < 320; y++)
+          for (let x = 0; x < 256; x++) {
+            const at = (y * 256 + x) * 4;
+            if (a[at + 3] !== b[at + 3]) colorAlpha++;
+            if ([0, 1, 2].some((c) => Math.abs(a[at + c]! - b[at + c]!) > 3)) {
+              colorChanged++;
+              if (x < x0 - 2 || x > x1 + 2 || 319 - y < y0 - 2 || 319 - y > y1 + 2) colorOutside++;
+            }
+          }
+        eye.color!.hueDegrees = 0;
+        const coat = scene.layers.find((v) => v.id === scene.layers.find((v) => v.z === 20)!.id)!;
+        const plain = pixels();
+        coat.color!.hueDegrees = 12;
+        const shifted = pixels();
+        for (let y = 0; y < 320; y++)
+          for (let x = 0; x < 256; x++) {
+            const at = (y * 256 + x) * 4;
+            const changed = [0, 1, 2].some((c) => Math.abs(plain[at + c]! - shifted[at + c]!) > 3);
+            if (changed) outfitChanged++;
+            const rr = plain[at]!,
+              g = plain[at + 1]!,
+              b = plain[at + 2]!;
+            if (319 - y > 160 && plain[at + 3]! > 240 && rr > g * 1.15 && g > b * 1.2 && b > 15) {
+              goldPixels++;
+              if (changed) goldChanged++;
+            }
+          }
+        coat.color!.hueDegrees = 0;
+      }
+    } finally {
+      r.dispose();
+    }
   }
-  window.partsContactData=contact.toDataURL('image/png');window.partsExtremeData=extremes.toDataURL('image/png');return {passed:maximumCornerAlpha===0&&goldPixels>5&&goldChanged===0&&outfitChanged>10&&hashes.size===64&&frames===1472&&middleStates&&buffersStable&&glClean&&colorChanged>3&&colorOutside===0&&colorAlpha===0,combinations:64,uniqueNeutralPixels:hashes.size,frames,maximumCornerAlpha,extremePreviewFrames,goldPixels,goldChanged,outfitChanged,middleStates,buffersStable,glClean,colorChanged,colorOutside,colorAlpha,scope:'Actual common GPU and 64 authored assemblies; visual montage reviewed separately, no ART-01 independent ratings, external equivalence or M0 FPS claim'};
+  window.partsContactData = contact.toDataURL('image/png');
+  window.partsExtremeData = extremes.toDataURL('image/png');
+  return {
+    passed:
+      maximumCornerAlpha === 0 &&
+      goldPixels > 5 &&
+      goldChanged === 0 &&
+      outfitChanged > 10 &&
+      hashes.size === 64 &&
+      frames === 1472 &&
+      middleStates &&
+      buffersStable &&
+      glClean &&
+      colorChanged > 3 &&
+      colorOutside === 0 &&
+      colorAlpha === 0,
+    combinations: 64,
+    uniqueNeutralPixels: hashes.size,
+    frames,
+    maximumCornerAlpha,
+    extremePreviewFrames,
+    goldPixels,
+    goldChanged,
+    outfitChanged,
+    middleStates,
+    buffersStable,
+    glClean,
+    colorChanged,
+    colorOutside,
+    colorAlpha,
+    scope:
+      'Actual common GPU and 64 authored assemblies; visual montage reviewed separately, no ART-01 independent ratings, external equivalence or M0 FPS claim',
+  };
 }
-export async function checkPartsUI(host:{current:()=>SessionView|null;command:(c:SessionCommand)=>Promise<SessionReply>;settled:()=>Promise<unknown>}):Promise<Record<string,unknown>>{
-  const pause=()=>new Promise(r=>setTimeout(r,35));const verify=(v:unknown,code:string)=>{if(!v)throw new Error(code);};const until=async(test:()=>boolean)=>{const start=Date.now();while(!test()){if(Date.now()-start>20000)throw new Error('E_PARTS_UI_TIMEOUT');await pause();}};const click=async(q:string)=>{await clickCommittedControl(q,host.current);await pause();await host.settled();await new Promise<void>(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve())));await pause();};
-  await host.command({type:'new',name:'아틀리에 파츠',sourceType:'parts'});await until(()=>!!document.querySelector('[data-parts-start]'));verify(document.querySelector<HTMLButtonElement>('[data-parts-item]')!.disabled,'E_PARTS_UI_COMPATIBILITY');await click('[data-parts-start]');verify(host.current()!.project!.assembly,'E_PARTS_UI_START');await until(()=>!!window.previewProbe?.().ready);const p=host.current()!.project!;const ids=p.parameters.map(v=>v.id);const expression=structuredClone(p.expressions);await click('[data-parts-category="hair"]');await click('[data-parts-item="hair-b"]');verify(host.current()!.project!.parts.filter(v=>v.role.startsWith('hair-')).every(v=>v.library?.itemId==='hair-b'),'E_PARTS_UI_HAIR_PAIR');await click('[data-parts-category="eyes"]');await click('[data-parts-item="eyes-b"]');verify(JSON.stringify(host.current()!.project!.parameters.map(v=>v.id))===JSON.stringify(ids)&&JSON.stringify(host.current()!.project!.expressions)===JSON.stringify(expression),'E_PARTS_UI_MAPPING');
-  const eye=host.current()!.project!.parts.find(v=>v.library?.key==='eye-left')!;await click(`[data-part-id="${eye.id}"]`);const field=document.querySelector<HTMLInputElement>('[data-parts-adjust="x"]')!;field.focus();Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value')!.set!.call(field,'2');field.dispatchEvent(new Event('input',{bubbles:true}));field.dispatchEvent(new FocusEvent('focusout',{bubbles:true}));await pause();await host.settled();await new Promise<void>(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve())));await until(()=>host.current()!.project!.assembly!.adjustments.find(v=>v.key==='eye-right')?.x===-2);const current=JSON.stringify(host.current()!.project);const bad=document.querySelector<HTMLInputElement>('[data-parts-adjust="x"]')!;Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value')!.set!.call(bad,'99');bad.dispatchEvent(new FocusEvent('focusout',{bubbles:true}));await pause();verify(bad.value==='2'&&JSON.stringify(host.current()!.project)===current,'E_PARTS_UI_INVALID');await click('[data-parts-reset]');verify(host.current()!.project!.assembly!.adjustments.filter(v=>v.key.startsWith('eye-')).every(v=>v.x===0),'E_PARTS_UI_RESET');await click('[data-parts-category="eyes"]');await click('[data-parts-remove]');verify(!host.current()!.project!.parts.some(v=>v.role==='eye')&&host.current()!.project!.assembly!.warnings.length,'E_PARTS_UI_REMOVE');await click('[data-parts-item="eyes-a"]');verify(host.current()!.project!.parts.filter(v=>v.role==='eye').length===2,'E_PARTS_UI_RECONNECT');await click('[data-parts-motion]');await until(()=>!!document.querySelector('[data-motion-all]'));await click('[data-motion-all]');await pause();await click('[data-motion-stop]');
-  await host.command({type:'save'});const saved=JSON.stringify(host.current()!.project!.assembly);await host.command({type:'duplicate'});verify(JSON.stringify(host.current()!.project!.assembly)===saved,'E_PARTS_UI_DUPLICATE');const recent=host.current()!.recent[0]!.id;await host.command({type:'recent',id:recent});verify(JSON.stringify(host.current()!.project!.assembly)===saved,'E_PARTS_UI_REOPEN');await host.command({type:'close'});
-  return {passed:true,categories:true,currentSelection:true,compatibilityBeforeApply:true,hairPair:true,parameterAndExpressionPreservation:true,linkedEyes:true,invalidRestores:true,reset:true,removeWarning:true,reconnect:true,motion:true,duplicate:true,saveReopen:true,devicesOpened:false};
+export async function checkPartsUI(host: {
+  current: () => SessionView | null;
+  command: (c: SessionCommand) => Promise<SessionReply>;
+  settled: () => Promise<unknown>;
+}): Promise<Record<string, unknown>> {
+  const pause = () => new Promise((r) => setTimeout(r, 35));
+  const verify = (v: unknown, code: string) => {
+    if (!v) throw new Error(code);
+  };
+  const until = async (test: () => boolean) => {
+    const start = Date.now();
+    while (!test()) {
+      if (Date.now() - start > 20000) throw new Error('E_PARTS_UI_TIMEOUT');
+      await pause();
+    }
+  };
+  const click = async (q: string) => {
+    await clickCommittedControl(q, host.current);
+    await pause();
+    await host.settled();
+    await new Promise<void>((resolve) =>
+      requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
+    );
+    await pause();
+  };
+  await host.command({ type: 'new', name: '아틀리에 파츠', sourceType: 'parts' });
+  await until(() => !!document.querySelector('[data-parts-start]'));
+  verify(
+    document.querySelector<HTMLButtonElement>('[data-parts-item]')!.disabled,
+    'E_PARTS_UI_COMPATIBILITY',
+  );
+  await click('[data-parts-start]');
+  verify(host.current()!.project!.assembly, 'E_PARTS_UI_START');
+  await until(() => !!window.previewProbe?.().ready);
+  const p = host.current()!.project!;
+  const ids = p.parameters.map((v) => v.id);
+  const expression = structuredClone(p.expressions);
+  await click('[data-parts-category="hair"]');
+  await click('[data-parts-item="hair-b"]');
+  verify(
+    host
+      .current()!
+      .project!.parts.filter((v) => v.role.startsWith('hair-'))
+      .every((v) => v.library?.itemId === 'hair-b'),
+    'E_PARTS_UI_HAIR_PAIR',
+  );
+  await click('[data-parts-category="eyes"]');
+  await click('[data-parts-item="eyes-b"]');
+  verify(
+    JSON.stringify(host.current()!.project!.parameters.map((v) => v.id)) === JSON.stringify(ids) &&
+      JSON.stringify(host.current()!.project!.expressions) === JSON.stringify(expression),
+    'E_PARTS_UI_MAPPING',
+  );
+  const eye = host.current()!.project!.parts.find((v) => v.library?.key === 'eye-left')!;
+  await click(`[data-part-id="${eye.id}"]`);
+  const field = document.querySelector<HTMLInputElement>('[data-parts-adjust="x"]')!;
+  field.focus();
+  Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!.call(field, '2');
+  field.dispatchEvent(new Event('input', { bubbles: true }));
+  field.dispatchEvent(new FocusEvent('focusout', { bubbles: true }));
+  await pause();
+  await host.settled();
+  await new Promise<void>((resolve) =>
+    requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
+  );
+  await until(
+    () =>
+      host.current()!.project!.assembly!.adjustments.find((v) => v.key === 'eye-right')?.x === -2,
+  );
+  const current = JSON.stringify(host.current()!.project);
+  const bad = document.querySelector<HTMLInputElement>('[data-parts-adjust="x"]')!;
+  Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!.call(bad, '99');
+  bad.dispatchEvent(new FocusEvent('focusout', { bubbles: true }));
+  await pause();
+  verify(
+    bad.value === '2' && JSON.stringify(host.current()!.project) === current,
+    'E_PARTS_UI_INVALID',
+  );
+  await click('[data-parts-reset]');
+  verify(
+    host
+      .current()!
+      .project!.assembly!.adjustments.filter((v) => v.key.startsWith('eye-'))
+      .every((v) => v.x === 0),
+    'E_PARTS_UI_RESET',
+  );
+  await click('[data-parts-category="eyes"]');
+  await click('[data-parts-remove]');
+  verify(
+    !host.current()!.project!.parts.some((v) => v.role === 'eye') &&
+      host.current()!.project!.assembly!.warnings.length,
+    'E_PARTS_UI_REMOVE',
+  );
+  await click('[data-parts-item="eyes-a"]');
+  verify(
+    host.current()!.project!.parts.filter((v) => v.role === 'eye').length === 2,
+    'E_PARTS_UI_RECONNECT',
+  );
+  await click('[data-parts-motion]');
+  await until(() => !!document.querySelector('[data-motion-all]'));
+  await click('[data-motion-all]');
+  await pause();
+  await click('[data-motion-stop]');
+  await host.command({ type: 'save' });
+  const saved = JSON.stringify(host.current()!.project!.assembly);
+  await host.command({ type: 'duplicate' });
+  verify(JSON.stringify(host.current()!.project!.assembly) === saved, 'E_PARTS_UI_DUPLICATE');
+  const recent = host.current()!.recent[0]!.id;
+  await host.command({ type: 'recent', id: recent });
+  verify(JSON.stringify(host.current()!.project!.assembly) === saved, 'E_PARTS_UI_REOPEN');
+  await host.command({ type: 'close' });
+  return {
+    passed: true,
+    categories: true,
+    currentSelection: true,
+    compatibilityBeforeApply: true,
+    hairPair: true,
+    parameterAndExpressionPreservation: true,
+    linkedEyes: true,
+    invalidRestores: true,
+    reset: true,
+    removeWarning: true,
+    reconnect: true,
+    motion: true,
+    duplicate: true,
+    saveReopen: true,
+    devicesOpened: false,
+  };
 }

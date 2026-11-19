@@ -1,0 +1,116 @@
+{
+  "passed": true,
+  "exactRgbaAndEncodedPng": true,
+  "images": [
+    {
+      "path": "assets/product/preview/1599b359b246e226fee73fa9c644972f58b727b158e8e47fdc87bf4c976d9121.png",
+      "pixels": "2dd8395bc5e1f8b4dfa8a20ad7e7d36f8beb80c3cf226445293b60e7da8618e2",
+      "encoded": "c9458cbc3c1d1ee08a116de7d57d0ef76d779306f34772e83204e1bd82763691"
+    },
+    {
+      "path": "assets/product/preview/1821b8eaaa6c828c66396e04e7f115c93787e3fa154f26529c88585c3f61ec98.png",
+      "pixels": "108abafbd9989c55d9ab05961cfc7dbe99bed36b0bde3037c873c84f57600e5f",
+      "encoded": "20fb4674861b699b31605d48d81646977aca1706ed2e7cc5fda72df9bd1e21ad"
+    },
+    {
+      "path": "assets/product/preview/3fe2220caee156e9bfc47e5f0e170fc7bd2ac28b890fb8995498fb9f5c8f13ca.png",
+      "pixels": "28f82c1c02b7a1628a7e02b8b17b53ee24adf981867fd0b0daa2a6ae90079122",
+      "encoded": "88869568b2f3b80d48653c1c1950015feedff1a976f0f659383ddb46f76ced1d"
+    },
+    {
+      "path": "assets/product/preview/8c6bf06622b67105d5c11e2064eb2292590262a3f6362529734af62163816172.png",
+      "pixels": "67258bbc0be1de34a4de2506deac43e1e8c2e1a9848c0099eb6a00c7d421907b",
+      "encoded": "f1dfbb03649880fc1c81f9d9a95a2b15db339d16d534ad48e572a51847436020"
+    },
+    {
+      "path": "assets/product/preview/955e597230d4cdd15cd64c09ecf8f48686bbd5702f32e429109d581d68d6f442.png",
+      "pixels": "2dd8395bc5e1f8b4dfa8a20ad7e7d36f8beb80c3cf226445293b60e7da8618e2",
+      "encoded": "c9458cbc3c1d1ee08a116de7d57d0ef76d779306f34772e83204e1bd82763691"
+    },
+    {
+      "path": "assets/product/preview/b39a598b59775823efab0224203483c629b207a2de7f5666d13c01dd5125f12e.png",
+      "pixels": "9d35768734483a346323a61e00c2372a9794d23eb13aafdfac1f8cb436b99a94",
+      "encoded": "9b7c609533b956a637d33ff50cf361aa5a4f15f28a70f1ab12d73e540696e66a"
+    },
+    {
+      "path": "assets/product/preview/b52e002d4325ce9c2aa228deda4735f89e58c5abd356afbacb3198581669b29a.png",
+      "pixels": "6629c2789e5ab2b823641e37fac2f02992074723b9bff387c6a0f762a38ac607",
+      "encoded": "ac13e26001c18291adfabcf400eeab74ececfdc9ce425c82853266c4c249111a"
+    },
+    {
+      "path": "assets/product/preview/e3d22c95fb4a4da724806ed682e27578f9a8e8ccc9813475cf0a463f2e1f0c01.png",
+      "pixels": "713be46fa4b3477b0ee51c29b7ffbdc0e657f458358834ad17f2cfda4694e63d",
+      "encoded": "31314a517429958eeb9267b193478afcc6ece01e94b8d92f551e60e90d18b81f"
+    },
+    {
+      "path": "assets/product/preview/e78602d341961d5562555fc95caf5f7538c9e00c1f281d26e71657f04e78132a.png",
+      "pixels": "c56b93590192858d5fd3b286a9c8f2cf3c09d59dea4c8044a79b0019ff8295bb",
+      "encoded": "34ca2560ca785fbedcdca10a714746c9da697508f0554c9bc216969272e1ae48"
+    },
+    {
+      "path": "assets/product/parts/accessory-on.png",
+      "pixels": "838a92d6fee76639b54b4f230c2690898dc81a4520a1d0fbf4bc77b3fffa5298",
+      "encoded": "15d692fa6e0381cc89dc1c26871385e563fc87d92016e5a1a6b86120a883727b"
+    },
+    {
+      "path": "assets/product/parts/eyes-a-clean.png",
+      "pixels": "6997ad1febbe24f63279e7927c47cdc18555c489f7fbccd4e677337fb551efc2",
+      "encoded": "5a39ad2dab0dfb03f3e3be89b2c208a3b751bcffbbdf104d65e8549b20e7226e"
+    },
+    {
+      "path": "assets/product/parts/eyes-b-clean.png",
+      "pixels": "f453d5348060dcf11321490944efc2641f7f316903704ddf62accc676995f394",
+      "encoded": "297106ca77bf5fbad73d8a55739799bf3ee5d0b8abb66cad51871b5f7c2f796e"
+    },
+    {
+      "path": "assets/product/parts/face-a.png",
+      "pixels": "8a81462a2fd3a89a888377c295f1c7c5bfef8d1bf1e5eee1b029cdc4b963b336",
+      "encoded": "a4b0ef4a041133e6fbc06feb2b59644af7a8a7b27c01e402f0a44f6552a0fcf5"
+    },
+    {
+      "path": "assets/product/parts/face-b.png",
+      "pixels": "674833bef65e4fde2963706432190cf605f7777384989ec1f88298aef2858783",
+      "encoded": "27f2dc9749278372ca1efa54011018a1b20d9019f2bb3ca143b604143bb3d8e2"
+    },
+    {
+      "path": "assets/product/parts/hair-a-back.png",
+      "pixels": "260413336c3b37f104a50d4235db8449e90b42fde85be308e317c831c8b513f3",
+      "encoded": "0a750c218811df73665108478bb368efbe9af7df4d2d48df541da4f355710a12"
+    },
+    {
+      "path": "assets/product/parts/hair-a-front-v2.png",
+      "pixels": "73d5344e13646d77de6da7470f05aac46ae25710f83740c9a1a23d8487967472",
+      "encoded": "4257814e42cee9bcc9ae2513bd3fd8d8c4e6186e2a1966823269857016189b20"
+    },
+    {
+      "path": "assets/product/parts/hair-b-back.png",
+      "pixels": "6a42bb4a43005c7e21e4422f3cd11c706923e53f0a9b38b71591970128a000e3",
+      "encoded": "62585f6acdca443da40905b11378284d397230bb5f0b7233d4e68a5c5fbb4596"
+    },
+    {
+      "path": "assets/product/parts/hair-b-front-v2.png",
+      "pixels": "51f315fdfaa5f27152fbde943c2dd917faceb280e12f33c7138846777f36143d",
+      "encoded": "0aa5f90e51be4abd2cca5b6b96df12502b2d94ba7508e02553915dad14f21bbf"
+    },
+    {
+      "path": "assets/product/parts/mouth-a-clean.png",
+      "pixels": "e81086e0ecbf02065105f8a38035588c18f4c9ea5a84483ade90cfd82d392558",
+      "encoded": "9d24f54fc56009dd1832e1ab89f9f424e589676ee85683e2c437be79afb83193"
+    },
+    {
+      "path": "assets/product/parts/mouth-b-clean.png",
+      "pixels": "be3721b207c2e6f632f15f82f00ebd95494d253c45ab1ff084ca96d352fc18d7",
+      "encoded": "c2eb589edbbf958bc6ec6c4895f3e071ea77441949ee15c2c8639ddf9a2cdea9"
+    },
+    {
+      "path": "assets/product/parts/outfit-a.png",
+      "pixels": "833d75b00334f9ff3400106c21e92ae91de871d54b3f79bd00708a90ab94c481",
+      "encoded": "4a32d1b8f85a0c1060a4255a82d693745f5462b94216fb33ff07ae7a150171a2"
+    },
+    {
+      "path": "assets/product/parts/outfit-b.png",
+      "pixels": "7e733664444da0b3f6a0feedb931abf49786d981d3560da53349a592ef8be180",
+      "encoded": "ae13a17cf5a86b3ccd65bb229e30f4aeffafd22ae284fe3a2008e443c4ca565c"
+    }
+  ]
+}

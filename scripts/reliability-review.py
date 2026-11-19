@@ -1,4 +1,5 @@
 """Freeze bounded evidence and explicit non-passing endurance/latency gates."""
+
 import argparse
 import hashlib
 import json
@@ -26,10 +27,14 @@ def main():
     assert cycles['cycles'] == 60 and len(gpu['cycles']) == 12 and len(gpu['stages']) == 3
     assert all(row['passed'] for row in storage['results'])
     expected = {
-        'actual-path-error-preserves-normal', 'actual-readonly-error-retry-and-save-as',
-        'controlled-ENOSPC-at-six-boundaries', 'actual-recovery-budget-exhaustion',
-        'actual-process-kill-save-boundaries', 'actual-process-kill-edit-recovery',
-        'actual-process-kill-export', 'actual-analysis-worker-kill-and-real-retry',
+        'actual-path-error-preserves-normal',
+        'actual-readonly-error-retry-and-save-as',
+        'controlled-ENOSPC-at-six-boundaries',
+        'actual-recovery-budget-exhaustion',
+        'actual-process-kill-save-boundaries',
+        'actual-process-kill-edit-recovery',
+        'actual-process-kill-export',
+        'actual-analysis-worker-kill-and-real-retry',
         'actual-missing-move-relink-and-future-versions',
     }
     assert {row['name'] for row in storage['results']} == expected
@@ -39,9 +44,21 @@ def main():
     assert all(load(run / f'package/packaged-run-{n}.json')['passed'] for n in (1, 2))
     for name, digest in gate['sourceSha256'].items():
         assert hashlib.sha256((ROOT / name).read_bytes()).hexdigest() == digest, name
-    frozen = [f'experiments/phase{n:02}' for n in range(2, 6)] + [f'evidence/phase{n:02}' for n in range(6, 28)]
+    frozen = [f'experiments/phase{n:02}' for n in range(2, 6)] + [
+        f'evidence/phase{n:02}' for n in range(6, 28)
+    ]
     # Phase26/27 were already uncommitted before this task; compare tracked history only.
-    assert not subprocess.check_output(['git', 'diff', 'HEAD', '--name-only', '--', *[p for p in frozen if p not in ('evidence/phase26', 'evidence/phase27')]], cwd=ROOT).strip()
+    assert not subprocess.check_output(
+        [
+            'git',
+            'diff',
+            'HEAD',
+            '--name-only',
+            '--',
+            *[p for p in frozen if p not in ('evidence/phase26', 'evidence/phase27')],
+        ],
+        cwd=ROOT,
+    ).strip()
     scan = []
     for path in run.rglob('*.json'):
         text = path.read_text(encoding='utf8')
@@ -59,14 +76,31 @@ def main():
         'T-279': 'PASS current private build inventory/notices/package bytes; public distribution approval remains false',
         'T-280': 'BLOCKED: prior stage, real tracking, endurance, full latency/load and release approvals unresolved',
     }
-    result = {'boundedChecksPassed': True, 'tasks': statuses, 'completedTasks': [272, 273, 278, 279],
-              'phase28Complete': False, 'releaseDecision': 'HOLD', 'm0': 'HOLD',
-              'privacyJSONFilesScanned': scan, 'webglDiagnostics': gpu['stages'],
-              'enduranceRequiredMsPerRoute': 7200000, 'enduranceActualCompletedRuns': 0,
-              'sensorToOBSLatency': 'NOT_RUN', 'cleanWindowsVerified': False,
-              'publicDistributionApproved': False, 'evidenceSha256': {}}
-    for name in ['verification.json', 'storage.json', 'cycles-privacy.json', 'gpu/gpu.json',
-                 'notices.json', 'package-license.json', 'package/package-audit.json']:
+    result = {
+        'boundedChecksPassed': True,
+        'tasks': statuses,
+        'completedTasks': [272, 273, 278, 279],
+        'phase28Complete': False,
+        'releaseDecision': 'HOLD',
+        'm0': 'HOLD',
+        'privacyJSONFilesScanned': scan,
+        'webglDiagnostics': gpu['stages'],
+        'enduranceRequiredMsPerRoute': 7200000,
+        'enduranceActualCompletedRuns': 0,
+        'sensorToOBSLatency': 'NOT_RUN',
+        'cleanWindowsVerified': False,
+        'publicDistributionApproved': False,
+        'evidenceSha256': {},
+    }
+    for name in [
+        'verification.json',
+        'storage.json',
+        'cycles-privacy.json',
+        'gpu/gpu.json',
+        'notices.json',
+        'package-license.json',
+        'package/package-audit.json',
+    ]:
         result['evidenceSha256'][name] = hashlib.sha256((run / name).read_bytes()).hexdigest()
     (run / 'review.json').write_text(json.dumps(result, indent=2) + '\n', encoding='utf8')
     print('T272/273/278/279 bounded checks complete; phase28 and release remain HOLD.')

@@ -1,0 +1,14 @@
+{
+  "beforeBytes": 9503570586,
+  "afterBytes": 9022793891,
+  "objectsChecked": 8448,
+  "objectsCompacted": 882,
+  "fastZstandardOnly": true,
+  "allChangedObjectsDecodedAndHashMatched": true,
+  "liveModelsModified": false,
+  "archiveIndexesModified": false,
+  "lzmaDictionaryMiB": 1,
+  "decoderMemoryLimitMiB": 32,
+  "readCacheMiBLimit": 0,
+  "seconds": 207.2
+}

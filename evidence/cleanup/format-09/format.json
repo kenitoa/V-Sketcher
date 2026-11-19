@@ -1,0 +1,52 @@
+{
+  "files": [
+    {
+      "file": "scripts/cache-archive-batch.py",
+      "status": "unchanged",
+      "beforeSha256": "4606ad462b3e87f3d285ff2feb29957d85afbbaa0a21a4cd9cf5557b6bbdaced",
+      "afterSha256": "4606ad462b3e87f3d285ff2feb29957d85afbbaa0a21a4cd9cf5557b6bbdaced",
+      "astBefore": "e3d0c5778c28aa840f5887d426f2b60043ba9ec7b58a67b061cff147132a82c0",
+      "astAfter": "e3d0c5778c28aa840f5887d426f2b60043ba9ec7b58a67b061cff147132a82c0"
+    },
+    {
+      "file": "scripts/cache-archive.py",
+      "status": "formatted",
+      "beforeSha256": "be2f5232a86573670b14eb19040e63b3541aa7a06073c9f17f6de3aee22f9a70",
+      "afterSha256": "b65ad777af68896b0d48486203d093053dc3276c43aef93d8e362d532aae59ee",
+      "astBefore": "cf07d8df5b3844651a19d743a4e98708089f56aeba7302294998dca0344181ed",
+      "astAfter": "cf07d8df5b3844651a19d743a4e98708089f56aeba7302294998dca0344181ed"
+    },
+    {
+      "file": "scripts/format-source.mjs",
+      "status": "formatted",
+      "beforeSha256": "a00ad67bb57a269767973e267c58fbbd06e5aa7e624b09b1657915abd9c6d856",
+      "afterSha256": "6a2035f9ac2d9169800ebe71c6805689a5e42153f3788348ded30a1e6b6dd11c",
+      "astBefore": "e782cb7e0c398fd095b92836e925b4d4560a9512a333dc7ae98b85941e47dab9",
+      "astAfter": "e782cb7e0c398fd095b92836e925b4d4560a9512a333dc7ae98b85941e47dab9"
+    },
+    {
+      "file": "scripts/workspace-size.py",
+      "status": "unchanged",
+      "beforeSha256": "736b64eab353803a7c090b6213ba1d03f1f530b4c3cca418419804c37b9281c9",
+      "afterSha256": "736b64eab353803a7c090b6213ba1d03f1f530b4c3cca418419804c37b9281c9",
+      "astBefore": "38e3b37c3ff714a4502043ba4736fb7722d830a9c14d67a4254ae2207036c946",
+      "astAfter": "38e3b37c3ff714a4502043ba4736fb7722d830a9c14d67a4254ae2207036c946"
+    },
+    {
+      "file": "tests/worker/test_cache_archive.py",
+      "status": "formatted",
+      "beforeSha256": "1ee925ad20b3d9a9731b6b68a3459c1ceb9272353268834f4c5fc212cb726b78",
+      "afterSha256": "c0c904b70082f67ac7cd0eaa59417fd59baee4c2711b4a2ebaaba0016d51b1bd",
+      "astBefore": "986962df8dde53ed8c9bf2803f1bfc45d1d57818c67bc87ae2eb57bf4028052b",
+      "astAfter": "986962df8dde53ed8c9bf2803f1bfc45d1d57818c67bc87ae2eb57bf4028052b"
+    }
+  ],
+  "baseReport": "evidence/cleanup/format-08/format.json",
+  "unchangedSinceBase": 380,
+  "configurationMustMatchBase": true,
+  "formatted": 3,
+  "astDifferencesRetained": 0,
+  "parserLimitsRetained": 0,
+  "historicalFilesModified": false,
+  "dependenciesOrGeneratedCodeFormatted": false
+}

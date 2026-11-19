@@ -1,0 +1,12 @@
+.git/
+.local/
+.venv*/
+node_modules/
+dist/
+out/
+assets/
+experiments/
+evidence/
+**/*.generated.*
+**/*.runtime.js
+**/*.runtime.d.ts

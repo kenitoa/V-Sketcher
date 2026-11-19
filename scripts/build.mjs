@@ -1,16 +1,22 @@
 import { mkdirSync, writeFileSync, readFileSync, copyFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { root, python, run, bin } from './common.mjs';
-const mode = process.argv.find(v => v.startsWith('--mode='))?.slice(7) ?? 'release';
+const mode = process.argv.find((v) => v.startsWith('--mode='))?.slice(7) ?? 'release';
 if (!['development', 'test', 'release'].includes(mode)) throw new Error('Unknown build profile');
-run(process.execPath,['scripts/generate-project-validators.mjs','--check']);
+run(process.execPath, ['scripts/generate-project-validators.mjs', '--check']);
 run(python, ['scripts/provision.py']);
 bin('typescript', 'tsc', ['-p', 'tsconfig.build.json']);
-copyFileSync(resolve(root,'packages/project-model/structure.runtime.js'),resolve(root,'dist/electron/packages/project-model/structure.runtime.js'));
+copyFileSync(
+  resolve(root, 'packages/project-model/structure.runtime.js'),
+  resolve(root, 'dist/electron/packages/project-model/structure.runtime.js'),
+);
 bin('vite', 'vite', ['build']);
 mkdirSync(resolve(root, 'dist'), { recursive: true });
 const pkg = JSON.parse(readFileSync(resolve(root, 'package.json'), 'utf8'));
-writeFileSync(resolve(root, 'dist/runtime-config.json'), JSON.stringify({ channel: mode, version: pkg.version, protocol: 1 }) + '\n');
+writeFileSync(
+  resolve(root, 'dist/runtime-config.json'),
+  JSON.stringify({ channel: mode, version: pkg.version, protocol: 1 }) + '\n',
+);
 run(python, ['scripts/notices.py']);
 run(process.execPath, ['scripts/prepare-release.mjs']);
 console.log('Built', mode, pkg.version);

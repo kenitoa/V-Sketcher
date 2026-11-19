@@ -1,56 +1,510 @@
-import {assertExportProfile} from '../export-check/types';
-import {assertRequest,featureKeys,type CorrectionRequest,type FeatureKey} from '../single-image/correction-types';
+import { assertExportProfile } from '../export-check/types';
+import {
+  assertRequest,
+  featureKeys,
+  type CorrectionRequest,
+  type FeatureKey,
+} from '../single-image/correction-types';
 import { assertSelection } from '../image-input/types';
-import {assertConfig,type SplitConfig} from '../split-image/types';
+import { assertConfig, type SplitConfig } from '../split-image/types';
 import type { Project, SourceType } from '../project-model';
 import type { PreviewScene } from '../scene-core';
 import type { JobView } from '../workflow';
-import {assertTracking,type TrackingSettings} from '../tracking';
-import {assertOperation as assertExpressionOperation,type ExpressionOperation} from '../expression-control';
-import {assertLocation,assertOperation,type DetailLocation,type DetailOperation} from '../detail-editor/types';
-export interface RecentView { id:string; displayName:string; openedAt:string; sourceType:string; }
-export interface RecoveryView { id:string; displayName:string; revision:number; createdAt:string; kind:string; reason:string; originalLabel:string | null; pending:boolean; }
-export interface SessionView { sequence:number; sessionId:string | null; mode:'empty' | 'editable' | 'read-only'; project:Project | null; label:string; dirty:boolean; saving:boolean; canUndo:boolean; canRedo:boolean;
-  execution:import('../execution/changes').ExecutionView|null;editingGroup:boolean;savedRevision:number|null;
-  detail:(ReturnType<import('../detail-editor/session').DetailSession['view']>&{project:Project|null;scene:PreviewScene|null})|null;
-  split:(ReturnType<import('../split-image/session').SplitSession['view']>&{project:Project|null;scene:PreviewScene|null})|null;
-  correction:(ReturnType<import('../single-image/correction-session').CorrectionSession['view']>&{project:Project|null;scene:PreviewScene|null})|null;
-  structure:(ReturnType<import('../single-image/session').StructureSession['view']>&{project:Project|null;scene:PreviewScene|null})|null;
-  partsCatalog:import('../parts-library').Catalog|null;
-  input:import('../image-input/types').InputView | null;
-  scene:PreviewScene | null; originalScene:PreviewScene | null; jobs:JobView[]; renderKey:string; issues:{ assetId:string; code:string }[]; errorCode:string | null; lastRecoveryAt:string | null; recent:RecentView[]; recoveries:RecoveryView[]; readOnlyName:string | null; }
-export type EditTarget = 'project-name' | 'part-name' | 'part-role' | 'part-opacity' | 'part-translate-x' | 'expression-value';
-export type SessionCommand = {type:'export-profile';expectedRevision:number;profile:import('../project-model').ExportProfile}| {type:'tracking-settings';expectedRevision:number;value:TrackingSettings}|{type:'expression-edit';expectedRevision:number;operation:ExpressionOperation}|{type:'detail-open';location:DetailLocation}|{type:'detail-prepare';expectedRevision:number;operation:DetailOperation}|{type:'detail-apply';expectedRevision:number;draftId:string}|{type:'detail-import';expectedRevision:number;partId:string;state:string}|{type:'detail-cancel'}|{type:'split-load';kind:'folder'|'2dparts'|'example'}|{type:'split-edit'|'split-cancel'|'split-discard'|'split-retry'|'split-export'}|{type:'split-prepare'|'split-apply';draftId:string;expectedRevision:number;config:SplitConfig}| {type:'correction-start';expectedRevision:number;request:CorrectionRequest}|{type:'correction-apply';expectedRevision:number;keys:FeatureKey[]}|{type:'correction-cancel'}|{type:'correction-retry';expectedRevision:number}| {type:'structure-start';expectedRevision:number;completion:'estimated'|'restrict'}|{type:'structure-apply'|'structure-retry';expectedRevision:number}|{type:'structure-cancel'}| {type:'parts-start';expectedRevision:number}|{type:'parts-select';expectedRevision:number;itemId:string}|{type:'parts-remove';expectedRevision:number;slot:import('../parts-library').Slot}|{type:'parts-adjust';expectedRevision:number;value:import('../parts-library').Adjustment}|{type:'parts-link';expectedRevision:number;linked:boolean;anchor:string}|{type:'parts-reset';expectedRevision:number;key:string|null}|  { type:'import-image' | 'input-cancel' | 'input-retry' } | { type:'input-apply';draftId:string;selection:import('../image-input/types').Selection } | { type:'prepare-motion';expectedRevision:number } | { type:'motion-settings';expectedRevision:number;strength:number;smoothingMs:number;pose:{ parameterId:string;value:number }[] } | { type:'motion-parameter';expectedRevision:number;id:string;min:number;neutral:number;max:number } | { type:'new'; name:string; sourceType:SourceType } | { type:'open' | 'save' | 'save-as' | 'duplicate' | 'close' | 'undo' | 'redo' | 'sample' | 'checkpoint' } |
-  { type:'recent' | 'remove-recent' | 'recover' | 'preview-recovery' | 'original' | 'cancel-task' | 'retry-task'; id:string } | { type:'check-resources' } |
-  { type:'relink'; assetId:string } | { type:'begin-group'; label:string } | { type:'end-group'; id:string; commit:boolean } |
-  { type:'edit'; target:EditTarget; id:string | null; parameterId:string | null; value:string | number; expectedRevision:number; groupId:string | null };
-export interface SessionReply { view:SessionView; value?:string; preview?:RecoveryComparison; }
-export interface RecoveryComparison { recovered:{ label:string; revision:number; modifiedAt:string; scene:PreviewScene | null }; saved:{ label:string; revision:number; modifiedAt:string; scene:PreviewScene | null } | null; }
-export function parseSessionCommand(value:unknown):SessionCommand {
-  if (!value || typeof value !== 'object' || Array.isArray(value) || JSON.stringify(value).length > (typeof (value as {type?:unknown}).type==='string'&&String((value as {type?:unknown}).type).startsWith('split-')?65536:16384)) throw new Error('E_SESSION_COMMAND');
-  const v = value as Record<string,unknown>; const type = v.type;
-  if(type==='export-profile'){if(Object.keys(v).sort().join(',')!=='expectedRevision,profile,type'||!Number.isSafeInteger(v.expectedRevision)||Number(v.expectedRevision)<0)throw new Error('E_SESSION_COMMAND');assertExportProfile(v.profile);return value as SessionCommand;}
-  if(type==='tracking-settings'){if(Object.keys(v).sort().join(',')!=='expectedRevision,type,value'||!Number.isSafeInteger(v.expectedRevision)||Number(v.expectedRevision)<0)throw new Error('E_SESSION_COMMAND');assertTracking(v.value);return value as SessionCommand;}
-  if(type==='expression-edit'){if(Object.keys(v).sort().join(',')!=='expectedRevision,operation,type'||!Number.isSafeInteger(v.expectedRevision)||Number(v.expectedRevision)<0)throw new Error('E_SESSION_COMMAND');assertExpressionOperation(v.operation);return value as SessionCommand;}
-  if(typeof type==='string'&&type.startsWith('detail-')){const f=type==='detail-open'?['type','location']:type==='detail-prepare'?['type','expectedRevision','operation']:type==='detail-apply'?['type','expectedRevision','draftId']:type==='detail-import'?['type','expectedRevision','partId','state']:type==='detail-cancel'?['type']:[];if(!f.length||Object.keys(v).length!==f.length||Object.keys(v).some(k=>!f.includes(k)))throw new Error('E_SESSION_COMMAND');if(['detail-prepare','detail-apply','detail-import'].includes(type)&&(!Number.isSafeInteger(v.expectedRevision)||Number(v.expectedRevision)<0))throw new Error('E_SESSION_COMMAND');if(type==='detail-open')assertLocation(v.location);if(type==='detail-prepare')assertOperation(v.operation);if(type==='detail-apply'&&(typeof v.draftId!=='string'||!/^[a-f0-9-]{36}$/.test(v.draftId))||type==='detail-import'&&(typeof v.partId!=='string'||!/^[A-Za-z0-9_-]{1,64}$/.test(v.partId)||typeof v.state!=='string'||!/^[a-z][a-z0-9_-]{0,31}$/.test(v.state)))throw new Error('E_SESSION_COMMAND');return value as SessionCommand;}
-  if(typeof type==='string'&&type.startsWith('split-')){const f=type==='split-load'?['type','kind']:['split-prepare','split-apply'].includes(type)?['type','draftId','expectedRevision','config']:['split-edit','split-cancel','split-discard','split-retry','split-export'].includes(type)?['type']:[];if(!f.length||Object.keys(v).length!==f.length||Object.keys(v).some(k=>!f.includes(k))||type==='split-load'&&!['folder','2dparts','example'].includes(String(v.kind)))throw new Error('E_SESSION_COMMAND');if(type==='split-prepare'||type==='split-apply'){if(typeof v.draftId!=='string'||!/^[a-f0-9-]{36}$/.test(v.draftId)||!Number.isSafeInteger(v.expectedRevision)||Number(v.expectedRevision)<0)throw new Error('E_SESSION_COMMAND');assertConfig(v.config);}return value as SessionCommand;}
-  if(typeof type==='string'&&type.startsWith('correction-')){const fields=type==='correction-start'?['type','expectedRevision','request']:type==='correction-apply'?['type','expectedRevision','keys']:type==='correction-retry'?['type','expectedRevision']:type==='correction-cancel'?['type']:[];if(!fields.length||Object.keys(v).length!==fields.length||Object.keys(v).some(k=>!fields.includes(k))||type!=='correction-cancel'&&(!Number.isSafeInteger(v.expectedRevision)||Number(v.expectedRevision)<0))throw new Error('E_SESSION_COMMAND');if(type==='correction-start')assertRequest(v.request);if(type==='correction-apply')featureKeys(v.keys);return value as SessionCommand;}
-  if(typeof type==='string'&&type.startsWith('structure-')){const expected=type==='structure-start'?['type','expectedRevision','completion']:type==='structure-cancel'?['type']:['structure-apply','structure-retry'].includes(type)?['type','expectedRevision']:[];if(!expected.length||Object.keys(v).length!==expected.length||Object.keys(v).some(k=>!expected.includes(k))||type!=='structure-cancel'&&(!Number.isSafeInteger(v.expectedRevision)||Number(v.expectedRevision)<0)||type==='structure-start'&&!['estimated','restrict'].includes(String(v.completion)))throw new Error('E_SESSION_COMMAND');return value as SessionCommand;}
-  const fields:Record<string,string[]> = {'parts-start':['type','expectedRevision'],'parts-select':['type','expectedRevision','itemId'],'parts-remove':['type','expectedRevision','slot'],'parts-adjust':['type','expectedRevision','value'],'parts-link':['type','expectedRevision','linked','anchor'],'parts-reset':['type','expectedRevision','key'], 'import-image':['type'],'input-cancel':['type'],'input-retry':['type'],'input-apply':['type','draftId','selection'],'prepare-motion':['type','expectedRevision'],'motion-settings':['type','expectedRevision','strength','smoothingMs','pose'],'motion-parameter':['type','expectedRevision','id','min','neutral','max'], new:['type','name','sourceType'],open:['type'],save:['type'],'save-as':['type'],duplicate:['type'],close:['type'],undo:['type'],redo:['type'],sample:['type'],checkpoint:['type'],
-    'check-resources':['type'],'cancel-task':['type','id'],'retry-task':['type','id'],recent:['type','id'],'remove-recent':['type','id'],recover:['type','id'],'preview-recovery':['type','id'],original:['type','id'],relink:['type','assetId'],'begin-group':['type','label'],'end-group':['type','id','commit'],edit:['type','target','id','parameterId','value','expectedRevision','groupId'] };
-  if (typeof type !== 'string' || !Object.hasOwn(fields,type) || Object.keys(v).length !== fields[type]!.length || Object.keys(v).some(key => !fields[type]!.includes(key))) throw new Error('E_SESSION_COMMAND');
-  if(type.startsWith('parts-')){if(!Number.isSafeInteger(v.expectedRevision)||Number(v.expectedRevision)<0)throw new Error('E_SESSION_COMMAND');const id=(x:unknown)=>typeof x==='string'&&/^[A-Za-z0-9_-]{1,64}$/.test(x);if(type==='parts-select'&&!id(v.itemId)||type==='parts-remove'&&!['face','hair','eyes','mouth','outfit','accessory'].includes(String(v.slot))||type==='parts-link'&&(typeof v.linked!=='boolean'||!id(v.anchor))||type==='parts-reset'&&!(v.key===null||id(v.key)))throw new Error('E_SESSION_COMMAND');if(type==='parts-adjust'){const a=v.value as Record<string,unknown>;if(!a||Object.keys(a).sort().join(',')!=='hue,key,rotation,scale,x,y'||!id(a.key)||![a.x,a.y,a.scale,a.rotation,a.hue].every(n=>typeof n==='number'&&Number.isFinite(n)))throw new Error('E_SESSION_COMMAND');}}
-  if (type==='input-apply') { if(typeof v.draftId!=='string' || !/^[a-f0-9-]{36}$/.test(v.draftId))throw new Error('E_SESSION_COMMAND');assertSelection(v.selection); }
-  if (type === 'new' && (typeof v.name !== 'string' || v.name.length > 120 || !['parts','single-image','split-image'].includes(String(v.sourceType)))) throw new Error('E_SESSION_COMMAND');
-  if (['recent','remove-recent','recover','preview-recovery','original','end-group','cancel-task','retry-task'].includes(type) && (typeof v.id !== 'string' || !/^[a-f0-9-]{36}$/.test(v.id))) throw new Error('E_SESSION_COMMAND');
-  if (type === 'relink' && (typeof v.assetId !== 'string' || !/^[A-Za-z0-9_-]{1,64}$/.test(v.assetId))) throw new Error('E_SESSION_COMMAND');
-  if (type === 'begin-group' && (typeof v.label !== 'string' || !v.label.trim() || v.label.length > 120)) throw new Error('E_SESSION_COMMAND');
+import { assertTracking, type TrackingSettings } from '../tracking';
+import {
+  assertOperation as assertExpressionOperation,
+  type ExpressionOperation,
+} from '../expression-control';
+import {
+  assertLocation,
+  assertOperation,
+  type DetailLocation,
+  type DetailOperation,
+} from '../detail-editor/types';
+export interface RecentView {
+  id: string;
+  displayName: string;
+  openedAt: string;
+  sourceType: string;
+}
+export interface RecoveryView {
+  id: string;
+  displayName: string;
+  revision: number;
+  createdAt: string;
+  kind: string;
+  reason: string;
+  originalLabel: string | null;
+  pending: boolean;
+}
+export interface SessionView {
+  sequence: number;
+  sessionId: string | null;
+  mode: 'empty' | 'editable' | 'read-only';
+  project: Project | null;
+  label: string;
+  dirty: boolean;
+  saving: boolean;
+  canUndo: boolean;
+  canRedo: boolean;
+  execution: import('../execution/changes').ExecutionView | null;
+  editingGroup: boolean;
+  savedRevision: number | null;
+  detail:
+    | (ReturnType<import('../detail-editor/session').DetailSession['view']> & {
+        project: Project | null;
+        scene: PreviewScene | null;
+      })
+    | null;
+  split:
+    | (ReturnType<import('../split-image/session').SplitSession['view']> & {
+        project: Project | null;
+        scene: PreviewScene | null;
+      })
+    | null;
+  correction:
+    | (ReturnType<import('../single-image/correction-session').CorrectionSession['view']> & {
+        project: Project | null;
+        scene: PreviewScene | null;
+      })
+    | null;
+  structure:
+    | (ReturnType<import('../single-image/session').StructureSession['view']> & {
+        project: Project | null;
+        scene: PreviewScene | null;
+      })
+    | null;
+  partsCatalog: import('../parts-library').Catalog | null;
+  input: import('../image-input/types').InputView | null;
+  scene: PreviewScene | null;
+  originalScene: PreviewScene | null;
+  jobs: JobView[];
+  renderKey: string;
+  issues: { assetId: string; code: string }[];
+  errorCode: string | null;
+  lastRecoveryAt: string | null;
+  recent: RecentView[];
+  recoveries: RecoveryView[];
+  readOnlyName: string | null;
+}
+export type EditTarget =
+  | 'project-name'
+  | 'part-name'
+  | 'part-role'
+  | 'part-opacity'
+  | 'part-translate-x'
+  | 'expression-value';
+export type SessionCommand =
+  | {
+      type: 'export-profile';
+      expectedRevision: number;
+      profile: import('../project-model').ExportProfile;
+    }
+  | { type: 'tracking-settings'; expectedRevision: number; value: TrackingSettings }
+  | { type: 'expression-edit'; expectedRevision: number; operation: ExpressionOperation }
+  | { type: 'detail-open'; location: DetailLocation }
+  | { type: 'detail-prepare'; expectedRevision: number; operation: DetailOperation }
+  | { type: 'detail-apply'; expectedRevision: number; draftId: string }
+  | { type: 'detail-import'; expectedRevision: number; partId: string; state: string }
+  | { type: 'detail-cancel' }
+  | { type: 'split-load'; kind: 'folder' | '2dparts' | 'example' }
+  | { type: 'split-edit' | 'split-cancel' | 'split-discard' | 'split-retry' | 'split-export' }
+  | {
+      type: 'split-prepare' | 'split-apply';
+      draftId: string;
+      expectedRevision: number;
+      config: SplitConfig;
+    }
+  | { type: 'correction-start'; expectedRevision: number; request: CorrectionRequest }
+  | { type: 'correction-apply'; expectedRevision: number; keys: FeatureKey[] }
+  | { type: 'correction-cancel' }
+  | { type: 'correction-retry'; expectedRevision: number }
+  | { type: 'structure-start'; expectedRevision: number; completion: 'estimated' | 'restrict' }
+  | { type: 'structure-apply' | 'structure-retry'; expectedRevision: number }
+  | { type: 'structure-cancel' }
+  | { type: 'parts-start'; expectedRevision: number }
+  | { type: 'parts-select'; expectedRevision: number; itemId: string }
+  | { type: 'parts-remove'; expectedRevision: number; slot: import('../parts-library').Slot }
+  | { type: 'parts-adjust'; expectedRevision: number; value: import('../parts-library').Adjustment }
+  | { type: 'parts-link'; expectedRevision: number; linked: boolean; anchor: string }
+  | { type: 'parts-reset'; expectedRevision: number; key: string | null }
+  | { type: 'import-image' | 'input-cancel' | 'input-retry' }
+  | { type: 'input-apply'; draftId: string; selection: import('../image-input/types').Selection }
+  | { type: 'prepare-motion'; expectedRevision: number }
+  | {
+      type: 'motion-settings';
+      expectedRevision: number;
+      strength: number;
+      smoothingMs: number;
+      pose: { parameterId: string; value: number }[];
+    }
+  | {
+      type: 'motion-parameter';
+      expectedRevision: number;
+      id: string;
+      min: number;
+      neutral: number;
+      max: number;
+    }
+  | { type: 'new'; name: string; sourceType: SourceType }
+  | {
+      type:
+        | 'open'
+        | 'save'
+        | 'save-as'
+        | 'duplicate'
+        | 'close'
+        | 'undo'
+        | 'redo'
+        | 'sample'
+        | 'checkpoint';
+    }
+  | {
+      type:
+        | 'recent'
+        | 'remove-recent'
+        | 'recover'
+        | 'preview-recovery'
+        | 'original'
+        | 'cancel-task'
+        | 'retry-task';
+      id: string;
+    }
+  | { type: 'check-resources' }
+  | { type: 'relink'; assetId: string }
+  | { type: 'begin-group'; label: string }
+  | { type: 'end-group'; id: string; commit: boolean }
+  | {
+      type: 'edit';
+      target: EditTarget;
+      id: string | null;
+      parameterId: string | null;
+      value: string | number;
+      expectedRevision: number;
+      groupId: string | null;
+    };
+export interface SessionReply {
+  view: SessionView;
+  value?: string;
+  preview?: RecoveryComparison;
+}
+export interface RecoveryComparison {
+  recovered: { label: string; revision: number; modifiedAt: string; scene: PreviewScene | null };
+  saved: { label: string; revision: number; modifiedAt: string; scene: PreviewScene | null } | null;
+}
+export function parseSessionCommand(value: unknown): SessionCommand {
+  if (
+    !value ||
+    typeof value !== 'object' ||
+    Array.isArray(value) ||
+    JSON.stringify(value).length >
+      (typeof (value as { type?: unknown }).type === 'string' &&
+      String((value as { type?: unknown }).type).startsWith('split-')
+        ? 65536
+        : 16384)
+  )
+    throw new Error('E_SESSION_COMMAND');
+  const v = value as Record<string, unknown>;
+  const type = v.type;
+  if (type === 'export-profile') {
+    if (
+      Object.keys(v).sort().join(',') !== 'expectedRevision,profile,type' ||
+      !Number.isSafeInteger(v.expectedRevision) ||
+      Number(v.expectedRevision) < 0
+    )
+      throw new Error('E_SESSION_COMMAND');
+    assertExportProfile(v.profile);
+    return value as SessionCommand;
+  }
+  if (type === 'tracking-settings') {
+    if (
+      Object.keys(v).sort().join(',') !== 'expectedRevision,type,value' ||
+      !Number.isSafeInteger(v.expectedRevision) ||
+      Number(v.expectedRevision) < 0
+    )
+      throw new Error('E_SESSION_COMMAND');
+    assertTracking(v.value);
+    return value as SessionCommand;
+  }
+  if (type === 'expression-edit') {
+    if (
+      Object.keys(v).sort().join(',') !== 'expectedRevision,operation,type' ||
+      !Number.isSafeInteger(v.expectedRevision) ||
+      Number(v.expectedRevision) < 0
+    )
+      throw new Error('E_SESSION_COMMAND');
+    assertExpressionOperation(v.operation);
+    return value as SessionCommand;
+  }
+  if (typeof type === 'string' && type.startsWith('detail-')) {
+    const f =
+      type === 'detail-open'
+        ? ['type', 'location']
+        : type === 'detail-prepare'
+          ? ['type', 'expectedRevision', 'operation']
+          : type === 'detail-apply'
+            ? ['type', 'expectedRevision', 'draftId']
+            : type === 'detail-import'
+              ? ['type', 'expectedRevision', 'partId', 'state']
+              : type === 'detail-cancel'
+                ? ['type']
+                : [];
+    if (
+      !f.length ||
+      Object.keys(v).length !== f.length ||
+      Object.keys(v).some((k) => !f.includes(k))
+    )
+      throw new Error('E_SESSION_COMMAND');
+    if (
+      ['detail-prepare', 'detail-apply', 'detail-import'].includes(type) &&
+      (!Number.isSafeInteger(v.expectedRevision) || Number(v.expectedRevision) < 0)
+    )
+      throw new Error('E_SESSION_COMMAND');
+    if (type === 'detail-open') assertLocation(v.location);
+    if (type === 'detail-prepare') assertOperation(v.operation);
+    if (
+      (type === 'detail-apply' &&
+        (typeof v.draftId !== 'string' || !/^[a-f0-9-]{36}$/.test(v.draftId))) ||
+      (type === 'detail-import' &&
+        (typeof v.partId !== 'string' ||
+          !/^[A-Za-z0-9_-]{1,64}$/.test(v.partId) ||
+          typeof v.state !== 'string' ||
+          !/^[a-z][a-z0-9_-]{0,31}$/.test(v.state)))
+    )
+      throw new Error('E_SESSION_COMMAND');
+    return value as SessionCommand;
+  }
+  if (typeof type === 'string' && type.startsWith('split-')) {
+    const f =
+      type === 'split-load'
+        ? ['type', 'kind']
+        : ['split-prepare', 'split-apply'].includes(type)
+          ? ['type', 'draftId', 'expectedRevision', 'config']
+          : ['split-edit', 'split-cancel', 'split-discard', 'split-retry', 'split-export'].includes(
+                type,
+              )
+            ? ['type']
+            : [];
+    if (
+      !f.length ||
+      Object.keys(v).length !== f.length ||
+      Object.keys(v).some((k) => !f.includes(k)) ||
+      (type === 'split-load' && !['folder', '2dparts', 'example'].includes(String(v.kind)))
+    )
+      throw new Error('E_SESSION_COMMAND');
+    if (type === 'split-prepare' || type === 'split-apply') {
+      if (
+        typeof v.draftId !== 'string' ||
+        !/^[a-f0-9-]{36}$/.test(v.draftId) ||
+        !Number.isSafeInteger(v.expectedRevision) ||
+        Number(v.expectedRevision) < 0
+      )
+        throw new Error('E_SESSION_COMMAND');
+      assertConfig(v.config);
+    }
+    return value as SessionCommand;
+  }
+  if (typeof type === 'string' && type.startsWith('correction-')) {
+    const fields =
+      type === 'correction-start'
+        ? ['type', 'expectedRevision', 'request']
+        : type === 'correction-apply'
+          ? ['type', 'expectedRevision', 'keys']
+          : type === 'correction-retry'
+            ? ['type', 'expectedRevision']
+            : type === 'correction-cancel'
+              ? ['type']
+              : [];
+    if (
+      !fields.length ||
+      Object.keys(v).length !== fields.length ||
+      Object.keys(v).some((k) => !fields.includes(k)) ||
+      (type !== 'correction-cancel' &&
+        (!Number.isSafeInteger(v.expectedRevision) || Number(v.expectedRevision) < 0))
+    )
+      throw new Error('E_SESSION_COMMAND');
+    if (type === 'correction-start') assertRequest(v.request);
+    if (type === 'correction-apply') featureKeys(v.keys);
+    return value as SessionCommand;
+  }
+  if (typeof type === 'string' && type.startsWith('structure-')) {
+    const expected =
+      type === 'structure-start'
+        ? ['type', 'expectedRevision', 'completion']
+        : type === 'structure-cancel'
+          ? ['type']
+          : ['structure-apply', 'structure-retry'].includes(type)
+            ? ['type', 'expectedRevision']
+            : [];
+    if (
+      !expected.length ||
+      Object.keys(v).length !== expected.length ||
+      Object.keys(v).some((k) => !expected.includes(k)) ||
+      (type !== 'structure-cancel' &&
+        (!Number.isSafeInteger(v.expectedRevision) || Number(v.expectedRevision) < 0)) ||
+      (type === 'structure-start' && !['estimated', 'restrict'].includes(String(v.completion)))
+    )
+      throw new Error('E_SESSION_COMMAND');
+    return value as SessionCommand;
+  }
+  const fields: Record<string, string[]> = {
+    'parts-start': ['type', 'expectedRevision'],
+    'parts-select': ['type', 'expectedRevision', 'itemId'],
+    'parts-remove': ['type', 'expectedRevision', 'slot'],
+    'parts-adjust': ['type', 'expectedRevision', 'value'],
+    'parts-link': ['type', 'expectedRevision', 'linked', 'anchor'],
+    'parts-reset': ['type', 'expectedRevision', 'key'],
+    'import-image': ['type'],
+    'input-cancel': ['type'],
+    'input-retry': ['type'],
+    'input-apply': ['type', 'draftId', 'selection'],
+    'prepare-motion': ['type', 'expectedRevision'],
+    'motion-settings': ['type', 'expectedRevision', 'strength', 'smoothingMs', 'pose'],
+    'motion-parameter': ['type', 'expectedRevision', 'id', 'min', 'neutral', 'max'],
+    new: ['type', 'name', 'sourceType'],
+    open: ['type'],
+    save: ['type'],
+    'save-as': ['type'],
+    duplicate: ['type'],
+    close: ['type'],
+    undo: ['type'],
+    redo: ['type'],
+    sample: ['type'],
+    checkpoint: ['type'],
+    'check-resources': ['type'],
+    'cancel-task': ['type', 'id'],
+    'retry-task': ['type', 'id'],
+    recent: ['type', 'id'],
+    'remove-recent': ['type', 'id'],
+    recover: ['type', 'id'],
+    'preview-recovery': ['type', 'id'],
+    original: ['type', 'id'],
+    relink: ['type', 'assetId'],
+    'begin-group': ['type', 'label'],
+    'end-group': ['type', 'id', 'commit'],
+    edit: ['type', 'target', 'id', 'parameterId', 'value', 'expectedRevision', 'groupId'],
+  };
+  if (
+    typeof type !== 'string' ||
+    !Object.hasOwn(fields, type) ||
+    Object.keys(v).length !== fields[type]!.length ||
+    Object.keys(v).some((key) => !fields[type]!.includes(key))
+  )
+    throw new Error('E_SESSION_COMMAND');
+  if (type.startsWith('parts-')) {
+    if (!Number.isSafeInteger(v.expectedRevision) || Number(v.expectedRevision) < 0)
+      throw new Error('E_SESSION_COMMAND');
+    const id = (x: unknown) => typeof x === 'string' && /^[A-Za-z0-9_-]{1,64}$/.test(x);
+    if (
+      (type === 'parts-select' && !id(v.itemId)) ||
+      (type === 'parts-remove' &&
+        !['face', 'hair', 'eyes', 'mouth', 'outfit', 'accessory'].includes(String(v.slot))) ||
+      (type === 'parts-link' && (typeof v.linked !== 'boolean' || !id(v.anchor))) ||
+      (type === 'parts-reset' && !(v.key === null || id(v.key)))
+    )
+      throw new Error('E_SESSION_COMMAND');
+    if (type === 'parts-adjust') {
+      const a = v.value as Record<string, unknown>;
+      if (
+        !a ||
+        Object.keys(a).sort().join(',') !== 'hue,key,rotation,scale,x,y' ||
+        !id(a.key) ||
+        ![a.x, a.y, a.scale, a.rotation, a.hue].every(
+          (n) => typeof n === 'number' && Number.isFinite(n),
+        )
+      )
+        throw new Error('E_SESSION_COMMAND');
+    }
+  }
+  if (type === 'input-apply') {
+    if (typeof v.draftId !== 'string' || !/^[a-f0-9-]{36}$/.test(v.draftId))
+      throw new Error('E_SESSION_COMMAND');
+    assertSelection(v.selection);
+  }
+  if (
+    type === 'new' &&
+    (typeof v.name !== 'string' ||
+      v.name.length > 120 ||
+      !['parts', 'single-image', 'split-image'].includes(String(v.sourceType)))
+  )
+    throw new Error('E_SESSION_COMMAND');
+  if (
+    [
+      'recent',
+      'remove-recent',
+      'recover',
+      'preview-recovery',
+      'original',
+      'end-group',
+      'cancel-task',
+      'retry-task',
+    ].includes(type) &&
+    (typeof v.id !== 'string' || !/^[a-f0-9-]{36}$/.test(v.id))
+  )
+    throw new Error('E_SESSION_COMMAND');
+  if (
+    type === 'relink' &&
+    (typeof v.assetId !== 'string' || !/^[A-Za-z0-9_-]{1,64}$/.test(v.assetId))
+  )
+    throw new Error('E_SESSION_COMMAND');
+  if (
+    type === 'begin-group' &&
+    (typeof v.label !== 'string' || !v.label.trim() || v.label.length > 120)
+  )
+    throw new Error('E_SESSION_COMMAND');
   if (type === 'end-group' && typeof v.commit !== 'boolean') throw new Error('E_SESSION_COMMAND');
-  if (type === 'edit' && (!['project-name','part-name','part-role','part-opacity','part-translate-x','expression-value'].includes(String(v.target)) ||
-    ![v.id,v.parameterId,v.groupId].every(id => id === null || typeof id === 'string' && /^[A-Za-z0-9_-]{1,64}$/.test(id)) || !Number.isSafeInteger(v.expectedRevision) || Number(v.expectedRevision) < 0 ||
-    !(typeof v.value === 'string' && v.value.length <= 120 || typeof v.value === 'number' && Number.isFinite(v.value)))) throw new Error('E_SESSION_COMMAND');
-  if (['prepare-motion','motion-settings','motion-parameter'].includes(type) && (!Number.isSafeInteger(v.expectedRevision) || Number(v.expectedRevision)<0)) throw new Error('E_SESSION_COMMAND');
-  if (type === 'motion-settings' && (!Number.isFinite(v.strength) || Number(v.strength)<0 || Number(v.strength)>1 || !Number.isSafeInteger(v.smoothingMs) || Number(v.smoothingMs)<0 || Number(v.smoothingMs)>1000 || !Array.isArray(v.pose) || v.pose.length>128 || v.pose.some(p => !p || typeof p.parameterId !== 'string' || !/^[A-Za-z0-9_-]{1,64}$/.test(p.parameterId) || !Number.isFinite(p.value) || Object.keys(p).sort().join(',')!=='parameterId,value'))) throw new Error('E_SESSION_COMMAND');
-  if (type === 'motion-parameter' && (typeof v.id !== 'string' || !/^[A-Za-z0-9_-]{1,64}$/.test(v.id) || ![v.min,v.neutral,v.max].every(n => typeof n === 'number' && Number.isFinite(n)))) throw new Error('E_SESSION_COMMAND');
+  if (
+    type === 'edit' &&
+    (![
+      'project-name',
+      'part-name',
+      'part-role',
+      'part-opacity',
+      'part-translate-x',
+      'expression-value',
+    ].includes(String(v.target)) ||
+      ![v.id, v.parameterId, v.groupId].every(
+        (id) => id === null || (typeof id === 'string' && /^[A-Za-z0-9_-]{1,64}$/.test(id)),
+      ) ||
+      !Number.isSafeInteger(v.expectedRevision) ||
+      Number(v.expectedRevision) < 0 ||
+      !(
+        (typeof v.value === 'string' && v.value.length <= 120) ||
+        (typeof v.value === 'number' && Number.isFinite(v.value))
+      ))
+  )
+    throw new Error('E_SESSION_COMMAND');
+  if (
+    ['prepare-motion', 'motion-settings', 'motion-parameter'].includes(type) &&
+    (!Number.isSafeInteger(v.expectedRevision) || Number(v.expectedRevision) < 0)
+  )
+    throw new Error('E_SESSION_COMMAND');
+  if (
+    type === 'motion-settings' &&
+    (!Number.isFinite(v.strength) ||
+      Number(v.strength) < 0 ||
+      Number(v.strength) > 1 ||
+      !Number.isSafeInteger(v.smoothingMs) ||
+      Number(v.smoothingMs) < 0 ||
+      Number(v.smoothingMs) > 1000 ||
+      !Array.isArray(v.pose) ||
+      v.pose.length > 128 ||
+      v.pose.some(
+        (p) =>
+          !p ||
+          typeof p.parameterId !== 'string' ||
+          !/^[A-Za-z0-9_-]{1,64}$/.test(p.parameterId) ||
+          !Number.isFinite(p.value) ||
+          Object.keys(p).sort().join(',') !== 'parameterId,value',
+      ))
+  )
+    throw new Error('E_SESSION_COMMAND');
+  if (
+    type === 'motion-parameter' &&
+    (typeof v.id !== 'string' ||
+      !/^[A-Za-z0-9_-]{1,64}$/.test(v.id) ||
+      ![v.min, v.neutral, v.max].every((n) => typeof n === 'number' && Number.isFinite(n)))
+  )
+    throw new Error('E_SESSION_COMMAND');
   return value as SessionCommand;
 }

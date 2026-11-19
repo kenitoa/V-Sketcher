@@ -1,0 +1,14 @@
+{
+  "format": "2dsketcher-cache-archive/1",
+  "group": "research-torch",
+  "verified": true,
+  "files": 28547,
+  "logicalBytes": 5117000066,
+  "everyArchiveFileReconstructedAndHashMatched": true,
+  "originalSourceHashesRecordedAtPack": true,
+  "sourceHashRecheckedDuringVerify": false,
+  "sourceHashRequiredAgainBeforeEviction": true,
+  "indexSha256": "69f54ae56451ccb8b561e908d888148a067c7e3b3fef7de0a5de6ead3e6bd969",
+  "sourceRemoved": false,
+  "historicalEvidenceModified": false
+}

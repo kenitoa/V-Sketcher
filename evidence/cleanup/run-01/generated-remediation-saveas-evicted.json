@@ -1,0 +1,9 @@
+{
+  "group": "generated-remediation-saveas",
+  "removedFiles": 18,
+  "removedLogicalBytes": 110194929,
+  "retainedChangedOrProtectedFiles": 0,
+  "losslessArchiveRetained": true,
+  "recursiveDeletionUsed": false,
+  "historicalEvidenceModified": false
+}

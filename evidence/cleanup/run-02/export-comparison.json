@@ -1,0 +1,54 @@
+{
+    "scope":  "Premium preview project converted to native INP with the same compiled application; only the PNG codec varied. Fresh Node processes. Digest covers the native model, every encoded texture hash and all extensions apart from the generated export id and creation timestamp.",
+    "passed":  true,
+    "runs":  [
+                 {
+                     "variant":  "before",
+                     "ms":  1710.8603,
+                     "peakKiB":  242380,
+                     "bytes":  3614394,
+                     "textures":  7,
+                     "sha256":  "003a37cff098256ca9ae42905cd37b889c9ed0bdc368f75307c64ec3f96f17f2"
+                 },
+                 {
+                     "variant":  "after",
+                     "ms":  586.7677,
+                     "peakKiB":  176404,
+                     "bytes":  3614394,
+                     "textures":  7,
+                     "sha256":  "003a37cff098256ca9ae42905cd37b889c9ed0bdc368f75307c64ec3f96f17f2"
+                 },
+                 {
+                     "variant":  "after",
+                     "ms":  791.1100999999999,
+                     "peakKiB":  175172,
+                     "bytes":  3614394,
+                     "textures":  7,
+                     "sha256":  "003a37cff098256ca9ae42905cd37b889c9ed0bdc368f75307c64ec3f96f17f2"
+                 },
+                 {
+                     "variant":  "before",
+                     "ms":  1589.0672,
+                     "peakKiB":  242124,
+                     "bytes":  3614394,
+                     "textures":  7,
+                     "sha256":  "003a37cff098256ca9ae42905cd37b889c9ed0bdc368f75307c64ec3f96f17f2"
+                 },
+                 {
+                     "variant":  "before",
+                     "ms":  1464.022,
+                     "peakKiB":  260744,
+                     "bytes":  3614394,
+                     "textures":  7,
+                     "sha256":  "003a37cff098256ca9ae42905cd37b889c9ed0bdc368f75307c64ec3f96f17f2"
+                 },
+                 {
+                     "variant":  "after",
+                     "ms":  600.8897999999999,
+                     "peakKiB":  175040,
+                     "bytes":  3614394,
+                     "textures":  7,
+                     "sha256":  "003a37cff098256ca9ae42905cd37b889c9ed0bdc368f75307c64ec3f96f17f2"
+                 }
+             ]
+}

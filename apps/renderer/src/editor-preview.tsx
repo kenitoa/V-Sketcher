@@ -1,40 +1,376 @@
-import React,{ useEffect,useMemo,useRef,useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { MotionPlayer } from '../../../packages/motion';
 import { AvatarRenderer } from '../../../packages/avatar-renderer';
-import { FIT,viewMatrix,zoomAt,layerCorners,type ViewportState } from '../../../packages/editor-view';
-import { inverse,transform,type Point } from '../../../packages/coordinates';
+import {
+  FIT,
+  viewMatrix,
+  zoomAt,
+  layerCorners,
+  type ViewportState,
+} from '../../../packages/editor-view';
+import { inverse, transform, type Point } from '../../../packages/coordinates';
 import type { PreviewScene } from '../../../packages/scene-core';
-export function EditorPreview({ scene,original,selected,onSelect,motion,probe=true }:{ scene:PreviewScene | null;original:PreviewScene | null;selected:string | null;onSelect:(id:string | null)=>void;motion?:MotionPlayer;probe?:boolean }) {
+export function EditorPreview({
+  scene,
+  original,
+  selected,
+  onSelect,
+  motion,
+  probe = true,
+}: {
+  scene: PreviewScene | null;
+  original: PreviewScene | null;
+  selected: string | null;
+  onSelect: (id: string | null) => void;
+  motion?: MotionPlayer;
+  probe?: boolean;
+}) {
   const outline = useRef<SVGRectElement>(null);
-  const host = useRef<HTMLDivElement>(null); const canvas = useRef<HTMLCanvasElement>(null); const render = useRef<AvatarRenderer | null>(null); const loaded = useRef(false); const renderKey = useRef('');
-  const [size,setSize] = useState<Point>({ x:600,y:600 }); const [view,setView] = useState<ViewportState>(structuredClone(FIT)); const [background,setBackground] = useState('checker');
-  const [compare,setCompare] = useState(false); const [guides,setGuides] = useState(true); const [hand,setHand] = useState(false); const [ready,setReady] = useState(false); const [failed,setFailed] = useState(false); const [retry,setRetry] = useState(0);
-  const drag = useRef<{ start:Point;pan:Point;move:boolean;hand:boolean } | null>(null); const space = useRef(false);
+  const host = useRef<HTMLDivElement>(null);
+  const canvas = useRef<HTMLCanvasElement>(null);
+  const render = useRef<AvatarRenderer | null>(null);
+  const loaded = useRef(false);
+  const renderKey = useRef('');
+  const [size, setSize] = useState<Point>({ x: 600, y: 600 });
+  const [view, setView] = useState<ViewportState>(structuredClone(FIT));
+  const [background, setBackground] = useState('checker');
+  const [compare, setCompare] = useState(false);
+  const [guides, setGuides] = useState(true);
+  const [hand, setHand] = useState(false);
+  const [ready, setReady] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const [retry, setRetry] = useState(0);
+  const drag = useRef<{ start: Point; pan: Point; move: boolean; hand: boolean } | null>(null);
+  const space = useRef(false);
   const activeScene = compare && original ? original : scene;
-  const sceneKey = JSON.stringify(activeScene && { canvas:activeScene.canvas,layers:activeScene.layers });
-  const stable = useMemo(() => activeScene,[sceneKey]); const dimensions:[number,number] = stable?.canvas ?? [1000,1000];
-  const matrix = viewMatrix(dimensions,size,view); const current = useRef({ matrix,view,size,selected,onSelect,compare,scene:stable,key:sceneKey }); current.current = { matrix,view,size,selected,onSelect,compare,scene:stable,key:sceneKey };
-  useEffect(() => { const observer = new ResizeObserver(entries => { const rect = entries[0]?.contentRect; if (rect && rect.width > 0 && rect.height > 0) setSize({ x:rect.width,y:rect.height }); }); if (host.current) observer.observe(host.current); return () => observer.disconnect(); },[]);
-  useEffect(() => { loaded.current = false; setReady(false); setFailed(false); if (!stable || !canvas.current) return; let disposed = false; let animation = 0; let renderer:AvatarRenderer; try { renderer = new AvatarRenderer(canvas.current,stable); } catch { setFailed(true); return; } render.current = renderer; renderKey.current = sceneKey;
-    void renderer.load(document.baseURI).then(() => { if (!disposed) { renderer.draw(); loaded.current = true; setReady(true); const animate = (now:number):void => { if (disposed) return; renderer.draw(motion?.snapshot().parameters); const rect = outline.current; if (rect && current.current.selected) { const b = renderer.selectionBounds(current.current.selected); if (b) for (const [key,value] of Object.entries(b)) rect.setAttribute(key,String(value)); } animation = requestAnimationFrame(animate); }; if (motion && !compare) animation = requestAnimationFrame(animate); } }).catch(() => { if (!disposed) setFailed(true); });
-    return () => { disposed = true; cancelAnimationFrame(animation); renderer.dispose(); if (render.current === renderer) render.current = null; };
-  },[stable,retry,motion,compare]);
-  useEffect(() => { if (!original) setCompare(false); },[!!original]);
-  useEffect(() => { if (compare) motion?.stop(); },[compare,motion]);
-  const zoom = (factor:number,anchor?:Point):void => { const s = current.current.size; setView(v => zoomAt(v,factor,anchor ?? { x:s.x/2,y:s.y/2 },s)); };
-  useEffect(() => { const el = host.current!; const wheel = (e:WheelEvent):void => { e.preventDefault(); const rect = el.getBoundingClientRect(); zoom(e.deltaY < 0 ? 1.15 : 1/1.15,{ x:e.clientX-rect.left,y:e.clientY-rect.top }); }; el.addEventListener('wheel',wheel,{ passive:false }); return () => el.removeEventListener('wheel',wheel); },[]);
-  useEffect(() => { if(!probe)return;window.previewProbe = () => { const c = current.current; const rect = host.current!.getBoundingClientRect(); return { matrix:c.matrix,view:c.view,selected:c.selected,compare:c.compare,ready:loaded.current && renderKey.current === c.key,report:loaded.current && renderKey.current === c.key ? render.current?.report() ?? null : null,toClient:(point:Point) => { const screen = transform(c.matrix,point); return { x:screen.x+rect.left,y:screen.y+rect.top }; },hit:(point:Point) => render.current?.hitTest(point) ?? null }; }; return () => { delete window.previewProbe; }; },[probe]);
-  const chooseAt = (client:Point):void => { if (compare || !ready || !loaded.current) return; const rect = host.current!.getBoundingClientRect(); const point = transform(inverse(current.current.matrix),{ x:client.x-rect.left,y:client.y-rect.top }); onSelect(render.current?.hitTest(point) ?? null); };
-  const layer = !compare && stable?.layers.find(l => l.id === selected); const corners = layer ? layerCorners(layer) : [];
-  const bounds = corners.length ? { x:Math.min(...corners.map(p => p.x)),y:Math.min(...corners.map(p => p.y)),width:Math.max(...corners.map(p => p.x))-Math.min(...corners.map(p => p.x)),height:Math.max(...corners.map(p => p.y))-Math.min(...corners.map(p => p.y)) } : null;
-  return <section className="editor-preview" aria-label="캐릭터 미리보기"><div className="preview-tools" role="toolbar" aria-label="보기 도구"><button data-zoom-out aria-label="축소" onClick={() => zoom(1/1.25)}>−</button><output aria-label="화면 배율">{Math.round(view.zoom*100)}%</output><button data-zoom-in aria-label="확대" onClick={() => zoom(1.25)}>＋</button><button data-fit onClick={() => setView(structuredClone(FIT))}>전체 맞춤</button><button data-hand aria-pressed={hand} onClick={() => setHand(!hand)}>화면 이동</button><button data-original disabled={!original} aria-pressed={compare} onClick={() => setCompare(!compare)}>{compare ? '편집본 보기' : '원본 보기'}</button></div>
-    <div ref={host} data-viewport data-mode={compare ? 'original' : 'edited'} data-selected={selected ?? ''} className={`viewport bg-${background} ${hand ? 'hand' : ''}`} tabIndex={0} role="group" aria-label="미리보기. 클릭으로 부위 선택, 방향키로 부위 이동, Shift 방향키로 화면 이동, 더하기와 빼기로 확대, 0으로 전체 맞춤" onKeyDown={e => {
-      if (e.key === ' ') { space.current = true; e.preventDefault(); } else if (e.key === '+' || e.key === '=') { e.preventDefault(); zoom(1.25); } else if (e.key === '-') { e.preventDefault(); zoom(1/1.25); } else if (e.key === '0') { e.preventDefault(); setView(structuredClone(FIT)); } else if (e.key === 'Escape') onSelect(null);
-      else if (['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)) { e.preventDefault(); if (e.shiftKey) setView(v => ({ ...v,pan:{ x:v.pan.x+(e.key === 'ArrowLeft' ? -20 : e.key === 'ArrowRight' ? 20 : 0),y:v.pan.y+(e.key === 'ArrowUp' ? -20 : e.key === 'ArrowDown' ? 20 : 0) } })); else if (!compare && stable?.layers.length) { const list = stable.layers; const index = list.findIndex(l => l.id === selected); const delta = ['ArrowLeft','ArrowUp'].includes(e.key) ? -1 : 1; onSelect(list[(index+delta+list.length)%list.length]!.id); } }
-    }} onKeyUp={e => { if (e.key === ' ') space.current = false; }} onBlur={() => { space.current = false; }}
-    onPointerDown={e => { if (![0,1].includes(e.button)) return; e.preventDefault(); e.currentTarget.focus({ preventScroll:true }); try { e.currentTarget.setPointerCapture(e.pointerId); } catch { /* Pointer may already have ended. */ } drag.current = { start:{ x:e.clientX,y:e.clientY },pan:{ ...view.pan },move:false,hand:hand || space.current || e.button === 1 }; }} onPointerMove={e => { const d = drag.current; if (!d) return; const dx = e.clientX-d.start.x; const dy = e.clientY-d.start.y; if (Math.hypot(dx,dy)>4) d.move = true; if (d.hand) setView(v => ({ ...v,pan:{ x:d.pan.x+dx,y:d.pan.y+dy } })); }} onPointerUp={e => { const d = drag.current; drag.current = null; if (e.currentTarget.hasPointerCapture(e.pointerId)) e.currentTarget.releasePointerCapture(e.pointerId); if (d && !d.hand && !d.move) chooseAt({ x:e.clientX,y:e.clientY }); }} onPointerCancel={() => { drag.current = null; }}>
-      {stable ? <div className="canvas-transform" style={{ width:dimensions[0],height:dimensions[1],transform:`matrix(${matrix.join(',')})` }}><canvas ref={canvas} width={dimensions[0]} height={dimensions[1]} data-ready={ready} aria-label={compare ? '편집 전 원본 그림' : '편집한 캐릭터'}/><svg className="editing-overlay" viewBox={`0 0 ${dimensions[0]} ${dimensions[1]}`} aria-hidden="true">{guides && <g className="guides"><rect x="0" y="0" width={dimensions[0]} height={dimensions[1]}/><path d={`M${dimensions[0]/2} 0V${dimensions[1]}M0 ${dimensions[1]/2}H${dimensions[0]}`}/></g>}{bounds && <rect ref={outline} className="selection-outline" {...bounds}/>}</svg></div> : <div className="preview-empty"><strong>캐릭터를 준비해 주세요</strong><p>준비 단계에서 고급 예제를 넣으면<br/>부위를 선택하고 편집할 수 있어요.</p></div>}
-      <span className="view-label">{compare ? '원본 비교 · 편집하지 않음' : '편집 미리보기'}</span>{failed && <div className="preview-empty" role="alert"><strong>그림을 표시하지 못했어요</strong><p>프로젝트 내용은 유지됩니다. 그림 연결을 확인하거나 표시를 다시 시도하세요.</p><button onClick={() => setRetry(v => v+1)}>표시 다시 시도</button></div>}
-    </div><div className="preview-options"><label>확인용 배경<select data-background value={background} onChange={e => setBackground(e.target.value)}><option value="checker">투명 격자</option><option value="light">밝은 배경</option><option value="dark">어두운 배경</option></select></label><label><input data-guides type="checkbox" checked={guides} onChange={e => setGuides(e.target.checked)}/>가이드 표시</label><span>배경·선택선·배율은 저장·방송 설정에 포함되지 않아요.</span></div>
-  </section>;
+  const sceneKey = JSON.stringify(
+    activeScene && { canvas: activeScene.canvas, layers: activeScene.layers },
+  );
+  const stable = useMemo(() => activeScene, [sceneKey]);
+  const dimensions: [number, number] = stable?.canvas ?? [1000, 1000];
+  const matrix = viewMatrix(dimensions, size, view);
+  const current = useRef({
+    matrix,
+    view,
+    size,
+    selected,
+    onSelect,
+    compare,
+    scene: stable,
+    key: sceneKey,
+  });
+  current.current = {
+    matrix,
+    view,
+    size,
+    selected,
+    onSelect,
+    compare,
+    scene: stable,
+    key: sceneKey,
+  };
+  useEffect(() => {
+    const observer = new ResizeObserver((entries) => {
+      const rect = entries[0]?.contentRect;
+      if (rect && rect.width > 0 && rect.height > 0) setSize({ x: rect.width, y: rect.height });
+    });
+    if (host.current) observer.observe(host.current);
+    return () => observer.disconnect();
+  }, []);
+  useEffect(() => {
+    loaded.current = false;
+    setReady(false);
+    setFailed(false);
+    if (!stable || !canvas.current) return;
+    let disposed = false;
+    let animation = 0;
+    let renderer: AvatarRenderer;
+    try {
+      renderer = new AvatarRenderer(canvas.current, stable);
+    } catch {
+      setFailed(true);
+      return;
+    }
+    render.current = renderer;
+    renderKey.current = sceneKey;
+    void renderer
+      .load(document.baseURI)
+      .then(() => {
+        if (!disposed) {
+          renderer.draw();
+          loaded.current = true;
+          setReady(true);
+          const animate = (): void => {
+            if (disposed) return;
+            renderer.draw(motion?.snapshot().parameters);
+            const rect = outline.current;
+            if (rect && current.current.selected) {
+              const b = renderer.selectionBounds(current.current.selected);
+              if (b)
+                for (const [key, value] of Object.entries(b)) rect.setAttribute(key, String(value));
+            }
+            animation = requestAnimationFrame(animate);
+          };
+          if (motion && !compare) animation = requestAnimationFrame(animate);
+        }
+      })
+      .catch(() => {
+        if (!disposed) setFailed(true);
+      });
+    return () => {
+      disposed = true;
+      cancelAnimationFrame(animation);
+      renderer.dispose();
+      if (render.current === renderer) render.current = null;
+    };
+  }, [stable, retry, motion, compare]);
+  useEffect(() => {
+    if (!original) setCompare(false);
+  }, [!!original]);
+  useEffect(() => {
+    if (compare) motion?.stop();
+  }, [compare, motion]);
+  const zoom = (factor: number, anchor?: Point): void => {
+    const s = current.current.size;
+    setView((v) => zoomAt(v, factor, anchor ?? { x: s.x / 2, y: s.y / 2 }, s));
+  };
+  useEffect(() => {
+    const el = host.current!;
+    const wheel = (e: WheelEvent): void => {
+      e.preventDefault();
+      const rect = el.getBoundingClientRect();
+      zoom(e.deltaY < 0 ? 1.15 : 1 / 1.15, { x: e.clientX - rect.left, y: e.clientY - rect.top });
+    };
+    el.addEventListener('wheel', wheel, { passive: false });
+    return () => el.removeEventListener('wheel', wheel);
+  }, []);
+  useEffect(() => {
+    if (!probe) return;
+    window.previewProbe = () => {
+      const c = current.current;
+      const rect = host.current!.getBoundingClientRect();
+      return {
+        matrix: c.matrix,
+        view: c.view,
+        selected: c.selected,
+        compare: c.compare,
+        ready: loaded.current && renderKey.current === c.key,
+        report:
+          loaded.current && renderKey.current === c.key ? (render.current?.report() ?? null) : null,
+        toClient: (point: Point) => {
+          const screen = transform(c.matrix, point);
+          return { x: screen.x + rect.left, y: screen.y + rect.top };
+        },
+        hit: (point: Point) => render.current?.hitTest(point) ?? null,
+      };
+    };
+    return () => {
+      delete window.previewProbe;
+    };
+  }, [probe]);
+  const chooseAt = (client: Point): void => {
+    if (compare || !ready || !loaded.current) return;
+    const rect = host.current!.getBoundingClientRect();
+    const point = transform(inverse(current.current.matrix), {
+      x: client.x - rect.left,
+      y: client.y - rect.top,
+    });
+    onSelect(render.current?.hitTest(point) ?? null);
+  };
+  const layer = !compare && stable?.layers.find((l) => l.id === selected);
+  const corners = layer ? layerCorners(layer) : [];
+  const bounds = corners.length
+    ? {
+        x: Math.min(...corners.map((p) => p.x)),
+        y: Math.min(...corners.map((p) => p.y)),
+        width: Math.max(...corners.map((p) => p.x)) - Math.min(...corners.map((p) => p.x)),
+        height: Math.max(...corners.map((p) => p.y)) - Math.min(...corners.map((p) => p.y)),
+      }
+    : null;
+  return (
+    <section className="editor-preview" aria-label="캐릭터 미리보기">
+      <div className="preview-tools" role="toolbar" aria-label="보기 도구">
+        <button data-zoom-out aria-label="축소" onClick={() => zoom(1 / 1.25)}>
+          −
+        </button>
+        <output aria-label="화면 배율">{Math.round(view.zoom * 100)}%</output>
+        <button data-zoom-in aria-label="확대" onClick={() => zoom(1.25)}>
+          ＋
+        </button>
+        <button data-fit onClick={() => setView(structuredClone(FIT))}>
+          전체 맞춤
+        </button>
+        <button data-hand aria-pressed={hand} onClick={() => setHand(!hand)}>
+          화면 이동
+        </button>
+        <button
+          data-original
+          disabled={!original}
+          aria-pressed={compare}
+          onClick={() => setCompare(!compare)}
+        >
+          {compare ? '편집본 보기' : '원본 보기'}
+        </button>
+      </div>
+      <div
+        ref={host}
+        data-viewport
+        data-mode={compare ? 'original' : 'edited'}
+        data-selected={selected ?? ''}
+        className={`viewport bg-${background} ${hand ? 'hand' : ''}`}
+        tabIndex={0}
+        role="group"
+        aria-label="미리보기. 클릭으로 부위 선택, 방향키로 부위 이동, Shift 방향키로 화면 이동, 더하기와 빼기로 확대, 0으로 전체 맞춤"
+        onKeyDown={(e) => {
+          if (e.key === ' ') {
+            space.current = true;
+            e.preventDefault();
+          } else if (e.key === '+' || e.key === '=') {
+            e.preventDefault();
+            zoom(1.25);
+          } else if (e.key === '-') {
+            e.preventDefault();
+            zoom(1 / 1.25);
+          } else if (e.key === '0') {
+            e.preventDefault();
+            setView(structuredClone(FIT));
+          } else if (e.key === 'Escape') onSelect(null);
+          else if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
+            e.preventDefault();
+            if (e.shiftKey)
+              setView((v) => ({
+                ...v,
+                pan: {
+                  x: v.pan.x + (e.key === 'ArrowLeft' ? -20 : e.key === 'ArrowRight' ? 20 : 0),
+                  y: v.pan.y + (e.key === 'ArrowUp' ? -20 : e.key === 'ArrowDown' ? 20 : 0),
+                },
+              }));
+            else if (!compare && stable?.layers.length) {
+              const list = stable.layers;
+              const index = list.findIndex((l) => l.id === selected);
+              const delta = ['ArrowLeft', 'ArrowUp'].includes(e.key) ? -1 : 1;
+              onSelect(list[(index + delta + list.length) % list.length]!.id);
+            }
+          }
+        }}
+        onKeyUp={(e) => {
+          if (e.key === ' ') space.current = false;
+        }}
+        onBlur={() => {
+          space.current = false;
+        }}
+        onPointerDown={(e) => {
+          if (![0, 1].includes(e.button)) return;
+          e.preventDefault();
+          e.currentTarget.focus({ preventScroll: true });
+          try {
+            e.currentTarget.setPointerCapture(e.pointerId);
+          } catch {
+            /* Pointer may already have ended. */
+          }
+          drag.current = {
+            start: { x: e.clientX, y: e.clientY },
+            pan: { ...view.pan },
+            move: false,
+            hand: hand || space.current || e.button === 1,
+          };
+        }}
+        onPointerMove={(e) => {
+          const d = drag.current;
+          if (!d) return;
+          const dx = e.clientX - d.start.x;
+          const dy = e.clientY - d.start.y;
+          if (Math.hypot(dx, dy) > 4) d.move = true;
+          if (d.hand) setView((v) => ({ ...v, pan: { x: d.pan.x + dx, y: d.pan.y + dy } }));
+        }}
+        onPointerUp={(e) => {
+          const d = drag.current;
+          drag.current = null;
+          if (e.currentTarget.hasPointerCapture(e.pointerId))
+            e.currentTarget.releasePointerCapture(e.pointerId);
+          if (d && !d.hand && !d.move) chooseAt({ x: e.clientX, y: e.clientY });
+        }}
+        onPointerCancel={() => {
+          drag.current = null;
+        }}
+      >
+        {stable ? (
+          <div
+            className="canvas-transform"
+            style={{
+              width: dimensions[0],
+              height: dimensions[1],
+              transform: `matrix(${matrix.join(',')})`,
+            }}
+          >
+            <canvas
+              ref={canvas}
+              width={dimensions[0]}
+              height={dimensions[1]}
+              data-ready={ready}
+              aria-label={compare ? '편집 전 원본 그림' : '편집한 캐릭터'}
+            />
+            <svg
+              className="editing-overlay"
+              viewBox={`0 0 ${dimensions[0]} ${dimensions[1]}`}
+              aria-hidden="true"
+            >
+              {guides && (
+                <g className="guides">
+                  <rect x="0" y="0" width={dimensions[0]} height={dimensions[1]} />
+                  <path
+                    d={`M${dimensions[0] / 2} 0V${dimensions[1]}M0 ${dimensions[1] / 2}H${dimensions[0]}`}
+                  />
+                </g>
+              )}
+              {bounds && <rect ref={outline} className="selection-outline" {...bounds} />}
+            </svg>
+          </div>
+        ) : (
+          <div className="preview-empty">
+            <strong>캐릭터를 준비해 주세요</strong>
+            <p>
+              준비 단계에서 고급 예제를 넣으면
+              <br />
+              부위를 선택하고 편집할 수 있어요.
+            </p>
+          </div>
+        )}
+        <span className="view-label">
+          {compare ? '원본 비교 · 편집하지 않음' : '편집 미리보기'}
+        </span>
+        {failed && (
+          <div className="preview-empty" role="alert">
+            <strong>그림을 표시하지 못했어요</strong>
+            <p>프로젝트 내용은 유지됩니다. 그림 연결을 확인하거나 표시를 다시 시도하세요.</p>
+            <button onClick={() => setRetry((v) => v + 1)}>표시 다시 시도</button>
+          </div>
+        )}
+      </div>
+      <div className="preview-options">
+        <label>
+          확인용 배경
+          <select
+            data-background
+            value={background}
+            onChange={(e) => setBackground(e.target.value)}
+          >
+            <option value="checker">투명 격자</option>
+            <option value="light">밝은 배경</option>
+            <option value="dark">어두운 배경</option>
+          </select>
+        </label>
+        <label>
+          <input
+            data-guides
+            type="checkbox"
+            checked={guides}
+            onChange={(e) => setGuides(e.target.checked)}
+          />
+          가이드 표시
+        </label>
+        <span>배경·선택선·배율은 저장·방송 설정에 포함되지 않아요.</span>
+      </div>
+    </section>
+  );
 }

@@ -1,30 +1,340 @@
-import type{SessionView,SessionCommand,SessionReply}from'../../../packages/project-session/contracts';
-import type{RunRuntime}from'./run-runtime';
-import{clickCommittedControl}from'./ui-check-control';
-import{CONVERTER_VERSION}from'../../../packages/export-check/types';
-export async function checkFileOutputUI(host:{current:()=>SessionView|null;command:(c:SessionCommand)=>Promise<SessionReply>;settled:()=>Promise<unknown>;runtime:RunRuntime}){
- const current=()=>host.current()!.project!,pause=(ms=70)=>new Promise(r=>setTimeout(r,ms));let stage='prepare',calls=0;const original=navigator.mediaDevices.getUserMedia;
- const verify=(v:unknown,code:string)=>{if(!v)throw new Error(code);};const until=async(fn:()=>unknown)=>{const end=performance.now()+65000;while(!fn()){if(performance.now()>end)throw new Error('E_FILE_UI_TIMEOUT');await pause();}};
- const click=async(selector:string)=>{stage=selector;window.editorFailureState={fileOutputStage:stage};await clickCommittedControl(selector,host.current);await host.settled();await pause();};
- const set=async(selector:string,value:string)=>{const element=document.querySelector<HTMLInputElement|HTMLSelectElement>(selector)!;verify(element,'E_FILE_CONTROL');if(element instanceof HTMLSelectElement){element.value=value;element.dispatchEvent(new Event('change',{bubbles:true}));}else{Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value')!.set!.call(element,value);element.dispatchEvent(new Event('input',{bubbles:true}));}await new Promise<void>(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve())));};
- const prepare=async()=>{await click('[data-image-prepare]');await until(()=>{const img=document.querySelector<HTMLImageElement>('[data-image-export-preview]');return img?.complete&&img.naturalWidth>0&&!document.querySelector<HTMLButtonElement>('[data-image-save]')?.disabled;});};
- const images:{route:string;variant:string;name:string;ticketId:string;sha256:string}[]=[],routes:Record<string,unknown>[]=[];
- const save=async(route:string,variant:string)=>{const img=document.querySelector<HTMLImageElement>('[data-image-export-preview]')!,ticketId=new URL(img.src).pathname.split('/')[3]!;await click('[data-image-save]');await until(()=>document.querySelector('[data-file-message]')?.textContent?.includes('저장 완료'));const name=document.querySelector('[data-file-message]')!.textContent!.split(' · ')[1]!;images.push({route,variant,name,ticketId,sha256:img.dataset.imageSha!});};
- Object.defineProperty(navigator.mediaDevices,'getUserMedia',{configurable:true,value:async()=>{calls++;throw new DOMException('Denied','NotAllowedError');}});
- try{for(const route of ['parts','single-image','split-image'] as const){await host.command({type:'new',name:'이미지·사전검사 · '+route,sourceType:route});await click('[data-step="prepare"]');
-  if(route==='parts')await host.command({type:'parts-start',expectedRevision:current().revision});else if(route==='single-image'){await host.command({type:'import-image'});await until(()=>!host.current()!.input!.busy);const d=host.current()!.input!.draft!;await host.command({type:'input-apply',draftId:d.id,selection:{rect:{x:0,y:0,...d.probe.size},masks:[],occluded:false,backgroundTolerance:null}});await until(()=>!host.current()!.input!.busy);await host.command({type:'structure-start',expectedRevision:current().revision,completion:'estimated'});await until(()=>!host.current()!.structure!.busy);await host.command({type:'structure-apply',expectedRevision:current().revision});}else{await click('[data-split-load="example"]');await until(()=>!host.current()!.split!.busy&&document.querySelector('[data-split-prepare]'));await click('[data-split-prepare]');await until(()=>!host.current()!.split!.busy);await click('[data-split-apply]');await click('[data-split-close]');}
-  const mouth=current().parameters.find(p=>p.previewKey==='mouth')!;await host.command({type:'expression-edit',expectedRevision:current().revision,operation:{kind:'save',id:null,name:'PNG 표정',values:[{parameterId:mouth.id,value:mouth.max,locked:true}],transitionMs:0,releaseMs:100,release:'live-input'}});
-  await click('[data-file-output-open]');await set('[data-image-size="width"]','512');await set('[data-image-size="height"]','640');await prepare();await save(route,'transparent');
-  await click('[data-image-transparent]');await set('[data-image-background]','#e1d6ef');await prepare();await save(route,'background');await click('[data-image-transparent]');await set('[data-image-pose]',current().expressions.at(-1)!.id);await prepare();await save(route,'expression');
-  await set('[data-image-placement="scale"]','.7');await set('[data-image-placement="x"]','.1');await set('[data-image-crop="bottom"]','15');await prepare();await save(route,'placement');
-  const image=document.querySelector<HTMLImageElement>('[data-image-export-preview]')!,ticketId=new URL(image.src).pathname.split('/')[3]!;await host.command({type:'edit',target:'part-opacity',id:current().parts[0]!.id,parameterId:null,value:.55,expectedRevision:current().revision,groupId:null});await until(()=>!!document.querySelector('[data-image-stale]'));verify((await window.studio.image.save(ticketId)).errorCode==='E_IMAGE_STALE','E_FILE_STALE_BACKEND');
-  await click('[data-file-tab="target"]');await click('[data-export-remember]');await until(()=>current().exportProfiles.some(p=>p.converterVersion===CONVERTER_VERSION));const targetFields=document.querySelectorAll<HTMLInputElement>('[data-export-map]');await set('[data-export-map="'+CSS.escape(targetFields[1]!.dataset.exportMap!)+'"]',targetFields[0]!.value);await click('[data-export-inspect]');await until(()=>!!document.querySelector('[data-export-result]'));verify(document.querySelector('[data-export-result]')?.getAttribute('data-export-status')==='BLOCKED','E_FILE_CORE_LOSS_BLOCK');await click('[data-export-copy]');await pause(300);verify(!!document.querySelector('.conversion-review canvas'),'E_FILE_COPY');
-  await host.command({type:'edit',target:'project-name',id:null,parameterId:null,value:'새 검사 입력 · '+route,expectedRevision:current().revision,groupId:null});await until(()=>document.querySelector('[data-export-result]')?.getAttribute('data-export-status')==='STALE');await click('[data-export-inspect]');await until(()=>document.querySelector('[data-export-result]')?.getAttribute('data-export-status')==='BLOCKED');const fix=document.querySelector<HTMLButtonElement>('[data-export-fix]')!;verify(!fix.disabled,'E_FILE_FIX_LINK');fix.click();await host.settled();await pause(200);
-  if(document.querySelector('.expression-dialog .close'))(document.querySelector('.expression-dialog .close') as HTMLButtonElement).click();if(document.querySelector('.detail-dialog .close'))(document.querySelector('.detail-dialog .close') as HTMLButtonElement).click();await host.command({type:'save'});const id=host.current()!.recent[0]!.id;await host.command({type:'close'});await host.command({type:'recent',id});verify(current().exportProfiles.some(p=>p.converterVersion===CONVERTER_VERSION),'E_FILE_PROFILE_REOPEN');routes.push({route,passed:true,actualRoutePreparation:true,pngVariants:4,deviceRequests:0,staleImageRejected:true,coreLossBlocked:true,staleInspection:true,copyReview:true,fixNavigation:true,targetSettingsReopened:true});
- }
- await host.runtime.start(host.current()!,'manual',{camera:'',microphone:'',cameraAvailable:false,microphoneAvailable:false});verify(host.runtime.active,'E_FILE_EXECUTION_START');host.runtime.player.set('head_yaw',current().parameters.find(p=>p.previewKey==='head_yaw')!.max);await pause(150);await click('[data-file-output-open]');await set('[data-file-source]','execution');await set('[data-image-size="width"]','512');await set('[data-image-size="height"]','640');await set('[data-image-pose]','live');await prepare();await save('execution','frozen-live');await click('.file-output-dialog .close');await host.runtime.stop();
- await host.command({type:'close'});const positive=host.current()!.recent.find(r=>r.displayName==='사전검사 양성 예제')!;verify(positive,'E_FILE_POSITIVE_FIXTURE');await host.command({type:'recent',id:positive.id});await click('[data-file-output-open]');await click('[data-file-tab="target"]');await click('[data-export-inspect]');await until(()=>document.querySelector('[data-export-result]')?.getAttribute('data-export-status')==='WARNING');await click('[data-export-ack]');await until(()=>document.querySelector('[data-export-ack]')?.textContent?.includes('확인됨'));const first=current().parameters[0]!,details=document.querySelector<HTMLInputElement>('[data-export-map]')!.closest('details')!;details.open=true;await set('[data-export-map="'+CSS.escape(first.id)+'"]','changed_name');verify(document.querySelector('[data-export-result]')?.getAttribute('data-export-status')==='STALE','E_FILE_TARGET_STALE');await click('[data-export-remember]');await until(()=>current().exportProfiles.some(p=>p.parameterMap.some(m=>m.targetName==='changed_name')));await click('[data-export-inspect]');await until(()=>document.querySelector('[data-export-result]')?.getAttribute('data-export-status')==='WARNING');verify(!document.querySelector('[data-export-ack]')?.textContent?.includes('확인됨'),'E_FILE_ACK_RESET');await click('.file-output-dialog .close');await host.command({type:'save'});await host.command({type:'close'});
- const staticItem=host.current()!.recent.find(r=>r.displayName==='정지 그림 예제')!;await host.command({type:'recent',id:staticItem.id});verify(!current().motion&&current().parameters.length===0,'E_FILE_STATIC_FIXTURE');await click('[data-file-output-open]');await set('[data-image-size="width"]','512');await set('[data-image-size="height"]','640');await prepare();await save('static','no-motion');
- verify(calls===0,'E_FILE_DEVICE_REQUEST');return {passed:true,routes,images,staticWithoutMotion:true,frozenExecutionImage:true,warningAcknowledgement:true,warningScopeReset:true,targetSettingsReusable:true,deviceRequests:calls,physicalDevicesOpened:false,externalFileGenerated:false,externalRuntimeVerified:false,m0:'HOLD'};
- }finally{Object.defineProperty(navigator.mediaDevices,'getUserMedia',{configurable:true,value:original});}
+import type {
+  SessionView,
+  SessionCommand,
+  SessionReply,
+} from '../../../packages/project-session/contracts';
+import type { RunRuntime } from './run-runtime';
+import { clickCommittedControl } from './ui-check-control';
+import { CONVERTER_VERSION } from '../../../packages/export-check/types';
+export async function checkFileOutputUI(host: {
+  current: () => SessionView | null;
+  command: (c: SessionCommand) => Promise<SessionReply>;
+  settled: () => Promise<unknown>;
+  runtime: RunRuntime;
+}) {
+  const current = () => host.current()!.project!,
+    pause = (ms = 70) => new Promise((r) => setTimeout(r, ms));
+  let stage = 'prepare',
+    calls = 0;
+  const original = navigator.mediaDevices.getUserMedia;
+  const verify = (v: unknown, code: string) => {
+    if (!v) throw new Error(code);
+  };
+  const until = async (fn: () => unknown) => {
+    const end = performance.now() + 65000;
+    while (!fn()) {
+      if (performance.now() > end) throw new Error('E_FILE_UI_TIMEOUT');
+      await pause();
+    }
+  };
+  const click = async (selector: string) => {
+    stage = selector;
+    window.editorFailureState = { fileOutputStage: stage };
+    await clickCommittedControl(selector, host.current);
+    await host.settled();
+    await pause();
+  };
+  const set = async (selector: string, value: string) => {
+    const element = document.querySelector<HTMLInputElement | HTMLSelectElement>(selector)!;
+    verify(element, 'E_FILE_CONTROL');
+    if (element instanceof HTMLSelectElement) {
+      element.value = value;
+      element.dispatchEvent(new Event('change', { bubbles: true }));
+    } else {
+      Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!.call(
+        element,
+        value,
+      );
+      element.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+    await new Promise<void>((resolve) =>
+      requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
+    );
+  };
+  const prepare = async () => {
+    await click('[data-image-prepare]');
+    await until(() => {
+      const img = document.querySelector<HTMLImageElement>('[data-image-export-preview]');
+      return (
+        img?.complete &&
+        img.naturalWidth > 0 &&
+        !document.querySelector<HTMLButtonElement>('[data-image-save]')?.disabled
+      );
+    });
+  };
+  const images: {
+      route: string;
+      variant: string;
+      name: string;
+      ticketId: string;
+      sha256: string;
+    }[] = [],
+    routes: Record<string, unknown>[] = [];
+  const save = async (route: string, variant: string) => {
+    const img = document.querySelector<HTMLImageElement>('[data-image-export-preview]')!,
+      ticketId = new URL(img.src).pathname.split('/')[3]!;
+    await click('[data-image-save]');
+    await until(() =>
+      document.querySelector('[data-file-message]')?.textContent?.includes('저장 완료'),
+    );
+    const name = document.querySelector('[data-file-message]')!.textContent!.split(' · ')[1]!;
+    images.push({ route, variant, name, ticketId, sha256: img.dataset.imageSha! });
+  };
+  Object.defineProperty(navigator.mediaDevices, 'getUserMedia', {
+    configurable: true,
+    value: async () => {
+      calls++;
+      throw new DOMException('Denied', 'NotAllowedError');
+    },
+  });
+  try {
+    for (const route of ['parts', 'single-image', 'split-image'] as const) {
+      await host.command({ type: 'new', name: '이미지·사전검사 · ' + route, sourceType: route });
+      await click('[data-step="prepare"]');
+      if (route === 'parts')
+        await host.command({ type: 'parts-start', expectedRevision: current().revision });
+      else if (route === 'single-image') {
+        await host.command({ type: 'import-image' });
+        await until(() => !host.current()!.input!.busy);
+        const d = host.current()!.input!.draft!;
+        await host.command({
+          type: 'input-apply',
+          draftId: d.id,
+          selection: {
+            rect: { x: 0, y: 0, ...d.probe.size },
+            masks: [],
+            occluded: false,
+            backgroundTolerance: null,
+          },
+        });
+        await until(() => !host.current()!.input!.busy);
+        await host.command({
+          type: 'structure-start',
+          expectedRevision: current().revision,
+          completion: 'estimated',
+        });
+        await until(() => !host.current()!.structure!.busy);
+        await host.command({ type: 'structure-apply', expectedRevision: current().revision });
+      } else {
+        await click('[data-split-load="example"]');
+        await until(
+          () => !host.current()!.split!.busy && document.querySelector('[data-split-prepare]'),
+        );
+        await click('[data-split-prepare]');
+        await until(() => !host.current()!.split!.busy);
+        await click('[data-split-apply]');
+        await click('[data-split-close]');
+      }
+      const mouth = current().parameters.find((p) => p.previewKey === 'mouth')!;
+      await host.command({
+        type: 'expression-edit',
+        expectedRevision: current().revision,
+        operation: {
+          kind: 'save',
+          id: null,
+          name: 'PNG 표정',
+          values: [{ parameterId: mouth.id, value: mouth.max, locked: true }],
+          transitionMs: 0,
+          releaseMs: 100,
+          release: 'live-input',
+        },
+      });
+      await click('[data-file-output-open]');
+      await set('[data-image-size="width"]', '512');
+      await set('[data-image-size="height"]', '640');
+      await prepare();
+      await save(route, 'transparent');
+      await click('[data-image-transparent]');
+      await set('[data-image-background]', '#e1d6ef');
+      await prepare();
+      await save(route, 'background');
+      await click('[data-image-transparent]');
+      await set('[data-image-pose]', current().expressions.at(-1)!.id);
+      await prepare();
+      await save(route, 'expression');
+      await set('[data-image-placement="scale"]', '.7');
+      await set('[data-image-placement="x"]', '.1');
+      await set('[data-image-crop="bottom"]', '15');
+      await prepare();
+      await save(route, 'placement');
+      const image = document.querySelector<HTMLImageElement>('[data-image-export-preview]')!,
+        ticketId = new URL(image.src).pathname.split('/')[3]!;
+      await host.command({
+        type: 'edit',
+        target: 'part-opacity',
+        id: current().parts[0]!.id,
+        parameterId: null,
+        value: 0.55,
+        expectedRevision: current().revision,
+        groupId: null,
+      });
+      await until(() => !!document.querySelector('[data-image-stale]'));
+      verify(
+        (await window.studio.image.save(ticketId)).errorCode === 'E_IMAGE_STALE',
+        'E_FILE_STALE_BACKEND',
+      );
+      await click('[data-file-tab="target"]');
+      await click('[data-export-remember]');
+      await until(() =>
+        current().exportProfiles.some((p) => p.converterVersion === CONVERTER_VERSION),
+      );
+      const targetFields = document.querySelectorAll<HTMLInputElement>('[data-export-map]');
+      await set(
+        '[data-export-map="' + CSS.escape(targetFields[1]!.dataset.exportMap!) + '"]',
+        targetFields[0]!.value,
+      );
+      await click('[data-export-inspect]');
+      await until(() => !!document.querySelector('[data-export-result]'));
+      verify(
+        document.querySelector('[data-export-result]')?.getAttribute('data-export-status') ===
+          'BLOCKED',
+        'E_FILE_CORE_LOSS_BLOCK',
+      );
+      await click('[data-export-copy]');
+      await pause(300);
+      verify(!!document.querySelector('.conversion-review canvas'), 'E_FILE_COPY');
+      await host.command({
+        type: 'edit',
+        target: 'project-name',
+        id: null,
+        parameterId: null,
+        value: '새 검사 입력 · ' + route,
+        expectedRevision: current().revision,
+        groupId: null,
+      });
+      await until(
+        () =>
+          document.querySelector('[data-export-result]')?.getAttribute('data-export-status') ===
+          'STALE',
+      );
+      await click('[data-export-inspect]');
+      await until(
+        () =>
+          document.querySelector('[data-export-result]')?.getAttribute('data-export-status') ===
+          'BLOCKED',
+      );
+      const fix = document.querySelector<HTMLButtonElement>('[data-export-fix]')!;
+      verify(!fix.disabled, 'E_FILE_FIX_LINK');
+      fix.click();
+      await host.settled();
+      await pause(200);
+      if (document.querySelector('.expression-dialog .close'))
+        (document.querySelector('.expression-dialog .close') as HTMLButtonElement).click();
+      if (document.querySelector('.detail-dialog .close'))
+        (document.querySelector('.detail-dialog .close') as HTMLButtonElement).click();
+      await host.command({ type: 'save' });
+      const id = host.current()!.recent[0]!.id;
+      await host.command({ type: 'close' });
+      await host.command({ type: 'recent', id });
+      verify(
+        current().exportProfiles.some((p) => p.converterVersion === CONVERTER_VERSION),
+        'E_FILE_PROFILE_REOPEN',
+      );
+      routes.push({
+        route,
+        passed: true,
+        actualRoutePreparation: true,
+        pngVariants: 4,
+        deviceRequests: 0,
+        staleImageRejected: true,
+        coreLossBlocked: true,
+        staleInspection: true,
+        copyReview: true,
+        fixNavigation: true,
+        targetSettingsReopened: true,
+      });
+    }
+    await host.runtime.start(host.current()!, 'manual', {
+      camera: '',
+      microphone: '',
+      cameraAvailable: false,
+      microphoneAvailable: false,
+    });
+    verify(host.runtime.active, 'E_FILE_EXECUTION_START');
+    host.runtime.player.set(
+      'head_yaw',
+      current().parameters.find((p) => p.previewKey === 'head_yaw')!.max,
+    );
+    await pause(150);
+    await click('[data-file-output-open]');
+    await set('[data-file-source]', 'execution');
+    await set('[data-image-size="width"]', '512');
+    await set('[data-image-size="height"]', '640');
+    await set('[data-image-pose]', 'live');
+    await prepare();
+    await save('execution', 'frozen-live');
+    await click('.file-output-dialog .close');
+    await host.runtime.stop();
+    await host.command({ type: 'close' });
+    const positive = host.current()!.recent.find((r) => r.displayName === '사전검사 양성 예제')!;
+    verify(positive, 'E_FILE_POSITIVE_FIXTURE');
+    await host.command({ type: 'recent', id: positive.id });
+    await click('[data-file-output-open]');
+    await click('[data-file-tab="target"]');
+    await click('[data-export-inspect]');
+    await until(
+      () =>
+        document.querySelector('[data-export-result]')?.getAttribute('data-export-status') ===
+        'WARNING',
+    );
+    await click('[data-export-ack]');
+    await until(() => document.querySelector('[data-export-ack]')?.textContent?.includes('확인됨'));
+    const first = current().parameters[0]!,
+      details = document.querySelector<HTMLInputElement>('[data-export-map]')!.closest('details')!;
+    details.open = true;
+    await set('[data-export-map="' + CSS.escape(first.id) + '"]', 'changed_name');
+    verify(
+      document.querySelector('[data-export-result]')?.getAttribute('data-export-status') ===
+        'STALE',
+      'E_FILE_TARGET_STALE',
+    );
+    await click('[data-export-remember]');
+    await until(() =>
+      current().exportProfiles.some((p) =>
+        p.parameterMap.some((m) => m.targetName === 'changed_name'),
+      ),
+    );
+    await click('[data-export-inspect]');
+    await until(
+      () =>
+        document.querySelector('[data-export-result]')?.getAttribute('data-export-status') ===
+        'WARNING',
+    );
+    verify(
+      !document.querySelector('[data-export-ack]')?.textContent?.includes('확인됨'),
+      'E_FILE_ACK_RESET',
+    );
+    await click('.file-output-dialog .close');
+    await host.command({ type: 'save' });
+    await host.command({ type: 'close' });
+    const staticItem = host.current()!.recent.find((r) => r.displayName === '정지 그림 예제')!;
+    await host.command({ type: 'recent', id: staticItem.id });
+    verify(!current().motion && current().parameters.length === 0, 'E_FILE_STATIC_FIXTURE');
+    await click('[data-file-output-open]');
+    await set('[data-image-size="width"]', '512');
+    await set('[data-image-size="height"]', '640');
+    await prepare();
+    await save('static', 'no-motion');
+    verify(calls === 0, 'E_FILE_DEVICE_REQUEST');
+    return {
+      passed: true,
+      routes,
+      images,
+      staticWithoutMotion: true,
+      frozenExecutionImage: true,
+      warningAcknowledgement: true,
+      warningScopeReset: true,
+      targetSettingsReusable: true,
+      deviceRequests: calls,
+      physicalDevicesOpened: false,
+      externalFileGenerated: false,
+      externalRuntimeVerified: false,
+      m0: 'HOLD',
+    };
+  } finally {
+    Object.defineProperty(navigator.mediaDevices, 'getUserMedia', {
+      configurable: true,
+      value: original,
+    });
+  }
 }

@@ -1,0 +1,14 @@
+{
+  "format": "2dsketcher-cache-archive/1",
+  "group": "validation-inochi-01",
+  "verified": true,
+  "files": 2329,
+  "logicalBytes": 606506368,
+  "everyArchiveFileReconstructedAndHashMatched": true,
+  "originalSourceHashesRecordedAtPack": true,
+  "sourceHashRecheckedDuringVerify": false,
+  "sourceHashRequiredAgainBeforeEviction": true,
+  "indexSha256": "38b0daf43e92de39d2faea0664d51fe98d85c3999626a7094e4f1a3a89ea2e67",
+  "sourceRemoved": false,
+  "historicalEvidenceModified": false
+}

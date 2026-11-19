@@ -1,18 +1,44 @@
-const {app,BrowserWindow,session}=require('electron');
-const fs=require('node:fs'),path=require('node:path'),{pathToFileURL}=require('node:url');
-const output=process.argv.find(v=>v.startsWith('--output='))?.slice(9);
-if(!output||!path.resolve(output).startsWith(path.resolve('.local')+path.sep))throw Error('E_CONSOLE_OUTPUT');
-const c={version:'0.0.0',sha256:'0'.repeat(64)};
-const html=path.join(output,'Observation-test.html');
-fs.writeFileSync(html,fs.readFileSync('tools/completion-console.html','utf8').replace('__CANDIDATE__',JSON.stringify(c)),{flag:'wx'});
+const { app, BrowserWindow, session } = require('electron');
+const fs = require('node:fs'),
+  path = require('node:path'),
+  { pathToFileURL } = require('node:url');
+const output = process.argv.find((v) => v.startsWith('--output='))?.slice(9);
+const profile = process.argv.find((v) => v.startsWith('--profile='))?.slice(10);
+if (!output || !path.resolve(output).startsWith(path.resolve('.local') + path.sep))
+  throw Error('E_CONSOLE_OUTPUT');
+if (!profile) throw Error('E_CONSOLE_PROFILE');
+app.setPath('userData', path.resolve(profile));
+const c = { version: '0.0.0', sha256: '0'.repeat(64) };
+const html = path.join(path.dirname(profile), 'Observation-test.html');
+fs.writeFileSync(
+  html,
+  fs
+    .readFileSync('tools/completion-console.html', 'utf8')
+    .replace('__CANDIDATE__', JSON.stringify(c)),
+  { flag: 'wx' },
+);
 let window;
-app.whenReady().then(async()=>{
- try{
-  const own=session.fromPartition('completion-console-'+Date.now());own.setPermissionCheckHandler(()=>false);own.setPermissionRequestHandler((_w,_p,done)=>done(false));
-  own.webRequest.onBeforeRequest((details,done)=>done({cancel:details.url!==pathToFileURL(html).href}));
-  window=new BrowserWindow({show:false,width:1100,height:920,webPreferences:{session:own,sandbox:true,contextIsolation:true,nodeIntegration:false}});
-  await window.loadFile(html);
-  const result=await window.webContents.executeJavaScript(`(async()=>{
+app.whenReady().then(async () => {
+  try {
+    const own = session.fromPartition('completion-console-' + Date.now());
+    own.setPermissionCheckHandler(() => false);
+    own.setPermissionRequestHandler((_w, _p, done) => done(false));
+    own.webRequest.onBeforeRequest((details, done) =>
+      done({ cancel: details.url !== pathToFileURL(html).href }),
+    );
+    window = new BrowserWindow({
+      show: false,
+      width: 1100,
+      height: 920,
+      webPreferences: {
+        session: own,
+        sandbox: true,
+        contextIsolation: true,
+        nodeIntegration: false,
+      },
+    });
+    await window.loadFile(html);
+    const result = await window.webContents.executeJavaScript(`(async()=>{
    const find=id=>document.getElementById(id),pause=ms=>new Promise(r=>setTimeout(r,ms)),assert=(v,c)=>{if(!v)throw Error(c);};
    assert(find('correction').disabled,'E_CONSOLE_BEFORE_START');find('start').click();assert(record===null,'E_CONSOLE_CONSENT');
    find('consent').checked=true;find('novice').checked=true;find('origin').value='simulation';find('observer').value='developer';find('start').click();await pause(40);
@@ -25,7 +51,30 @@ app.whenReady().then(async()=>{
    let blocked=false;try{await fetch('https://example.invalid/');}catch{blocked=true;}assert(blocked,'E_CONSOLE_NETWORK');
    return {passed:true,consentGuard:true,firstMilestoneImmutable:true,timerSegmentsRecorded:true,assistanceRecorded:true,finishedRecordProtected:true,followupWindowVisible:true,privateImportRejected:true,externalNetworkBlocked:true,simulation:true,realNoviceObservations:0,rawMediaCollected:false};
   })()`);
-  await fs.promises.writeFile(path.join(output,'console.png'),(await window.webContents.capturePage()).toPNG(),{flag:'wx'});
-  fs.writeFileSync(path.join(output,'console-check.json'),JSON.stringify(result,null,2)+'\n',{flag:'wx'});window.destroy();app.exit(0);
- }catch(error){fs.writeFileSync(path.join(output,'console-check.json'),JSON.stringify({passed:false,code:error.message.match(/E_[A-Z_]+/)?.[0]??'E_CONSOLE_CHECK',simulation:true,realNoviceObservations:0})+'\n',{flag:'wx'});window?.destroy();app.exit(1);}
+    await fs.promises.writeFile(
+      path.join(output, 'console.png'),
+      (await window.webContents.capturePage()).toPNG(),
+      { flag: 'wx' },
+    );
+    fs.writeFileSync(
+      path.join(output, 'console-check.json'),
+      JSON.stringify(result, null, 2) + '\n',
+      { flag: 'wx' },
+    );
+    window.destroy();
+    app.exit(0);
+  } catch (error) {
+    fs.writeFileSync(
+      path.join(output, 'console-check.json'),
+      JSON.stringify({
+        passed: false,
+        code: error.message.match(/E_[A-Z_]+/)?.[0] ?? 'E_CONSOLE_CHECK',
+        simulation: true,
+        realNoviceObservations: 0,
+      }) + '\n',
+      { flag: 'wx' },
+    );
+    window?.destroy();
+    app.exit(1);
+  }
 });

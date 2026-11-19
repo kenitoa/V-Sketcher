@@ -1,0 +1,14 @@
+{
+  "format": "2dsketcher-cache-archive/1",
+  "group": "old-lab-environment",
+  "verified": true,
+  "files": 1117,
+  "logicalBytes": 28872518,
+  "everyArchiveFileReconstructedAndHashMatched": true,
+  "originalSourceHashesRecordedAtPack": true,
+  "sourceHashRecheckedDuringVerify": false,
+  "sourceHashRequiredAgainBeforeEviction": true,
+  "indexSha256": "9eac56ab4c776f03f108a9a1b76fb079286e07e74842ee9fd3eacd87a25960a4",
+  "sourceRemoved": false,
+  "historicalEvidenceModified": false
+}

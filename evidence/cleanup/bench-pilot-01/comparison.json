@@ -1,0 +1,33 @@
+{
+  "passed": true,
+  "before": {
+    "variant": "before",
+    "medianLoadMs": 98.90000009536743,
+    "medianHitMs": 156.59999990463257,
+    "drawP95Ms": 0.5,
+    "frameIntervalP95Ms": 47.10000002384186,
+    "medianCompletedFPS": 29.701731393703778,
+    "ownedAlphaBytes": 0,
+    "referencedDecodedRGBABytesEstimate": 6474624,
+    "medianRendererWorkingSetKiB": 132420
+  },
+  "after": {
+    "variant": "after",
+    "medianLoadMs": 135.70000004768372,
+    "medianHitMs": 74.10000002384186,
+    "drawP95Ms": 0.5,
+    "frameIntervalP95Ms": 47.10000002384186,
+    "medianCompletedFPS": 29.670264460863947,
+    "ownedAlphaBytes": 1618656,
+    "referencedDecodedRGBABytesEstimate": 0,
+    "medianRendererWorkingSetKiB": 128288
+  },
+  "pixelsIdentical": true,
+  "pickingIdentical": true,
+  "noFrameRegression": true,
+  "alphaCacheVsPriorRGBAEstimateReduction": 0.75,
+  "physicalDevicesOpened": false,
+  "actualOBS": false,
+  "releasePerformanceAcceptance": false,
+  "scope": "Six interleaved fresh-process premium-renderer runs; exact six-pose pixels and 625 picking points. RSS includes caches/shared pages; decoded RGBA is an estimate. Device/OBS/2h acceptance is separate."
+}
